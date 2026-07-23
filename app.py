@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 트렌디한 앰비언트 그라데이션 및 모던 스타일 CSS 주입
+# 2. 스픽 스타일 상단바 및 앰비언트 그라데이션 CSS 주입
 st.markdown(
     """
 <style>
@@ -50,10 +50,73 @@ body, [class*="css"] {
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* 🌟 스픽 스타일 둥근 알약 상단바 래퍼 스타일 */
+.speak-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border-radius: 100px;
+    padding: 10px 24px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #3bb2b8, #7e57c2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(126, 87, 194, 0.25);
+}
+
+.nav-logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.8px;
+    text-decoration: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    font-size: 15px;
+    font-weight: 600;
+    color: #475569;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #0f172a;
+}
+
 /* 첫 화면 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 20px 0 20px 0;
+    padding: 10px 0 20px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -143,7 +206,7 @@ body, [class*="css"] {
     margin-bottom: 50px;
 }
 
-/* 개별 모던 글래스 카드 스타일 */
+/* 모던 글래스 카드 스타일 */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -213,6 +276,87 @@ def navigate_to(page_name):
 
 
 # =========================================================
+# 🌟 스픽 스타일 둥근 알약 상단바 컴포넌트
+# =========================================================
+nav_col1, nav_col2, nav_col3 = st.columns([1, 8, 1])
+
+with nav_col2:
+  # 알약 모양 껍데기 안에 좌우 요소를 배치
+  c_left, c_space, c_right1, c_right2, c_right3 = st.columns(
+      [2.5, 3.5, 1.2, 1.2, 1.5]
+  )
+
+  with c_left:
+    st.markdown(
+        """
+        <div style="display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer;" onclick="window.location.reload();">
+            <div class="nav-logo-icon">S</div>
+            <span class="nav-logo-text">MyStair</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with c_right1:
+    st.markdown(
+        """
+        <div style="padding-top: 10px; font-size: 14px; font-weight: 600; color: #475569; cursor: pointer;">서비스 소개</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with c_right2:
+    st.markdown(
+        """
+        <div style="padding-top: 10px; font-size: 14px; font-weight: 600; color: #475569; cursor: pointer;">팀 소개</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+  with c_right3:
+    st.markdown(
+        """
+        <style>
+        div[data-testid="column"] button[key="speak_cta_btn"] {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            border-radius: 50px !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+            transition: all 0.2s ease !important;
+        }
+        div[data-testid="column"] button[key="speak_cta_btn"]:hover {
+            background: #1d4ed8 !important;
+            transform: translateY(-1px);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("지금 시작하기 →", key="speak_cta_btn", use_container_width=True):
+      navigate_to("dashboard")
+
+# 네비게이션바 시각적 컨테이너 감싸기용 마크다운
+st.markdown(
+    """
+<script>
+// 상단바 영역을 스픽처럼 둥근 알약 스타일로 감싸는 효과 주입
+const cols = window.parent.document.querySelectorAll('[data-testid="column"]');
+if(cols.length > 1) {
+    const parentRow = cols[1].parentElement;
+    if(parentRow && !parentRow.classList.contains('speak-navbar')) {
+        parentRow.classList.add('speak-navbar');
+    }
+}
+</script>
+""",
+    unsafe_allow_html=True,
+)
+
+# =========================================================
 # [PAGE 1] 메인 랜딩 페이지 (시작하자마자 히어로 화면 노출)
 # =========================================================
 if st.session_state.page == "landing":
@@ -276,7 +420,7 @@ div.stButton > button[kind="primary"]:hover {
     if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
       navigate_to("dashboard")
 
-  # --- [섹션 2] 서비스 기획 배경 (스트림릿 네이티브 컬럼 사용) ---
+  # --- [섹션 2] 서비스 기획 배경 ---
   st.markdown(
       """
 <div class="scroll-section">
@@ -300,7 +444,7 @@ div.stButton > button[kind="primary"]:hover {
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 3] 핵심 기능 안내 (스트림릿 네이티브 컬럼 사용) ---
+  # --- [섹션 3] 핵심 기능 안내 ---
   st.markdown(
       """
 <div class="scroll-section">
@@ -329,7 +473,7 @@ div.stButton > button[kind="primary"]:hover {
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 4] 만든 사람들 (스트림릿 네이티브 컬럼 사용) ---
+  # --- [섹션 4] 만든 사람들 ---
   st.markdown(
       """
 <div class="scroll-section" style="padding-top: 160px;">
