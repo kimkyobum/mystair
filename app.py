@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 히어로 요소를 더 크고 웅장하게 키운 최적화된 CSS 주입
+# 2. 토스·스픽·삼성 벤치마킹 스타일 전면 적용 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,7 +31,7 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 화면 전체를 아우르는 감각적인 앰비언트 그라데이션 배경 */
+/* 🌟 화면 전체를 아우르는 삼성·토스 스타일의 감각적인 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
         radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
@@ -42,7 +42,7 @@ body, [class*="css"] {
     color: #1e293b;
 }
 
-/* 🌟 와이드 컨테이너 폭 (1200px) */
+/* 🌟 와이드 컨테이너 폭 (1200px) 및 여유로운 패딩 */
 .block-container {
     padding-top: 2rem;
     padding-bottom: 15rem;
@@ -53,7 +53,7 @@ body, [class*="css"] {
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 상단 알약 네비게이션 바 */
+/* 🌟 스픽 스타일 둥근 알약 네비게이션 바 */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
@@ -116,7 +116,7 @@ body, [class*="css"] {
     gap: 8px;
 }
 
-/* 🌟 더 크고 중심에 오는 히어로 섹션 */
+/* 🌟 삼성·토스 스타일의 웅장하고 몰입감 있는 히어로 섹션 */
 .hero-section-left {
     text-align: left;
     padding: 30px 0;
@@ -163,7 +163,7 @@ body, [class*="css"] {
     letter-spacing: -0.3px;
 }
 
-/* 🌟 더 커진 3D 이미지 플로팅 컨테이너 */
+/* 3D 이미지 플로팅 컨테이너 */
 .hero-graphic-container {
     display: flex;
     justify-content: center;
@@ -179,7 +179,7 @@ body, [class*="css"] {
     filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1));
 }
 
-/* 🌟 대단원 사이의 간격 */
+/* 🌟 대단원 간의 시원한 여백 (토스 스타일 롱 스크롤) */
 .scroll-section {
     padding-top: 280px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -280,7 +280,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 알약 네비게이션 바
+# 상단 알약 네비게이션 바 (한국어 선택 포함)
 # =========================================================
 st.markdown(
     """
@@ -308,7 +308,7 @@ st.markdown(
 # =========================================================
 if st.session_state.page == "landing":
 
-  # --- [섹션 1] 첫 화면 (히어로: 더욱 크고 웅장하게 중앙 정렬) ---
+  # --- [섹션 1] 첫 화면 (히어로) ---
   hero_col1, hero_col2 = st.columns([1.05, 0.95], gap="large")
 
   with hero_col1:
