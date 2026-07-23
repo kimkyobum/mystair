@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 토스 스타일의 넓은 여백과 앰비언트 그라데이션 CSS 주입
+# 2. 대단원 내부 간격은 좁히고 대단원끼리만 구분감을 주는 최적화된 CSS 주입
 st.markdown(
     """
 <style>
@@ -42,10 +42,10 @@ body, [class*="css"] {
     color: #1e293b;
 }
 
-/* 🌟 쾌적하고 넓은 와이드 컨테이너 폭 (1200px) 및 여유로운 패딩 */
+/* 🌟 와이드 컨테이너 폭 (1200px) */
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 14rem;
+    padding-bottom: 12rem;
     max-width: 1200px !important;
     margin: 0 auto !important;
     padding-left: 3rem !important;
@@ -58,7 +58,7 @@ body, [class*="css"] {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 
 .speak-navbar {
@@ -103,10 +103,10 @@ body, [class*="css"] {
     color: #475569;
 }
 
-/* 히어로 섹션 (토스 스타일의 압도적인 여백) */
+/* 히어로 섹션 */
 .hero-section-left {
     text-align: left;
-    padding: 40px 0 20px 0;
+    padding: 20px 0 10px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -121,7 +121,7 @@ body, [class*="css"] {
     border-radius: 50px;
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
@@ -129,7 +129,7 @@ body, [class*="css"] {
 .hero-title {
     font-size: 54px;
     font-weight: 800;
-    margin: 0 0 24px 0;
+    margin: 0 0 20px 0;
     line-height: 1.2;
     letter-spacing: -2px;
     color: #0f172a;
@@ -144,7 +144,7 @@ body, [class*="css"] {
 .hero-subtitle {
     font-size: 19px;
     color: #64748b;
-    margin: 0 0 45px 0;
+    margin: 0 0 35px 0;
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: -0.3px;
@@ -166,43 +166,43 @@ body, [class*="css"] {
     filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.08));
 }
 
-/* 🌟 롱 스크롤 섹션 (토스 스타일의 넓고 쾌적한 상하 간격) */
+/* 🌟 대단원 간격은 넓히고, 대단원 내부(제목-설명-카드) 간격은 좁게 유지하는 스타일 */
 .scroll-section {
-    padding: 180px 0 60px 0;
+    padding-top: 130px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .section-tag {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #3bb2b8;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
 
 .section-heading {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     letter-spacing: -1px;
     line-height: 1.3;
 }
 
 .section-desc {
-    font-size: 19px;
+    font-size: 18px;
     color: #64748b;
     line-height: 1.6;
-    margin-bottom: 60px;
+    margin-bottom: 30px; /* 제목과 카드 사이의 간격을 밀집되게 유지 */
 }
 
-/* 모던 글래스 카드 스타일 (내부 여백 넉넉히 확장) */
+/* 모던 글래스 카드 스타일 */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
-    border-radius: 28px;
-    padding: 48px 40px;
+    border-radius: 24px;
+    padding: 36px 32px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
@@ -219,17 +219,17 @@ body, [class*="css"] {
 }
 
 .modern-card h3 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     color: #0f172a;
-    margin: 0 0 18px 0;
+    margin: 0 0 14px 0;
     letter-spacing: -0.5px;
 }
 
 .modern-card p {
-    font-size: 17px;
+    font-size: 16px;
     color: #64748b;
-    line-height: 1.75;
+    line-height: 1.7;
     margin: 0;
     word-break: keep-all;
 }
@@ -246,8 +246,8 @@ body, [class*="css"] {
 .bento-box {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    border-radius: 28px;
-    padding: 40px;
+    border-radius: 24px;
+    padding: 35px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.03);
     border: 1px solid rgba(226, 232, 240, 0.8);
 }
@@ -313,8 +313,8 @@ if st.session_state.page == "landing":
         background: #0f172a !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 18px 36px !important;
-        font-size: 17px !important;
+        padding: 16px 32px !important;
+        font-size: 16px !important;
         font-weight: 700 !important;
         border-radius: 50px !important;
         box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important;
