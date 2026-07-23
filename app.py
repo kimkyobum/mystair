@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 양옆 빈 공간을 채워주는 앰비언트 그라데이션 및 모던 스타일 CSS 주입
+# 2. 첫 화면 몰입도를 높이는 앰비언트 그라데이션 및 스타일 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,13 +31,12 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 넓은 화면의 빈 공간을 풍성하게 채워주는 앰비언트 메시 그라데이션 배경 */
+/* 🌟 와이드 화면의 빈 공간을 채워주는 은은한 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
-        radial-gradient(circle at 8% 12%, rgba(59, 178, 184, 0.12) 0px, transparent 38%),
-        radial-gradient(circle at 92% 18%, rgba(126, 87, 194, 0.1) 0px, transparent 38%),
-        radial-gradient(circle at 15% 75%, rgba(56, 189, 248, 0.08) 0px, transparent 42%),
-        radial-gradient(circle at 85% 82%, rgba(244, 114, 182, 0.06) 0px, transparent 40%),
+        radial-gradient(circle at 10% 12%, rgba(59, 178, 184, 0.1) 0px, transparent 40%),
+        radial-gradient(circle at 90% 15%, rgba(126, 87, 194, 0.08) 0px, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
         #ffffff !important;
     background-attachment: fixed;
     color: #1e293b;
@@ -46,15 +45,15 @@ body, [class*="css"] {
 .block-container {
     padding-top: 2rem;
     padding-bottom: 10rem;
-    max-width: 1100px !important;
+    max-width: 1050px !important;
     margin: 0 auto;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 히어로 섹션 */
+/* 첫 화면 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 50px 0 30px 0;
+    padding: 20px 0 20px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -69,7 +68,7 @@ body, [class*="css"] {
     border-radius: 50px;
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
@@ -77,7 +76,7 @@ body, [class*="css"] {
 .hero-title {
     font-size: 60px;
     font-weight: 800;
-    margin: 0 0 24px 0;
+    margin: 0 0 20px 0;
     line-height: 1.25;
     letter-spacing: -2px;
     color: #0f172a;
@@ -92,17 +91,17 @@ body, [class*="css"] {
 .hero-subtitle {
     font-size: 20px;
     color: #64748b;
-    margin: 0 0 40px 0;
+    margin: 0 0 35px 0;
     font-weight: 400;
     letter-spacing: -0.5px;
 }
 
-/* 메인 이미지 플로팅 컨테이너 */
+/* 3D 이미지 플로팅 컨테이너 */
 .hero-graphic-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 0 50px 0;
+    margin: 10px 0 40px 0;
     animation: floatAnimation 4s ease-in-out infinite;
 }
 
@@ -144,7 +143,7 @@ body, [class*="css"] {
     margin-bottom: 50px;
 }
 
-/* 모던 글래스 카드 스타일 (높이 완벽 일치) */
+/* 모던 카드 스타일 */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -214,62 +213,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 헤더 컴팩트 배치 (구분선 없음, 자연스러운 여백)
-# =========================================================
-header_col1, header_col2, header_col3 = st.columns([1, 6, 1])
-
-with header_col1:
-  st.markdown(
-      """
-<style>
-div[data-testid="column"] button[key="top_logo_btn"] {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    font-size: 26px !important;
-    font-weight: 800 !important;
-    background: linear-gradient(90deg, #0f172a, #334155);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1.2px;
-    box-shadow: none !important;
-    text-align: left !important;
-}
-</style>
-""",
-      unsafe_allow_html=True,
-  )
-  if st.button("MyStair", key="top_logo_btn"):
-    navigate_to("landing")
-
-with header_col3:
-  st.markdown(
-      """
-<style>
-div[data-testid="column"] button[key="login_btn"] {
-    background: rgba(255, 255, 255, 0.8) !important;
-    color: #0f172a !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 6px 14px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    border-radius: 20px !important;
-    transition: all 0.2s ease !important;
-}
-div[data-testid="column"] button[key="login_btn"]:hover {
-    background: #0f172a !important;
-    color: #ffffff !important;
-    border-color: #0f172a !important;
-}
-</style>
-""",
-      unsafe_allow_html=True,
-  )
-  if st.button("로그인", key="login_btn", use_container_width=True):
-    st.toast("로그인 창이 열립니다.")
-
-# =========================================================
-# [PAGE 1] 메인 랜딩 페이지 (롱 스크롤 방식)
+# [PAGE 1] 메인 랜딩 페이지 (시작하자마자 히어로 화면 노출)
 # =========================================================
 if st.session_state.page == "landing":
 
@@ -285,7 +229,7 @@ if st.session_state.page == "landing":
       unsafe_allow_html=True,
   )
 
-  # 배경 블록이 없는 깔끔한 3D 메인 이미지
+  # 3D 메인 이미지
   img_col1, img_col2, img_col3 = st.columns([1, 1.4, 1])
   with img_col2:
     if os.path.exists("main_image.png"):
@@ -332,7 +276,7 @@ div.stButton > button[kind="primary"]:hover {
     if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
       navigate_to("dashboard")
 
-  # --- [섹션 2] 핵심 기능 소개 ---
+  # --- [섹션 2] 핵심 기능 소개 (아래로 스크롤 시 등장) ---
   st.markdown(
       """
 <div class="scroll-section">
@@ -361,7 +305,7 @@ div.stButton > button[kind="primary"]:hover {
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 3] 만든 사람들 ---
+  # --- [섹션 3] 만든 사람들 (아래로 스크롤 시 등장) ---
   st.markdown(
       """
 <div class="scroll-section" style="padding-top: 160px;">
