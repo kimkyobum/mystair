@@ -10,11 +10,10 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 트렌디한 SUIT 글꼴, 완벽한 높이 맞춤(Grid), 감각적인 여백 CSS 주입
+# 2. 전체 그라데이션 배경, 부드러운 카드, 페이드 인 애니메이션 CSS 주입
 st.markdown(
     """
 <style>
-/* 부드럽고 가독성 높은 최신 웹 폰트 SUIT 적용 */
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
 
 body, [class*="css"] {
@@ -28,12 +27,17 @@ body, [class*="css"] {
 
 @keyframes floatAnimation {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-12px); }
     100% { transform: translateY(0px); }
 }
 
+/* 전체 사이트 배경에 감각적인 소프트 그라데이션 적용 */
 .stApp {
-    background: #ffffff;
+    background: 
+        radial-gradient(circle at 10% 15%, rgba(59, 178, 184, 0.07) 0px, transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(126, 87, 194, 0.06) 0px, transparent 40%),
+        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+        #ffffff !important;
     color: #1e293b;
 }
 
@@ -48,7 +52,7 @@ body, [class*="css"] {
 /* 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 80px 0 50px 0;
+    padding: 60px 0 30px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -57,13 +61,15 @@ body, [class*="css"] {
     align-items: center;
     gap: 6px;
     padding: 8px 18px;
-    background: #f8fafc;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
     color: #475569;
     border-radius: 50px;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 28px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
 .hero-title {
@@ -84,34 +90,30 @@ body, [class*="css"] {
 .hero-subtitle {
     font-size: 20px;
     color: #64748b;
-    margin: 0 0 50px 0;
+    margin: 0 0 40px 0;
     font-weight: 400;
     letter-spacing: -0.5px;
 }
 
-.studio-podium {
-    display: inline-flex;
+/* 배경 블록 없이 오직 플로팅 효과만 적용된 메인 이미지 */
+.hero-graphic-container {
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 60px;
-    background: radial-gradient(circle at 50% 20%, rgba(59, 178, 184, 0.08) 0%, rgba(255, 255, 255, 1) 70%);
-    border-radius: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f1f5f9;
-    margin: 10px 0 60px 0;
+    margin: 10px 0 50px 0;
     animation: floatAnimation 4s ease-in-out infinite;
 }
 
 .hero-graphic {
-    width: 320px;
+    width: 340px;
     height: auto;
     object-fit: contain;
+    filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.08));
 }
 
-/* 롱 스크롤 섹션 여백 */
+/* 롱 스크롤 섹션 */
 .scroll-section {
     padding: 140px 0 40px 0;
-    border-top: 1px solid #f8fafc;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -140,42 +142,28 @@ body, [class*="css"] {
     margin-bottom: 50px;
 }
 
-/* ---------------------------------------------------
-   카드 높이 완벽 일치를 위한 커스텀 CSS Grid 시스템 
---------------------------------------------------- */
-.card-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    align-items: stretch; /* 높이 강제 일치 */
-}
-
-.card-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    align-items: stretch; /* 높이 강제 일치 */
-}
-
-.custom-card {
-    background: #ffffff;
+/* 안전하고 완벽하게 렌더링되는 모던 글래스 카드 스타일 */
+.modern-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
     border-radius: 24px;
     padding: 40px 32px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    height: 100%;
 }
 
-.custom-card:hover {
+.modern-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-    border-color: #cbd5e1;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 25px 50px rgba(126, 87, 194, 0.08);
+    border-color: rgba(126, 87, 194, 0.3);
 }
 
-.custom-card h3 {
+.modern-card h3 {
     font-size: 22px;
     font-weight: 800;
     color: #0f172a;
@@ -183,7 +171,7 @@ body, [class*="css"] {
     letter-spacing: -0.5px;
 }
 
-.custom-card p {
+.modern-card p {
     font-size: 16px;
     color: #64748b;
     line-height: 1.7;
@@ -201,11 +189,12 @@ body, [class*="css"] {
     gap: 30px;
 }
 .bento-box {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
     border-radius: 24px;
     padding: 35px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+    border: 1px solid rgba(226, 232, 240, 0.8);
 }
 </style>
 """,
@@ -255,7 +244,7 @@ with nav_col2:
       """
 <style>
 div[data-testid="column"] button[key="login_btn"] {
-    background: #f8fafc !important;
+    background: rgba(255, 255, 255, 0.8) !important;
     color: #0f172a !important;
     border: 1px solid #e2e8f0 !important;
     padding: 8px 18px !important;
@@ -277,7 +266,7 @@ div[data-testid="column"] button[key="login_btn"]:hover {
     st.toast("로그인 창이 열립니다.")
 
 st.markdown(
-    "<hr style='margin: 15px 0 40px 0; border: none; border-top: 1px solid #f1f5f9;'>",
+    "<hr style='margin: 15px 0 40px 0; border: none; border-top: 1px solid rgba(226, 232, 240, 0.6);'>",
     unsafe_allow_html=True,
 )
 
@@ -298,7 +287,7 @@ if st.session_state.page == "landing":
       unsafe_allow_html=True,
   )
 
-  # 3D 스튜디오 포디움 이미지
+  # 배경 블록을 완전히 제거하고 순수 입체 그림자만 가진 메인 이미지 출력
   img_col1, img_col2, img_col3 = st.columns([1, 1.4, 1])
   with img_col2:
     if os.path.exists("main_image.png"):
@@ -306,10 +295,8 @@ if st.session_state.page == "landing":
         encoded_img = base64.b64encode(f.read()).decode("utf-8")
       st.markdown(
           f"""
-<div style="text-align: center; width: 100%;">
-    <div class="studio-podium">
-        <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지">
-    </div>
+<div class="hero-graphic-container">
+    <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지">
 </div>
 """,
           unsafe_allow_html=True,
@@ -318,7 +305,7 @@ if st.session_state.page == "landing":
       st.warning("⚠️ 'main_image.png' 파일이 없습니다.")
 
   # CTA 버튼
-  st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+  st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
   col_c1, col_c2, col_c3 = st.columns([2, 1.6, 2])
   with col_c2:
     st.markdown(
@@ -347,56 +334,60 @@ div.stButton > button[kind="primary"]:hover {
     if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
       navigate_to("dashboard")
 
-  # --- [섹션 2] 핵심 기능 소개 (높이 완벽 일치 커스텀 HTML 그리드) ---
+  # --- [섹션 2] 핵심 기능 소개 (안전한 한 줄 HTML 카드 렌더링) ---
   st.markdown(
       """
 <div class="scroll-section">
     <div class="section-tag">Core Features</div>
     <div class="section-heading">성장을 기록하고,<br>커리어를 완성하세요</div>
     <div class="section-desc">마이스터고 생활에 꼭 필요한 기능들만 엄선해 담았습니다.</div>
-    
-    <div class="card-grid-3">
-        <div class="custom-card">
-            <h3>🎯 맞춤형 진로 로드맵</h3>
-            <p>전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계하고 관리합니다.</p>
-        </div>
-        <div class="custom-card">
-            <h3>📅 실습 및 경험 기록</h3>
-            <p>학교 생활과 현장 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p>
-        </div>
-        <div class="custom-card">
-            <h3>✨ AI STAR 자소서 변환</h3>
-            <p>축적된 활동 데이터를 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p>
-        </div>
-    </div>
 </div>
 """,
       unsafe_allow_html=True,
   )
 
-  # --- [섹션 3] 만든 사람들 (높이 완벽 일치 커스텀 HTML 그리드) ---
+  f_col1, f_col2, f_col3 = st.columns(3, gap="large")
+  with f_col1:
+    st.markdown(
+        '<div class="modern-card"><h3>🎯 맞춤형 진로 로드맵</h3><p>전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계하고 관리합니다.</p></div>',
+        unsafe_allow_html=True,
+    )
+  with f_col2:
+    st.markdown(
+        '<div class="modern-card"><h3>📅 실습 및 경험 기록</h3><p>학교 생활과 현장 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p></div>',
+        unsafe_allow_html=True,
+    )
+  with f_col3:
+    st.markdown(
+        '<div class="modern-card"><h3>✨ AI STAR 자소서 변환</h3><p>축적된 활동 데이터를 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p></div>',
+        unsafe_allow_html=True,
+    )
+
+  # --- [섹션 3] 만든 사람들 (안전한 한 줄 HTML 카드 렌더링) ---
   st.markdown(
       """
-<div class="scroll-section" style="padding-top: 120px;">
+<div class="scroll-section" style="padding-top: 160px;">
     <div class="section-tag">About Us</div>
     <div class="section-heading">만든 사람들</div>
     <div class="section-desc">학생들의 빛나는 도전과 가능성을 믿는 팀원들이 함께 만들었습니다.</div>
-    
-    <div class="card-grid-2">
-        <div class="custom-card">
-            <h3>💡 왜 MyStair를 만들었나요?</h3>
-            <p>일반 인문계 고등학교와는 다른 마이스터고만의 특수한 실습 경험과 기술 역량이 입사 지원서나 포트폴리오에 온전히 녹아들지 못하는 안타까움에서 출발했습니다. 학생들이 흘린 땀방울이 가장 가치 있는 취업 무기가 되도록 돕고 싶었습니다.</p>
-        </div>
-        <div class="custom-card">
-            <h3>🚀 우리의 목표와 비전</h3>
-            <p>단순한 자소서 작성 툴을 넘어, 마이스터고 학생들이 자신만의 확신을 가지고 세상이라는 더 큰 무대로 나아갈 수 있는 가장 믿음직하고 혁신적인 첫 번째 계단이 되는 것입니다.</p>
-        </div>
-    </div>
 </div>
-<div style='height: 80px;'></div>
 """,
       unsafe_allow_html=True,
   )
+
+  t_col1, t_col2 = st.columns(2, gap="large")
+  with t_col1:
+    st.markdown(
+        '<div class="modern-card"><h3>💡 왜 MyStair를 만들었나요?</h3><p>일반 인문계 고등학교와는 다른 마이스터고만의 특수한 실습 경험과 기술 역량이 입사 지원서나 포트폴리오에 온전히 녹아들지 못하는 안타까움에서 출발했습니다. 학생들이 흘린 땀방울이 가장 가치 있는 취업 무기가 되도록 돕고 싶었습니다.</p></div>',
+        unsafe_allow_html=True,
+    )
+  with t_col2:
+    st.markdown(
+        '<div class="modern-card"><h3>🚀 우리의 목표와 비전</h3><p>단순한 자소서 작성 툴을 넘어, 마이스터고 학생들이 자신만의 확신을 가지고 세상이라는 더 큰 무대로 나아갈 수 있는 가장 믿음직하고 혁신적인 첫 번째 계단이 되는 것입니다.</p></div>',
+        unsafe_allow_html=True,
+    )
+
+  st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
 
 # =========================================================
 # [PAGE 2] 앱 대시보드 페이지
@@ -434,7 +425,7 @@ elif st.session_state.page == "dashboard":
         """
 <div class="bento-box">
     <h3 style="margin: 0 0 15px 0;">📅 경험 캘린더 & AI 자소서</h3>
-    <div style="background:#f8fafc; padding:20px; border-radius:16px; margin-bottom: 20px; border: 1px solid #e2e8f0; color: #334155;">
+    <div style="background:rgba(248,250,252,0.8); padding:20px; border-radius:16px; margin-bottom: 20px; border: 1px solid #e2e8f0; color: #334155;">
         <b>[2026년 7월]</b> 실습 캘린더 데이터 적재 완료
     </div>
 </div>
