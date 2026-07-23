@@ -5,12 +5,10 @@ import streamlit as st
 
 # 1. 페이지 설정 (넓은 레이아웃 고정)
 st.set_page_config(
-    page_title="MyStair - 세상으로 나아가는 너의 첫 번째 계단",
-    page_icon="📈",
-    layout="wide",
+    page_title="MySpeak - AI 영어 스피킹 코치", page_icon="🗣️", layout="wide"
 )
 
-# 2. 첫 화면 몰입도를 높이는 앰비언트 그라데이션 및 스타일 CSS 주입
+# 2. 스픽 스타일의 모던하고 직관적인 디자인 CSS 주입
 st.markdown(
     """
 <style>
@@ -21,367 +19,255 @@ body, [class*="css"] {
 }
 
 @keyframes smoothFadeIn {
-    0% { opacity: 0; transform: translateY(20px); }
+    0% { opacity: 0; transform: translateY(15px); }
     100% { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes floatAnimation {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
-    100% { transform: translateY(0px); }
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(59, 178, 184, 0.4); }
+    70% { box-shadow: 0 0 0 20px rgba(59, 178, 184, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 178, 184, 0); }
 }
 
-/* 🌟 와이드 화면의 빈 공간을 채워주는 은은한 앰비언트 그라데이션 배경 */
+/* 전체 배경 및 폰트 설정 */
 .stApp {
     background: 
-        radial-gradient(circle at 10% 12%, rgba(59, 178, 184, 0.1) 0px, transparent 40%),
-        radial-gradient(circle at 90% 15%, rgba(126, 87, 194, 0.08) 0px, transparent 40%),
-        radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
+        radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.06) 0px, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(126, 87, 194, 0.05) 0px, transparent 40%),
         #ffffff !important;
-    background-attachment: fixed;
-    color: #1e293b;
+    color: #0f172a;
 }
 
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 10rem;
-    max-width: 1050px !important;
+    padding-bottom: 8rem;
+    max-width: 900px !important;
     margin: 0 auto;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 첫 화면 히어로 섹션 */
-.hero-section {
-    text-align: center;
-    padding: 20px 0 20px 0;
-    animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.hero-badge {
-    display: inline-flex;
+/* 상단 네비게이션 */
+.speak-nav {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 6px;
-    padding: 8px 18px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    color: #475569;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 24px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    margin-bottom: 40px;
 }
 
-.hero-title {
-    font-size: 60px;
+.speak-logo {
+    font-size: 24px;
     font-weight: 800;
-    margin: 0 0 20px 0;
-    line-height: 1.25;
-    letter-spacing: -2px;
-    color: #0f172a;
-}
-
-.hero-title span {
     background: linear-gradient(90deg, #3bb2b8, #7e57c2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
 }
 
-.hero-subtitle {
-    font-size: 20px;
-    color: #64748b;
-    margin: 0 0 35px 0;
-    font-weight: 400;
-    letter-spacing: -0.5px;
+/* 레슨 카드 */
+.lesson-card {
+    background: #f8fafc;
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
 }
 
-/* 3D 이미지 플로팅 컨테이너 */
-.hero-graphic-container {
+.lesson-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.lesson-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* 대화형 프롬프트 박스 */
+.speak-chat-box {
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 28px;
+    padding: 36px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+.ai-speech-bubble {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px 24px;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 마이크 버튼 스타일링 커스텀 */
+.mic-btn-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 10px 0 40px 0;
-    animation: floatAnimation 4s ease-in-out infinite;
-}
-
-.hero-graphic {
-    width: 340px;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.08));
-}
-
-/* 롱 스크롤 섹션 */
-.scroll-section {
-    padding: 140px 0 40px 0;
-    animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.section-tag {
-    font-size: 14px;
-    font-weight: 700;
-    color: #3bb2b8;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-}
-
-.section-heading {
-    font-size: 40px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 16px;
-    letter-spacing: -1px;
-    line-height: 1.3;
-}
-
-.section-desc {
-    font-size: 18px;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 50px;
-}
-
-/* 모던 카드 스타일 */
-.modern-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 40px 32px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.modern-card:hover {
-    transform: translateY(-6px);
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 25px 50px rgba(126, 87, 194, 0.08);
-    border-color: rgba(126, 87, 194, 0.3);
-}
-
-.modern-card h3 {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 16px 0;
-    letter-spacing: -0.5px;
-}
-
-.modern-card p {
-    font-size: 16px;
-    color: #64748b;
-    line-height: 1.7;
-    margin: 0;
-    word-break: keep-all;
-}
-
-/* 대시보드 */
-.app-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 20px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-.bento-box {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
-    padding: 35px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.03);
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    margin: 30px 0;
 }
 </style>
 """,
     unsafe_allow_html=True,
 )
 
-# 3. 세션 상태 관리
-if "page" not in st.session_state:
-  st.session_state.page = "landing"
+# 3. 세션 상태 관리 (스픽 앱 화면 네비게이션)
+if "speak_page" not in st.session_state:
+  st.session_state.speak_page = "home"
+if "selected_lesson" not in st.session_state:
+  st.session_state.selected_lesson = None
 
 
-def navigate_to(page_name):
-  st.session_state.page = page_name
+def go_to(page, lesson=None):
+  st.session_state.speak_page = page
+  if lesson:
+    st.session_state.selected_lesson = lesson
   st.rerun()
 
 
 # =========================================================
-# [PAGE 1] 메인 랜딩 페이지 (시작하자마자 히어로 화면 노출)
+# [PAGE 1] 스픽 메인 홈 화면 (과제 및 코스 선택)
 # =========================================================
-if st.session_state.page == "landing":
+if st.session_state.speak_page == "home":
 
-  # --- [섹션 1] 첫 화면 (히어로) ---
+  # 상단 로고 및 프로필 영역
+  col_l, col_r = st.columns([8, 2])
+  with col_l:
+    st.markdown(
+        '<div class="speak-logo">⚡ MySpeak</div>', unsafe_allow_html=True
+    )
+  with col_r:
+    st.markdown(
+        '<div style="text-align: right; font-weight: 700; color: #64748b; padding-top: 6px;">🔥 5일 연속 학습</div>',
+        unsafe_allow_html=True,
+    )
+
   st.markdown(
       """
-<div class="hero-section">
-    <div class="hero-badge">✨ 마이스터고 학생을 위한 단 하나의 진로 파트너</div>
-    <h1 class="hero-title">세상으로 나아가는<br><span>너의 첫 번째 계단</span></h1>
-    <p class="hero-subtitle">실습 기록부터 AI 자소서까지, 꿈을 현실로 만드는 혁신적인 커리어 플랫폼</p>
-</div>
-""",
+    <div style="margin: 30px 0 20px 0;">
+        <h1 style="font-size: 36px; font-weight: 800; color: #0f172a; margin: 0 0 10px 0; letter-spacing: -1px;">오늘의 스피킹 미션</h1>
+        <p style="font-size: 17px; color: #64748b; margin: 0;">원어민이 매일 쓰는 진짜 영어 표현을 입으로 소리 내어 익혀보세요.</p>
+    </div>
+    """,
       unsafe_allow_html=True,
   )
 
-  # 3D 메인 이미지
-  img_col1, img_col2, img_col3 = st.columns([1, 1.4, 1])
-  with img_col2:
-    if os.path.exists("main_image.png"):
-      with open("main_image.png", "rb") as f:
-        encoded_img = base64.b64encode(f.read()).decode("utf-8")
+  # 코스 선택 카드들
+  lessons = [
+      {
+          "title": "카페에서 자연스럽게 주문하기",
+          "desc": "원하지 않는 옵션을 빼고 커스텀 음료를 주문하는 필수 패턴",
+          "level": "초급반",
+          "tag": "☕ 일상 회화",
+      },
+      {
+          "title": "외국인 동료와 스몰토크 나누기",
+          "desc": "어색한 공백을 깨고 날씨, 주말 계획으로 대화를 이어가는 법",
+          "level": "중급반",
+          "tag": "💼 비즈니스",
+      },
+      {
+          "title": "공항 입국 심사 완벽 대비",
+          "desc": "까다로운 질문에도 당황하지 않고 3초 안에 답변하는 실전 훈련",
+          "level": "실전반",
+          "tag": "✈️ 여행 영어",
+      },
+  ]
+
+  for idx, lesson in enumerate(lessons):
+    st.markdown(f"""<div class="lesson-card">""", unsafe_allow_html=True)
+    st.markdown(
+        f'<span class="lesson-badge">{lesson["tag"]} • {lesson["level"]}</span>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f'<h3 style="font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">{lesson["title"]}</h3>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f'<p style="font-size: 15px; color: #64748b; margin: 0 0 20px 0;">{lesson["desc"]}</p>',
+        unsafe_allow_html=True,
+    )
+
+    if st.button("스피킹 연습 시작하기 ➔", key=f"lesson_btn_{idx}", use_container_width=False):
+      go_to("practice", lesson)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# =========================================================
+# [PAGE 2] 스픽 실전 스피킹 및 AI 피드백 세션
+# =========================================================
+elif st.session_state.speak_page == "practice":
+  lesson = st.session_state.selected_lesson
+
+  # 뒤로 가기 버튼
+  if st.button("⬅️ 코스 목록으로"):
+    go_to("home")
+
+  st.markdown(
+      f"""
+    <div style="margin: 20px 0 30px 0;">
+        <span style="color: #3bb2b8; font-weight: 700; font-size: 14px;">LIVE SPEAKING SESSION</span>
+        <h2 style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 5px 0 0 0;">{lesson['title'] if lesson else '스피킹 트레이닝'}</h2>
+    </div>
+    """,
+      unsafe_allow_html=True,
+  )
+
+  # AI 대화 시뮬레이션 박스 (스픽 앱 다크 UI 컨셉)
+  st.markdown(
+      """
+    <div class="speak-chat-box">
+        <div style="font-size: 13px; color: #3bb2b8; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px;">AI TUTOR SPEAKING</div>
+        <div class="ai-speech-bubble">
+            "Hi there! Welcome to the café. What can I get started for you today?"<br>
+            <span style="font-size: 14px; color: #94a3b8; font-weight: 400;">(어서오세요! 오늘 어떤 음료로 준비해 드릴까요?)</span>
+        </div>
+        <p style="font-size: 14px; color: #cbd5e1; margin: 0; text-align: center;">👇 마이크 버튼을 누르고 아래 문장을 영어로 크게 말해보세요!</p>
+    </div>
+    """,
+      unsafe_allow_html=True,
+  )
+
+  # 목표 문장 제시 카드
+  st.markdown(
+      """
+    <div style="background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 20px; padding: 25px; text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px;">TARGET EXPRESSION (목표 표현)</div>
+        <div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">"I'd like aniced americano, but with half the ice, please."</div>
+        <div style="font-size: 15px; color: #64748b;">(아이스 아메리카노 주세요, 얼음은 절반만 넣어주세요.)</div>
+    </div>
+    """,
+      unsafe_allow_html=True,
+  )
+
+  # 음성 인식 시뮬레이션 버튼 영역
+  col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
+  with col_btn2:
+    if st.button("🎙️ 마이크 켜고 말하기 (음성 녹음)", type="primary", use_container_width=True):
+      with st.spinner("AI가 발음과 억양을 분석 중입니다..."):
+        time.sleep(1.5)
+      st.success("음성 인식 완료!")
+      st.balloons()
+
+      # 스픽 스타일 AI 분석 리포트 카드
       st.markdown(
-          f"""
-<div class="hero-graphic-container">
-    <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지">
-</div>
-""",
+          """
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 20px; padding: 25px; margin-top: 25px;">
+            <h4 style="color: #166534; margin-top: 0; font-size: 18px; font-weight: 800;">✨ AI 스피킹 피드백 리포트</h4>
+            <p style="color: #15803d; font-size: 15px; margin-bottom: 10px;"><b>발음 정확도:</b> 95점 (매우 훌륭합니다! 원어민 발음과 거의 일치해요)</p>
+            <p style="color: #15803d; font-size: 15px; margin-bottom: 0;"><b>칭찬 포인트:</b> 'half the ice' 연음 처리가 아주 자연스러웠습니다.</p>
+        </div>
+        """,
           unsafe_allow_html=True,
       )
-    else:
-      st.warning("⚠️ 'main_image.png' 파일이 없습니다.")
-
-  # CTA 버튼
-  st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-  col_c1, col_c2, col_c3 = st.columns([2, 1.6, 2])
-  with col_c2:
-    st.markdown(
-        """
-<style>
-div.stButton > button[kind="primary"] {
-    background: #0f172a !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 18px 36px !important;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    border-radius: 50px !important;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important;
-    width: 100%;
-    transition: all 0.3s ease !important;
-}
-div.stButton > button[kind="primary"]:hover {
-    background: #334155 !important;
-    transform: translateY(-2px);
-}
-</style>
-""",
-        unsafe_allow_html=True,
-    )
-    if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
-      navigate_to("dashboard")
-
-  # --- [섹션 2] 핵심 기능 소개 (아래로 스크롤 시 등장) ---
-  st.markdown(
-      """
-<div class="scroll-section">
-    <div class="section-tag">Core Features</div>
-    <div class="section-heading">성장을 기록하고,<br>커리어를 완성하세요</div>
-    <div class="section-desc">마이스터고 생활에 꼭 필요한 기능들만 엄선해 담았습니다.</div>
-</div>
-""",
-      unsafe_allow_html=True,
-  )
-
-  f_col1, f_col2, f_col3 = st.columns(3, gap="large")
-  with f_col1:
-    st.markdown(
-        '<div class="modern-card"><h3>🎯 맞춤형 진로 로드맵</h3><p>전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계하고 관리합니다.</p></div>',
-        unsafe_allow_html=True,
-    )
-  with f_col2:
-    st.markdown(
-        '<div class="modern-card"><h3>📅 실습 및 경험 기록</h3><p>학교 생활과 현장 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p></div>',
-        unsafe_allow_html=True,
-    )
-  with f_col3:
-    st.markdown(
-        '<div class="modern-card"><h3>✨ AI STAR 자소서 변환</h3><p>축적된 활동 데이터를 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p></div>',
-        unsafe_allow_html=True,
-    )
-
-  # --- [섹션 3] 만든 사람들 (아래로 스크롤 시 등장) ---
-  st.markdown(
-      """
-<div class="scroll-section" style="padding-top: 160px;">
-    <div class="section-tag">About Us</div>
-    <div class="section-heading">만든 사람들</div>
-    <div class="section-desc">학생들의 빛나는 도전과 가능성을 믿는 팀원들이 함께 만들었습니다.</div>
-</div>
-""",
-      unsafe_allow_html=True,
-  )
-
-  t_col1, t_col2 = st.columns(2, gap="large")
-  with t_col1:
-    st.markdown(
-        '<div class="modern-card"><h3>💡 왜 MyStair를 만들었나요?</h3><p>일반 인문계 고등학교와는 다른 마이스터고만의 특수한 실습 경험과 기술 역량이 입사 지원서나 포트폴리오에 온전히 녹아들지 못하는 안타까움에서 출발했습니다. 학생들이 흘린 땀방울이 가장 가치 있는 취업 무기가 되도록 돕고 싶었습니다.</p></div>',
-        unsafe_allow_html=True,
-    )
-  with t_col2:
-    st.markdown(
-        '<div class="modern-card"><h3>🚀 우리의 목표와 비전</h3><p>단순한 자소서 작성 툴을 넘어, 마이스터고 학생들이 자신만의 확신을 가지고 세상이라는 더 큰 무대로 나아갈 수 있는 가장 믿음직하고 혁신적인 첫 번째 계단이 되는 것입니다.</p></div>',
-        unsafe_allow_html=True,
-    )
-
-  st.markdown("<div style='height: 80px;'></div>", unsafe_allow_html=True)
-
-# =========================================================
-# [PAGE 2] 앱 대시보드 페이지
-# =========================================================
-elif st.session_state.page == "dashboard":
-  if st.button("⬅️ 홈 화면으로 돌아가기", key="back_to_home_dash"):
-    navigate_to("landing")
-
-  st.markdown(
-      """
-<div class="app-container">
-    <h2 style="font-size: 30px; font-weight: 800; margin: 0; color: #0f172a;">나의 진로 대시보드</h2>
-</div>
-""",
-      unsafe_allow_html=True,
-  )
-
-  col_d1, col_d2 = st.columns([1, 1.5], gap="large")
-
-  with col_d1:
-    st.markdown(
-        """
-<div class="bento-box">
-    <h3 style="margin: 0 0 15px 0;">📝 오늘의 과제</h3>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-    st.checkbox("오늘 PLC 제어 도면 1개 해석하기 (15분)", value=True)
-    st.checkbox("오답노트 3개 정리 (20분)")
-    st.checkbox("설비보전기사 기출문제 1회 풀이 (30분)")
-
-  with col_d2:
-    st.markdown(
-        """
-<div class="bento-box">
-    <h3 style="margin: 0 0 15px 0;">📅 경험 캘린더 & AI 자소서</h3>
-    <div style="background:rgba(248,250,252,0.8); padding:20px; border-radius:16px; margin-bottom: 20px; border: 1px solid #e2e8f0; color: #334155;">
-        <b>[2026년 7월]</b> 실습 캘린더 데이터 적재 완료
-    </div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-
-    if st.button("✨ AI STAR 자소서 자동 추출하기", type="primary", use_container_width=True):
-      with st.spinner("AI가 캘린더 데이터를 심층 분석 중입니다..."):
-        time.sleep(1)
-      st.success("자소서 추출 완료!")
-      st.info("""
-* **[Situation]** 7월 설비 실습 중 예기치 않은 회로 단락 오류 발생
-* **[Task]** 팀 내 트러블슈팅 담당으로서 2시간 내 원인 분석 및 복구 임무 수행
-* **[Action]** 테스터기를 이용해 단락 구간을 정밀 진단하고 도면을 재검토하여 배선 재배치
-* **[Result]** 제한 시간 내 완전 복구 성공 및 현장 실무 역량 인증 획득
-""")
