@@ -5,12 +5,12 @@ import streamlit as st
 # 1. 페이지 설정
 st.set_page_config(
     page_title="MyStair - 세상으로 나아가는 너의 첫 번째 계단",
-    page_icon="📈",
+    page_icon="🚀",
     layout="wide",
 )
 
 
-# 이미지 깨짐 방지 및 안전한 로딩을 위한 함수
+# 이미지 깨짐 방지 및 안전한 로딩 함수
 def get_img_base64(file_path):
   if os.path.exists(file_path):
     with open(file_path, "rb") as f:
@@ -25,7 +25,7 @@ img_src = (
     else "https://via.placeholder.com/320x200/f4f5fa/a7e0e2?text=Image+Not+Found"
 )
 
-# 2. 디자인 및 UI 스타일 주입 (예쁜 로그인 버튼 스타일 포함)
+# 2. 토스 스타일의 미래지향적 UI/UX CSS 주입
 st.markdown(
     f"""
     <style>
@@ -35,119 +35,133 @@ st.markdown(
             font-family: 'Pretendard', -apple-system, sans-serif !important;
         }}
 
+        /* 미래지향적 딥토스 배경 그라데이션 및 홀로그램 무드 */
         .stApp {{
-            background: linear-gradient(180deg, #fdfdfe 0%, #f4f5fa 100%);
-            color: #111;
+            background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 50%, #090d16 100%);
+            color: #f8fafc;
         }}
 
         .block-container {{
             padding-top: 1.5rem;
-            padding-bottom: 3rem;
+            padding-bottom: 4rem;
             max-width: 1200px;
-        }}
-
-        /* 로고 스타일 */
-        .logo-text {{
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(90deg, #3bb2b8, #7e57c2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-            display: inline-block;
-            padding-top: 5px;
         }}
 
         /* 히어로 섹션 */
         .hero-section {{
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }}
         
+        /* 3D 계단 이미지 홀로그램 글래스 효과 */
         .hero-graphic {{
-            width: 320px;
+            width: 340px;
             height: auto;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             object-fit: contain;
-            background: transparent !important;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            transition: transform 0.4s ease;
+            background: rgba(255, 255, 255, 0.03) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }}
         .hero-graphic:hover {{
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
         }}
 
+        /* 타이틀 타이포그래피 (토스 특유의 굵고 시원한 폰트) */
         .hero-title {{
-            font-size: 52px;
-            font-weight: 900;
-            margin: 0 0 15px 0;
-            line-height: 1.25;
-            letter-spacing: -1.5px;
-            color: #111;
+            font-size: 56px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            line-height: 1.2;
+            letter-spacing: -2px;
+            color: #ffffff;
             text-align: center;
         }}
         
         .hero-subtitle {{
-            font-size: 18px;
-            color: #444;
-            margin: 0 0 35px 0;
-            font-weight: 500;
+            font-size: 19px;
+            color: #94a3b8;
+            margin: 0 0 45px 0;
+            font-weight: 400;
             text-align: center;
+            letter-spacing: -0.5px;
         }}
 
-        /* 기능 소개 카드 섹션 */
+        /* 미래형 글래스모피즘 기능 카드 섹션 */
         .feature-container {{
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 60px;
+            margin-top: 70px;
             padding: 0 10px;
         }}
 
         .feature-card {{
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 30px 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            border: 1px solid #eaeaea;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 35px 28px;
+            box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .feature-card::before {{
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }}
 
         .feature-card:hover {{
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(126, 87, 194, 0.08);
-            border-color: #d1c4e9;
+            transform: translateY(-6px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(129, 140, 248, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(129, 140, 248, 0.2);
+        }}
+
+        .feature-card:hover::before {{
+            opacity: 1;
         }}
 
         .feature-icon {{
-            font-size: 32px;
-            margin-bottom: 15px;
-            background: #f4f5fa;
-            width: 60px;
-            height: 60px;
+            font-size: 28px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            width: 56px;
+            height: 56px;
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }}
 
         .feature-card h3 {{
             font-size: 18px;
-            font-weight: 800;
-            color: #111;
+            font-weight: 700;
+            color: #f1f5f9;
             margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
         }}
 
         .feature-card p {{
             font-size: 14px;
-            color: #666;
+            color: #94a3b8;
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }}
 
         /* 대시보드 화면 스타일 */
@@ -162,16 +176,18 @@ st.markdown(
             gap: 30px;
         }}
         .bento-box {{
-            background: #fff;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            border: 1px solid #eaeaea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }}
         .bento-box h3 {{
             margin-top: 0;
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
+            color: #f8fafc;
         }}
     </style>
     """,
@@ -189,26 +205,26 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 헤더 (군더더기 없이 로고와 예쁜 로그인 버튼만 배치)
+# 상단 헤더 (토스 스타일의 심플한 로고 및 미래지향적 로그인 버튼)
 # =========================================================
 header_col1, header_col2 = st.columns([6, 1])
 
 with header_col1:
   if st.button("mystair", key="logo_text_btn", use_container_width=False):
     navigate_to("landing")
-  # 버튼 기본 스타일을 투명하고 로고처럼 보이게 조절하는 CSS
   st.markdown(
       """
         <style>
         div[data-testid="column"] button[key="logo_text_btn"] {
             background: transparent !important;
             border: none !important;
-            font-size: 28px !important;
+            font-size: 26px !important;
             font-weight: 800 !important;
-            background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+            background: linear-gradient(90deg, #818cf8, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             padding: 0 !important;
+            letter-spacing: -1px;
         }
         </style>
         """,
@@ -216,26 +232,25 @@ with header_col1:
   )
 
 with header_col2:
-  # 예쁜 로그인 버튼 스타일 주입
   st.markdown(
       """
         <style>
         div[data-testid="column"] button[key="login_custom_btn"] {
-            background: #ffffff !important;
-            color: #333333 !important;
-            border: 1px solid #e0e0e0 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
             padding: 8px 20px !important;
             font-size: 14px !important;
-            font-weight: 700 !important;
+            font-weight: 600 !important;
             border-radius: 30px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
-            transition: all 0.2s ease !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease !important;
         }
         div[data-testid="column"] button[key="login_custom_btn"]:hover {
-            background: #111111 !important;
-            color: #ffffff !important;
-            border-color: #111111 !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(129, 140, 248, 0.5) !important;
             transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(129, 140, 248, 0.3);
         }
         </style>
         """,
@@ -246,7 +261,7 @@ with header_col2:
 
 st.markdown(
     "<hr style='margin: 5px 0 30px 0; border: none; border-top: 1px solid"
-    " #eaeaea;'>",
+    " rgba(255, 255, 255, 0.06);'>",
     unsafe_allow_html=True,
 )
 
@@ -260,32 +275,34 @@ if st.session_state.page == "landing":
         <div class="hero-section">
             <img src="{img_src}" alt="3D 계단 그래픽" class="hero-graphic">
             <h1 class="hero-title">세상으로 나아가는<br>너의 첫 번째 계단</h1>
-            <p class="hero-subtitle">마이스터고 학생들의 꿈을 현실로 만드는 맞춤형 진로 로드맵 파트너</p>
+            <p class="hero-subtitle">마이스터고 학생들의 꿈을 현실로 만드는 혁신적인 진로 로드맵 파트너</p>
         </div>
         """,
       unsafe_allow_html=True,
   )
 
-  # 중앙 그라데이션 CTA 버튼
-  col_c1, col_c2, col_c3 = st.columns([2, 1.5, 2])
+  # 중앙 네온 그라데이션 CTA 버튼 (토스 피니시 스타일)
+  col_c1, col_c2, col_c3 = st.columns([2, 1.6, 2])
   with col_c2:
     st.markdown(
         """
         <style>
         div.stButton > button[kind="primary"] {
-            background: linear-gradient(135deg, #a4ded9 0%, #b8aee4 100%) !important;
-            color: #fff !important;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+            color: #ffffff !important;
             border: none !important;
             padding: 18px 40px !important;
             font-size: 18px !important;
             font-weight: 700 !important;
             border-radius: 50px !important;
-            box-shadow: 0 10px 20px rgba(175, 180, 220, 0.4) !important;
+            box-shadow: 0 10px 30px -5px rgba(99, 102, 241, 0.5) !important;
             width: 100%;
+            transition: all 0.3s ease !important;
         }
         div.stButton > button[kind="primary"]:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(175, 180, 220, 0.6) !important;
+            box-shadow: 0 15px 35px -5px rgba(168, 85, 247, 0.7) !important;
+            filter: brightness(1.1);
         }
         </style>
         """,
@@ -296,26 +313,26 @@ if st.session_state.page == "landing":
     ):
       navigate_to("dashboard")
 
-  st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
+  st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
 
-  # 하단 기능 소개 카드 3가지
+  # 하단 미래형 기능 소개 카드 3가지
   st.markdown(
       """
         <div class="feature-container">
             <div class="feature-card">
-                <div class="feature-icon">🎯</div>
+                <div class="feature-icon">⚡</div>
                 <h3>맞춤형 진로 로드맵</h3>
-                <p>마이스터고 전공과 역량에 딱 맞춘 단계별 성장 경로를 설계하고 관리합니다.</p>
+                <p>마이스터고 전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계합니다.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📅</div>
+                <div class="feature-icon">🔮</div>
                 <h3>실습 및 경험 기록</h3>
-                <p>학교 생활과 실습 활동을 캘린더에 기록하여 나만의 커리어 자산을 쌓습니다.</p>
+                <p>학교 생활과 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">✨</div>
                 <h3>AI STAR 자소서 변환</h3>
-                <p>쌓아온 활동 기록을 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p>
+                <p>축적된 활동 데이터를 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p>
             </div>
         </div>
         """,
@@ -332,7 +349,7 @@ elif st.session_state.page == "dashboard":
   st.markdown(
       """
         <div class="app-container">
-            <h2 style="font-size: 28px; margin: 0;">나의 진로 대시보드</h2>
+            <h2 style="font-size: 28px; margin: 0; color: #f8fafc;">나의 진로 대시보드</h2>
         </div>
         """,
       unsafe_allow_html=True,
@@ -358,7 +375,7 @@ elif st.session_state.page == "dashboard":
         """
         <div class="bento-box">
             <h3>📅 경험 캘린더 & AI 자소서</h3>
-            <div style="background:#f8f9fa; padding:20px; border-radius:12px; margin-bottom: 20px; border: 1px solid #eaeaea;">
+            <div style="background:rgba(255,255,255,0.02); padding:20px; border-radius:16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.06); color: #cbd5e1;">
                 <b>[2026년 7월]</b> 실습 캘린더 데이터 적재 완료
             </div>
         </div>
@@ -371,7 +388,7 @@ elif st.session_state.page == "dashboard":
         type="primary",
         use_container_width=True,
     ):
-      with st.spinner("AI가 캘린더 데이터를 시맨틱 분석 중입니다..."):
+      with st.spinner("AI가 캘린더 데이터를 심층 분석 중입니다..."):
         import time
 
         time.sleep(1)
