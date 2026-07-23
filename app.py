@@ -1,5 +1,6 @@
 import base64
 import os
+import time
 import streamlit as st
 
 # 1. 페이지 설정 (넓은 레이아웃 고정)
@@ -53,25 +54,14 @@ st.markdown(
         .block-container {
             padding-top: 1.5rem;
             padding-bottom: 5rem;
-            max-width: 100% !important;
-            padding-left: 6rem !important;
-            padding-right: 6rem !important;
-        }
-
-        /* 상단 헤더 커스텀 스타일 */
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            margin-bottom: 30px;
+            max-width: 1200px !important;
+            margin: 0 auto;
         }
 
         /* 히어로 섹션 */
         .hero-section {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -136,7 +126,7 @@ st.markdown(
         }
 
         .hero-title {
-            font-size: 62px;
+            font-size: 58px;
             font-weight: 800;
             margin: 0 0 20px 0;
             line-height: 1.18;
@@ -178,7 +168,6 @@ st.markdown(
             border: 1px solid #e2e8f0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
-            cursor: pointer;
         }
 
         .feature-card:hover {
@@ -198,13 +187,6 @@ st.markdown(
             align-items: center;
             justify-content: center;
             border: 1px solid #e2e8f0;
-            transition: transform 0.3s ease, background 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-            background: linear-gradient(135deg, #e0f7fa, #ede7f6);
-            border-color: #b3e5fc;
         }
 
         .feature-card h3 {
@@ -222,7 +204,7 @@ st.markdown(
             line-height: 1.65;
         }
 
-        /* 대시보드 및 소개 페이지 스타일 */
+        /* 공통 박스 디자인 */
         .app-container {
             width: 100%;
             margin: 0 auto;
@@ -238,10 +220,6 @@ st.markdown(
             padding: 35px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.03);
             border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        .bento-box:hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
         }
         .bento-box h3 {
             margin-top: 0;
@@ -265,14 +243,12 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 헤더 구현 (MyStair 로고 + 서비스 소개 버튼 + 로그인 버튼)
+# 깔끔하게 정돈된 상단 네비게이션 헤더
 # =========================================================
-header_col1, header_col2, header_col3, header_col4 = st.columns(
-    [2.5, 1.2, 6.3, 1.2]
-)
+col_logo, col_space, col_intro, col_login = st.columns([2.5, 6.5, 1.5, 1.5])
 
-with header_col1:
-  if st.button("📈 MyStair", key="logo_text_btn", use_container_width=False):
+with col_logo:
+  if st.button("📈 MyStair", key="logo_text_btn", use_container_width=True):
     navigate_to("landing")
   st.markdown(
       """
@@ -286,7 +262,7 @@ with header_col1:
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             padding: 0 !important;
-            letter-spacing: -1px;
+            text-align: left !important;
             box-shadow: none !important;
         }
         </style>
@@ -294,8 +270,7 @@ with header_col1:
       unsafe_allow_html=True,
   )
 
-with header_col2:
-  # 서비스 소개 버튼 스타일
+with col_intro:
   st.markdown(
       """
         <style>
@@ -303,11 +278,10 @@ with header_col2:
             background: transparent !important;
             color: #475569 !important;
             border: none !important;
-            padding: 8px 12px !important;
+            padding: 8px 0 !important;
             font-size: 16px !important;
             font-weight: 600 !important;
             box-shadow: none !important;
-            transition: color 0.2s ease !important;
         }
         div[data-testid="column"] button[key="intro_nav_btn"]:hover {
             color: #3bb2b8 !important;
@@ -319,8 +293,7 @@ with header_col2:
   if st.button("서비스 소개", key="intro_nav_btn", use_container_width=True):
     navigate_to("intro")
 
-with header_col4:
-  # 로그인 버튼 스타일
+with col_login:
   st.markdown(
       """
         <style>
@@ -328,18 +301,16 @@ with header_col4:
             background: #f1f5f9 !important;
             color: #0f172a !important;
             border: 1px solid #cbd5e1 !important;
-            padding: 8px 20px !important;
-            font-size: 14px !important;
+            padding: 8px 0 !important;
+            font-size: 15px !important;
             font-weight: 600 !important;
             border-radius: 30px !important;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
         div[data-testid="column"] button[key="login_custom_btn"]:hover {
             background: #0f172a !important;
             color: #ffffff !important;
             border-color: #0f172a !important;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.15);
         }
         </style>
         """,
@@ -349,7 +320,7 @@ with header_col4:
     st.toast("로그인 창이 열립니다.")
 
 st.markdown(
-    "<hr style='margin: 5px 0 30px 0; border: none; border-top: 1px solid"
+    "<hr style='margin: 10px 0 35px 0; border: none; border-top: 1px solid"
     " #e2e8f0;'>",
     unsafe_allow_html=True,
 )
@@ -358,7 +329,6 @@ st.markdown(
 # [PAGE 1] 랜딩 페이지
 # =========================================================
 if st.session_state.page == "landing":
-  # 히어로 섹션
   st.markdown(
       """
         <div class="hero-section">
@@ -406,12 +376,11 @@ if st.session_state.page == "landing":
             border-radius: 50px !important;
             box-shadow: 0 12px 30px rgba(62, 178, 184, 0.35) !important;
             width: 100%;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            transition: all 0.3s ease !important;
         }
         div.stButton > button[kind="primary"]:hover {
             transform: translateY(-4px) scale(1.02);
             box-shadow: 0 20px 40px rgba(126, 87, 194, 0.5) !important;
-            filter: brightness(1.05);
         }
         </style>
         """,
@@ -449,44 +418,55 @@ if st.session_state.page == "landing":
   )
 
 # =========================================================
-# [PAGE 2] 서비스 소개 페이지 (새로 추가됨)
+# [PAGE 2] 서비스 소개 페이지 (오류 해결 및 안정화 버전)
 # =========================================================
 elif st.session_state.page == "intro":
-  if st.button("⬅️ 홈으로 돌아가기"):
+  if st.button("⬅️ 홈으로 돌아가기", key="back_to_home_intro"):
     navigate_to("landing")
 
   st.markdown(
       """
         <div class="app-container">
             <h2 style="font-size: 36px; font-weight: 800; margin: 0 0 10px 0; color: #0f172a;">서비스 소개</h2>
-            <p style="font-size: 18px; color: #64748b; margin-bottom: 40px;">마이스터고 학생들의 더 나은 내일을 위한 똑똑한 커리어 파트너, MyStair를 소개합니다.</p>
-            
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 40px;">
-                <div class="bento-box">
-                    <h3>💡 왜 MyStair인가요?</h3>
-                    <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
-                        일반 인문계 고등학교와는 다른, 마이스터고만의 특수한 현장 실습과 기술 중심 커리큘럼. 
-                        MyStair는 여러분이 흘린 실습의 땀방울을 체계적인 데이터로 탈바꿈시켜 최고의 취업 무기로 만들어 줍니다.
-                    </p>
-                </div>
-                <div class="bento-box">
-                    <h3>🚀 핵심 가치</h3>
-                    <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
-                        복잡하고 어려운 자소서 작성과 진로 고민을 AI 기술로 해결합니다. 
-                        작은 실습 기록 하나도 놓치지 않고 기업이 원하는 STAR(Situation, Task, Action, Result) 구조로 자동 변환해 드립니다.
-                    </p>
-                </div>
-            </div>
+            <p style="font-size: 18px; color: #64748b; margin-bottom: 30px;">마이스터고 학생들의 더 나은 내일을 위한 똑똑한 커리어 파트너, MyStair를 소개합니다.</p>
         </div>
         """,
       unsafe_allow_html=True,
   )
 
+  intro_col1, intro_col2 = st.columns(2)
+  with intro_col1:
+    st.markdown(
+        """
+        <div class="bento-box">
+            <h3>💡 왜 MyStair인가요?</h3>
+            <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
+                일반 인문계 고등학교와는 다른, 마이스터고만의 특수한 현장 실습과 기술 중심 커리큘럼에 최적화되어 있습니다. 
+                MyStair는 여러분이 흘린 실습의 땀방울을 체계적인 데이터로 탈바꿈시켜 최고의 취업 무기로 만들어 줍니다.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+  with intro_col2:
+    st.markdown(
+        """
+        <div class="bento-box">
+            <h3>🚀 핵심 가치</h3>
+            <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
+                복잡하고 어려운 자소서 작성과 진로 고민을 AI 기술로 해결합니다. 
+                작은 실습 기록 하나도 놓치지 않고 기업이 원하는 STAR(Situation, Task, Action, Result) 구조로 자동 변환해 드립니다.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
 # =========================================================
 # [PAGE 3] 앱 대시보드 페이지
 # =========================================================
 elif st.session_state.page == "dashboard":
-  if st.button("⬅️ 홈 화면으로 돌아가기"):
+  if st.button("⬅️ 홈 화면으로 돌아가기", key="back_to_home_dash"):
     navigate_to("landing")
 
   st.markdown(
@@ -532,8 +512,6 @@ elif st.session_state.page == "dashboard":
         use_container_width=True,
     ):
       with st.spinner("AI가 캘린더 데이터를 심층 분석 중입니다..."):
-        import time
-
         time.sleep(1)
       st.success("자소서 추출 완료!")
       st.info("""
