@@ -25,7 +25,7 @@ img_src = (
     else "https://via.placeholder.com/320x200/f4f5fa/a7e0e2?text=Image+Not+Found"
 )
 
-# 2. 토스 스타일의 밝고 꽉 찬 라이트톤 디자인 CSS 주입
+# 2. 토스 스타일의 밝고 세련된 라이트톤 디자인 CSS 주입
 st.markdown(
     f"""
     <style>
@@ -91,39 +91,12 @@ st.markdown(
             letter-spacing: -0.5px;
         }}
 
-        /* 통계/지표 섹션 (텅 빈 느낌 해소) */
-        .stats-container {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin: 60px 0 40px 0;
-            width: 100%;
-        }}
-        .stat-card {{
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-        }}
-        .stat-num {{
-            font-size: 32px;
-            font-weight: 800;
-            color: #3bb2b8;
-            margin-bottom: 8px;
-        }}
-        .stat-desc {{
-            font-size: 15px;
-            color: #64748b;
-            font-weight: 500;
-        }}
-
         /* 기능 카드 섹션 */
         .feature-container {{
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            margin-top: 40px;
+            margin-top: 60px;
             width: 100%;
         }}
 
@@ -208,7 +181,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 헤더 (불필요한 로고 제거 후 깔끔하게 로그인 버튼만 우측 배치)
+# 상단 헤더 (우측 로그인 버튼 배치)
 # =========================================================
 header_col1, header_col2 = st.columns([11, 1])
 
@@ -294,27 +267,6 @@ if st.session_state.page == "landing":
       navigate_to("dashboard")
 
   st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-
-  # 통계 지표 섹션 (화면을 풍성하게 채워주는 요소)
-  st.markdown(
-      """
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-num">98%</div>
-                <div class="stat-desc">맞춤형 진로 로드맵 매칭 만족도</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num">1초 만에</div>
-                <div class="stat-desc">실습 기록 기반 STAR 자소서 완성</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num">100%</div>
-                <div class="stat-desc">마이스터고 전공 역량 완벽 연동</div>
-            </div>
-        </div>
-        """,
-      unsafe_allow_html=True,
-  )
 
   # 하단 기능 소개 카드 3가지
   st.markdown(
