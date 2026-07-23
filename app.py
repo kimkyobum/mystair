@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 스픽 스타일 상단바 및 앰비언트 그라데이션 CSS 주입
+# 2. 스픽 스타일 널찍한 상단바 및 앰비언트 그라데이션 CSS 주입
 st.markdown(
     """
 <style>
@@ -45,12 +45,12 @@ body, [class*="css"] {
 .block-container {
     padding-top: 2rem;
     padding-bottom: 10rem;
-    max-width: 1050px !important;
+    max-width: 1100px !important;
     margin: 0 auto;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 스픽 스타일 둥근 알약 상단바 컨테이너 (적절한 폭과 중앙 정렬) */
+/* 🌟 널찍하고 길어진 스픽 스타일 둥근 알약 상단바 */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
@@ -67,48 +67,35 @@ body, [class*="css"] {
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
     border-radius: 100px;
-    padding: 12px 28px;
+    padding: 14px 36px;
     width: 100%;
-    max-width: 1050px;
+    max-width: 1100px;
 }
 
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 10px;
     cursor: pointer;
     text-decoration: none;
 }
 
-.nav-logo-icon {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, #3bb2b8, #7e57c2);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
-    font-size: 16px;
-    box-shadow: 0 4px 12px rgba(126, 87, 194, 0.25);
-}
-
 .nav-logo-text {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.8px;
+    background: linear-gradient(90deg, #0f172a, #334155);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 32px;
 }
 
 .nav-link {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #475569;
 }
@@ -276,14 +263,13 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 🌟 스픽 스타일 둥근 알약 상단바 구현 (완벽한 폭과 정렬)
+# 🌟 널찍하고 쾌적한 엠블럼 없는 상단바 배치
 # =========================================================
 st.markdown(
     """
 <div class="speak-navbar-container">
     <div class="speak-navbar">
         <div class="nav-left" onclick="window.location.reload();">
-            <div class="nav-logo-icon">S</div>
             <span class="nav-logo-text">MyStair</span>
         </div>
         <div class="nav-right">
@@ -295,37 +281,6 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# 상단바 우측 끝에 배치할 수 있는 기능 버튼
-col_nav_spacer, col_nav_btn = st.columns([8.5, 1.5])
-with col_nav_btn:
-  st.markdown(
-      """
-<style>
-div[data-testid="column"] button[key="speak_cta_btn"] {
-    background: #2563eb !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 8px 16px !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    border-radius: 50px !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
-    transition: all 0.2s ease !important;
-    margin-top: -65px;
-    position: relative;
-    z-index: 10;
-}
-div[data-testid="column"] button[key="speak_cta_btn"]:hover {
-    background: #1d4ed8 !important;
-    transform: translateY(-1px);
-}
-</style>
-""",
-      unsafe_allow_html=True,
-  )
-  if st.button("지금 시작하기 →", key="speak_cta_btn", use_container_width=True):
-    navigate_to("dashboard")
 
 # =========================================================
 # [PAGE 1] 메인 랜딩 페이지 (시작하자마자 히어로 화면 노출)
