@@ -52,10 +52,42 @@ st.markdown(
             animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* 상단 브랜드 로고 마크 스타일 */
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 0;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #3bb2b8, #7e57c2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 16px rgba(126, 87, 194, 0.25);
+            color: white;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #0f172a, #334155);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
         /* 히어로 섹션 */
         .hero-section {
             text-align: center;
-            padding: 40px 0 30px 0;
+            padding: 50px 0 30px 0;
             animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -256,11 +288,11 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 미니멀 네비게이션 바 (토스 스타일)
+# 상단 세련된 브랜드 마크 및 네비게이션 바
 # =========================================================
 nav_col1, nav_col2 = st.columns([8, 2])
 with nav_col1:
-  if st.button("📈 MyStair", key="logo_btn", use_container_width=False):
+  if st.button("LogoButton", key="logo_btn", use_container_width=False):
     navigate_to("landing")
   st.markdown(
       """
@@ -268,16 +300,18 @@ with nav_col1:
         div[data-testid="column"] button[key="logo_btn"] {
             background: transparent !important;
             border: none !important;
-            font-size: 22px !important;
-            font-weight: 800 !important;
-            background: linear-gradient(90deg, #0f172a, #334155);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             padding: 0 !important;
             box-shadow: none !important;
             text-align: left !important;
         }
+        div[data-testid="column"] button[key="logo_btn"]::after {
+            content: "";
+        }
         </style>
+        <div class="brand-logo-container">
+            <div class="brand-icon">S</div>
+            <span class="brand-text">MyStair</span>
+        </div>
         """,
       unsafe_allow_html=True,
   )
@@ -488,6 +522,8 @@ elif st.session_state.page == "dashboard":
         use_container_width=True,
     ):
       with st.spinner("AI가 캘린더 데이터를 심층 분석 중입니다..."):
+        import time
+
         time.sleep(1)
       st.success("자소서 추출 완료!")
       st.info("""
