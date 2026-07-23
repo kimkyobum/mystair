@@ -1,3 +1,4 @@
+import base64
 import os
 import streamlit as st
 
@@ -8,7 +9,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 페이드 인 애니메이션 효과 및 세련된 토스 스타일 라이트톤 디자인 CSS 주입 (일반 문자열 처리로 중괄호 에러 원천 차단)
+# 2. 대기업/테크 유니콘 스타일(프리미엄 뱃지, 그라데이션 타이포, 고품격 카드) CSS 주입
 st.markdown(
     """
     <style>
@@ -30,16 +31,16 @@ st.markdown(
             }
         }
 
-        /* 3D 계단 이미지가 부드럽게 위아래로 떠 움직이는 플로팅 애니메이션 */
-        @keyframes floatAnimation {
+        /* 3D 오브젝트가 스튜디오 위에서 숨쉬듯 움직이는 플로팅 애니메이션 */
+        @keyframes studioFloat {
             0% {
-                transform: translateY(0px);
+                transform: translateY(0px) rotateX(0deg);
             }
             50% {
-                transform: translateY(-10px);
+                transform: translateY(-8px) rotateX(2deg);
             }
             100% {
-                transform: translateY(0px);
+                transform: translateY(0px) rotateX(0deg);
             }
         }
 
@@ -60,39 +61,87 @@ st.markdown(
         /* 히어로 섹션 */
         .hero-section {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        
-        .hero-graphic {
-            width: 360px;
-            height: auto;
-            margin-bottom: 30px;
-            object-fit: contain;
-            background: #ffffff !important;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
-            border: 1px solid #f1f5f9;
-            animation: floatAnimation 4s ease-in-out infinite;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        .hero-graphic:hover {
-            animation-play-state: paused;
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(62, 178, 184, 0.15);
+
+        /* ✨ 대기업 스타일 트렌디한 상단 뱃지 */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: linear-gradient(135deg, rgba(59, 178, 184, 0.1), rgba(126, 87, 194, 0.1));
+            color: #7e57c2;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(126, 87, 194, 0.2);
+            box-shadow: 0 4px 15px rgba(126, 87, 194, 0.05);
         }
 
+        /* ✨ 3D 스튜디오 포디움 & 백라이트 조명 효과 */
+        .studio-podium-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 60px;
+            background: radial-gradient(circle at 50% 20%, rgba(59, 178, 184, 0.15) 0%, rgba(126, 87, 194, 0.06) 50%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 48px;
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(16px);
+            margin-bottom: 35px;
+            animation: studioFloat 5s ease-in-out infinite;
+            perspective: 1000px;
+        }
+
+        .studio-podium-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 15%;
+            width: 70%;
+            height: 30px;
+            background: radial-gradient(ellipse at center, rgba(62, 178, 184, 0.3) 0%, rgba(0, 0, 0, 0) 75%);
+            z-index: -1;
+            filter: blur(10px);
+        }
+        
+        .hero-graphic {
+            width: 340px;
+            height: auto;
+            object-fit: contain;
+            background: transparent !important;
+            border-radius: 20px;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+            transition: transform 0.4s ease;
+        }
+        
+        .studio-podium-wrapper:hover .hero-graphic {
+            transform: scale(1.03);
+        }
+
+        /* 타이틀 타이포그래피 (그라데이션 포인트 추가) */
         .hero-title {
-            font-size: 58px;
+            font-size: 62px;
             font-weight: 800;
             margin: 0 0 20px 0;
-            line-height: 1.2;
-            letter-spacing: -2px;
+            line-height: 1.18;
+            letter-spacing: -2.5px;
             color: #0f172a;
             text-align: center;
+        }
+
+        .hero-title span {
+            background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .hero-subtitle {
@@ -104,7 +153,7 @@ st.markdown(
             letter-spacing: -0.5px;
         }
 
-        /* 기능 카드 섹션 */
+        /* 프리미엄 기능 카드 섹션 */
         .feature-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -116,52 +165,56 @@ st.markdown(
 
         .feature-card {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 40px 32px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border-radius: 28px;
+            padding: 45px 36px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             border: 1px solid #e2e8f0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .feature-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(62, 178, 184, 0.12);
-            border-color: #3bb2b8;
+            box-shadow: 0 25px 50px rgba(126, 87, 194, 0.1);
+            border-color: #7e57c2;
         }
 
         .feature-icon {
-            font-size: 30px;
-            margin-bottom: 20px;
-            background: #f1f5f9;
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
+            font-size: 32px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid #e2e8f0;
             transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .feature-card:hover .feature-icon {
             transform: scale(1.1) rotate(5deg);
-            background: #e0f7fa;
+            background: linear-gradient(135deg, #e0f7fa, #ede7f6);
+            border-color: #b3e5fc;
         }
 
         .feature-card h3 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: #0f172a;
-            margin: 0 0 12px 0;
+            margin: 0 0 14px 0;
             letter-spacing: -0.5px;
         }
 
         .feature-card p {
-            font-size: 15px;
+            font-size: 16px;
             color: #64748b;
             margin: 0;
-            line-height: 1.6;
+            line-height: 1.65;
         }
 
         /* 대시보드 화면 스타일 */
@@ -249,29 +302,39 @@ st.markdown(
 # [PAGE 1] 랜딩 페이지
 # =========================================================
 if st.session_state.page == "landing":
-  # 히어로 섹션
+  # 히어로 섹션 (프리미엄 뱃지 + 그라데이션 타이틀)
   st.markdown(
       """
         <div class="hero-section">
-            <h1 class="hero-title">세상으로 나아가는<br>너의 첫 번째 계단</h1>
-            <p class="hero-subtitle">마이스터고 학생들의 꿈을 현실로 만드는 혁신적인 진로 로드맵 파트너</p>
+            <div class="hero-badge">✨ 마이스터고 학생을 위한 단 하나의 진로 파트너</div>
+            <h1 class="hero-title">세상으로 나아가는<br><span>너의 첫 번째 계단</span></h1>
+            <p class="hero-subtitle">실습 기록부터 AI 자소서까지, 꿈을 현실로 만드는 혁신적인 커리어 플랫폼</p>
         </div>
         """,
       unsafe_allow_html=True,
   )
 
-  # 3D 계단 이미지 출력 (플로팅 애니메이션 스타일 적용)
-  img_col1, img_col2, img_col3 = st.columns([1, 1.2, 1])
+  # 3D 스튜디오 포디움 위에 이미지를 띄우는 레이아웃
+  img_col1, img_col2, img_col3 = st.columns([1, 1.4, 1])
   with img_col2:
     if os.path.exists("main_image.png"):
-      # 커스텀 CSS 클래스가 적용되도록 감싸기
-      st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-      st.image("main_image.png", use_container_width=True)
-      st.markdown("</div>", unsafe_allow_html=True)
+      with open("main_image.png", "rb") as f:
+        encoded_img = base64.b64encode(f.read()).decode("utf-8")
+
+      st.markdown(
+          f"""
+            <div style="text-align: center; width: 100%;">
+                <div class="studio-podium-wrapper">
+                    <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 렌더링 계단">
+                </div>
+            </div>
+            """,
+          unsafe_allow_html=True,
+      )
     else:
       st.warning("⚠️ 'main_image.png' 파일이 없습니다.")
 
-  # 중앙 화사한 그라데이션 CTA 버튼
+  # 중앙 프리미엄 그라데이션 CTA 버튼
   col_c1, col_c2, col_c3 = st.columns([2, 1.5, 2])
   with col_c2:
     st.markdown(
@@ -285,13 +348,13 @@ if st.session_state.page == "landing":
             font-size: 18px !important;
             font-weight: 700 !important;
             border-radius: 50px !important;
-            box-shadow: 0 10px 25px rgba(62, 178, 184, 0.3) !important;
+            box-shadow: 0 12px 30px rgba(62, 178, 184, 0.35) !important;
             width: 100%;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
         div.stButton > button[kind="primary"]:hover {
             transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 18px 35px rgba(126, 87, 194, 0.45) !important;
+            box-shadow: 0 20px 40px rgba(126, 87, 194, 0.5) !important;
             filter: brightness(1.05);
         }
         </style>
@@ -305,19 +368,19 @@ if st.session_state.page == "landing":
 
   st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
 
-  # 하단 기능 소개 카드 3가지
+  # 하단 프리미엄 기능 소개 카드 3가지
   st.markdown(
       """
         <div class="feature-container">
             <div class="feature-card">
                 <div class="feature-icon">🎯</div>
                 <h3>맞춤형 진로 로드맵</h3>
-                <p>마이스터고 전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계합니다.</p>
+                <p>마이스터고 전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계하고 관리합니다.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📅</div>
                 <h3>실습 및 경험 기록</h3>
-                <p>학교 생활과 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p>
+                <p>학교 생활과 현장 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">✨</div>
