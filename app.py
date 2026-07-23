@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 스픽 스타일 널찍한 상단바 및 앰비언트 그라데이션 CSS 주입
+# 2. 화면 전체를 활용하는 풀 와이드 앰비언트 그라데이션 및 모던 스타일 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,31 +31,34 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 와이드 화면의 빈 공간을 채워주는 은은한 앰비언트 그라데이션 배경 */
+/* 🌟 화면 전체(Full-Width)를 활용하는 감각적인 앰비언트 메시 그라데이션 배경 */
 .stApp {
     background: 
-        radial-gradient(circle at 10% 12%, rgba(59, 178, 184, 0.1) 0px, transparent 40%),
-        radial-gradient(circle at 90% 15%, rgba(126, 87, 194, 0.08) 0px, transparent 40%),
-        radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
+        radial-gradient(circle at 12% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 40%),
+        radial-gradient(circle at 88% 15%, rgba(126, 87, 194, 0.1) 0px, transparent 40%),
+        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
         #ffffff !important;
     background-attachment: fixed;
     color: #1e293b;
 }
 
+/* 🌟 제한 폭(max-width)을 해제하고 화면 전체 너비를 쓰도록 설정 */
 .block-container {
-    padding-top: 2rem;
+    padding-top: 1.5rem;
     padding-bottom: 10rem;
-    max-width: 1100px !important;
+    max-width: 100% !important;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
     margin: 0 auto;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 널찍하고 길어진 스픽 스타일 둥근 알약 상단바 */
+/* 🌟 스픽 스타일 풀 와이드 둥근 알약 상단바 */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .speak-navbar {
@@ -67,9 +70,8 @@ body, [class*="css"] {
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
     border-radius: 100px;
-    padding: 14px 36px;
+    padding: 14px 40px;
     width: 100%;
-    max-width: 1100px;
 }
 
 .nav-left {
@@ -80,7 +82,7 @@ body, [class*="css"] {
 }
 
 .nav-logo-text {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     background: linear-gradient(90deg, #0f172a, #334155);
     -webkit-background-clip: text;
@@ -91,7 +93,7 @@ body, [class*="css"] {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 36px;
 }
 
 .nav-link {
@@ -103,7 +105,7 @@ body, [class*="css"] {
 /* 첫 화면 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 10px 0 20px 0;
+    padding: 30px 0 20px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -124,11 +126,11 @@ body, [class*="css"] {
 }
 
 .hero-title {
-    font-size: 60px;
+    font-size: 64px;
     font-weight: 800;
     margin: 0 0 20px 0;
-    line-height: 1.25;
-    letter-spacing: -2px;
+    line-height: 1.2;
+    letter-spacing: -2.5px;
     color: #0f172a;
 }
 
@@ -141,7 +143,7 @@ body, [class*="css"] {
 .hero-subtitle {
     font-size: 20px;
     color: #64748b;
-    margin: 0 0 35px 0;
+    margin: 0 0 40px 0;
     font-weight: 400;
     letter-spacing: -0.5px;
 }
@@ -151,20 +153,20 @@ body, [class*="css"] {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px 0 40px 0;
+    margin: 10px 0 50px 0;
     animation: floatAnimation 4s ease-in-out infinite;
 }
 
 .hero-graphic {
-    width: 340px;
+    width: 380px;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.08));
+    filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.08));
 }
 
 /* 롱 스크롤 섹션 */
 .scroll-section {
-    padding: 140px 0 40px 0;
+    padding: 140px 40px 40px 40px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -178,7 +180,7 @@ body, [class*="css"] {
 }
 
 .section-heading {
-    font-size: 40px;
+    font-size: 42px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 16px;
@@ -198,7 +200,7 @@ body, [class*="css"] {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border-radius: 24px;
-    padding: 40px 32px;
+    padding: 40px 36px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
@@ -263,7 +265,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 🌟 널찍하고 쾌적한 엠블럼 없는 상단바 배치
+# 🌟 풀 와이드 스픽 스타일 상단바 배치
 # =========================================================
 st.markdown(
     """
