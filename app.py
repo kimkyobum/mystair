@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 스픽(Speak) 스타일의 지표 바, 후기 카드, 앰비언트 그라데이션 CSS 주입
+# 2. 트렌디한 앰비언트 그라데이션 및 모던 스타일 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,13 +31,12 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 와이드 화면의 빈 공간을 풍성하게 채워주는 앰비언트 메시 그라데이션 배경 */
+/* 🌟 와이드 화면의 빈 공간을 채워주는 은은한 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
-        radial-gradient(circle at 8% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 38%),
-        radial-gradient(circle at 92% 15%, rgba(126, 87, 194, 0.1) 0px, transparent 38%),
-        radial-gradient(circle at 20% 65%, rgba(56, 189, 248, 0.08) 0px, transparent 42%),
-        radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.06) 0px, transparent 40%),
+        radial-gradient(circle at 10% 12%, rgba(59, 178, 184, 0.1) 0px, transparent 40%),
+        radial-gradient(circle at 90% 15%, rgba(126, 87, 194, 0.08) 0px, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
         #ffffff !important;
     background-attachment: fixed;
     color: #1e293b;
@@ -54,7 +53,7 @@ body, [class*="css"] {
 /* 첫 화면 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 10px 0 20px 0;
+    padding: 20px 0 20px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -113,41 +112,9 @@ body, [class*="css"] {
     filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.08));
 }
 
-/* 🌟 스픽 스타일 핵심 지표 통계 바 (Stats Bar) */
-.stats-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin: 80px 0 40px 0;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-    text-align: center;
-}
-
-.stat-item h4 {
-    font-size: 32px;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0 0 6px 0;
-    background: linear-gradient(90deg, #3bb2b8, #7e57c2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.stat-item p {
-    font-size: 15px;
-    color: #64748b;
-    margin: 0;
-    font-weight: 600;
-}
-
 /* 롱 스크롤 섹션 */
 .scroll-section {
-    padding: 100px 0 30px 0;
+    padding: 140px 0 40px 0;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -213,34 +180,6 @@ body, [class*="css"] {
     word-break: keep-all;
 }
 
-/* 🌟 스픽 스타일 수강생 후기 카드 */
-.testimonial-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 36px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.testimonial-text {
-    font-size: 16px;
-    color: #334155;
-    line-height: 1.7;
-    margin-bottom: 20px;
-    font-style: italic;
-}
-
-.testimonial-author {
-    font-size: 14px;
-    font-weight: 700;
-    color: #64748b;
-}
-
 /* 대시보드 */
 .app-container {
     width: 100%;
@@ -274,7 +213,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# [PAGE 1] 메인 랜딩 페이지 (스픽 스타일 롱 스크롤 구조)
+# [PAGE 1] 메인 랜딩 페이지 (시작하자마자 히어로 화면 노출)
 # =========================================================
 if st.session_state.page == "landing":
 
@@ -337,28 +276,7 @@ div.stButton > button[kind="primary"]:hover {
     if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
       navigate_to("dashboard")
 
-  # --- [섹션 2] 스픽 스타일 핵심 지표 통계 바 (신뢰도 강화) ---
-  st.markdown(
-      """
-<div class="stats-container">
-    <div class="stat-item">
-        <h4>15,000+</h4>
-        <p>누적 실습 및 활동 기록</p>
-    </div>
-    <div class="stat-item">
-        <h4>99%</h4>
-        <p>AI 자소서 만족도</p>
-    </div>
-    <div class="stat-item">
-        <h4>1초</h4>
-        <p>STAR 자소서 자동 변환 시간</p>
-    </div>
-</div>
-""",
-      unsafe_allow_html=True,
-  )
-
-  # --- [섹션 3] 핵심 기능 소개 ---
+  # --- [섹션 2] 핵심 기능 소개 ---
   st.markdown(
       """
 <div class="scroll-section">
@@ -387,44 +305,10 @@ div.stButton > button[kind="primary"]:hover {
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 4] 스픽 스타일 생생한 학생 후기 (Testimonials) ---
+  # --- [섹션 3] 만든 사람들 (팀 소개) ---
   st.markdown(
       """
-<div class="scroll-section">
-    <div class="section-tag">Testimonials</div>
-    <div class="section-heading">먼저 경험한 학생들이 말하는<br>MyStair의 진가</div>
-    <div class="section-desc">마이스터고 선배들이 취업 준비 과정에서 겪은 고민을 MyStair가 해결했습니다.</div>
-</div>
-""",
-      unsafe_allow_html=True,
-  )
-
-  r_col1, r_col2 = st.columns(2, gap="large")
-  with r_col1:
-    st.markdown(
-        """
-<div class="testimonial-card">
-    <div class="testimonial-text">"매번 실습 보고서 쓰고 자소서에 어떤 걸 녹여내야 할지 막막했는데, MyStair 덕분에 제가 한 활동들이 척척 정리되어서 대기업 현장 실습 면접 때 엄청난 무기가 되었어요!"</div>
-    <div class="testimonial-author">⚡ 마이스터고 3학년 전기과 학생</div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-  with r_col2:
-    st.markdown(
-        """
-<div class="testimonial-card">
-    <div class="testimonial-text">"자소서 작성할 때 STAR 기법 맞추는 게 제일 어려웠는데, 캘린더에 기록만 해두면 AI가 알아서 문장으로 뽑아주니까 시간도 아끼고 완성도도 대박입니다."</div>
-    <div class="testimonial-author">⚙️ 마이스터고 3학년 설비기계과 학생</div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
-
-  # --- [섹션 5] 만든 사람들 ---
-  st.markdown(
-      """
-<div class="scroll-section" style="padding-top: 100px;">
+<div class="scroll-section" style="padding-top: 160px;">
     <div class="section-tag">About Us</div>
     <div class="section-heading">만든 사람들</div>
     <div class="section-desc">학생들의 빛나는 도전과 가능성을 믿는 팀원들이 함께 만들었습니다.</div>
