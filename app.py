@@ -276,13 +276,36 @@ div.stButton > button[kind="primary"]:hover {
     if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
       navigate_to("dashboard")
 
-  # --- [섹션 2] 핵심 기능 소개 ---
+  # --- [섹션 2] 서비스 기획 배경 (계획서 내용 반영) ---
+  st.markdown(
+      """
+<div class="scroll-section">
+    <div class="section-tag">Project Background</div>
+    <div class="section-heading">왜 MyStair가<br>필요할까요?</div>
+    <div class="section-desc">일반고와 다른 마이스터고만의 특수한 현장 실습과 기술 중심 교육 과정을 온전히 담아내기 위해 기획되었습니다.</div>
+    
+    <div class="card-grid-2" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;">
+        <div class="modern-card">
+            <h3>📝 파편화된 실습 기록의 한계</h3>
+            <p>학교 생활 중 겪은 수많은 기술 실습과 트러블슈팅 경험들이 체계적으로 관리되지 못하고 흩어져 있어, 취업 시 포트폴리오나 자소서에 효과적으로 녹여내기 어렵다는 문제점에서 출발했습니다.</p>
+        </div>
+        <div class="modern-card">
+            <h3>🚀 맞춤형 커리어 빌딩</h3>
+            <p>학생들이 흘린 실습의 땀방울을 데이터로 누적하고, 기업이 요구하는 핵심 직무 역량과 STAR 기법 자소서로 곧바로 전환하여 자신감 있게 취업 시장에 뛰어들도록 돕습니다.</p>
+        </div>
+    </div>
+</div>
+""",
+      unsafe_allow_html=True,
+  )
+
+  # --- [섹션 3] 핵심 기능 소개 (계획서 기능 정리) ---
   st.markdown(
       """
 <div class="scroll-section">
     <div class="section-tag">Core Features</div>
-    <div class="section-heading">성장을 기록하고,<br>커리어를 완성하세요</div>
-    <div class="section-desc">마이스터고 생활에 꼭 필요한 기능들만 엄선해 담았습니다.</div>
+    <div class="section-heading">핵심 기능 안내</div>
+    <div class="section-desc">마이스터고 학생들의 취업 성공을 위한 3가지 핵심 솔루션입니다.</div>
 </div>
 """,
       unsafe_allow_html=True,
@@ -291,21 +314,21 @@ div.stButton > button[kind="primary"]:hover {
   f_col1, f_col2, f_col3 = st.columns(3, gap="large")
   with f_col1:
     st.markdown(
-        '<div class="modern-card"><h3>🎯 맞춤형 진로 로드맵</h3><p>전공과 역량에 딱 맞춘 단계별 성장 경로를 지능적으로 설계하고 관리합니다.</p></div>',
+        '<div class="modern-card"><h3>🎯 맞춤형 진로 로드맵</h3><p>전공과 학년별 역량에 맞춘 단계별 성장 경로를 설계하고 취업 목표를 체계적으로 관리합니다.</p></div>',
         unsafe_allow_html=True,
     )
   with f_col2:
     st.markdown(
-        '<div class="modern-card"><h3>📅 실습 및 경험 기록</h3><p>학교 생활과 현장 실습 활동을 스마트하게 기록하여 나만의 커리어 자산을 구축합니다.</p></div>',
+        '<div class="modern-card"><h3>📅 실습 및 경험 캘린더</h3><p>학교 정규 수업 및 현장 실습 활동, 자격증 취득 과정을 스마트하게 기록하고 자산화합니다.</p></div>',
         unsafe_allow_html=True,
     )
   with f_col3:
     st.markdown(
-        '<div class="modern-card"><h3>✨ AI STAR 자소서 변환</h3><p>축적된 활동 데이터를 바탕으로 기업 맞춤형 STAR 자기소개서를 1초 만에 완성합니다.</p></div>',
+        '<div class="modern-card"><h3>✨ AI STAR 자소서 변환</h3><p>기록된 경험 데이터를 바탕으로 기업 맞춤형 STAR(상황-과제-행동-결과) 자기소개서를 자동 완성합니다.</p></div>',
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 3] 만든 사람들 (팀 소개) ---
+  # --- [섹션 4] 팀 소개 (만든 사람들) ---
   st.markdown(
       """
 <div class="scroll-section" style="padding-top: 160px;">
@@ -320,12 +343,12 @@ div.stButton > button[kind="primary"]:hover {
   t_col1, t_col2 = st.columns(2, gap="large")
   with t_col1:
     st.markdown(
-        '<div class="modern-card"><h3>💡 왜 MyStair를 만들었나요?</h3><p>일반 인문계 고등학교와는 다른 마이스터고만의 특수한 실습 경험과 기술 역량이 입사 지원서나 포트폴리오에 온전히 녹아들지 못하는 안타까움에서 출발했습니다. 학생들이 흘린 땀방울이 가장 가치 있는 취업 무기가 되도록 돕고 싶었습니다.</p></div>',
+        '<div class="modern-card"><h3>💡 기획 의도</h3><p>마이스터고 학생들이 기술 명장으로 성장하는 과정에서 겪는 진로 고민과 포트폴리오 작성의 어려움을 해소하고자 뜻을 모았습니다. 작은 실습 기록 하나도 놓치지 않는 든든한 파트너가 되고자 합니다.</p></div>',
         unsafe_allow_html=True,
     )
   with t_col2:
     st.markdown(
-        '<div class="modern-card"><h3>🚀 우리의 목표와 비전</h3><p>단순한 자소서 작성 툴을 넘어, 마이스터고 학생들이 자신만의 확신을 가지고 세상이라는 더 큰 무대로 나아갈 수 있는 가장 믿음직하고 혁신적인 첫 번째 계단이 되는 것입니다.</p></div>',
+        '<div class="modern-card"><h3>🚀 우리의 비전</h3><p>단순한 기록용 웹사이트를 넘어, 학생들이 자신만의 확신을 가지고 세상이라는 더 큰 무대로 나아갈 수 있는 가장 믿음직하고 혁신적인 첫 번째 계단이 되는 것입니다.</p></div>',
         unsafe_allow_html=True,
     )
 
