@@ -1,14 +1,14 @@
 import streamlit as st
 import os
 
-# 1. 페이지 기본 설정
+# 1. 페이지 설정 (넓은 레이아웃 및 탭 타이틀)
 st.set_page_config(
     page_title="MyStair - 세상으로 나아가는 너의 첫 번째 계단",
     page_icon="📈",
     layout="wide"
 )
 
-# 2. 원본 디자인과 100% 일치하는 CSS 스타일 주입
+# 2. 원본 HTML/CSS 디자인을 그대로 녹여낸 스타일 주입
 st.markdown("""
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
@@ -22,14 +22,14 @@ st.markdown("""
             color: #111;
         }
 
-        /* Streamlit 기본 여백 제거 및 커스텀 */
+        /* 여백 최소화 및 중앙 맞춤 */
         .block-container {
-            padding-top: 1rem;
+            padding-top: 1.5rem;
             padding-bottom: 2rem;
             max-width: 1200px;
         }
 
-        /* Hero 섹션 스타일 */
+        /* 히어로 섹션 */
         .hero-title {
             font-size: 52px;
             font-weight: 900;
@@ -47,7 +47,7 @@ st.markdown("""
             text-align: center;
         }
 
-        /* 카드 컴포넌트 디자인 */
+        /* 카드 UI 디자인 */
         .info-card {
             background: #fff;
             border-radius: 20px;
@@ -62,6 +62,7 @@ st.markdown("""
             font-weight: 800;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .tag-row { display: flex; gap: 8px; margin-bottom: 20px; }
@@ -78,7 +79,13 @@ st.markdown("""
         .mentor-text h4 { margin: 0 0 2px 0; font-size: 14px; font-weight: 700; }
         .mentor-text p { margin: 0; font-size: 12px; color: #777; }
 
-        /* 대시보드 박스 */
+        .icon-pillar {
+            background: #fff; border-radius: 20px; padding: 20px 15px; 
+            display: flex; flex-direction: column; gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #eaeaea;
+            align-items: center; justify-content: center; height: 100%;
+        }
+
         .bento-box {
             background: #fff;
             border-radius: 20px;
@@ -89,7 +96,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. 세션 스테이트를 활용한 페이지 전환 관리 (SPA 구현)
+# 3. 세션 상태를 통한 화면 전환 관리 (SPA)
 if 'page' not in st.session_state:
     st.session_state.page = 'landing'
 
@@ -98,30 +105,29 @@ def navigate_to(page_name):
     st.rerun()
 
 # =========================================================
-# 상단 고정 헤더 (GNB)
+# 상단 헤더 (GNB) 구현
 # =========================================================
-col_logo, col_nav1, col_nav2, col_nav3, col_nav4, col_login = st.columns([2.5, 1.2, 1.2, 1.2, 1.2, 1.2])
+h_col1, h_col2, h_col3, h_col4, h_col5, h_col6 = st.columns([2.5, 1.2, 1.2, 1.2, 1.2, 1.2])
 
-with col_logo:
-    if st.button("mystair", key="logo_btn", use_container_width=True):
+with h_col1:
+    if st.button("mystair", key="logo_click", use_container_width=True):
         navigate_to('landing')
 
-with col_nav1:
-    if st.button("진로 로드맵", key="nav_roadmap", use_container_width=True):
+with h_col2:
+    if st.button("진로 로드맵", key="nav_rd", use_container_width=True):
         navigate_to('dashboard')
-with col_nav2:
+with h_col3:
     if st.button("취업 정보", key="nav_job", use_container_width=True):
-        st.toast("취업 정보 페이지 준비 중입니다.")
-with col_nav3:
-    if st.button("커뮤니티", key="nav_comm", use_container_width=True):
-        st.toast("커뮤니티 페이지 준비 중입니다.")
-with col_nav4:
+        st.toast("취업 정보 페이지입니다.")
+with h_col4:
+    if st.button("커뮤니티", key="nav_com", use_container_width=True):
+        st.toast("커뮤니티 페이지입니다.")
+with h_col5:
     if st.button("마이 페이지", key="nav_my", use_container_width=True):
-        st.toast("마이 페이지 준비 중입니다.")
-
-with col_login:
+        st.toast("마이 페이지입니다.")
+with h_col6:
     if st.button("로그인", key="login_btn", use_container_width=True):
-        st.toast("로그인 모달이 열립니다.")
+        st.toast("로그인 창이 열립니다.")
 
 st.markdown("<hr style='margin: 10px 0 30px 0; border: none; border-top: 1px solid #eaeaea;'>", unsafe_allow_html=True)
 
@@ -131,49 +137,37 @@ st.markdown("<hr style='margin: 10px 0 30px 0; border: none; border-top: 1px sol
 # =========================================================
 if st.session_state.page == 'landing':
     
-    # 히어로 그래픽 및 문구 섹션
-    col_img1, col_img2, col_img3 = st.columns([1, 1.5, 1])
-    with col_img2:
+    # 히어로 이미지 및 타이틀 섹션
+    img_c1, img_c2, img_c3 = st.columns([1, 1.5, 1])
+    with img_c2:
         if os.path.exists("main_image.png"):
             st.image("main_image.png", use_container_width=True)
         else:
-            st.info("💡 'main_image.png' 파일이 깃허브에 없습니다.")
+            st.info("💡 깃허브 폴더에 'main_image.png' 파일이 없습니다.")
 
     st.markdown("<h1 class='hero-title'>세상으로 나아가는<br>너의 첫 번째 계단</h1>", unsafe_allow_html=True)
     st.markdown("<p class='hero-subtitle'>마이스터고 학생들의 꿈을 현실로 만드는 맞춤형 진로 로드맵 파트너</p>", unsafe_allow_html=True)
 
-    # 중앙 CTA 버튼
-    col_cta1, col_cta2, col_cta3 = st.columns([2, 1.5, 2])
-    with col_cta2:
-        if st.button("나의 진로 탐색 시작하기", key="main_cta", type="primary", use_container_width=True):
+    # CTA 버튼
+    cta_1, cta_2, cta_3 = st.columns([2, 1.5, 2])
+    with cta_2:
+        if st.button("나의 진로 탐색 시작하기", type="primary", use_container_width=True):
             navigate_to('dashboard')
 
-    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
 
-    # 하단 Bento UI 위젯 영역
-    w_col1, w_col2, w_col3, w_col4 = st.columns([1.2, 0.4, 2.2, 1.2])
+    # 하단 위젯 레이아웃 (원본 HTML 구조와 완벽 동기화)
+    w_col1, w_col2, w_col3, w_col4, w_col5 = st.columns([0.8, 2.2, 0.5, 2.2, 0.8])
 
     with w_col1:
         st.markdown("""
-            <div style="display: flex; gap: 10px; align-items: flex-end;">
-                <div style="background: #fff; border-radius: 20px; padding: 20px 15px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid #eaeaea;">
-                    <div style="font-size: 24px; text-align: center;">🚀</div>
-                    <div style="font-size: 24px; text-align: center;">⚙️</div>
-                </div>
+            <div class="icon-pillar">
+                <div>🚀</div>
+                <div>⚙️</div>
             </div>
         """, unsafe_allow_html=True)
 
     with w_col2:
-        # 채용공고 카드
-        pass
-
-    with w_col2: # 레이아웃 정돈을 위한 컬럼 분할 재조정
-        pass
-
-    # 위젯 배치를 정확한 3분할 그리드로 정렬
-    widget_c1, widget_c2, widget_c3 = st.columns(3)
-
-    with widget_c1:
         st.markdown("""
             <div class="info-card">
                 <h3>오늘의 채용 공고 <span style="font-size:20px;">📄</span></h3>
@@ -191,14 +185,14 @@ if st.session_state.page == 'landing':
             </div>
         """, unsafe_allow_html=True)
 
-    with widget_c2:
-        # 중앙 스크롤 다운 버튼 역할의 인터랙션 카드
-        st.markdown("<div style='text-align: center; padding-top: 50px;'>", unsafe_allow_html=True)
-        if st.button("⌄", key="scroll_down_btn", help="대시보드로 이동"):
+    with w_col3:
+        # 스크롤 다운 상징 버튼
+        st.markdown("<div style='display: flex; justify-content: center; align-items: center; height: 100%;'>", unsafe_allow_html=True)
+        if st.button("⌄", key="scroll_btn", help="대시보드로 이동"):
             navigate_to('dashboard')
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with widget_c3:
+    with w_col4:
         st.markdown("""
             <div class="info-card">
                 <h3>선배 멘토링 <span style="font-size:20px;">💬</span></h3>
@@ -219,31 +213,37 @@ if st.session_state.page == 'landing':
             </div>
         """, unsafe_allow_html=True)
 
+    with w_col5:
+        st.markdown("""
+            <div class="icon-pillar">
+                <div>🌐</div>
+                <div>🤝</div>
+            </div>
+        """, unsafe_allow_html=True)
+
 
 # =========================================================
 # [PAGE 2] 앱 대시보드 페이지
 # =========================================================
 elif st.session_state.page == 'dashboard':
     
-    if st.button("⬅️ 메인 홈으로 돌아가기", key="back_home"):
+    if st.button("⬅️ 홈 화면으로 돌아가기"):
         navigate_to('landing')
 
     st.markdown("<h2 style='font-size: 28px; margin: 20px 0;'>나의 진로 대시보드</h2>", unsafe_allow_html=True)
     
-    grid_c1, grid_c2 = st.columns([1, 1.5])
+    dash_c1, dash_c2 = st.columns([1, 1.5])
 
-    with grid_c1:
+    with dash_c1:
         st.markdown("""
             <div class="bento-box">
                 <h3>📝 오늘의 과제</h3>
             </div>
         """, unsafe_allow_html=True)
-        # Streamlit 체크박스 컴포넌트로 인터랙션 구현
         st.checkbox("오늘 PLC 도면 해석 완료하기", value=True)
         st.checkbox("기출문제 오답 노트 정리")
-        st.checkbox("설비보전 실습 일지 작성")
 
-    with grid_c2:
+    with dash_c2:
         st.markdown("""
             <div class="bento-box">
                 <h3>📅 경험 캘린더 & AI 자소서</h3>
@@ -253,14 +253,14 @@ elif st.session_state.page == 'dashboard':
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("✨ AI STAR 자소서 자동 추출하기", key="ai_extract", type="primary", use_container_width=True):
-            with st.spinner("캘린더 데이터를 시맨틱 분석하여 자소서를 추출 중입니다..."):
+        if st.button("✨ AI STAR 자소서 자동 추출하기", type="primary", use_container_width=True):
+            with st.spinner("AI가 캘린더 데이터를 분석 중입니다..."):
                 import time
                 time.sleep(1)
             st.success("자소서 추출 완료!")
             st.info("""
             * **[Situation]** 7월 설비 실습 중 예기치 않은 회로 단락 오류 발생
-            * **[Task]** 팀 내 트러블슈팅 담당으로서 2시간 내 원인 분석 및 복구 임무 수행
+            * **[Task]** 트러블슈팅 담당으로서 2시간 내 원인 분석 및 복구 임무 수행
             * **[Action]** 테스터기를 이용해 단락 구간을 정밀 진단하고 도면을 재검토하여 배선 재배치
-            * **[Result]** 제한 시간 내 완전 복구 성공 및 현장 실무 역량 인증 획득
+            * **[Result]** 제한 시간 내 완전 복구 성공 및 실무 역량 인증 획득
             """)
