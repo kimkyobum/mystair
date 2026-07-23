@@ -2,7 +2,7 @@ import base64
 import os
 import streamlit as st
 
-# 1. 페이지 기본 설정
+# 1. 페이지 설정
 st.set_page_config(
     page_title="MyStair - 세상으로 나아가는 너의 첫 번째 계단",
     page_icon="📈",
@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 
-# 이미지 파일을 안전하게 불러오기 위한 Base64 변환 함수 (경로 에러 원천 차단)
+# 이미지 깨짐 방지 및 안전한 로딩을 위한 함수
 def get_img_base64(file_path):
   if os.path.exists(file_path):
     with open(file_path, "rb") as f:
@@ -25,7 +25,7 @@ img_src = (
     else "https://via.placeholder.com/320x200/f4f5fa/a7e0e2?text=Image+Not+Found"
 )
 
-# 2. 원본 디자인과 100% 일치하는 CSS 스타일 주입
+# 2. 디자인 및 UI 스타일 주입 (코드 노출 방지를 위해 따옴표 구조 최적화)
 st.markdown(
     f"""
     <style>
@@ -38,12 +38,10 @@ st.markdown(
         .stApp {{
             background: linear-gradient(180deg, #fdfdfe 0%, #f4f5fa 100%);
             color: #111;
-            margin: 0;
-            padding: 0;
         }}
 
         .block-container {{
-            padding-top: 1rem;
+            padding-top: 1.5rem;
             padding-bottom: 2rem;
             max-width: 1200px;
         }}
@@ -59,18 +57,7 @@ st.markdown(
             letter-spacing: -0.5px;
         }}
 
-        /* 랜딩 히어로 섹션 */
-        .landing-container {{
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }}
-
+        /* 히어로 섹션 */
         .hero-section {{
             text-align: center;
             margin-top: 10px;
@@ -89,22 +76,25 @@ st.markdown(
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
         }}
 
-        .hero-section h1 {{
+        .hero-title {{
             font-size: 52px;
             font-weight: 900;
             margin: 0 0 15px 0;
             line-height: 1.25;
             letter-spacing: -1.5px;
             color: #111;
+            text-align: center;
         }}
-        .hero-section p {{
+        
+        .hero-subtitle {{
             font-size: 18px;
             color: #333;
             margin: 0 0 35px 0;
             font-weight: 500;
+            text-align: center;
         }}
 
-        /* 하단 벤토 카드 위젯 영역 */
+        /* 하단 벤토 위젯 영역 */
         .bottom-widgets {{
             width: 100%;
             display: flex;
@@ -257,12 +247,6 @@ st.markdown(
             flex-direction: column;
             gap: 30px;
         }}
-        .bento-grid {{
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 24px;
-            width: 100%;
-        }}
         .bento-box {{
             background: #fff;
             border-radius: 20px;
@@ -323,14 +307,14 @@ st.markdown(
 # [PAGE 1] 랜딩 페이지
 # =========================================================
 if st.session_state.page == "landing":
-  # 히어로 영역 (이미지 + 타이틀 + 서브타이틀)
+  # 히어로 섹션 (이미지 + 타이틀 + 서브타이틀)
   st.markdown(
       f"""
         <div class="landing-container">
             <div class="hero-section">
                 <img src="{img_src}" alt="3D 계단 그래픽" class="hero-graphic">
-                <h1>세상으로 나아가는<br>너의 첫 번째 계단</h1>
-                <p>마이스터고 학생들의 꿈을 현실로 만드는 맞춤형 진로 로드맵 파트너</p>
+                <h1 class="hero-title">세상으로 나아가는<br>너의 첫 번째 계단</h1>
+                <p class="hero-subtitle">마이스터고 학생들의 꿈을 현실로 만드는 맞춤형 진로 로드맵 파트너</p>
             </div>
         </div>
         """,
@@ -369,7 +353,7 @@ if st.session_state.page == "landing":
 
   st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
 
-  # 하단 위젯 영역 (채용공고, 스크롤 버튼, 멘토링 카드)
+  # 하단 위젯 영역 (채용공고, 멘토링 카드)
   st.markdown(
       """
         <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
@@ -396,7 +380,7 @@ if st.session_state.page == "landing":
                 </div>
                 
                 <div style="display: flex; align-items: flex-end; padding-bottom: 20px;">
-                    <div class="scroll-down" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">⌄</div>
+                    <div class="scroll-down">⌄</div>
                 </div>
                 
                 <div class="widget-group">
