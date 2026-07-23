@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 상단바와 첫 화면 사이 간격을 더 넓힌 최적화된 CSS 주입
+# 2. 히어로 요소를 더 크고 웅장하게 키운 최적화된 CSS 주입
 st.markdown(
     """
 <style>
@@ -27,16 +27,16 @@ body, [class*="css"] {
 
 @keyframes floatAnimation {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); }
+    50% { transform: translateY(-14px); }
     100% { transform: translateY(0px); }
 }
 
 /* 🌟 화면 전체를 아우르는 감각적인 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
-        radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.1) 0px, transparent 45%),
-        radial-gradient(circle at 90% 20%, rgba(126, 87, 194, 0.08) 0px, transparent 45%),
-        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
+        radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(126, 87, 194, 0.1) 0px, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
         #ffffff !important;
     background-attachment: fixed;
     color: #1e293b;
@@ -53,12 +53,12 @@ body, [class*="css"] {
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 상단 알약 네비게이션 바 (상단바와 첫 화면 간격 추가 확장) */
+/* 🌟 상단 알약 네비게이션 바 */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 110px;
+    margin-bottom: 70px;
 }
 
 .speak-navbar {
@@ -94,7 +94,7 @@ body, [class*="css"] {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 28px;
 }
 
 .nav-link {
@@ -103,10 +103,23 @@ body, [class*="css"] {
     color: #475569;
 }
 
-/* 히어로 섹션 */
+.lang-btn-wrapper {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 🌟 더 크고 중심에 오는 히어로 섹션 */
 .hero-section-left {
     text-align: left;
-    padding: 10px 0 15px 0;
+    padding: 30px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -127,9 +140,9 @@ body, [class*="css"] {
 }
 
 .hero-title {
-    font-size: 54px;
+    font-size: 60px;
     font-weight: 800;
-    margin: 0 0 20px 0;
+    margin: 0 0 24px 0;
     line-height: 1.2;
     letter-spacing: -2px;
     color: #0f172a;
@@ -142,15 +155,15 @@ body, [class*="css"] {
 }
 
 .hero-subtitle {
-    font-size: 19px;
+    font-size: 20px;
     color: #64748b;
-    margin: 0 0 35px 0;
+    margin: 0 0 40px 0;
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: -0.3px;
 }
 
-/* 3D 이미지 플로팅 컨테이너 */
+/* 🌟 더 커진 3D 이미지 플로팅 컨테이너 */
 .hero-graphic-container {
     display: flex;
     justify-content: center;
@@ -160,15 +173,15 @@ body, [class*="css"] {
 
 .hero-graphic {
     width: 100%;
-    max-width: 400px;
+    max-width: 480px;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.08));
+    filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1));
 }
 
 /* 🌟 대단원 사이의 간격 */
 .scroll-section {
-    padding-top: 260px;
+    padding-top: 280px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -279,6 +292,10 @@ st.markdown(
         <div class="nav-right">
             <span class="nav-link">서비스 소개</span>
             <span class="nav-link">팀 소개</span>
+            <div class="lang-btn-wrapper">
+                <span>한국어</span>
+                <span style="font-size: 12px;">▼</span>
+            </div>
         </div>
     </div>
 </div>
@@ -291,8 +308,8 @@ st.markdown(
 # =========================================================
 if st.session_state.page == "landing":
 
-  # --- [섹션 1] 첫 화면 (히어로) ---
-  hero_col1, hero_col2 = st.columns([1.1, 0.9], gap="large")
+  # --- [섹션 1] 첫 화면 (히어로: 더욱 크고 웅장하게 중앙 정렬) ---
+  hero_col1, hero_col2 = st.columns([1.05, 0.95], gap="large")
 
   with hero_col1:
     st.markdown(
@@ -313,8 +330,8 @@ if st.session_state.page == "landing":
         background: #0f172a !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 16px 32px !important;
-        font-size: 16px !important;
+        padding: 18px 36px !important;
+        font-size: 17px !important;
         font-weight: 700 !important;
         border-radius: 50px !important;
         box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important;
