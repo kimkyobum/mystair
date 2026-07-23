@@ -25,7 +25,7 @@ img_src = (
     else "https://via.placeholder.com/320x200/f4f5fa/a7e0e2?text=Image+Not+Found"
 )
 
-# 2. 토스 스타일의 밝고 세련된 라이트톤 디자인 CSS 주입
+# 2. 페이드 인 애니메이션 효과 및 세련된 라이트톤 디자인 CSS 주입
 st.markdown(
     f"""
     <style>
@@ -35,9 +35,22 @@ st.markdown(
             font-family: 'Pretendard', -apple-system, sans-serif !important;
         }}
 
+        /* 접속 시 화면 전체가 서서히 나타나는 페이드 인 애니메이션 효과 */
+        @keyframes fadeIn {{
+            from {{
+                opacity: 0;
+                transform: translateY(10px);
+            }}
+            to {{
+                opacity: 1;
+                transform: translateY(0);
+            }}
+        }}
+
         .stApp {{
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             color: #1e293b;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }}
 
         .block-container {{
@@ -55,6 +68,7 @@ st.markdown(
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }}
         
         .hero-graphic {{
@@ -98,6 +112,7 @@ st.markdown(
             gap: 30px;
             margin-top: 60px;
             width: 100%;
+            animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }}
 
         .feature-card {{
@@ -151,6 +166,7 @@ st.markdown(
             display: flex;
             flex-direction: column;
             gap: 30px;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }}
         .bento-box {{
             background: #ffffff;
