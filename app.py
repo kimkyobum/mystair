@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 토스·스픽·삼성 벤치마킹 스타일 전면 적용 CSS 주입
+# 2. 토스·스픽·삼성 벤치마킹 스타일 및 프로페셔널 푸터 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,7 +31,7 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 화면 전체를 아우르는 삼성·토스 스타일의 감각적인 앰비언트 그라데이션 배경 */
+/* 🌟 화면 전체를 아우르는 감각적인 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
         radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
@@ -45,7 +45,7 @@ body, [class*="css"] {
 /* 🌟 와이드 컨테이너 폭 (1200px) 및 여유로운 패딩 */
 .block-container {
     padding-top: 2rem;
-    padding-bottom: 15rem;
+    padding-bottom: 10rem;
     max-width: 1200px !important;
     margin: 0 auto !important;
     padding-left: 3rem !important;
@@ -53,7 +53,7 @@ body, [class*="css"] {
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 스픽 스타일 둥근 알약 네비게이션 바 */
+/* 🌟 상단 알약 네비게이션 바 */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
@@ -116,7 +116,7 @@ body, [class*="css"] {
     gap: 8px;
 }
 
-/* 🌟 삼성·토스 스타일의 웅장하고 몰입감 있는 히어로 섹션 */
+/* 🌟 웅장하고 몰입감 있는 히어로 섹션 */
 .hero-section-left {
     text-align: left;
     padding: 30px 0;
@@ -179,7 +179,7 @@ body, [class*="css"] {
     filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1));
 }
 
-/* 🌟 대단원 간의 시원한 여백 (토스 스타일 롱 스크롤) */
+/* 🌟 대단원 간의 시원한 여백 (롱 스크롤) */
 .scroll-section {
     padding-top: 280px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -210,7 +210,7 @@ body, [class*="css"] {
     margin-bottom: 30px;
 }
 
-/* 모던 글래스 카드 스타일 */
+/* 모던 글래스 카드 스타일 (업그레이드된 호버 효과) */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -218,17 +218,17 @@ body, [class*="css"] {
     padding: 36px 32px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .modern-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
     background: rgba(255, 255, 255, 1);
-    box-shadow: 0 25px 50px rgba(126, 87, 194, 0.08);
-    border-color: rgba(126, 87, 194, 0.3);
+    box-shadow: 0 30px 60px rgba(126, 87, 194, 0.12);
+    border-color: rgba(126, 87, 194, 0.4);
 }
 
 .modern-card h3 {
@@ -245,6 +245,37 @@ body, [class*="css"] {
     line-height: 1.7;
     margin: 0;
     word-break: keep-all;
+}
+
+/* 🌟 프로페셔널 테크 푸터 디자인 */
+.footer-container {
+    margin-top: 250px;
+    padding: 60px 0;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-logo {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.8px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+    font-weight: 600;
 }
 
 /* 대시보드 */
@@ -280,7 +311,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 알약 네비게이션 바 (한국어 선택 포함)
+# 상단 알약 네비게이션 바
 # =========================================================
 st.markdown(
     """
@@ -441,7 +472,25 @@ if st.session_state.page == "landing":
         unsafe_allow_html=True,
     )
 
-  st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
+  # --- [섹션 5] 프로페셔널 푸터 ---
+  st.markdown(
+      """
+<div class="footer-container">
+    <div class="footer-top">
+        <div class="footer-logo">MyStair</div>
+        <div class="footer-links">
+            <span>이용약관</span>
+            <span>개인정보처리방침</span>
+            <span>고객센터</span>
+        </div>
+    </div>
+    <div style="color: #94a3b8; font-size: 13px;">
+        © 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 빛나는 내일을 응원합니다.
+    </div>
+</div>
+""",
+      unsafe_allow_html=True,
+  )
 
 # =========================================================
 # [PAGE 2] 앱 대시보드 페이지
