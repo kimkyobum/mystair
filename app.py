@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 풀 와이드 스픽 스타일 레이아웃 및 앰비언트 그라데이션 CSS 주입
+# 2. 글로벌 테크 웹사이트(Stripe, Toss) 스타일의 최적화된 풀 와이드 & 균형 잡힌 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,28 +31,29 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 화면 전체(Full-Width)를 활용하는 감각적인 앰비언트 메시 그라데이션 배경 */
+/* 🌟 화면 전체를 아우르면서도 중간 공백을 없애는 최적의 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
-        radial-gradient(circle at 12% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 40%),
-        radial-gradient(circle at 88% 15%, rgba(126, 87, 194, 0.1) 0px, transparent 40%),
-        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.1) 0px, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(126, 87, 194, 0.08) 0px, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
         #ffffff !important;
     background-attachment: fixed;
     color: #1e293b;
 }
 
+/* 🌟 중간 텅 빈 공백을 완벽히 해결하는 최적의 와이드 컨테이너 폭 (1200px) */
 .block-container {
     padding-top: 1.5rem;
     padding-bottom: 10rem;
-    max-width: 100% !important;
-    padding-left: 5rem !important;
-    padding-right: 5rem !important;
-    margin: 0 auto;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 스픽 스타일 풀 와이드 둥근 알약 상단바 */
+/* 🌟 상단 둥근 알약 네비게이션 바 (완벽한 중앙 정렬 및 비율) */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
@@ -64,13 +65,14 @@ body, [class*="css"] {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
     border-radius: 100px;
-    padding: 14px 40px;
+    padding: 14px 36px;
     width: 100%;
+    max-width: 1200px;
 }
 
 .nav-left {
@@ -81,7 +83,7 @@ body, [class*="css"] {
 }
 
 .nav-logo-text {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     background: linear-gradient(90deg, #0f172a, #334155);
     -webkit-background-clip: text;
@@ -92,7 +94,7 @@ body, [class*="css"] {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 36px;
+    gap: 32px;
 }
 
 .nav-link {
@@ -101,10 +103,10 @@ body, [class*="css"] {
     color: #475569;
 }
 
-/* 스픽 스타일 좌우 배치 히어로 섹션 */
+/* 히어로 섹션 (좌우 균형감 있는 배치) */
 .hero-section-left {
     text-align: left;
-    padding: 40px 0;
+    padding: 20px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -125,7 +127,7 @@ body, [class*="css"] {
 }
 
 .hero-title {
-    font-size: 56px;
+    font-size: 52px;
     font-weight: 800;
     margin: 0 0 20px 0;
     line-height: 1.2;
@@ -158,7 +160,7 @@ body, [class*="css"] {
 
 .hero-graphic {
     width: 100%;
-    max-width: 420px;
+    max-width: 380px;
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.08));
@@ -166,7 +168,7 @@ body, [class*="css"] {
 
 /* 롱 스크롤 섹션 */
 .scroll-section {
-    padding: 140px 40px 40px 40px;
+    padding: 120px 0 40px 0;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -180,7 +182,7 @@ body, [class*="css"] {
 }
 
 .section-heading {
-    font-size: 42px;
+    font-size: 40px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 16px;
@@ -265,7 +267,7 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 🌟 스픽 스타일 풀 와이드 상단바 배치
+# 상단 알약 네비게이션 바
 # =========================================================
 st.markdown(
     """
@@ -285,12 +287,12 @@ st.markdown(
 )
 
 # =========================================================
-# [PAGE 1] 메인 랜딩 페이지 (스픽 스타일 좌우 배치 히어로)
+# [PAGE 1] 메인 랜딩 페이지 (균형 잡힌 와이드 히어로 배치)
 # =========================================================
 if st.session_state.page == "landing":
 
-  # --- [섹션 1] 첫 화면 (히어로: 좌우 분할 구조) ---
-  hero_col1, hero_col2 = st.columns([1.2, 1], gap="large")
+  # --- [섹션 1] 첫 화면 (히어로: 1.1 대 0.9 비율로 공백 최소화) ---
+  hero_col1, hero_col2 = st.columns([1.1, 0.9], gap="large")
 
   with hero_col1:
     st.markdown(
@@ -304,7 +306,6 @@ if st.session_state.page == "landing":
         unsafe_allow_html=True,
     )
 
-    # CTA 버튼 스타일링 및 배치
     st.markdown(
         """
     <style>
@@ -337,7 +338,7 @@ if st.session_state.page == "landing":
         encoded_img = base64.b64encode(f.read()).decode("utf-8")
       st.markdown(
           f"""
-    <div class="hero-graphic-container" style="padding-top: 20px;">
+    <div class="hero-graphic-container">
         <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지">
     </div>
     """,
@@ -402,7 +403,7 @@ if st.session_state.page == "landing":
   # --- [섹션 4] 만든 사람들 ---
   st.markdown(
       """
-<div class="scroll-section" style="padding-top: 160px;">
+<div class="scroll-section" style="padding-top: 140px;">
     <div class="section-tag">About Us</div>
     <div class="section-heading">만든 사람들</div>
     <div class="section-desc">학생들의 빛나는 도전과 가능성을 믿는 팀원들이 함께 만들었습니다.</div>
