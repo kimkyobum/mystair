@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 대기업/테크 유니콘 스타일(프리미엄 뱃지, 그라데이션 타이포, 고품격 카드) CSS 주입
+# 2. 토스 스타일 라이트톤 디자인 및 애니메이션 CSS 주입
 st.markdown(
     """
     <style>
@@ -19,7 +19,7 @@ st.markdown(
             font-family: 'Pretendard', -apple-system, sans-serif !important;
         }
 
-        /* 접속 시 화면 전체가 서서히 나타나는 페이드 인 애니메이션 */
+        /* 페이드 인 애니메이션 */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -31,7 +31,7 @@ st.markdown(
             }
         }
 
-        /* 3D 오브젝트가 스튜디오 위에서 숨쉬듯 움직이는 플로팅 애니메이션 */
+        /* 3D 스튜디오 플로팅 애니메이션 */
         @keyframes studioFloat {
             0% {
                 transform: translateY(0px) rotateX(0deg);
@@ -58,6 +58,16 @@ st.markdown(
             padding-right: 6rem !important;
         }
 
+        /* 상단 헤더 커스텀 스타일 */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+
         /* 히어로 섹션 */
         .hero-section {
             text-align: center;
@@ -68,7 +78,6 @@ st.markdown(
             animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* ✨ 대기업 스타일 트렌디한 상단 뱃지 */
         .hero-badge {
             display: inline-flex;
             align-items: center;
@@ -84,7 +93,6 @@ st.markdown(
             box-shadow: 0 4px 15px rgba(126, 87, 194, 0.05);
         }
 
-        /* ✨ 3D 스튜디오 포디움 & 백라이트 조명 효과 */
         .studio-podium-wrapper {
             position: relative;
             display: inline-flex;
@@ -127,7 +135,6 @@ st.markdown(
             transform: scale(1.03);
         }
 
-        /* 타이틀 타이포그래피 (그라데이션 포인트 추가) */
         .hero-title {
             font-size: 62px;
             font-weight: 800;
@@ -172,8 +179,6 @@ st.markdown(
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             text-align: left;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
 
         .feature-card:hover {
@@ -217,7 +222,7 @@ st.markdown(
             line-height: 1.65;
         }
 
-        /* 대시보드 화면 스타일 */
+        /* 대시보드 및 소개 페이지 스타일 */
         .app-container {
             width: 100%;
             margin: 0 auto;
@@ -260,11 +265,62 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 상단 헤더 (우측 로그인 버튼 배치)
+# 상단 헤더 구현 (MyStair 로고 + 서비스 소개 버튼 + 로그인 버튼)
 # =========================================================
-header_col1, header_col2 = st.columns([11, 1])
+header_col1, header_col2, header_col3, header_col4 = st.columns(
+    [2.5, 1.2, 6.3, 1.2]
+)
+
+with header_col1:
+  if st.button("📈 MyStair", key="logo_text_btn", use_container_width=False):
+    navigate_to("landing")
+  st.markdown(
+      """
+        <style>
+        div[data-testid="column"] button[key="logo_text_btn"] {
+            background: transparent !important;
+            border: none !important;
+            font-size: 26px !important;
+            font-weight: 800 !important;
+            background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0 !important;
+            letter-spacing: -1px;
+            box-shadow: none !important;
+        }
+        </style>
+        """,
+      unsafe_allow_html=True,
+  )
 
 with header_col2:
+  # 서비스 소개 버튼 스타일
+  st.markdown(
+      """
+        <style>
+        div[data-testid="column"] button[key="intro_nav_btn"] {
+            background: transparent !important;
+            color: #475569 !important;
+            border: none !important;
+            padding: 8px 12px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            box-shadow: none !important;
+            transition: color 0.2s ease !important;
+        }
+        div[data-testid="column"] button[key="intro_nav_btn"]:hover {
+            color: #3bb2b8 !important;
+        }
+        </style>
+        """,
+      unsafe_allow_html=True,
+  )
+  if st.button("서비스 소개", key="intro_nav_btn", use_container_width=True):
+    navigate_to("intro")
+
+with header_col4:
+  # 로그인 버튼 스타일
   st.markdown(
       """
         <style>
@@ -272,8 +328,8 @@ with header_col2:
             background: #f1f5f9 !important;
             color: #0f172a !important;
             border: 1px solid #cbd5e1 !important;
-            padding: 8px 24px !important;
-            font-size: 15px !important;
+            padding: 8px 20px !important;
+            font-size: 14px !important;
             font-weight: 600 !important;
             border-radius: 30px !important;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -302,7 +358,7 @@ st.markdown(
 # [PAGE 1] 랜딩 페이지
 # =========================================================
 if st.session_state.page == "landing":
-  # 히어로 섹션 (프리미엄 뱃지 + 그라데이션 타이틀)
+  # 히어로 섹션
   st.markdown(
       """
         <div class="hero-section">
@@ -314,7 +370,7 @@ if st.session_state.page == "landing":
       unsafe_allow_html=True,
   )
 
-  # 3D 스튜디오 포디움 위에 이미지를 띄우는 레이아웃
+  # 3D 스튜디오 포디움 이미지
   img_col1, img_col2, img_col3 = st.columns([1, 1.4, 1])
   with img_col2:
     if os.path.exists("main_image.png"):
@@ -334,7 +390,7 @@ if st.session_state.page == "landing":
     else:
       st.warning("⚠️ 'main_image.png' 파일이 없습니다.")
 
-  # 중앙 프리미엄 그라데이션 CTA 버튼
+  # 중앙 CTA 버튼
   col_c1, col_c2, col_c3 = st.columns([2, 1.5, 2])
   with col_c2:
     st.markdown(
@@ -368,7 +424,7 @@ if st.session_state.page == "landing":
 
   st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
 
-  # 하단 프리미엄 기능 소개 카드 3가지
+  # 하단 기능 소개 카드 3가지
   st.markdown(
       """
         <div class="feature-container">
@@ -393,7 +449,41 @@ if st.session_state.page == "landing":
   )
 
 # =========================================================
-# [PAGE 2] 앱 대시보드 페이지
+# [PAGE 2] 서비스 소개 페이지 (새로 추가됨)
+# =========================================================
+elif st.session_state.page == "intro":
+  if st.button("⬅️ 홈으로 돌아가기"):
+    navigate_to("landing")
+
+  st.markdown(
+      """
+        <div class="app-container">
+            <h2 style="font-size: 36px; font-weight: 800; margin: 0 0 10px 0; color: #0f172a;">서비스 소개</h2>
+            <p style="font-size: 18px; color: #64748b; margin-bottom: 40px;">마이스터고 학생들의 더 나은 내일을 위한 똑똑한 커리어 파트너, MyStair를 소개합니다.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 40px;">
+                <div class="bento-box">
+                    <h3>💡 왜 MyStair인가요?</h3>
+                    <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
+                        일반 인문계 고등학교와는 다른, 마이스터고만의 특수한 현장 실습과 기술 중심 커리큘럼. 
+                        MyStair는 여러분이 흘린 실습의 땀방울을 체계적인 데이터로 탈바꿈시켜 최고의 취업 무기로 만들어 줍니다.
+                    </p>
+                </div>
+                <div class="bento-box">
+                    <h3>🚀 핵심 가치</h3>
+                    <p style="color: #64748b; line-height: 1.6; margin-top: 15px;">
+                        복잡하고 어려운 자소서 작성과 진로 고민을 AI 기술로 해결합니다. 
+                        작은 실습 기록 하나도 놓치지 않고 기업이 원하는 STAR(Situation, Task, Action, Result) 구조로 자동 변환해 드립니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+        """,
+      unsafe_allow_html=True,
+  )
+
+# =========================================================
+# [PAGE 3] 앱 대시보드 페이지
 # =========================================================
 elif st.session_state.page == "dashboard":
   if st.button("⬅️ 홈 화면으로 돌아가기"):
