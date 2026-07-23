@@ -52,7 +52,7 @@ body, [class*="css"] {
 /* 히어로 섹션 */
 .hero-section {
     text-align: center;
-    padding: 50px 0 30px 0;
+    padding: 30px 0 30px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -212,34 +212,35 @@ def navigate_to(page_name):
 
 
 # =========================================================
-# 왼쪽 상단 로고 이미지 배치 영역
+# 상단 헤더 컴팩트 배치 (구분선 제거 및 간격 좁힘)
 # =========================================================
-logo_col, space_col, login_col = st.columns([2, 7, 1])
+header_col1, header_col2, header_col3 = st.columns([1, 6, 1])
 
-with logo_col:
-  if os.path.exists("logo.png"):
-    with open("logo.png", "rb") as f:
-      encoded_logo = base64.b64encode(f.read()).decode("utf-8")
-    st.markdown(
-        f"""
-        <div style="cursor: pointer; display: inline-flex; align-items: center;" onclick="window.location.reload();">
-            <img src="data:image/png;base64,{encoded_logo}" style="height: 38px; width: auto; object-fit: contain;" alt="MyStair Logo">
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-  else:
-    # logo.png 파일이 없을 경우 보여지는 대체 텍스트 로고
-    st.markdown(
-        """
-        <div style="font-size: 26px; font-weight: 800; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.2px; padding: 2px 0;">
-            MyStair
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+with header_col1:
+  st.markdown(
+      """
+<style>
+div[data-testid="column"] button[key="top_logo_btn"] {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    background: linear-gradient(90deg, #0f172a, #334155);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1.2px;
+    box-shadow: none !important;
+    text-align: left !important;
+}
+</style>
+""",
+      unsafe_allow_html=True,
+  )
+  if st.button("MyStair", key="top_logo_btn"):
+    navigate_to("landing")
 
-with login_col:
+with header_col3:
   st.markdown(
       """
 <style>
@@ -264,11 +265,6 @@ div[data-testid="column"] button[key="login_btn"]:hover {
   )
   if st.button("로그인", key="login_btn", use_container_width=True):
     st.toast("로그인 창이 열립니다.")
-
-st.markdown(
-    "<hr style='margin: 15px 0 30px 0; border: none; border-top: 1px solid rgba(226, 232, 240, 0.6);'>",
-    unsafe_allow_html=True,
-)
 
 # =========================================================
 # [PAGE 1] 메인 랜딩 페이지 (롱 스크롤 방식)
