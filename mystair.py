@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (디자인 및 박스 레이아웃 정돈)
+# 4. 글로벌 CSS (박스 투명도 및 크기 완벽 통일)
 # =========================================================
 st.markdown(
     """
@@ -117,14 +117,14 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 컨테이너 기본 스타일 깔끔하게 정돈 */
+/* 🌟 모든 컨테이너 박스(글래스 패널 등)의 배경 불투명도와 그림자 완벽 통일 */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: rgba(255, 255, 255, 0.9) !important; 
+    background: rgba(255, 255, 255, 0.92) !important; 
     backdrop-filter: blur(16px) !important; 
-    border-radius: 20px !important; 
-    padding: 24px !important; 
-    border: 1px solid rgba(226, 232, 240, 0.8) !important; 
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
+    border-radius: 24px !important; 
+    padding: 30px !important; 
+    border: 1px solid rgba(226, 232, 240, 0.9) !important; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
 }
 
 /* 🌟 모든 버튼 스타일 일치화 */
@@ -157,14 +157,14 @@ div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffff
 
 /* 체크박스 정렬 및 여백 최적화 */
 div[data-testid="stCheckbox"] { 
-    background: rgba(255, 255, 255, 0.7); 
+    background: rgba(255, 255, 255, 0.85); 
     border: 1px solid #e2e8f0; 
-    border-radius: 10px; 
-    padding: 8px 12px; 
-    margin-bottom: 6px !important; 
+    border-radius: 12px; 
+    padding: 10px 14px; 
+    margin-bottom: 10px !important; 
 }
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
-div[data-testid="stCheckbox"] label p { font-size: 14px !important; font-weight: 600 !important; color: #334155 !important; }
+div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
 .login-title { font-size: 36px; font-weight: 900; text-align: center; margin-bottom: 10px; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
 .login-subtitle { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 30px; font-weight: 500; }
@@ -374,9 +374,7 @@ elif st.session_state.page == "main":
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # =========================================================
-    # 🌟 5. 캘린더와 체크리스트를 독립된 박스로 분리 (오류 완전 해결)
-    # =========================================================
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (박스 디자인 및 높이 완벽 정돈)
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
