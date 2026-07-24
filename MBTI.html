@@ -38,14 +38,14 @@
             flex-direction: column;
         }
 
-        /* MyStair Header Bar */
+        /* MyStair Header Bar (Top Left Main Link) */
         .mystair-header {
             background-color: var(--mystair-navy);
             height: 72px;
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             padding: 0 40px;
             box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
             position: sticky;
@@ -57,6 +57,30 @@
             display: flex;
             align-items: center;
             gap: 16px;
+        }
+
+        /* 왼쪽 상단 메인 이동 버튼 */
+        .btn-header-main {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(4px);
+            margin-right: 8px;
+        }
+
+        .btn-header-main:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
         }
 
         .mystair-logo {
@@ -392,13 +416,8 @@
         .action-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-top: 32px;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
         }
 
         .btn-copy {
@@ -420,28 +439,8 @@
             transform: translateY(-2px);
         }
 
-        .btn-home {
-            flex: 1;
-            background-color: var(--mystair-navy);
-            color: #FFFFFF;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn-home:hover {
-            background-color: var(--mystair-navy-light);
-            transform: translateY(-2px);
-        }
-
         .btn-restart {
-            flex: 1;
+            width: 100%;
             background-color: var(--pill-bg);
             color: var(--text-main);
             border: 1px solid var(--border-color);
@@ -475,10 +474,15 @@
 
         @media (max-width: 640px) {
             .mystair-header {
-                padding: 0 20px;
+                padding: 0 16px;
             }
             .header-sub {
                 display: none;
+            }
+            .btn-header-main {
+                padding: 8px 12px;
+                font-size: 12px;
+                margin-right: 4px;
             }
             .card-container {
                 padding: 24px;
@@ -487,9 +491,6 @@
             .question-text {
                 font-size: 17px;
             }
-            .action-row {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -497,6 +498,7 @@
 
 <header class="mystair-header">
     <div class="header-left">
+        <button class="btn-header-main" onclick="goToMain()">🏠 메인화면으로</button>
         <span class="mystair-logo" onclick="goToMain()">MyStair</span>
         <span class="hot-badge">MBTI 32</span>
         <span class="header-sub">전국 마이스터고 맞춤형 MBTI 진로 적성 검사</span>
@@ -560,10 +562,7 @@
 
             <div class="action-group">
                 <button class="btn-copy" onclick="copyResults()">📋 검사 결과 복사하기</button>
-                <div class="action-row">
-                    <button class="btn-restart" onclick="restartQuiz()">🔄 다시 검사하기</button>
-                    <button class="btn-home" onclick="goToMain()">🏠 메인화면으로 돌아가기</button>
-                </div>
+                <button class="btn-restart" onclick="restartQuiz()">🔄 다시 검사하기</button>
             </div>
         </div>
 
@@ -576,7 +575,6 @@
     const MAIN_URL = "https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/";
 
     // 60 Questions (12 for each dimension)
-    // Scale: Higher score (4-5) points to E, N, T, J, A
     const questions = [
         // E / I (1-12) -> High = E
         { id: 1, type: "EI", text: "1. 새로운 사람들과 쉽게 어울리고 먼저 말을 건네는 편이다." },
@@ -796,7 +794,6 @@
             }
         });
 
-        // 12문항 x 5점 = 60점 만점 / 기준값: 36점 이상이면 E, N, T, J, A
         const eiRatio = Math.round(((scores.EI - 12) / 48) * 100);
         const snRatio = Math.round(((scores.SN - 12) / 48) * 100);
         const tfRatio = Math.round(((scores.TF - 12) / 48) * 100);
@@ -836,7 +833,6 @@
         document.getElementById('result-mbti-code').innerText = result.fullType;
         document.getElementById('result-mbti-alias').innerText = `"${meta.alias}"`;
 
-        // Render Score Bars
         const scoreBarsEl = document.getElementById('score-bars');
         scoreBarsEl.innerHTML = '';
         
@@ -856,7 +852,6 @@
             scoreBarsEl.appendChild(div);
         });
 
-        // Detailed Card Render
         const detailEl = document.getElementById('result-details');
         const identityText = result.typeA === 'A' 
             ? "<strong>자기확신형 (-A):</strong> 스트레스 저항력이 높으며 유연하고 자신감이 넘칩니다. 정서적으로 안정감이 느껴집니다."
