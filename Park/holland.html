@@ -2,7 +2,6 @@ import base64
 import os
 import time
 import streamlit as st
-import streamlit.components.v1 as components
 
 # =========================================================
 # 1. 페이지 기본 설정 (Wide 모드 고정)
@@ -20,7 +19,7 @@ if "page" not in st.session_state:
 if "diary_data" not in st.session_state:
     st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
 
-# 체크리스트 상태 초기화
+# 체크리스트 상태 초기화 (체크 유무에 따라 나무가 자람)
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -80,7 +79,7 @@ body, [class*="css"] {
 
 header[data-testid="stHeader"] { display: none !important; }
 
-/* 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
+/* 🌟 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
 *, *:focus, *:active, *:focus-visible { 
     outline: none !important; 
     box-shadow: none !important; 
@@ -93,56 +92,37 @@ input, textarea { caret-color: auto !important; }
     user-select: none; 
 }
 
-/* 성장 나무 애니메이션 */
+/* 🌟 성장 나무 애니메이션 */
 @keyframes floatTree {
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-10px) scale(1.05); }
 }
 
-/* 스트림릿 컨테이너 (글래스 효과) */
+/* 🌟 스트림릿 컨테이너 (글래스 효과) */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px 28px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
 }
 
-/* 캘린더 날짜 버튼 디자인 */
+/* 🌟 캘린더 날짜 버튼 디자인 */
 div[data-testid="column"] div.stButton > button {
     border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important;
 }
 div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
 div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; }
 
+/* 작성 완료 또는 오늘 날짜 버튼 (포인트 컬러) */
 div[data-testid="column"] div.stButton > button[kind="primary"] {
     background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important;
 }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-/* 체크리스트 아이템 커스텀 */
+/* 🌟 개별 체크리스트 아이템 커스텀 */
 div[data-testid="stCheckbox"] {
     background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease;
 }
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
 div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
-
-/* 🌟 홀랜드 적성검사 시작버튼 화려한 커스텀 */
-button:has(p:contains("홀랜드(RIASEC) 진로 적성 검사 시작하기")) {
-    width: 100% !important;
-    background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important;
-    border: none !important;
-    color: white !important;
-    border-radius: 16px !important;
-    height: 56px !important;
-    font-weight: 800 !important;
-    font-size: 16px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2) !important;
-    margin-top: 15px !important;
-}
-button:has(p:contains("홀랜드(RIASEC) 진로 적성 검사 시작하기")):hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3) !important;
-}
-button:has(p:contains("홀랜드(RIASEC) 진로 적성 검사 시작하기")) p { color: white !important; font-size: 16px !important; font-weight: 800 !important; }
 
 </style>
 """,
@@ -178,7 +158,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
-.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -222,14 +201,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .d-day { color: #3bb2b8; font-weight: 800; }
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 12px; font-weight: 700; padding: 6px 12px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 6px; border: 1px solid #e2e8f0;}
-
-/* 진척도 저장 버튼 하단 마진 보정 */
-button:has(p:contains("진척도 저장하기")) {
-    margin-top: 15px !important; width: 100% !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 12px !important; font-weight: 800 !important; padding: 12px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.2s !important;
-}
-button:has(p:contains("진척도 저장하기")):hover { background: #0f172a !important; color: white !important; border-color: #0f172a !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,0.15) !important; }
-button:has(p:contains("진척도 저장하기")):hover p { color: white !important; }
-
 </style>
 """
     st.markdown(css_string, unsafe_allow_html=True)
@@ -258,12 +229,9 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 <span>홀랜드직무검사</span>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 4. 상단 AI 추천 & 요약 박스 (홀랜드 버튼 포함)
-    st_col_main, st_col_side = st.columns([1.8, 1.1], gap="large")
-    
-    with st_col_main:
-        st.markdown("""
-<div class="glass-panel" style="height:100%;">
+    # 🌟 4. 상단 AI 추천 & 요약 박스
+    st.markdown("""<div class="ms-main-grid">
+<div class="glass-panel">
 <div class="ms-ai-header">
 <div>
 <div class="ms-ai-title">✨ 오늘의 <span>AI 맞춤 추천</span></div>
@@ -277,26 +245,19 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 <div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 25px;"></div></div>
 </div>
 </div>
-        """, unsafe_allow_html=True)
-        
-    with st_col_side:
-        with st.container(border=True):
-            st.markdown("""
+<div class="glass-panel" style="padding: 35px 32px;">
 <div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom:22px; line-height: 1.4; letter-spacing: -0.5px;">
 미래의 기술 명장님을 위한<br>핵심 진로 워크스페이스
 </div>
-<div class="ms-gradient-banner" style="margin-bottom:15px;"><span>⚡ 나의 커리어 취향 설정하기</span><span>></span></div>
+<div class="ms-gradient-banner"><span>⚡ 나의 커리어 취향 설정하기</span><span>></span></div>
 <div class="ms-quick-grid">
-<div class="ms-quick-item" style="padding:15px;"><span>나의 실습<br>다이어리</span><span style="font-size: 22px; text-align: right;">📝</span></div>
-<div class="ms-quick-item" style="padding:15px;"><span>AI STAR<br>자소서 추출</span><span style="font-size: 22px; text-align: right;">✨</span></div>
-<div class="ms-quick-item" style="padding:15px;"><span>국가기술<br>자격증 일정</span><span style="font-size: 22px; text-align: right;">🏅</span></div>
-<div class="ms-quick-item" style="padding:15px;"><span>선배들의<br>포트폴리오</span><span style="font-size: 22px; text-align: right;">💼</span></div>
+<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 24px; text-align: right;">📝</span></div>
+<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 24px; text-align: right;">✨</span></div>
+<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 24px; text-align: right;">🏅</span></div>
+<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 24px; text-align: right;">💼</span></div>
 </div>
-            """, unsafe_allow_html=True)
-            
-            # 🌟 [신규 추가] 홀랜드 직무검사 진입 버튼
-            if st.button("🔍 홀랜드(RIASEC) 진로 적성 검사 시작하기", use_container_width=True):
-                navigate_to("holland")
+</div>
+</div>""", unsafe_allow_html=True)
 
 
     # =========================================================
@@ -369,10 +330,6 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
             st.checkbox("실습 다이어리 작성 (24일 📍)", value=has_diary_today, disabled=True)
             st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4")
             st.checkbox("이력서 자격증 항목 업데이트", key="chk_5")
-            
-            # 계산 후 저장 (상태 리렌더링 유도)
-            if st.button("진척도 저장하기", use_container_width=True):
-                st.rerun()
 
 
     # =========================================================
@@ -424,11 +381,11 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
     # 체크 개수에 따른 로직 재계산
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
-        bool(st.session_state.get("chk_1", True)), 
-        bool(st.session_state.get("chk_2", False)), 
+        bool(st.session_state.chk_1), 
+        bool(st.session_state.chk_2), 
         bool(has_diary_today_bottom), 
-        bool(st.session_state.get("chk_4", False)), 
-        bool(st.session_state.get("chk_5", False))
+        bool(st.session_state.chk_4), 
+        bool(st.session_state.chk_5)
     ])
     progress_pct = int((completed_count / 5) * 100)
     
@@ -462,849 +419,7 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 
 
 # =========================================================
-# [PAGE 2] 홀랜드(RIASEC) 진로 적성 검사 페이지
-# =========================================================
-elif st.session_state.page == "holland":
-    
-    st.markdown("<style>.block-container{ max-width: 1000px !important; padding-top: 2rem !important; }</style>", unsafe_allow_html=True)
-    
-    if st.button("🔙 메인 대시보드로 돌아가기"):
-        navigate_to("main")
-        
-    # 사용자가 제공한 HTML 코드를 Iframe 형식으로 삽입
-    holland_html = """<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyStair | 홀랜드(RIASEC) 진로 적성 검사</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --mystair-navy: #0F172A;
-            --mystair-navy-light: #1E293B;
-            --mystair-indigo: #6366F1;
-            --mystair-indigo-hover: #4F46E5;
-            --mystair-purple: #A855F7;
-            --mystair-gradient: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
-            --mystair-bg: transparent;
-            --card-bg: #FFFFFF;
-            --text-main: #0F172A;
-            --text-sub: #64748B;
-            --border-color: #E2E8F0;
-            --pill-bg: #F1F5F9;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--mystair-bg);
-            color: var(--text-main);
-            min-height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mystair-header {
-            background-color: var(--mystair-navy);
-            height: 72px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
-            border-radius: 20px 20px 0 0;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .mystair-logo {
-            color: #FFFFFF;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            font-size: 26px;
-            letter-spacing: -0.5px;
-            cursor: pointer;
-        }
-
-        .hot-badge {
-            background: var(--mystair-gradient);
-            color: #FFFFFF;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .header-sub {
-            color: #94A3B8;
-            font-size: 14px;
-            font-weight: 500;
-            border-left: 1px solid #334155;
-            padding-left: 16px;
-        }
-
-        .main-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-        }
-
-        .card-container {
-            width: 100%;
-            max-width: 680px;
-            background: var(--card-bg);
-            border-radius: 0 0 24px 24px;
-            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(226, 232, 240, 0.8);
-            padding: 40px;
-            transition: all 0.3s ease;
-        }
-
-        .start-screen {
-            text-align: center;
-            padding: 20px 0;
-        }
-
-        .start-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--mystair-navy);
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-
-        .start-desc {
-            color: var(--text-sub);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .info-pills {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 36px;
-            flex-wrap: wrap;
-        }
-
-        .info-pill {
-            background-color: var(--pill-bg);
-            color: var(--mystair-navy);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            background: var(--mystair-navy);
-            color: #FFFFFF;
-            border: none;
-            padding: 16px 40px;
-            font-size: 16px;
-            font-weight: 700;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--mystair-navy-light);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
-        }
-
-        .quiz-screen {
-            display: none;
-        }
-
-        .progress-section {
-            margin-bottom: 32px;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--mystair-navy);
-            margin-bottom: 10px;
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 10px;
-            background-color: var(--pill-bg);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--mystair-gradient);
-            width: 0%;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 20px;
-        }
-
-        .question-card {
-            min-height: 110px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 28px;
-        }
-
-        .question-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--mystair-navy);
-            line-height: 1.5;
-            word-break: keep-all;
-        }
-
-        .options-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .option-btn {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            padding: 16px 20px;
-            border-radius: 14px;
-            text-align: left;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .option-btn:hover {
-            border-color: var(--mystair-indigo);
-            background-color: #F8FAFC;
-            transform: translateX(4px);
-        }
-
-        .option-btn.selected {
-            border-color: var(--mystair-indigo);
-            background-color: #EEF2FF;
-            color: var(--mystair-indigo);
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .btn-prev {
-            background: none;
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: var(--text-sub);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-prev:hover:not(:disabled) {
-            background-color: var(--pill-bg);
-            color: var(--text-main);
-        }
-
-        .btn-prev:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .result-screen {
-            display: none;
-        }
-
-        .result-header {
-            text-align: center;
-            padding-bottom: 24px;
-            margin-bottom: 24px;
-            border-bottom: 2px dashed var(--border-color);
-        }
-
-        .result-tag {
-            display: inline-block;
-            background: var(--mystair-gradient);
-            color: #FFFFFF;
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .result-main-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--mystair-navy);
-            margin-bottom: 6px;
-        }
-
-        .result-sub-title {
-            font-size: 15px;
-            color: var(--text-sub);
-            font-weight: 500;
-        }
-
-        .score-bars {
-            margin-bottom: 32px;
-        }
-
-        .score-bar-item {
-            margin-bottom: 14px;
-        }
-
-        .score-bar-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--mystair-navy);
-        }
-
-        .score-bar-track {
-            height: 12px;
-            background-color: var(--pill-bg);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .score-bar-fill {
-            height: 100%;
-            background: var(--mystair-indigo);
-            border-radius: 10px;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .score-bar-item.top-1 .score-bar-fill {
-            background: var(--mystair-gradient);
-        }
-
-        .detail-card {
-            background-color: #F8FAFC;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .detail-card h3 {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--mystair-navy);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .detail-card p {
-            font-size: 14px;
-            color: var(--text-sub);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .tag-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .tag {
-            background-color: #FFFFFF;
-            border: 1px solid var(--border-color);
-            color: var(--mystair-navy);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 32px;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-copy {
-            width: 100%;
-            background: var(--mystair-gradient);
-            color: #FFFFFF;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-            transition: all 0.2s;
-        }
-
-        .btn-copy:hover {
-            opacity: 0.95;
-            transform: translateY(-2px);
-        }
-
-        .btn-home {
-            flex: 1;
-            background-color: var(--mystair-navy);
-            color: #FFFFFF;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn-home:hover {
-            background-color: var(--mystair-navy-light);
-            transform: translateY(-2px);
-        }
-
-        .btn-restart {
-            flex: 1;
-            background-color: var(--pill-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-restart:hover {
-            background-color: var(--border-color);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--mystair-navy);
-            color: #FFFFFF;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            display: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 200;
-        }
-    </style>
-</head>
-<body>
-
-<header class="mystair-header">
-    <div class="header-left">
-        <span class="mystair-logo" onclick="goToMain()">MyStair</span>
-        <span class="hot-badge">HOT</span>
-        <span class="header-sub">전국 마이스터고 맞춤형 진로검사</span>
-    </div>
-</header>
-
-<div class="main-wrapper">
-    <div class="card-container">
-        
-        <div id="start-screen" class="start-screen">
-            <h1 class="start-title">홀랜드(RIASEC)<br>진로 적성 검사</h1>
-            <p class="start-desc">전국 마이스터고 및 직업계고 학생들을 위한 적성 탐색 검사입니다.<br>평소 나의 성향과 가장 가까운 선택지를 골라주세요.</p>
-            
-            <div class="info-pills">
-                <div class="info-pill">⏱ 소요시간 약 7분</div>
-                <div class="info-pill">📝 총 60문항</div>
-                <div class="info-pill">🎯 6개 진로유형 분석</div>
-            </div>
-
-            <button class="btn-primary" onclick="startQuiz()">검사 시작하기</button>
-        </div>
-
-        <div id="quiz-screen" class="quiz-screen">
-            <div class="progress-section">
-                <div class="progress-info">
-                    <span id="question-number">문항 1 / 60</span>
-                    <span id="progress-percent" style="color: var(--mystair-indigo);">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div id="progress-fill" class="progress-bar-fill"></div>
-                </div>
-            </div>
-
-            <div class="question-card">
-                <div id="question-text" class="question-text">질문이 여기에 표시됩니다.</div>
-            </div>
-
-            <div class="options-group">
-                <button class="option-btn" onclick="selectOption(1)">1. 전혀 그렇지 않다</button>
-                <button class="option-btn" onclick="selectOption(2)">2. 그렇지 않은 편이다</button>
-                <button class="option-btn" onclick="selectOption(3)">3. 보통이다</button>
-                <button class="option-btn" onclick="selectOption(4)">4. 그런 편이다</button>
-                <button class="option-btn" onclick="selectOption(5)">5. 매우 그렇다</button>
-            </div>
-
-            <div class="nav-buttons">
-                <button id="btn-prev" class="btn-prev" onclick="prevQuestion()" disabled>← 이전 문항</button>
-            </div>
-        </div>
-
-        <div id="result-screen" class="result-screen">
-            <div class="result-header">
-                <div class="result-tag">진로 진단 완료</div>
-                <h2 id="top-type-code" class="result-main-title">나의 유형: -</h2>
-                <p id="top-type-name" class="result-sub-title"></p>
-            </div>
-
-            <div class="score-bars" id="score-bars">
-                </div>
-
-            <div id="result-details">
-                </div>
-
-            <div class="action-group">
-                <button class="btn-copy" onclick="copyResults()">📋 검사 결과 복사하기</button>
-                <div class="action-row">
-                    <button class="btn-restart" onclick="restartQuiz()">🔄 다시 검사하기</button>
-                    <button class="btn-home" onclick="goToMain()">🏠 메인화면으로 돌아가기</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div id="toast" class="toast">결과가 클립보드에 복사되었습니다!</div>
-
-<script>
-    // Iframe 외부의 Streamlit 부모 창을 리로드하여 초기화하는 로직으로 변경
-    function goToMain() {
-        window.parent.location.reload();
-    }
-
-    const questions = [
-        { id: 1, type: "R", text: "1. 도구나 기계를 사용해 물건을 직접 만들거나 고치는 것을 즐긴다." },
-        { id: 2, type: "R", text: "2. 손재주가 좋고 기계나 장치의 작동 원리에 관심이 많다." },
-        { id: 3, type: "R", text: "3. 실내 서류 작업보다 야외나 현장에서 직접 활동하는 것을 선호한다." },
-        { id: 4, type: "R", text: "4. 신체적인 활동이나 운동, 기계 조작을 필요로 하는 일을 잘한다." },
-        { id: 5, type: "R", text: "5. 복잡한 이론보다는 눈에 보이는 실용적인 결과물을 만드는 것이 좋다." },
-        { id: 6, type: "R", text: "6. 전기, 전자, 자동차, 건축 등 기술 관련 분야에 흥미가 있다." },
-        { id: 7, type: "R", text: "7. 도면이나 설계도를 보고 직접 조립하거나 제작하는 일에 보람을 느낀다." },
-        { id: 8, type: "R", text: "8. 구체적이고 정형화된 과제를 실질적인 방법으로 해결하는 편이다." },
-        { id: 9, type: "R", text: "9. 작업 도구나 안전 장비를 갖추고 일하는 정밀 작업이 적성에 맞는다." },
-        { id: 10, type: "R", text: "10. 문제 상황 시 말로 설명하기보다 직접 행동으로 고쳐나가는 것을 선호한다." },
-        { id: 11, type: "I", text: "11. 관심 있는 주제나 현상에 대해 깊이 있게 조사하고 분석하는 것을 좋아한다." },
-        { id: 12, type: "I", text: "12. 수학, 과학, 통계 등 논리적인 사고가 필요한 문제를 풀어내는 것이 재미있다." },
-        { id: 13, type: "I", text: "13. 사물의 원리나 근본적인 원인을 밝혀내는 연구 중심 활동을 선호한다." },
-        { id: 14, type: "I", text: "14. 새로운 사실이나 데이터를 관찰하고 정리하는 일에 흥미를 느낀다." },
-        { id: 15, type: "I", text: "15. 감정이나 주관적 판단보다는 객관적인 데이터와 사실에 기반해 판단한다." },
-        { id: 16, type: "I", text: "16. 학술 서적, 기술 전문서, 연구 보고서를 읽고 지식을 쌓는 것을 좋아한다." },
-        { id: 17, type: "I", text: "17. 복잡한 추론이나 지적 호기심을 자극하는 도전적인 과제를 좋아한다." },
-        { id: 18, type: "I", text: "18. 현상의 원인과 결과를 체계적으로 분석하는 연구원이나 분석가의 삶에 끌린다." },
-        { id: 19, type: "I", text: "19. 과학적 실험이나 아이디어 검증 절차를 계획하고 실행하는 능력이 있다." },
-        { id: 20, type: "I", text: "20. 타인과의 타협보다는 독자적인 탐구와 창의적 연구 활동을 선호한다." },
-        { id: 21, type: "A", text: "21. 그림, 음악, 글쓰기, 디자인 등 창의적인 표현 활동을 좋아한다." },
-        { id: 22, type: "A", text: "22. 규칙이나 틀에 매이지 않고 자유롭게 생각하고 행동하는 것을 선호한다." },
-        { id: 23, type: "A", text: "23. 감수성이 풍부하고 독창적인 아이디어를 내는 일에 자신이 있다." },
-        { id: 24, type: "A", text: "24. 예술 작품이나 디자인 제품을 감상하고 평가하는 것에 흥미가 많다." },
-        { id: 25, type: "A", text: "25. 지루하고 반복되는 작업보다는 새로움과 변화가 있는 일을 좋아한다." },
-        { id: 26, type: "A", text: "26. 자신의 개성과 감정을 예술적, 시각적, 문학적 방식으로 표현하기를 즐긴다." },
-        { id: 27, type: "A", text: "27. 공간, 색채, 미적 감각이 요구되는 일에 보람과 흥미를 느낀다." },
-        { id: 28, type: "A", text: "28. 다른 사람들과 차별화된 독특한 방식을 생각해내는 창의력이 뛰어나다." },
-        { id: 29, type: "A", text: "29. 상상력을 발휘하여 스토리를 만들거나 시각적 요소를 구상하는 것을 좋아한다." },
-        { id: 30, type: "A", text: "30. 정해진 규율보다 직관과 독창성을 인정받는 분위기에서 잘 집중한다." },
-        { id: 31, type: "S", text: "31. 다른 사람들을 도와주거나 가르치고 상담해 주는 일에 보람을 느낀다." },
-        { id: 32, type: "S", text: "32. 타인의 고민이나 문제에 잘 공감하고 진심으로 들어주는 편이다." },
-        { id: 33, type: "S", text: "33. 사람들과 원만하게 대화하고 좋은 관계를 유지하는 능력이 있다." },
-        { id: 34, type: "S", text: "34. 기계나 데이터보다는 사람들과 함께 협력하며 일하는 것이 즐겁다." },
-        { id: 35, type: "S", text: "35. 봉사활동, 교육, 멘토링 프로그램에 참여하는 것을 좋아한다." },
-        { id: 36, type: "S", text: "36. 상대방의 성장과 변화를 이끌어내는 교사, 상담사, 복지사 역할에 흥미가 있다." },
-        { id: 37, type: "S", text: "37. 갈등이 생겼을 때 친절하고 평화로운 방식으로 해결하려고 노력한다." },
-        { id: 38, type: "S", text: "38. 타인의 기분이나 필요를 잘 파악하고 세심하게 배려한다." },
-        { id: 39, type: "S", text: "39. 팀원들의 사기를 북돋우고 서로 돕는 화목한 분위기를 만드는 것을 잘한다." },
-        { id: 40, type: "S", text: "40. 사회적인 가치나 사람들의 행복을 높이는 공익적 직무에 끌린다." },
-        { id: 41, type: "E", text: "41. 목표를 달성하기 위해 사람들을 설득하고 리드하는 것을 잘한다." },
-        { id: 42, type: "E", text: "42. 리더십을 발휘하여 그룹의 방향을 결정하고 이끄는 상황을 즐긴다." },
-        { id: 43, type: "E", text: "43. 경쟁적인 상황에서 승리하거나 성과를 내는 것에 열정을 느낀다." },
-        { id: 44, type: "E", text: "44. 새로운 사업이나 프로젝트를 기획하고 제안하는 일에 도전적이다." },
-        { id: 45, type: "E", text: "45. 자신의 의견을 명확하게 피력하고 논리적으로 설득하는 능력이 있다." },
-        { id: 46, type: "E", text: "46. 조직의 목표를 위해 의사결정을 내리고 책임지는 자리를 선호한다." },
-        { id: 47, type: "E", text: "47. 마케팅, 영업, 경영, 기획 등 경제적 성과 창출과 관련된 일에 흥미가 있다." },
-        { id: 48, type: "E", text: "48. 위험을 감수하더라도 더 큰 보상과 비전을 이룰 수 있는 도전을 선호한다." },
-        { id: 49, type: "E", text: "49. 사람들과의 인적 네트워크 구축 및 협상 타결을 자신 있게 수행한다." },
-        { id: 50, type: "E", text: "50. 정체된 환경보다는 모험적이고 다이내믹한 비즈니스 환경을 선호한다." },
-        { id: 51, type: "C", text: "51. 정해진 규칙, 체계, 절차에 따라 정확하게 일 처리하는 것을 좋아한다." },
-        { id: 52, type: "C", text: "52. 서류, 숫자, 데이터 및 기록을 꼼꼼하게 정리하고 관리하는 데 강하다." },
-        { id: 53, type: "C", text: "53. 모호하거나 예측 불가능한 업무보다 명확한 가이드라인이 있는 업무를 선호한다." },
-        { id: 54, type: "C", text: "54. 세밀함과 정밀함이 요구되는 계산, 회계, 행정 사무 작업에 적합하다." },
-        { id: 55, type: "C", text: "55. 약속 시간이나 마감 기한, 조직의 규정을 철저하게 준수한다." },
-        { id: 56, type: "C", text: "56. 계획된 일정을 체계적으로 수립하고 이를 차근차근 이행해 나간다." },
-        { id: 57, type: "C", text: "57. 데이터 입력, 자료 검토, 장부 작성 등 오류 없이 일하는 데 자부심이 있다." },
-        { id: 58, type: "C", text: "58. 변화가 많은 환경보다는 안정적이고 체계가 잡힌 조직 문화를 선호한다." },
-        { id: 59, type: "C", text: "59. 파일 정리가 잘 되어 있고 구조화된 오피스 환경에서 일할 때 능률이 오른다." },
-        { id: 60, type: "C", text: "60. 주어진 책임을 신뢰성 있게 완수하고 묵묵하게 서포트하는 일을 잘한다." }
-    ];
-
-    const typeMeta = {
-        R: {
-            name: "실재형 (Realistic)",
-            desc: "실용적이고 활동적이며, 기계나 도구를 다루는 것을 좋아합니다. 솔직하고 현실적이며 직접 문제 현장에 부딪쳐 해결하는 명장형 성향입니다.",
-            fields: ["기계공학", "전기전자", "건설/토목", "IT/네트워크", "스마트팩토리", "설비정비"],
-            jobs: ["기계설계엔지니어", "전기설비기사", "네트워크관리자", "생산관리자", "품질보증전문가"]
-        },
-        I: {
-            name: "탐구형 (Investigative)",
-            desc: "논리적이고 호기심이 많으며 연구 분석 지향적입니다. 기술 원리와 데이터 및 알고리즘을 파고들어 최선의 답을 찾아냅니다.",
-            fields: ["자연과학", "데이터분석", "SW개발", "반도체/신소재", "R&D연구"],
-            jobs: ["데이터분석가", "연구원", "소프트웨어엔지니어", "품질연구원", "알고리즘개발자"]
-        },
-        A: {
-            name: "예술형 (Artistic)",
-            desc: "독창적이고 감수성이 풍부하며 상상력이 높습니다. 기존 틀에 매이지 않고 자유롭고 창의적인 기술 아이디어를 구상합니다.",
-            fields: ["UI/UX 디자인", "미디어/콘텐츠", "제품디자인", "웹툰/그래픽", "공간디자인"],
-            jobs: ["UI/UX 디자이너", "콘텐츠크리에이터", "제품디자이너", "3D모델러", "영상에디터"]
-        },
-        S: {
-            name: "사회형 (Social)",
-            desc: "친절하고 이타적이며 대인관계 능력이 뛰어납니다. 동료들을 돕고 가르치며 양호한 협력 분위기를 만드는 능력이 뛰어납니다.",
-            fields: ["교육/훈련", "상담/심리", "고객성공(CS)", "사회복지", "보건/안전"],
-            jobs: ["진로상담사", "직업훈련교사", "CS매니저", "산업안전관리자", "사회복지사"]
-        },
-        E: {
-            name: "기업형 (Enterprising)",
-            desc: "리더십과 설득력이 뛰어남하며 도전적입니다. 프로젝트 리더나 비즈니스 창업 등 주도적으로 성과를 내는 자리를 좋아합니다.",
-            fields: ["경영/기획", "기술영업", "스타트업/창업", "마케팅", "프로젝트매니지먼트"],
-            jobs: ["기술영업전문가", "서비스기획자", "프로젝트매니저(PM)", "스타트업대표", "마케터"]
-        },
-        C: {
-            name: "관습형 (Conventional)",
-            desc: "체계적이고 정밀하며 약속과 절차를 신뢰성 있게 지킵니다. 서류 관리, 품질 검수, 데이터 입력을 오차 없이 완벽히 정돈합니다.",
-            fields: ["경리/회계", "행정/사무", "DB관리", "공정/품질검사", "금융/세무"],
-            jobs: ["회계사무원", "행정전문가", "데이터베이스관리자", "QA엔지니어", "자금/총무담당자"]
-        }
-    };
-
-    let currentIndex = 0;
-    let answers = new Array(questions.length).fill(null);
-
-    function startQuiz() {
-        document.getElementById('start-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
-        showQuestion(0);
-    }
-
-    function showQuestion(index) {
-        currentIndex = index;
-        const q = questions[index];
-        document.getElementById('question-number').innerText = `문항 ${index + 1} / ${questions.length}`;
-        document.getElementById('question-text').innerText = q.text;
-
-        const percent = Math.round(((index) / questions.length) * 100);
-        document.getElementById('progress-percent').innerText = `${percent}%`;
-        document.getElementById('progress-fill').style.width = `${percent}%`;
-
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach((btn, idx) => {
-            if (answers[index] === idx + 1) {
-                btn.classList.add('selected');
-            } else {
-                btn.classList.remove('selected');
-            }
-        });
-
-        document.getElementById('btn-prev').disabled = (index === 0);
-    }
-
-    function selectOption(value) {
-        answers[currentIndex] = value;
-        
-        if (currentIndex < questions.length - 1) {
-            setTimeout(() => {
-                showQuestion(currentIndex + 1);
-            }, 120);
-        } else {
-            showResults();
-        }
-    }
-
-    function prevQuestion() {
-        if (currentIndex > 0) {
-            showQuestion(currentIndex - 1);
-        }
-    }
-
-    function calculateScores() {
-        const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
-        answers.forEach((score, idx) => {
-            if (score !== null) {
-                const type = questions[idx].type;
-                scores[type] += score;
-            }
-        });
-        return scores;
-    }
-
-    function showResults() {
-        document.getElementById('quiz-screen').style.display = 'none';
-        document.getElementById('result-screen').style.display = 'block';
-
-        const scores = calculateScores();
-        const sortedTypes = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
-        const topCode = sortedTypes.slice(0, 2).join('');
-        const top1 = sortedTypes[0];
-        const top2 = sortedTypes[1];
-
-        document.getElementById('top-type-code').innerText = `주요 유형: ${topCode} 유형`;
-        document.getElementById('top-type-name').innerText = `1순위: ${typeMeta[top1].name} | 2순위: ${typeMeta[top2].name}`;
-
-        const scoreBarsEl = document.getElementById('score-bars');
-        scoreBarsEl.innerHTML = '';
-        sortedTypes.forEach((type, rank) => {
-            const score = scores[type];
-            const percentage = Math.round((score / 50) * 100);
-
-            const item = document.createElement('div');
-            item.className = `score-bar-item ${rank === 0 ? 'top-1' : ''}`;
-            item.innerHTML = `
-                <div class="score-bar-label">
-                    <span>${typeMeta[type].name}</span>
-                    <span>${score} / 50점</span>
-                </div>
-                <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width: ${percentage}%;"></div>
-                </div>
-            `;
-            scoreBarsEl.appendChild(item);
-        });
-
-        const detailEl = document.getElementById('result-details');
-        detailEl.innerHTML = '';
-
-        [top1, top2].forEach((tCode, idx) => {
-            const meta = typeMeta[tCode];
-            const box = document.createElement('div');
-            box.className = 'detail-card';
-            box.innerHTML = `
-                <h3>${idx === 0 ? '🥇 1순위' : '🥈 2순위'}: ${meta.name}</h3>
-                <p>${meta.desc}</p>
-                <div style="font-size: 13px; font-weight: 700; color: var(--mystair-navy); margin-bottom: 6px;">추천 진로 분야:</div>
-                <div class="tag-group" style="margin-bottom: 12px;">
-                    ${meta.fields.map(f => `<span class="tag">${f}</span>`).join('')}
-                </div>
-                <div style="font-size: 13px; font-weight: 700; color: var(--mystair-navy); margin-bottom: 6px;">추천 세부 직무:</div>
-                <div class="tag-group">
-                    ${meta.jobs.map(j => `<span class="tag">${j}</span>`).join('')}
-                </div>
-            `;
-            detailEl.appendChild(box);
-        });
-    }
-
-    function copyResults() {
-        const scores = calculateScores();
-        const sortedTypes = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
-        const top1 = sortedTypes[0];
-        const top2 = sortedTypes[1];
-
-        let resultText = `[MyStair 홀랜드 진로 적성 검사 결과]\\n\\n`;
-        resultText += `■ 대표 유형 코드: ${top1}${top2}\\n\\n`;
-        resultText += `■ 유형별 점수 (50점 만점):\\n`;
-        sortedTypes.forEach(t => {
-            resultText += `- ${typeMeta[t].name}: ${scores[t]}점\\n`;
-        });
-
-        resultText += `\\n■ [1순위] ${typeMeta[top1].name}\\n`;
-        resultText += `  - 설명: ${typeMeta[top1].desc}\\n`;
-        resultText += `  - 추천 분야: ${typeMeta[top1].fields.join(', ')}\\n`;
-        resultText += `  - 추천 직무: ${typeMeta[top1].jobs.join(', ')}\\n`;
-
-        resultText += `\\n■ [2순위] ${typeMeta[top2].name}\\n`;
-        resultText += `  - 설명: ${typeMeta[top2].desc}\\n`;
-        resultText += `  - 추천 분야: ${typeMeta[top2].fields.join(', ')}\\n`;
-        resultText += `  - 추천 직무: ${typeMeta[top2].jobs.join(', ')}\\n`;
-
-        navigator.clipboard.writeText(resultText).then(() => {
-            showToast("검사 결과가 클립보드에 복사되었습니다!");
-        }).catch(err => {
-            console.error("Copy failed", err);
-        });
-    }
-
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
-        toast.innerText = msg;
-        toast.style.display = 'block';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 2500);
-    }
-
-    function restartQuiz() {
-        currentIndex = 0;
-        answers = new Array(questions.length).fill(null);
-        document.getElementById('result-screen').style.display = 'none';
-        document.getElementById('start-screen').style.display = 'block';
-    }
-</script>
-
-</body>
-</html>"""
-    
-    components.html(holland_html, height=1000, scrolling=True)
-
-
-# =========================================================
-# [PAGE 3] 서비스 소개 페이지 (홍보 랜딩)
+# [PAGE 2] 서비스 소개 페이지 (홍보 랜딩)
 # =========================================================
 elif st.session_state.page == "intro":
 
