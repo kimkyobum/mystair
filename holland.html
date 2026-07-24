@@ -75,7 +75,7 @@
             gap: 8px;
             backdrop-filter: blur(4px);
             margin-right: 8px;
-            text-decoration: none; /* 링크 밑줄 제거 */
+            text-decoration: none;
         }
 
         .btn-header-main:hover {
@@ -91,7 +91,7 @@
             font-size: 26px;
             letter-spacing: -0.5px;
             cursor: pointer;
-            text-decoration: none; /* 링크 밑줄 제거 */
+            text-decoration: none;
         }
 
         .hot-badge {
@@ -498,15 +498,14 @@
 </head>
 <body>
 
-<!-- Header (왼쪽 상단 메인 이동 버튼 고정) -->
+<!-- Header -->
 <header class="mystair-header">
     <div class="header-left">
-        <!-- 수정된 부분: button 태그를 a 태그로 변경하고 target="_top" 적용 -->
-        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_top" class="btn-header-main">
+        <!-- target="_blank"를 적용하여 새로운 창/탭으로 주소창과 함께 열리도록 설정 -->
+        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_blank" class="btn-header-main">
             <i class="fa-solid fa-house"></i> 메인화면으로
         </a>
-        <!-- 수정된 부분: span 태그를 a 태그로 변경하고 target="_top" 적용 (로고 클릭 시에도 메인으로 이동) -->
-        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_top" class="mystair-logo">MyStair</a>
+        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_blank" class="mystair-logo">MyStair</a>
         
         <span class="hot-badge">Holland</span>
         <span class="header-sub">전국 마이스터고 맞춤형 직업적성검사</span>
