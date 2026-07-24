@@ -33,287 +33,311 @@ if st.session_state.page == "main":
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 메인 포털 전용 CSS 주입 (들여쓰기 방지)
+    # 메인 포털 전용 CSS 주입
     css_string = """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
 
 .block-container {
-    max-width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-family: 'SUIT', -apple-system, sans-serif !important;
+max-width: 100% !important;
+padding: 0 !important;
+margin: 0 !important;
+font-family: 'SUIT', -apple-system, sans-serif !important;
 }
 
 header[data-testid="stHeader"] {
-    display: none !important;
+display: none !important;
 }
 
 .top-banner {
-    width: 100%;
-    background-color: #3b82f6;
-    color: #ffffff;
-    text-align: center;
-    padding: 12px 0;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
+width: 100%;
+background-color: #3b82f6;
+color: #ffffff;
+text-align: center;
+padding: 12px 0;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: -0.5px;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 15px;
 }
+
 .top-banner-badge {
-    border: 1px solid rgba(255,255,255,0.4);
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-size: 12px;
+border: 1px solid rgba(255,255,255,0.4);
+padding: 4px 12px;
+border-radius: 50px;
+font-size: 12px;
 }
 
 .jk-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 20px;
 }
 
 .jk-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 0;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 30px 0;
 }
+
 .jk-logo {
-    font-size: 32px;
-    font-weight: 900;
-    color: #1d4ed8;
-    letter-spacing: -1.5px;
-    cursor: pointer;
+font-size: 32px;
+font-weight: 900;
+color: #1d4ed8;
+letter-spacing: -1.5px;
+cursor: pointer;
 }
+
 .jk-search-box {
-    display: flex;
-    align-items: center;
-    border: 2px solid #3b82f6;
-    border-radius: 50px;
-    padding: 5px 10px 5px 20px;
-    width: 500px;
-    background: #ffffff;
+display: flex;
+align-items: center;
+border: 2px solid #3b82f6;
+border-radius: 50px;
+padding: 5px 10px 5px 20px;
+width: 500px;
+background: #ffffff;
 }
+
 .jk-search-loc {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e293b;
-    padding-right: 15px;
-    border-right: 1px solid #e2e8f0;
-    cursor: pointer;
+font-size: 14px;
+font-weight: 700;
+color: #1e293b;
+padding-right: 15px;
+border-right: 1px solid #e2e8f0;
+cursor: pointer;
 }
+
 .jk-search-input {
-    border: none;
-    outline: none;
-    padding: 10px 15px;
-    width: 100%;
-    font-size: 15px;
-    font-family: 'SUIT';
+border: none;
+outline: none;
+padding: 10px 15px;
+width: 100%;
+font-size: 15px;
+font-family: 'SUIT';
 }
+
 .jk-search-btn {
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+background: transparent;
+border: none;
+font-size: 20px;
+cursor: pointer;
 }
+
 .jk-auth-group {
-    display: flex;
-    gap: 10px;
+display: flex;
+gap: 10px;
 }
+
 .jk-btn-outline {
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
+border: 1px solid #e2e8f0;
+background: #ffffff;
+padding: 8px 16px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 600;
+color: #475569;
+cursor: pointer;
 }
 
 .jk-nav {
-    display: flex;
-    gap: 35px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 18px;
-    font-weight: 800;
-    color: #1e293b;
+display: flex;
+gap: 35px;
+padding-bottom: 15px;
+border-bottom: 1px solid #e2e8f0;
+font-size: 18px;
+font-weight: 800;
+color: #1e293b;
 }
+
 .jk-nav span { cursor: pointer; }
 .jk-nav span:hover { color: #3b82f6; }
 
 .jk-main-grid {
-    display: grid;
-    grid-template-columns: 2fr 1.1fr;
-    gap: 24px;
-    margin-top: 30px;
+display: grid;
+grid-template-columns: 2fr 1.1fr;
+gap: 24px;
+margin-top: 30px;
 }
 
 .jk-glow-box {
-    position: relative;
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 30px;
-    z-index: 1;
+position: relative;
+background: #ffffff;
+border-radius: 16px;
+padding: 30px;
+z-index: 1;
 }
+
 .jk-glow-box::before {
-    content: "";
-    position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    background: linear-gradient(135deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb);
-    z-index: -1;
-    border-radius: 18px;
-    opacity: 0.7;
+content: "";
+position: absolute;
+top: -2px; left: -2px; right: -2px; bottom: -2px;
+background: linear-gradient(135deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb);
+z-index: -1;
+border-radius: 18px;
+opacity: 0.7;
 }
+
 .jk-glow-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 20px;
 }
+
 .jk-blue-btn {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
+background: #3b82f6;
+color: white;
+border: none;
+padding: 10px 20px;
+border-radius: 8px;
+font-weight: 700;
+font-size: 14px;
+cursor: pointer;
 }
 
 .blur-card-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 15px;
-    filter: blur(4px);
-    opacity: 0.6;
-    user-select: none;
-    pointer-events: none;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 15px;
+filter: blur(4px);
+opacity: 0.6;
+user-select: none;
+pointer-events: none;
 }
+
 .blur-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    height: 140px;
-    background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 12px;
+padding: 20px;
+height: 140px;
+background: #f8fafc;
 }
+
 .blur-line {
-    height: 12px;
-    background: #cbd5e1;
-    border-radius: 10px;
-    margin-bottom: 10px;
+height: 12px;
+background: #cbd5e1;
+border-radius: 10px;
+margin-bottom: 10px;
 }
 
 .jk-right-box {
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 30px 24px;
-    background: #ffffff;
+border: 1px solid #e2e8f0;
+border-radius: 16px;
+padding: 30px 24px;
+background: #ffffff;
 }
+
 .jk-yellow-banner {
-    background: #fef9c3;
-    color: #854d0e;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 20px;
+background: #fef9c3;
+color: #854d0e;
+padding: 16px;
+border-radius: 12px;
+font-weight: 700;
+font-size: 14px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+cursor: pointer;
+margin-bottom: 20px;
 }
+
 .jk-quick-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
 }
+
 .jk-quick-item {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 16px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #1e293b;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 90px;
-    cursor: pointer;
+border: 1px solid #e2e8f0;
+border-radius: 12px;
+padding: 16px;
+font-size: 13px;
+font-weight: 700;
+color: #1e293b;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 90px;
+cursor: pointer;
 }
+
 .jk-quick-item:hover { border-color: #cbd5e1; background: #f8fafc; }
 
 .jk-mid-banner {
-    background: #f8fafc;
-    border-radius: 16px;
-    padding: 30px;
-    text-align: center;
-    margin: 40px 0;
+background: #f8fafc;
+border-radius: 16px;
+padding: 30px;
+text-align: center;
+margin: 40px 0;
 }
+
 .jk-mid-btns {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 20px;
+display: flex;
+justify-content: center;
+gap: 16px;
+margin-top: 20px;
 }
+
 .jk-mid-btn {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 15px;
-    color: #1e293b;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+background: #ffffff;
+border: 1px solid #e2e8f0;
+padding: 16px 32px;
+border-radius: 12px;
+font-weight: 700;
+font-size: 15px;
+color: #1e293b;
+cursor: pointer;
+box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 
 .jk-job-section { margin-bottom: 80px; }
 .jk-section-title { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 20px; }
 
 .jk-chip-group {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    padding-bottom: 5px;
+display: flex;
+gap: 8px;
+margin-bottom: 24px;
+overflow-x: auto;
+padding-bottom: 5px;
 }
+
 .jk-chip {
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-size: 14px;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    white-space: nowrap;
-    cursor: pointer;
-    background: #ffffff;
+padding: 10px 20px;
+border-radius: 50px;
+font-size: 14px;
+color: #64748b;
+border: 1px solid #e2e8f0;
+white-space: nowrap;
+cursor: pointer;
+background: #ffffff;
 }
+
 .jk-chip.active {
-    background: #eff6ff;
-    color: #2563eb;
-    border-color: #2563eb;
-    font-weight: 700;
+background: #eff6ff;
+color: #2563eb;
+border-color: #2563eb;
+font-weight: 700;
 }
 
 .jk-job-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 16px;
 }
+
 .jk-job-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 24px;
-    background: #ffffff;
-    cursor: pointer;
-    transition: all 0.2s ease;
+border: 1px solid #e2e8f0;
+border-radius: 16px;
+padding: 24px;
+background: #ffffff;
+cursor: pointer;
+transition: all 0.2s ease;
 }
+
 .jk-job-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .job-card-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 1.4; }
 .job-card-comp { font-size: 13px; color: #64748b; margin-bottom: 16px; display: flex; justify-content: space-between;}
@@ -324,164 +348,155 @@ header[data-testid="stHeader"] {
 """
     st.markdown(css_string, unsafe_allow_html=True)
     
-    # 🌟 HTML 구조 주입 (들여쓰기 없이 좌측에 바짝 붙여 작성해야 에러가 안 납니다)
-    html_string = """
-<div class="top-banner">
-    <span class="top-banner-badge">실습 후 커리어 토크</span>
-    <span>커리어 고민 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
+    # 🌟 HTML 구조 주입 (들여쓰기로 인한 코드 블록화 현상을 방지하기 위해 완전히 좌측 정렬)
+    html_string = """<div class="top-banner">
+<span class="top-banner-badge">실습 후 커리어 토크</span>
+<span>커리어 고민 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
 </div>
-
 <div class="jk-container">
-    <div class="jk-header">
-        <div class="jk-logo">MyStair</div>
-        <div class="jk-search-box">
-            <div class="jk-search-loc">📍 지역 전체 ⌄</div>
-            <input type="text" class="jk-search-input" placeholder="MBTI, 추천 직무, 자격증 검색">
-            <button class="jk-search-btn">🔍</button>
-        </div>
-        <div class="jk-auth-group">
-            <button class="jk-btn-outline">회원가입/로그인</button>
-            <button class="jk-btn-outline">선생님 서비스 ⌄</button>
-        </div>
-    </div>
-    
-    <div class="jk-nav">
-        <span style="color: #3b82f6;">MBTI</span>
-        <span>홀랜드직무검사</span>
-        <span>진로추천</span>
-        <span>실습 JOB 찾기</span>
-        <span>합격 자소서</span>
-        <span>공채·기업정보</span>
-        <span>선배 톡톡</span>
-    </div>
-    
-    <div class="jk-main-grid">
-        <div class="jk-glow-box">
-            <div class="jk-glow-header">
-                <div>
-                    <div style="color: #3b82f6; font-weight: 800; font-size: 16px;">✨ 오늘의 AI 추천</div>
-                    <p style="margin:0; font-size: 14px; color: #64748b; margin-top: 6px;">나의 MBTI와 홀랜드 결과에 맞는 맞춤 기회를 찾아드려요!</p>
-                </div>
-                <button class="jk-blue-btn">나만의 맞춤 정보 받기</button>
-            </div>
-            <div class="blur-card-container">
-                <div class="blur-card">
-                    <div class="blur-line" style="width: 80%;"></div>
-                    <div class="blur-line" style="width: 60%;"></div>
-                    <div class="blur-line" style="width: 90%; margin-top: 20px;"></div>
-                </div>
-                <div class="blur-card">
-                    <div class="blur-line" style="width: 70%;"></div>
-                    <div class="blur-line" style="width: 50%;"></div>
-                    <div class="blur-line" style="width: 85%; margin-top: 20px;"></div>
-                </div>
-                <div class="blur-card">
-                    <div class="blur-line" style="width: 90%;"></div>
-                    <div class="blur-line" style="width: 40%;"></div>
-                    <div class="blur-line" style="width: 75%; margin-top: 20px;"></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="jk-right-box">
-            <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom:15px;">
-                미래의 명장님을 위한 맞춤 정보를 제공해드릴게요!
-            </div>
-            <div class="jk-yellow-banner">
-                <span>⚡ 커리어 취향 설정하고 맞춤 공고 받아보기</span>
-                <span>></span>
-            </div>
-            <div class="jk-quick-grid">
-                <div class="jk-quick-item">
-                    <span>이번 달<br>실습 일정</span>
-                    <span style="font-size: 20px; text-align: right;">🗂️</span>
-                </div>
-                <div class="jk-quick-item">
-                    <span>나의 진로<br>추천 정보</span>
-                    <span style="font-size: 20px; text-align: right;">🎯</span>
-                </div>
-                <div class="jk-quick-item">
-                    <span>요즘 실무<br>기술 트렌드</span>
-                    <span style="font-size: 20px; text-align: right;">📈</span>
-                </div>
-                <div class="jk-quick-item">
-                    <span>AI 자소서<br>완성도 분석</span>
-                    <span style="font-size: 20px; text-align: right;">✨</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="jk-mid-banner">
-        <div style="font-size: 18px; font-weight: 800; color: #0f172a;">⚡ 10초 컷! 나만의 공고 추천 받기</div>
-        <div class="jk-mid-btns">
-            <button class="jk-mid-btn">🛠️ 현장 실습이 최고예요</button>
-            <button class="jk-mid-btn">📖 이론/설계가 더 좋아요</button>
-        </div>
-    </div>
-    
-    <div class="jk-job-section">
-        <div class="jk-section-title">인기 실습 JOB</div>
-        <div class="jk-chip-group">
-            <div class="jk-chip active">기계·설비</div>
-            <div class="jk-chip">전기·전자</div>
-            <div class="jk-chip">소프트웨어</div>
-            <div class="jk-chip">자동화·로봇</div>
-            <div class="jk-chip">화학·신소재</div>
-            <div class="jk-chip">건축·토목</div>
-            <div class="jk-chip">디자인·설계</div>
-            <div class="jk-chip">품질관리</div>
-        </div>
-        
-        <div class="jk-job-grid">
-            <div class="jk-job-card">
-                <div class="job-card-title">[삼성전자] 2026년 하반기 DS부문 5급 신입사원 채용</div>
-                <div class="job-card-comp">
-                    <span>삼성전자(주)</span>
-                    <span class="d-day">D-7</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">신입·현장실습</span>
-                    <span class="job-tag">기숙사 제공</span>
-                </div>
-            </div>
-            <div class="jk-job-card">
-                <div class="job-card-title">2026 하반기 공개채용 [생산기술/보전 직무]</div>
-                <div class="job-card-comp">
-                    <span>현대자동차</span>
-                    <span class="d-day">D-12</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">신입</span>
-                    <span class="job-tag">장기근속 포상</span>
-                </div>
-            </div>
-            <div class="jk-job-card">
-                <div class="job-card-title">(주)포스코 '26년 하반기 제철설비 현장 실습생 모집</div>
-                <div class="job-card-comp">
-                    <span>(주)포스코</span>
-                    <span class="d-day">D-38</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">실습생</span>
-                    <span class="job-tag">인센티브</span>
-                </div>
-            </div>
-            <div class="jk-job-card">
-                <div class="job-card-title">[LG에너지솔루션] 배터리 생산/품질 관리 신입 채용</div>
-                <div class="job-card-comp">
-                    <span>LG에너지솔루션</span>
-                    <span class="d-day">D-51</span>
-                </div>
-                <div class="job-tags">
-                    <span class="job-tag">품질관리</span>
-                    <span class="job-tag">기숙사</span>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="jk-header">
+<div class="jk-logo">MyStair</div>
+<div class="jk-search-box">
+<div class="jk-search-loc">📍 지역 전체 ⌄</div>
+<input type="text" class="jk-search-input" placeholder="MBTI, 추천 직무, 자격증 검색">
+<button class="jk-search-btn">🔍</button>
 </div>
-"""
+<div class="jk-auth-group">
+<button class="jk-btn-outline">회원가입/로그인</button>
+<button class="jk-btn-outline">선생님 서비스 ⌄</button>
+</div>
+</div>
+<div class="jk-nav">
+<span style="color: #3b82f6;">MBTI</span>
+<span>홀랜드직무검사</span>
+<span>진로추천</span>
+<span>실습 JOB 찾기</span>
+<span>합격 자소서</span>
+<span>공채·기업정보</span>
+<span>선배 톡톡</span>
+</div>
+<div class="jk-main-grid">
+<div class="jk-glow-box">
+<div class="jk-glow-header">
+<div>
+<div style="color: #3b82f6; font-weight: 800; font-size: 16px;">✨ 오늘의 AI 추천</div>
+<p style="margin:0; font-size: 14px; color: #64748b; margin-top: 6px;">나의 MBTI와 홀랜드 결과에 맞는 맞춤 기회를 찾아드려요!</p>
+</div>
+<button class="jk-blue-btn">나만의 맞춤 정보 받기</button>
+</div>
+<div class="blur-card-container">
+<div class="blur-card">
+<div class="blur-line" style="width: 80%;"></div>
+<div class="blur-line" style="width: 60%;"></div>
+<div class="blur-line" style="width: 90%; margin-top: 20px;"></div>
+</div>
+<div class="blur-card">
+<div class="blur-line" style="width: 70%;"></div>
+<div class="blur-line" style="width: 50%;"></div>
+<div class="blur-line" style="width: 85%; margin-top: 20px;"></div>
+</div>
+<div class="blur-card">
+<div class="blur-line" style="width: 90%;"></div>
+<div class="blur-line" style="width: 40%;"></div>
+<div class="blur-line" style="width: 75%; margin-top: 20px;"></div>
+</div>
+</div>
+</div>
+<div class="jk-right-box">
+<div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom:15px;">
+미래의 명장님을 위한 맞춤 정보를 제공해드릴게요!
+</div>
+<div class="jk-yellow-banner">
+<span>⚡ 커리어 취향 설정하고 맞춤 공고 받아보기</span>
+<span>></span>
+</div>
+<div class="jk-quick-grid">
+<div class="jk-quick-item">
+<span>이번 달<br>실습 일정</span>
+<span style="font-size: 20px; text-align: right;">🗂️</span>
+</div>
+<div class="jk-quick-item">
+<span>나의 진로<br>추천 정보</span>
+<span style="font-size: 20px; text-align: right;">🎯</span>
+</div>
+<div class="jk-quick-item">
+<span>요즘 실무<br>기술 트렌드</span>
+<span style="font-size: 20px; text-align: right;">📈</span>
+</div>
+<div class="jk-quick-item">
+<span>AI 자소서<br>완성도 분석</span>
+<span style="font-size: 20px; text-align: right;">✨</span>
+</div>
+</div>
+</div>
+</div>
+<div class="jk-mid-banner">
+<div style="font-size: 18px; font-weight: 800; color: #0f172a;">⚡ 10초 컷! 나만의 공고 추천 받기</div>
+<div class="jk-mid-btns">
+<button class="jk-mid-btn">🛠️ 현장 실습이 최고예요</button>
+<button class="jk-mid-btn">📖 이론/설계가 더 좋아요</button>
+</div>
+</div>
+<div class="jk-job-section">
+<div class="jk-section-title">인기 실습 JOB</div>
+<div class="jk-chip-group">
+<div class="jk-chip active">기계·설비</div>
+<div class="jk-chip">전기·전자</div>
+<div class="jk-chip">소프트웨어</div>
+<div class="jk-chip">자동화·로봇</div>
+<div class="jk-chip">화학·신소재</div>
+<div class="jk-chip">건축·토목</div>
+<div class="jk-chip">디자인·설계</div>
+<div class="jk-chip">품질관리</div>
+</div>
+<div class="jk-job-grid">
+<div class="jk-job-card">
+<div class="job-card-title">[삼성전자] 2026년 하반기 DS부문 5급 신입사원 채용</div>
+<div class="job-card-comp">
+<span>삼성전자(주)</span>
+<span class="d-day">D-7</span>
+</div>
+<div class="job-tags">
+<span class="job-tag">신입·현장실습</span>
+<span class="job-tag">기숙사 제공</span>
+</div>
+</div>
+<div class="jk-job-card">
+<div class="job-card-title">2026 하반기 공개채용 [생산기술/보전 직무]</div>
+<div class="job-card-comp">
+<span>현대자동차</span>
+<span class="d-day">D-12</span>
+</div>
+<div class="job-tags">
+<span class="job-tag">신입</span>
+<span class="job-tag">장기근속 포상</span>
+</div>
+</div>
+<div class="jk-job-card">
+<div class="job-card-title">(주)포스코 '26년 하반기 제철설비 현장 실습생 모집</div>
+<div class="job-card-comp">
+<span>(주)포스코</span>
+<span class="d-day">D-38</span>
+</div>
+<div class="job-tags">
+<span class="job-tag">실습생</span>
+<span class="job-tag">인센티브</span>
+</div>
+</div>
+<div class="jk-job-card">
+<div class="job-card-title">[LG에너지솔루션] 배터리 생산/품질 관리 신입 채용</div>
+<div class="job-card-comp">
+<span>LG에너지솔루션</span>
+<span class="d-day">D-51</span>
+</div>
+<div class="job-tags">
+<span class="job-tag">품질관리</span>
+<span class="job-tag">기숙사</span>
+</div>
+</div>
+</div>
+</div>
+</div>"""
     st.markdown(html_string, unsafe_allow_html=True)
 
 
@@ -496,131 +511,124 @@ elif st.session_state.page == "intro":
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
 
 body, [class*="css"] {
-    font-family: 'SUIT', -apple-system, sans-serif !important;
+font-family: 'SUIT', -apple-system, sans-serif !important;
 }
 
 .stApp {
-    background: 
-        radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
-        radial-gradient(circle at 90% 20%, rgba(126, 87, 194, 0.1) 0px, transparent 45%),
-        radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
-        #ffffff !important;
-    background-attachment: fixed;
-    color: #1e293b;
+background: 
+    radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
+    radial-gradient(circle at 90% 20%, rgba(126, 87, 194, 0.1) 0px, transparent 45%),
+    radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+    #ffffff !important;
+background-attachment: fixed;
+color: #1e293b;
 }
 
 .block-container {
-    padding-top: 2rem;
-    padding-bottom: 10rem;
-    max-width: 1350px !important;
-    margin: 0 auto !important;
-    padding-left: 4rem !important;
-    padding-right: 4rem !important;
-    animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+padding-top: 2rem;
+padding-bottom: 10rem;
+max-width: 1350px !important;
+margin: 0 auto !important;
+padding-left: 4rem !important;
+padding-right: 4rem !important;
+animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes smoothFadeIn {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+0% { opacity: 0; transform: translateY(20px); }
+100% { opacity: 1; transform: translateY(0); }
 }
 @keyframes floatAnimation {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-14px); }
-    100% { transform: translateY(0px); }
+0% { transform: translateY(0px); }
+50% { transform: translateY(-14px); }
+100% { transform: translateY(0px); }
 }
 
-/* 알약 네비게이션 */
 .speak-navbar-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 70px;
+display: flex;
+justify-content: center;
+width: 100%;
+margin-bottom: 70px;
 }
 .speak-navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-    border-radius: 100px;
-    padding: 14px 40px;
-    width: 100%;
-    max-width: 1350px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: rgba(255, 255, 255, 0.85);
+backdrop-filter: blur(16px);
+border: 1px solid rgba(226, 232, 240, 0.8);
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+border-radius: 100px;
+padding: 14px 40px;
+width: 100%;
+max-width: 1350px;
 }
 .nav-left { display: flex; align-items: center; cursor: pointer; }
 .nav-logo-text {
-    font-size: 22px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #0f172a, #334155);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1px;
+font-size: 22px;
+font-weight: 800;
+background: linear-gradient(90deg, #0f172a, #334155);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: -1px;
 }
 .nav-right { display: flex; align-items: center; gap: 32px; }
 .nav-link { font-size: 15px; font-weight: 600; color: #475569; }
 .lang-btn-wrapper {
-    background: #f1f5f9; border: 1px solid #e2e8f0; padding: 8px 18px;
-    border-radius: 50px; font-size: 14px; font-weight: 600; color: #334155;
-    display: inline-flex; align-items: center; gap: 8px;
+background: #f1f5f9; border: 1px solid #e2e8f0; padding: 8px 18px;
+border-radius: 50px; font-size: 14px; font-weight: 600; color: #334155;
+display: inline-flex; align-items: center; gap: 8px;
 }
 
-/* 히어로 섹션 */
 .hero-section-left { text-align: left; padding: 30px 0; }
 .hero-badge {
-    display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
-    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
-    color: #475569; border-radius: 50px; font-size: 14px; font-weight: 600;
-    margin-bottom: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+color: #475569; border-radius: 50px; font-size: 14px; font-weight: 600;
+margin-bottom: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 .hero-title {
-    font-size: 60px; font-weight: 800; margin: 0 0 24px 0;
-    line-height: 1.2; letter-spacing: -2px; color: #0f172a;
+font-size: 60px; font-weight: 800; margin: 0 0 24px 0;
+line-height: 1.2; letter-spacing: -2px; color: #0f172a;
 }
 .hero-title span {
-    background: linear-gradient(90deg, #3bb2b8, #7e57c2);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+-webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .hero-subtitle {
-    font-size: 20px; color: #64748b; margin: 0 0 40px 0;
-    font-weight: 400; line-height: 1.6; letter-spacing: -0.3px;
+font-size: 20px; color: #64748b; margin: 0 0 40px 0;
+font-weight: 400; line-height: 1.6; letter-spacing: -0.3px;
 }
 
-/* 3D 이미지 */
 .hero-graphic-container { display: flex; justify-content: center; align-items: center; animation: floatAnimation 4s ease-in-out infinite; }
 .hero-graphic { width: 100%; max-width: 480px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
 
-/* 섹션 */
 .scroll-section { padding-top: 280px; }
 .section-tag { font-size: 13px; font-weight: 700; color: #3bb2b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
 .section-heading { font-size: 38px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.3; }
 .section-desc { font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
 
-/* 카드 */
 .modern-card {
-    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px;
-    padding: 36px 32px; border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column;
+background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px;
+padding: 36px 32px; border: 1px solid rgba(226, 232, 240, 0.8);
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column;
 }
 .modern-card:hover {
-    transform: translateY(-8px); background: rgba(255, 255, 255, 1);
-    box-shadow: 0 30px 60px rgba(126, 87, 194, 0.12); border-color: rgba(126, 87, 194, 0.4);
+transform: translateY(-8px); background: rgba(255, 255, 255, 1);
+box-shadow: 0 30px 60px rgba(126, 87, 194, 0.12); border-color: rgba(126, 87, 194, 0.4);
 }
 .modern-card h3 { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 14px 0; letter-spacing: -0.5px; }
 .modern-card p { font-size: 16px; color: #64748b; line-height: 1.7; margin: 0; word-break: keep-all; }
 
-/* FAQ */
 .faq-box {
-    background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 20px;
-    padding: 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.02);
-    margin-bottom: 20px; transition: all 0.3s ease;
+background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 20px;
+padding: 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+margin-bottom: 20px; transition: all 0.3s ease;
 }
 .faq-box:hover { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 15px 35px rgba(59, 178, 184, 0.06); }
 .faq-q { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
 .faq-a { font-size: 17px; color: #64748b; line-height: 1.6; margin: 0; }
 
-/* 푸터 */
 .footer-container { margin-top: 250px; padding: 60px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 20px; color: #64748b; font-size: 15px; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; }
 .footer-logo { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; }
@@ -632,19 +640,19 @@ body, [class*="css"] {
     # 🌟 상단 알약 네비게이션 바
     nav_html = """
 <div class="speak-navbar-container">
-    <div class="speak-navbar">
-        <div class="nav-left">
-            <span class="nav-logo-text">MyStair</span>
-        </div>
-        <div class="nav-right">
-            <span class="nav-link">서비스 소개</span>
-            <span class="nav-link">팀 소개</span>
-            <div class="lang-btn-wrapper">
-                <span>한국어</span>
-                <span style="font-size: 12px;">▼</span>
-            </div>
-        </div>
-    </div>
+<div class="speak-navbar">
+<div class="nav-left">
+<span class="nav-logo-text">MyStair</span>
+</div>
+<div class="nav-right">
+<span class="nav-link">서비스 소개</span>
+<span class="nav-link">팀 소개</span>
+<div class="lang-btn-wrapper">
+<span>한국어</span>
+<span style="font-size: 12px;">▼</span>
+</div>
+</div>
+</div>
 </div>
 """
     st.markdown(nav_html, unsafe_allow_html=True)
