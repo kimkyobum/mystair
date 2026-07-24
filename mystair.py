@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (컨테이너 박스 여백 및 높이 오류 완벽 수정)
+# 4. 글로벌 CSS (디자인 및 박스 레이아웃 정돈)
 # =========================================================
 st.markdown(
     """
@@ -117,7 +117,7 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 컨테이너 높이 충돌 및 여백 늘어짐 현상 방지 */
+/* 🌟 컨테이너 기본 스타일 깔끔하게 정돈 */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.9) !important; 
     backdrop-filter: blur(16px) !important; 
@@ -125,7 +125,6 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
     padding: 24px !important; 
     border: 1px solid rgba(226, 232, 240, 0.8) !important; 
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
-    height: auto !important;
 }
 
 /* 🌟 모든 버튼 스타일 일치화 */
@@ -281,7 +280,7 @@ elif st.session_state.page == "main":
 .ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; }
 .ms-job-section { margin-bottom: 120px; margin-top: 60px; }
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
-.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226, 232, 240, 0.8); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
 .ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 20px; padding: 26px 22px; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
@@ -375,7 +374,9 @@ elif st.session_state.page == "main":
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (박스 길이 오류 해결)
+    # =========================================================
+    # 🌟 5. 캘린더와 체크리스트를 독립된 박스로 분리 (오류 완전 해결)
+    # =========================================================
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
