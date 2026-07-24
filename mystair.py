@@ -19,7 +19,7 @@ if "page" not in st.session_state:
 if "diary_data" not in st.session_state:
     st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
 
-# 체크리스트 상태 초기화 (체크 유무에 따라 나무가 자람)
+# 체크리스트 상태 초기화
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -54,7 +54,7 @@ def write_diary(day):
                 del st.session_state.diary_data[str(day)]
         st.rerun()
 
-# 글로벌 CSS (배경 및 포커스 제거)
+# 글로벌 CSS
 st.markdown(
     """
 <style>
@@ -79,7 +79,6 @@ body, [class*="css"] {
 
 header[data-testid="stHeader"] { display: none !important; }
 
-/* 🌟 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
 *, *:focus, *:active, *:focus-visible { 
     outline: none !important; 
     box-shadow: none !important; 
@@ -92,32 +91,27 @@ input, textarea { caret-color: auto !important; }
     user-select: none; 
 }
 
-/* 🌟 성장 나무 애니메이션 */
 @keyframes floatTree {
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-10px) scale(1.05); }
 }
 
-/* 🌟 스트림릿 컨테이너 (글래스 효과) */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px 28px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
 }
 
-/* 🌟 캘린더 날짜 버튼 디자인 */
 div[data-testid="column"] div.stButton > button {
     border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important;
 }
 div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
 div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; }
 
-/* 작성 완료 또는 오늘 날짜 버튼 (포인트 컬러) */
 div[data-testid="column"] div.stButton > button[kind="primary"] {
     background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important;
 }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-/* 🌟 개별 체크리스트 아이템 커스텀 */
 div[data-testid="stCheckbox"] {
     background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease;
 }
@@ -136,7 +130,13 @@ if st.session_state.page == "main":
     
     css_string = """
 <style>
-.block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
+.block-container {
+max-width: 1280px !important;
+padding-top: 0 !important;
+padding-bottom: 8rem !important;
+padding-left: 30px !important;
+padding-right: 30px !important;
+}
 
 .ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
@@ -150,14 +150,18 @@ if st.session_state.page == "main":
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.05); }
 
-/* 우측 상단 '홍보 가기' 버튼 */
 div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 14px !important; border-radius: 50px !important; padding: 8px 20px !important; height: 42px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
 div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
-.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; }
+.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; align-items: center; }
 .ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
+.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
+
+/* 홀랜드 검사 이동 버튼 강조 스타일 */
+.ms-nav a.holland-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
+.ms-nav a.holland-btn:hover { opacity: 0.9 !important; transform: translateY(-2px) !important; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -182,14 +186,14 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 24px; padding: 32px 45px; display: flex; justify-content: space-between; align-items: center; margin: 50px 0; backdrop-filter: blur(10px); }
 .ms-mid-banner-title { font-size: 22px; font-weight: 800; color: #0f172a; }
 .ms-mid-btns { display: flex; gap: 14px; }
-.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
+.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
 
 .ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; outline: none !important; }
 .ms-job-section { margin-bottom: 80px; margin-top: 60px; }
 
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
-.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226, 232, 240, 0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
 .ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 
@@ -218,8 +222,8 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (알려주신 사용자 이름과 폴더 경로를 반영한 깃허브 Pages 실제 링크)
-    holland_github_url = "https://kimkyobum.github.io/mystair/Park/holland.html"
+    # 🌟 3. 네비게이션 (holland.html을 루트 폴더로 옮겼을 때의 올바른 깃허브 Pages 주소 반영)
+    holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
 
     st.markdown(f"""<div class="ms-nav">
 <span class="active">진로추천</span>
@@ -228,7 +232,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 <span>실습 JOB 찾기</span>
 <span>공채·기업정보</span>
 <span>MBTI</span>
-<a href="{holland_github_url}" target="_blank" class="nav-anchor" style="background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); color: white; border: none; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);" tabindex="-1">✨ 홀랜드직무검사</a>
+<a href="{holland_github_url}" target="_blank" class="nav-anchor holland-btn" tabindex="-1">✨ 홀랜드직무검사</a>
 </div>""", unsafe_allow_html=True)
 
     # 🌟 4. 상단 AI 추천 & 요약 박스
@@ -378,8 +382,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # =========================================================
     # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 단독 배치)
     # =========================================================
-    
-    # 체크 개수에 따른 로직 재계산
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
         bool(st.session_state.chk_1), 
