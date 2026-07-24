@@ -26,7 +26,7 @@ def navigate_to(page_name):
 # 🌟 모달(팝업) 다이어리 입력창 함수
 @st.dialog("📝 실습 다이어리 기록")
 def write_diary(day):
-    st.markdown(f"<div style='font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 15px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
     
     current_text = st.session_state.diary_data.get(str(day), "")
     
@@ -35,10 +35,10 @@ def write_diary(day):
         value=current_text,
         placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 1시간 내 복구 완료)", 
         label_visibility="collapsed", 
-        height=220
+        height=180
     )
     
-    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
     if st.button("✨ 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
         if diary_input.strip():
             st.session_state.diary_data[str(day)] = diary_input
@@ -48,7 +48,7 @@ def write_diary(day):
                 del st.session_state.diary_data[str(day)]
         st.rerun()
 
-# 글로벌 CSS (배경 및 스무스 스크롤 적용)
+# 글로벌 CSS (배경, 포커스 잔상 제거, 슬림한 비율 조정)
 st.markdown(
     """
 <style>
@@ -60,7 +60,7 @@ html {
 
 body, [class*="css"] {
     font-family: 'SUIT', -apple-system, sans-serif !important;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 .stApp {
@@ -77,66 +77,73 @@ header[data-testid="stHeader"] {
     display: none !important;
 }
 
-/* 🌟 스크롤 타겟 포커스 아웃라인(검은 선) 완벽 제거 */
-:focus {
+/* 🌟 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
+*, *:focus, *:active, *:focus-visible {
     outline: none !important;
-}
-#diary-section, #diary-section:focus, #diary-section:active {
-    outline: none !important;
-    border: none !important;
     box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
-/* 🌟 스트림릿 컨테이너 (다이어리 & 체크리스트 글래스 효과 및 여백 확대) */
+.ms-nav span, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title {
+    user-select: none;
+}
+
+/* 🌟 스트림릿 컨테이너 (글래스 효과 & 슬림한 여백) */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(16px) !important;
-    border-radius: 28px !important;
-    padding: 40px 45px !important;
+    border-radius: 20px !important;
+    padding: 24px 28px !important;
     border: 1px solid rgba(226, 232, 240, 0.8) !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
     transition: all 0.3s ease !important;
 }
-div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-    background: rgba(255, 255, 255, 1) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05) !important;
-    border-color: rgba(226, 232, 240, 1) !important;
-}
 
-/* 🌟 캘린더 날짜 버튼 디자인 커스텀 (여유로운 크기) */
+/* 🌟 캘린더 날짜 버튼 디자인 (슬림하고 예쁜 크기) */
 div[data-testid="column"] div.stButton > button {
-    border-radius: 14px !important;
-    height: 60px !important;
+    border-radius: 10px !important;
+    height: 44px !important;
     background: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
     transition: all 0.2s ease !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 4px !important;
 }
-div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 16px !important; }
+div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
 div[data-testid="column"] div.stButton > button:hover {
     border-color: #cbd5e1 !important;
-    transform: translateY(-3px) !important;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.04) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important;
 }
 
-/* 작성 완료 또는 오늘 날짜 버튼 (코랄 레드 포인트) */
+/* 코랄 레드 포인트 날짜 버튼 */
 div[data-testid="column"] div.stButton > button[kind="primary"] {
     background: #ff5a5f !important;
     border-color: #ff5a5f !important;
-    box-shadow: 0 8px 20px rgba(255, 90, 95, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important;
 }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { 
     background: #ff4046 !important; 
-    box-shadow: 0 10px 25px rgba(255, 90, 95, 0.35) !important;
 }
 
-/* 🌟 체크박스 폰트 크기 및 시원한 여백 조정 */
-div[data-testid="stCheckbox"] label { 
-    font-size: 17px !important; 
-    font-weight: 600 !important; 
-    color: #334155 !important; 
-    padding-bottom: 14px !important; 
+/* 🌟 개별 체크리스트 아이템을 카드 형태로 커스텀 */
+div[data-testid="stCheckbox"] {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease;
+}
+div[data-testid="stCheckbox"]:hover {
+    background: #ffffff;
+    border-color: #3bb2b8;
+    box-shadow: 0 4px 12px rgba(59, 178, 184, 0.08);
+}
+div[data-testid="stCheckbox"] label p {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
 }
 
 </style>
@@ -151,91 +158,90 @@ if st.session_state.page == "main":
     
     css_string = """
 <style>
-/* 전체적인 컨테이너 여백 대폭 확대 */
+/* 너무 커서 답답했던 폭과 여백을 적절하고 쾌적하게 조절 */
 .block-container {
-max-width: 1400px !important;
+max-width: 1280px !important;
 padding-top: 0 !important;
-padding-bottom: 12rem !important;
-padding-left: 50px !important;
-padding-right: 50px !important;
+padding-bottom: 8rem !important;
+padding-left: 30px !important;
+padding-right: 30px !important;
 }
 
-.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 16px 0; font-size: 16px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
-.ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 5px 16px; border-radius: 50px; font-size: 13px; font-weight: 800; }
+.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
+.ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 
-/* 헤더 여백 확대 */
-.ms-logo { font-size: 38px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; cursor: pointer; padding-top: 15px; }
-.ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 10px; }
-.ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 10px 10px 10px 28px; width: 100%; max-width: 680px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-search-box:focus-within { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 15px 40px rgba(59, 178, 184, 0.12); background: #ffffff; transform: translateY(-2px); }
-.ms-search-input { border: none; outline: none; width: 100%; font-size: 17px; font-family: 'SUIT'; color: #1e293b; background: transparent; }
+.ms-logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; cursor: pointer; padding-top: 8px; }
+.ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 4px; }
+.ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 6px 6px 6px 20px; width: 100%; max-width: 540px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-search-box:focus-within { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 10px 30px rgba(59, 178, 184, 0.12); background: #ffffff; transform: translateY(-1px); }
+.ms-search-input { border: none; outline: none; width: 100%; font-size: 15px; font-family: 'SUIT'; color: #1e293b; background: transparent; }
 .ms-search-input::placeholder { color: #94a3b8; font-weight: 500; }
-.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 50px; height: 50px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-search-btn:hover { transform: scale(1.08); }
+.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-search-btn:hover { transform: scale(1.05); }
 
 /* 우측 상단 '홍보 가기' 버튼 */
-div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 800 !important; font-size: 16px !important; border-radius: 50px !important; padding: 14px 28px !important; box-shadow: 0 5px 20px rgba(0,0,0,0.04) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 10px; }
-div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 10px 30px rgba(59, 178, 184, 0.15) !important; transform: translateY(-3px) !important; }
+div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 14px !important; border-radius: 50px !important; padding: 8px 20px !important; height: 42px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
+div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
-/* 네비게이션 여백 및 폰트 크기 확대 */
-.ms-nav { display: flex; justify-content: center; gap: 20px; padding-top: 50px; padding-bottom: 60px; flex-wrap: wrap; }
-.ms-nav span, .ms-nav a.nav-anchor { padding: 14px 28px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 17px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; }
-.ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transform: translateY(-3px); border-color: #cbd5e1; }
-.ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); }
+/* 네비게이션 알약 탭 */
+.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; }
+.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; }
+.ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
+.ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
 
-/* 상단 2단 그리드 간격 확대 */
-.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 40px; margin-bottom: 80px; }
-.glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 32px; padding: 50px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
-.glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 30px 70px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px); }
+/* 2단 그리드 */
+.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
+.glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
+.glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(126, 87, 194, 0.06); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-3px); }
 
-.ms-ai-title { font-size: 26px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 35px; }
-.ms-ai-btn { background: #0f172a; color: white; border: none; padding: 14px 32px; border-radius: 50px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-ai-btn:hover { background: #334155; transform: scale(1.05); }
+.ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.ms-ai-btn { background: #0f172a; color: white; border: none; padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-ai-btn:hover { background: #334155; transform: scale(1.03); }
 
-.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; filter: blur(4.5px); opacity: 0.8; pointer-events: none; }
-.blur-card { background: #ffffff; border-radius: 20px; padding: 30px; height: 180px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-.blur-line { height: 14px; background: #cbd5e1; border-radius: 10px; margin-bottom: 16px; }
+.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; filter: blur(4px); opacity: 0.8; pointer-events: none; }
+.blur-card { background: #ffffff; border-radius: 16px; padding: 20px; height: 140px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.blur-line { height: 12px; background: #cbd5e1; border-radius: 8px; margin-bottom: 12px; }
 
-.ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 22px 28px; border-radius: 20px; font-weight: 800; font-size: 17px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 30px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-gradient-banner:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(126,87,194,0.15); }
-.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex-grow: 1; }
-.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 28px; font-size: 17px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.5; }
-.ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 20px 40px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-4px); }
+.ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 18px 22px; border-radius: 16px; font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 20px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-gradient-banner:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(126,87,194,0.12); }
+.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex-grow: 1; }
+.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 16px; padding: 20px; font-size: 15px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
+.ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 12px 25px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-3px); }
 
-/* 10초 컷 배너 여백 확대 */
-.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 32px; padding: 50px 60px; display: flex; justify-content: space-between; align-items: center; margin: 80px 0; backdrop-filter: blur(10px); }
-.ms-mid-banner-title { font-size: 26px; font-weight: 800; color: #0f172a; }
-.ms-mid-btns { display: flex; gap: 18px; }
-.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 18px 36px; border-radius: 50px; font-weight: 700; font-size: 17px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 25px rgba(0,0,0,0.04); }
-.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 35px rgba(126,87,194,0.15); transform: translateY(-4px); }
+/* 10초 컷 배너 */
+.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 24px; padding: 32px 45px; display: flex; justify-content: space-between; align-items: center; margin: 50px 0; backdrop-filter: blur(10px); }
+.ms-mid-banner-title { font-size: 22px; font-weight: 800; color: #0f172a; }
+.ms-mid-btns { display: flex; gap: 14px; }
+.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
+.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
 
-/* 섹션 타이틀 및 섹션 여백 */
-.ms-section-title { font-size: 30px; font-weight: 800; color: #0f172a; margin-bottom: 30px; letter-spacing: -1px; padding-top: 20px; outline: none !important; }
-.ms-job-section { margin-bottom: 120px; margin-top: 80px; }
+/* 섹션 타이틀 */
+.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; }
+.ms-job-section { margin-bottom: 80px; margin-top: 60px; }
 
-.ms-chip-group { display: flex; gap: 14px; margin-bottom: 40px; overflow-x: auto; padding-bottom: 10px; }
-.ms-chip { padding: 14px 30px; border-radius: 50px; font-size: 16px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 10px 25px rgba(15,23,42,0.15); }
-.ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transform: translateY(-2px); }
+.ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
+.ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 
-/* 하단 Job 그리드 여백 확대 */
-.ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
-.ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 28px; padding: 36px 30px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 35px rgba(0,0,0,0.02); }
-.ms-job-card:hover { transform: translateY(-10px); background: #ffffff; box-shadow: 0 30px 60px rgba(126,87,194,0.08); border-color: rgba(126,87,194,0.3); }
-.job-card-title { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 16px; line-height: 1.5; letter-spacing: -0.5px; }
-.job-card-comp { font-size: 16px; color: #64748b; margin-bottom: 28px; display: flex; justify-content: space-between;}
+/* 하단 Job 그리드 */
+.ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 20px; padding: 26px 22px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
+.ms-job-card:hover { transform: translateY(-6px); background: #ffffff; box-shadow: 0 20px 40px rgba(126,87,194,0.08); border-color: rgba(126,87,194,0.3); }
+.job-card-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px; line-height: 1.4; letter-spacing: -0.3px; }
+.job-card-comp { font-size: 14px; color: #64748b; margin-bottom: 20px; display: flex; justify-content: space-between;}
 .d-day { color: #3bb2b8; font-weight: 800; }
-.job-tags { display: flex; gap: 10px; flex-wrap: wrap; }
-.job-tag { font-size: 14px; font-weight: 700; padding: 8px 16px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 8px; border: 1px solid #e2e8f0;}
+.job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.job-tag { font-size: 12px; font-weight: 700; padding: 6px 12px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 6px; border: 1px solid #e2e8f0;}
 
 /* 진척도 저장 버튼 */
 button:has(p:contains("진척도 저장하기")) {
-    background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 16px !important; height: 56px !important; margin-top: 25px !important; transition: all 0.3s !important; box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+    background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 12px !important; height: 46px !important; margin-top: 15px !important; transition: all 0.2s !important; box-shadow: 0 3px 10px rgba(0,0,0,0.02) !important;
 }
-button:has(p:contains("진척도 저장하기")):hover { background: #f8fafc !important; border-color: #cbd5e1 !important; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important; }
-button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; font-weight: 800 !important; font-size: 16px !important; }
+button:has(p:contains("진척도 저장하기")):hover { background: #f8fafc !important; border-color: #3bb2b8 !important; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59,178,184,0.1) !important; }
+button:has(p:contains("진척도 저장하기")) p { color: #1e293b !important; font-weight: 800 !important; font-size: 14px !important; }
 
 </style>
 """
@@ -254,7 +260,7 @@ button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; 
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (앵커 스크롤 적용 및 넓은 여백)
+    # 🌟 3. 네비게이션 (스크롤 포커스 아웃라인 없는 앵커)
     st.markdown("""<div class="ms-nav">
 <span class="active">진로추천</span>
 <a href="#diary-section" class="nav-anchor">다이어리</a>
@@ -271,47 +277,46 @@ button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; 
 <div class="ms-ai-header">
 <div>
 <div class="ms-ai-title">✨ 오늘의 <span>AI 맞춤 추천</span></div>
-<p style="margin:0; font-size: 17px; color: #64748b; margin-top: 10px;">나의 다이어리 기록과 MBTI에 맞춘 완벽한 기회!</p>
+<p style="margin:0; font-size: 15px; color: #64748b; margin-top: 8px;">나의 다이어리 기록과 MBTI에 맞춘 완벽한 기회!</p>
 </div>
 <button class="ms-ai-btn">맞춤 공고 열람하기</button>
 </div>
 <div class="blur-card-container">
-<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 35px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 35px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 35px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 25px;"></div></div>
 </div>
 </div>
-<div class="glass-panel" style="padding: 50px 45px;">
-<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom:30px; line-height: 1.5; letter-spacing: -0.5px;">
+<div class="glass-panel" style="padding: 35px 32px;">
+<div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom:22px; line-height: 1.4; letter-spacing: -0.5px;">
 미래의 기술 명장님을 위한<br>핵심 진로 워크스페이스
 </div>
 <div class="ms-gradient-banner"><span>⚡ 나의 커리어 취향 설정하기</span><span>></span></div>
 <div class="ms-quick-grid">
-<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 28px; text-align: right;">📝</span></div>
-<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 28px; text-align: right;">✨</span></div>
-<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 28px; text-align: right;">🏅</span></div>
-<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 28px; text-align: right;">💼</span></div>
+<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 24px; text-align: right;">📝</span></div>
+<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 24px; text-align: right;">✨</span></div>
+<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 24px; text-align: right;">🏅</span></div>
+<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 24px; text-align: right;">💼</span></div>
 </div>
 </div>
 </div>""", unsafe_allow_html=True)
 
 
     # =========================================================
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 섹션 (여백 확대)
+    # 🌟 5. 캘린더 (다이어리) & 세련된 투두 체크리스트 섹션
     # =========================================================
-    # id='diary-section' 부여하여 a태그 앵커 스크롤 연동
-    st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 80px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
+    st.markdown("<div id='diary-section' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     
     cal_col, chk_col = st.columns([2, 1], gap="large")
 
     with cal_col:
         with st.container(border=True):
             st.markdown("""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <span style="font-size: 26px; font-weight: 800; color: #0f172a;">2026년 7월</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="font-size: 22px; font-weight: 800; color: #0f172a;">2026년 7월</span>
                 <div>
-                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; width: 38px; height: 38px; font-size: 16px; cursor: pointer; margin-right: 8px; color: #475569;">&lt;</button>
-                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; width: 38px; height: 38px; font-size: 16px; cursor: pointer; color: #475569;">&gt;</button>
+                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 32px; height: 32px; font-size: 14px; cursor: pointer; margin-right: 6px; color: #475569;">&lt;</button>
+                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 32px; height: 32px; font-size: 14px; cursor: pointer; color: #475569;">&gt;</button>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -319,7 +324,7 @@ button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; 
             wk_cols = st.columns(7)
             for i, wd in enumerate(["일", "월", "화", "수", "목", "금", "토"]):
                 color = "#ef4444" if i == 0 else "#3b82f6" if i == 6 else "#64748b"
-                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:18px; color:{color}; padding-bottom:15px;'>{wd}</div>", unsafe_allow_html=True)
+                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:15px; color:{color}; padding-bottom:12px;'>{wd}</div>", unsafe_allow_html=True)
             
             weeks = [
                 ["", "", "", "1", "2", "3", "4"],
@@ -348,29 +353,37 @@ button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; 
                             if st.button(btn_label, key=f"day_{day}", type=btn_type, use_container_width=True):
                                 write_diary(day)
                         else:
-                            st.markdown("<div style='height: 60px; margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 44px; margin-bottom: 4px;'></div>", unsafe_allow_html=True)
 
     with chk_col:
         with st.container(border=True):
-            st.markdown("""
-            <div style="display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 2px dashed #f1f5f9;">
-                <div style="background: #3bb2b8; color: white; border-radius: 8px; padding: 4px 8px; font-size: 18px;">✔</div> 오늘의 할 일
+            # 체크박스 상태 동적 계산
+            has_diary_today = bool(st.session_state.diary_data.get("24", ""))
+            
+            # 체크리스트 항목 정의
+            chk1 = st.checkbox("안전교육 이수증 업로드", value=True, key="c1")
+            chk2 = st.checkbox("PLC 제어 도면 해석 복습", value=False, key="c2")
+            chk3 = st.checkbox("실습 다이어리 작성 (24일 📍)", value=has_diary_today, key="c3")
+            chk4 = st.checkbox("설비보전기사 기출 1회 풀이", value=False, key="c4")
+            chk5 = st.checkbox("이력서 자격증 항목 업데이트", value=False, key="c5")
+            
+            # 진행률 계산
+            completed_count = sum([chk1, chk2, chk3, chk4, chk5])
+            progress_pct = int((completed_count / 5) * 100)
+            
+            # 세련된 체크리스트 헤더 및 진행률 프로그레스 바
+            st.markdown(f"""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: -220px; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;">
+                <div style="font-size: 18px; font-weight: 800; color: #0f172a;">✅ 오늘의 할 일</div>
+                <div style="font-size: 13px; font-weight: 800; color: #3bb2b8; background: #e0f2fe; padding: 3px 10px; border-radius: 50px;">{completed_count} / 5 완료</div>
+            </div>
+            <div style="width: 100%; background: #f1f5f9; height: 6px; border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
+                <div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.3s ease;"></div>
             </div>
             """, unsafe_allow_html=True)
             
-            st.checkbox("안전교육 이수증 업로드", value=True)
-            st.checkbox("PLC 제어 도면 해석 복습")
-            
-            has_diary_today = bool(st.session_state.diary_data.get("24", ""))
-            st.checkbox("실습 다이어리 작성 완료 (24일 📍)", value=has_diary_today)
-            
-            st.checkbox("설비보전기사 기출 1회 풀이")
-            st.checkbox("이력서 자격증 항목 업데이트")
-            
-            st.markdown("<div style='height: 35px;'></div>", unsafe_allow_html=True)
-            
             if st.button("진척도 저장하기", key="save_chk", use_container_width=True):
-                st.toast("✅ 체크리스트 진행 상황이 저장되었습니다.")
+                st.toast(f"✅ 체크리스트 진행률 ({progress_pct}%)이 성공적으로 저장되었습니다!")
 
 
     # =========================================================
@@ -426,10 +439,10 @@ elif st.session_state.page == "intro":
 .block-container {
 padding-top: 2rem;
 padding-bottom: 10rem;
-max-width: 1350px !important;
+max-width: 1280px !important;
 margin: 0 auto !important;
-padding-left: 4rem !important;
-padding-right: 4rem !important;
+padding-left: 30px !important;
+padding-right: 30px !important;
 animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
@@ -444,7 +457,7 @@ animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .speak-navbar-container { display: flex; justify-content: center; width: 100%; margin-bottom: 70px; }
-.speak-navbar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-radius: 100px; padding: 14px 40px; width: 100%; max-width: 1350px; }
+.speak-navbar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-radius: 100px; padding: 14px 40px; width: 100%; max-width: 1280px; }
 .nav-left { display: flex; align-items: center; cursor: pointer; }
 .nav-logo-text { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
 .nav-right { display: flex; align-items: center; gap: 32px; }
@@ -453,16 +466,16 @@ animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
 .hero-section-left { text-align: left; padding: 30px 0; }
 .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); color: #475569; border-radius: 50px; font-size: 14px; font-weight: 600; margin-bottom: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-.hero-title { font-size: 60px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; letter-spacing: -2px; color: #0f172a; }
+.hero-title { font-size: 54px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; letter-spacing: -2px; color: #0f172a; }
 .hero-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-subtitle { font-size: 20px; color: #64748b; margin: 0 0 40px 0; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px; }
+.hero-subtitle { font-size: 19px; color: #64748b; margin: 0 0 40px 0; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px; }
 
 .hero-graphic-container { display: flex; justify-content: center; align-items: center; animation: floatAnimation 4s ease-in-out infinite; }
-.hero-graphic { width: 100%; max-width: 480px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
+.hero-graphic { width: 100%; max-width: 450px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
 
-.scroll-section { padding-top: 280px; }
+.scroll-section { padding-top: 240px; }
 .section-tag { font-size: 13px; font-weight: 700; color: #3bb2b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
-.section-heading { font-size: 38px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.3; }
+.section-heading { font-size: 36px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.3; }
 .section-desc { font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
 
 .modern-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -475,7 +488,7 @@ animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 .faq-q { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
 .faq-a { font-size: 17px; color: #64748b; line-height: 1.6; margin: 0; }
 
-.footer-container { margin-top: 250px; padding: 60px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 20px; color: #64748b; font-size: 15px; }
+.footer-container { margin-top: 220px; padding: 60px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 20px; color: #64748b; font-size: 15px; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; }
 .footer-logo { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; }
 .footer-links { display: flex; gap: 28px; font-weight: 600; }
@@ -518,7 +531,7 @@ animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             """
             <style>
             div.stButton > button[kind="primary"] {
-                background: #0f172a !important; color: #ffffff !important; border: none !important; padding: 18px 36px !important; font-size: 17px !important; font-weight: 700 !important; border-radius: 50px !important; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important; width: fit-content !important; transition: all 0.3s ease !important;
+                background: #0f172a !important; color: #ffffff !important; border: none !important; padding: 16px 32px !important; font-size: 16px !important; font-weight: 700 !important; border-radius: 50px !important; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important; width: fit-content !important; transition: all 0.3s ease !important;
             }
             div.stButton > button[kind="primary"]:hover {
                 background: #334155 !important; transform: translateY(-2px);
