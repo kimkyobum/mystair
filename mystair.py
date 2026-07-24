@@ -190,7 +190,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
 
 .ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; outline: none !important; }
-.ms-job-section { margin-bottom: 80px; margin-top: 60px; }
+.ms-job-section { margin-bottom: 120px; margin-top: 60px; }
 
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
 .ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -339,7 +339,51 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 
 
     # =========================================================
-    # 🌟 6. 10초 컷 맞춤 배너 및 하단 인기 JOB 섹션
+    # 🌟 6. 성장 나무 섹션 (다이어리 바로 아래로 배치)
+    # =========================================================
+    
+    # 체크 개수에 따른 로직 재계산
+    has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
+    completed_count = sum([
+        bool(st.session_state.chk_1), 
+        bool(st.session_state.chk_2), 
+        bool(has_diary_today_bottom), 
+        bool(st.session_state.chk_4), 
+        bool(st.session_state.chk_5)
+    ])
+    progress_pct = int((completed_count / 5) * 100)
+    
+    tree_stages = {
+        0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b", "다음: 새싹 🌿"),
+        1: ("🌿", "새싹이 돋아났어요!", "#10b981", "다음: 성장하는 화분 🪴"),
+        2: ("🪴", "무럭무럭 자라고 있어요!", "#059669", "다음: 튼튼한 나무 🌳"),
+        3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857", "다음: 꽃 피는 나무 🌸"),
+        4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899", "다음: 탐스러운 열매 🍎"),
+        5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444", "완벽해요! 모든 미션을 완료했습니다 🏆")
+    }
+    emoji, text, color, next_step = tree_stages[completed_count]
+
+    html_tree = f"""<div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 60px;">
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 5px;">나의 커리어 성장 나무</div>
+<div style="font-size: 15px; font-weight: 600; color: #64748b; margin-bottom: 30px;">상단의 '✅ 오늘의 할 일' 체크리스트를 하나씩 달성할 때마다 나무가 성장해요!</div>
+<div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
+<div style="font-size: 22px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
+<div style="font-size: 14px; font-weight: 700; color: #94a3b8; margin-top: 8px; background: #f8fafc; display: inline-block; padding: 6px 16px; border-radius: 50px;">{next_step}</div>
+<div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
+<div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
+</div>
+<div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
+<div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+</div>
+</div>
+</div>"""
+    st.markdown(html_tree, unsafe_allow_html=True)
+
+
+    # =========================================================
+    # 🌟 7. 10초 컷 맞춤 배너 및 하단 인기 JOB 섹션 (맨 아래로 이동)
     # =========================================================
     st.markdown("""
 <div class="ms-mid-banner">
@@ -379,49 +423,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 </div>
 </div>
 </div>""", unsafe_allow_html=True)
-
-    # =========================================================
-    # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 단독 배치)
-    # =========================================================
-    
-    # 체크 개수에 따른 로직 재계산
-    has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
-    completed_count = sum([
-        bool(st.session_state.chk_1), 
-        bool(st.session_state.chk_2), 
-        bool(has_diary_today_bottom), 
-        bool(st.session_state.chk_4), 
-        bool(st.session_state.chk_5)
-    ])
-    progress_pct = int((completed_count / 5) * 100)
-    
-    tree_stages = {
-        0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b", "다음: 새싹 🌿"),
-        1: ("🌿", "새싹이 돋아났어요!", "#10b981", "다음: 성장하는 화분 🪴"),
-        2: ("🪴", "무럭무럭 자라고 있어요!", "#059669", "다음: 튼튼한 나무 🌳"),
-        3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857", "다음: 꽃 피는 나무 🌸"),
-        4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899", "다음: 탐스러운 열매 🍎"),
-        5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444", "완벽해요! 모든 미션을 완료했습니다 🏆")
-    }
-    emoji, text, color, next_step = tree_stages[completed_count]
-
-    html_tree = f"""<div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 120px;">
-<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 5px;">나의 커리어 성장 나무</div>
-<div style="font-size: 15px; font-weight: 600; color: #64748b; margin-bottom: 30px;">상단의 '✅ 오늘의 할 일' 체크리스트를 하나씩 달성할 때마다 나무가 성장해요!</div>
-<div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
-<div style="font-size: 22px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
-<div style="font-size: 14px; font-weight: 700; color: #94a3b8; margin-top: 8px; background: #f8fafc; display: inline-block; padding: 6px 16px; border-radius: 50px;">{next_step}</div>
-<div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-<div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
-<div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
-</div>
-<div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
-<div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-</div>
-</div>
-</div>"""
-    st.markdown(html_tree, unsafe_allow_html=True)
 
 
 # =========================================================
