@@ -16,12 +16,16 @@ st.set_page_config(
 # 세션 상태 관리 (초기 화면 'main' 포털)
 if "page" not in st.session_state:
     st.session_state.page = "main"
+if "selected_day" not in st.session_state:
+    st.session_state.selected_day = "24" # 기본 선택 날짜 (오늘)
+if "diary_data" not in st.session_state:
+    st.session_state.diary_data = {} # 다이어리 데이터 저장소
 
 def navigate_to(page_name):
     st.session_state.page = page_name
     st.rerun()
 
-# 글로벌 CSS (배경 및 기본 폰트)
+# 글로벌 CSS (앰비언트 그라데이션 배경)
 st.markdown(
     """
 <style>
@@ -54,7 +58,7 @@ header[data-testid="stHeader"] {
 # =========================================================
 if st.session_state.page == "main":
     
-    # 메인 전용 CSS (다이어리 & 체크리스트 스타일 추가)
+    # 메인 전용 CSS (홍보 버튼 및 캘린더 UI 스타일링 포함)
     css_string = """
 <style>
 .block-container {
@@ -65,13 +69,13 @@ padding-left: 40px !important;
 padding-right: 40px !important;
 }
 
-/* 🌟 상단 풀와이드 배너 */
+/* 🌟 최상단 풀와이드 배너 */
 .ms-top-banner {
 width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px;
 }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 4px 14px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 
-/* 🌟 헤더 컬럼 디자인 */
+/* 🌟 헤더 컬럼 & 검색창 */
 .ms-logo { font-size: 36px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; cursor: pointer; padding-top: 12px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 10px; }
 .ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 8px 8px 8px 24px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -81,76 +85,48 @@ width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; mar
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.08); }
 
-/* 🌟 우측 상단 '홍보 가기' 버튼 */
-div.stButton > button[kind="secondary"] { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; border-radius: 50px !important; padding: 10px 20px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.3s ease !important; float: right; margin-top: 15px; }
-div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important; box-shadow: 0 6px 15px rgba(0,0,0,0.06) !important; transform: translateY(-2px) !important; }
+/* 🌟 우측 상단 '홍보 가기' 버튼 (이미지처럼 예쁘게 커스텀) */
+div[data-testid="column"]:nth-of-type(3) div.stButton > button {
+background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 800 !important; font-size: 15px !important; border-radius: 50px !important; padding: 12px 24px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 8px;
+}
+div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover {
+border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 25px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important;
+}
 
-/* 🌟 네비게이션 중앙 정렬 */
-.ms-nav { display: flex; justify-content: center; gap: 16px; padding-top: 30px; padding-bottom: 40px; }
-.ms-nav span { padding: 12px 26px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
-.ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
+/* 🌟 중앙 네비게이션 정렬 */
+.ms-nav { display: flex; justify-content: center; gap: 14px; padding-top: 35px; padding-bottom: 45px; flex-wrap: wrap; }
+.ms-nav span { padding: 12px 24px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
+.ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15); }
 
-/* 🌟 메인 그리드 및 공통 글래스 카드 */
-.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; }
-.glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+/* 🌟 상단 2단 그리드 */
+.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 30px; margin-bottom: 60px; }
+.glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px); }
 
 /* AI 추천 */
-.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+.ms-ai-title { font-size: 24px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
 .ms-ai-btn { background: #0f172a; color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-ai-btn:hover { background: #1e293b; transform: scale(1.05); }
+.ms-ai-btn:hover { background: #334155; transform: scale(1.05); }
 
-.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; filter: blur(5px); opacity: 0.7; pointer-events: none; }
-.blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 150px; border: 1px solid #f1f5f9; }
-.blur-line { height: 14px; background: #e2e8f0; border-radius: 10px; margin-bottom: 12px; }
+.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; filter: blur(4.5px); opacity: 0.8; pointer-events: none; }
+.blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 160px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.blur-line { height: 14px; background: #cbd5e1; border-radius: 10px; margin-bottom: 14px; }
 
-/* 우측 요약정보 */
+/* 우측 퀵 메뉴 */
 .ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 20px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 24px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-gradient-banner:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(126,87,194,0.15); }
-.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 15px; font-weight: 700; color: #334155; display: flex; flex-direction: column; justify-content: space-between; height: 120px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1; }
+.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 16px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
 .ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 15px 30px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-4px); }
 
-/* 🌟 10초 컷 배너 */
-.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 40px 0; backdrop-filter: blur(10px); }
-.ms-mid-banner-title { font-size: 24px; font-weight: 800; color: #0f172a; }
-.ms-mid-btns { display: flex; gap: 16px; }
-.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
-.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 30px rgba(126,87,194,0.15); transform: translateY(-4px); }
-
-/* 🌟 다이어리(캘린더) & 체크리스트 (2:1 비율) */
-.ms-diary-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 60px; }
-.ms-section-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
-
-.ms-cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.ms-cal-month { font-size: 22px; font-weight: 800; color: #0f172a; }
-.ms-cal-nav { display: flex; gap: 8px; }
-.ms-cal-nav button { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 8px; font-size: 16px; color: #475569; cursor: pointer; transition: 0.2s; }
-.ms-cal-nav button:hover { background: #e2e8f0; color: #0f172a; }
-
-.ms-cal-week { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; color: #94a3b8; font-size: 15px; margin-bottom: 12px; }
-.ms-cal-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 8px; }
-.ms-cal-days span { padding: 14px 0; border-radius: 14px; font-size: 16px; font-weight: 700; color: #334155; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
-.ms-cal-days span:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateY(-2px); }
-.ms-cal-days span.empty { color: #cbd5e1; }
-.ms-cal-days span.active { background: #0f172a; color: white; box-shadow: 0 8px 15px rgba(15,23,42,0.2); }
-.ms-cal-days span.active:hover { background: #0f172a; transform: none; }
-.ms-cal-days span.has-log::after { content: ''; width: 6px; height: 6px; background: #3bb2b8; border-radius: 50%; margin-top: 6px; }
-.ms-cal-days span.active.has-log::after { background: #ffffff; }
-
-.ms-check-header { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9; }
-.ms-check-list { display: flex; flex-direction: column; gap: 18px; }
-.ms-check-item { display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600; color: #475569; cursor: pointer; }
-.ms-check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: #3bb2b8; cursor: pointer; }
-.ms-check-item input:checked + span { text-decoration: line-through; color: #cbd5e1; }
-.ms-check-btn { margin-top: 35px; width: 100%; background: #f1f5f9; border: 1px solid #e2e8f0; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 800; color: #334155; cursor: pointer; transition: all 0.2s; }
-.ms-check-btn:hover { background: #0f172a; color: white; border-color: #0f172a; }
+/* 🌟 섹션 타이틀 */
+.ms-section-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
 
 /* 🌟 하단 인기 실습/JOB 섹션 */
-.ms-job-section { margin-bottom: 100px; }
+.ms-job-section { margin-bottom: 100px; margin-top: 60px; }
 .ms-chip-group { display: flex; gap: 12px; margin-bottom: 35px; overflow-x: auto; padding-bottom: 10px; }
 .ms-chip { padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15,23,42,0.15); }
@@ -164,6 +140,18 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 .d-day { color: #3bb2b8; font-weight: 800; }
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 13px; font-weight: 600; padding: 8px 14px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 8px; border: 1px solid #e2e8f0;}
+
+/* 🌟 달력 버튼 커스텀 (스트림릿 네이티브 버튼 스타일링) */
+div[data-testid="column"] div.stButton > button {
+border-radius: 16px !important;
+padding: 10px 0 !important;
+font-weight: 800 !important;
+transition: all 0.2s ease !important;
+}
+div[data-testid="column"] div.stButton > button:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
 </style>
 """
     st.markdown(css_string, unsafe_allow_html=True)
@@ -174,12 +162,10 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역 (로고 / 중앙 검색창 / 우측 매립된 홍보 버튼)
+    # 🌟 2. 헤더 영역 (검색창 중앙, 홍보 버튼 우측)
     h_col1, h_col2, h_col3 = st.columns([1.5, 6, 2.5])
-    
     with h_col1:
         st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
-        
     with h_col2:
         st.markdown("""<div class="ms-search-box-wrapper">
 <div class="ms-search-box">
@@ -187,13 +173,12 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <button class="ms-search-btn">🔍</button>
 </div>
 </div>""", unsafe_allow_html=True)
-        
     with h_col3:
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 메인 레이아웃 (들여쓰기 절대 금지)
-    html_string = """<div class="ms-nav">
+    # 🌟 3. 네비게이션 (요청 순서 완벽 반영)
+    st.markdown("""<div class="ms-nav">
 <span class="active">진로추천</span>
 <span>다이어리</span>
 <span>자격증 검색</span>
@@ -201,9 +186,10 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <span>공채·기업정보</span>
 <span>MBTI</span>
 <span>홀랜드직무검사</span>
-</div>
+</div>""", unsafe_allow_html=True)
 
-<div class="ms-main-grid">
+    # 🌟 4. 상단 AI 추천 & 요약 박스
+    st.markdown("""<div class="ms-main-grid">
 <div class="glass-panel">
 <div class="ms-ai-header">
 <div>
@@ -213,149 +199,156 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <button class="ms-ai-btn">맞춤 공고 열람하기</button>
 </div>
 <div class="blur-card-container">
-<div class="blur-card">
-<div class="blur-line" style="width: 80%;"></div>
-<div class="blur-line" style="width: 60%;"></div>
-<div class="blur-line" style="width: 90%; margin-top: 30px;"></div>
-</div>
-<div class="blur-card">
-<div class="blur-line" style="width: 70%;"></div>
-<div class="blur-line" style="width: 50%;"></div>
-<div class="blur-line" style="width: 85%; margin-top: 30px;"></div>
-</div>
-<div class="blur-card">
-<div class="blur-line" style="width: 90%;"></div>
-<div class="blur-line" style="width: 40%;"></div>
-<div class="blur-line" style="width: 75%; margin-top: 30px;"></div>
-</div>
+<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 30px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 30px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 30px;"></div></div>
 </div>
 </div>
 <div class="glass-panel" style="padding: 40px 35px;">
 <div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom:24px; line-height: 1.4; letter-spacing: -0.5px;">
 미래의 기술 명장님을 위한<br>핵심 진로 워크스페이스
 </div>
-<div class="ms-gradient-banner">
-<span>⚡ 나의 커리어 취향 설정하기</span>
-<span>></span>
-</div>
+<div class="ms-gradient-banner"><span>⚡ 나의 커리어 취향 설정하기</span><span>></span></div>
 <div class="ms-quick-grid">
-<div class="ms-quick-item">
-<span>나의 실습<br>다이어리</span>
-<span style="font-size: 26px; text-align: right;">📝</span>
-</div>
-<div class="ms-quick-item">
-<span>AI STAR<br>자소서 추출</span>
-<span style="font-size: 26px; text-align: right;">✨</span>
-</div>
-<div class="ms-quick-item">
-<span>국가기술<br>자격증 일정</span>
-<span style="font-size: 26px; text-align: right;">🏅</span>
-</div>
-<div class="ms-quick-item">
-<span>선배들의<br>합격 포트폴리오</span>
-<span style="font-size: 26px; text-align: right;">💼</span>
+<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 26px; text-align: right;">📝</span></div>
+<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 26px; text-align: right;">✨</span></div>
+<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 26px; text-align: right;">🏅</span></div>
+<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 26px; text-align: right;">💼</span></div>
 </div>
 </div>
-</div>
-</div>
+</div>""", unsafe_allow_html=True)
 
-<div class="ms-mid-banner">
-<div class="ms-mid-banner-title">⚡ 10초 컷! 나의 성향 기반 실습 공고 추천 받기</div>
-<div class="ms-mid-btns">
-<button class="ms-mid-btn">🛠️ 현장 실무형 (S/T)</button>
-<button class="ms-mid-btn">📖 이론 설계형 (N/F)</button>
-</div>
-</div>
 
-<div class="ms-section-title">📅 나의 실습 다이어리 & 체크리스트</div>
-<div class="ms-diary-grid">
-<div class="glass-panel" style="padding: 35px 40px;">
-<div class="ms-cal-header">
-<span class="ms-cal-month">2026년 7월</span>
-<div class="ms-cal-nav"><button>&lt;</button><button>&gt;</button></div>
-</div>
-<div class="ms-cal-week">
-<span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-</div>
-<div class="ms-cal-days">
-<span class="empty">28</span><span class="empty">29</span><span class="empty">30</span><span class="has-log">1</span><span>2</span><span>3</span><span>4</span>
-<span>5</span><span class="has-log">6</span><span>7</span><span class="has-log">8</span><span>9</span><span>10</span><span>11</span>
-<span>12</span><span>13</span><span class="has-log">14</span><span class="has-log">15</span><span>16</span><span>17</span><span>18</span>
-<span>19</span><span class="has-log">20</span><span>21</span><span>22</span><span class="has-log">23</span><span class="active">24</span><span>25</span>
-<span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span class="empty">1</span>
-</div>
-</div>
-<div class="glass-panel" style="padding: 35px 40px; display: flex; flex-direction: column;">
-<div class="ms-check-header">✅ 오늘의 할 일</div>
-<div class="ms-check-list">
-<label class="ms-check-item"><input type="checkbox" checked> <span>안전교육 이수증 업로드</span></label>
-<label class="ms-check-item"><input type="checkbox"> <span>PLC 제어 도면 해석 복습</span></label>
-<label class="ms-check-item"><input type="checkbox"> <span>다이어리 트러블슈팅 기록</span></label>
-<label class="ms-check-item"><input type="checkbox"> <span>설비보전기사 기출 1회 풀이</span></label>
-</div>
-<button class="ms-check-btn">진척도 저장하기</button>
-</div>
-</div>
+    # =========================================================
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 섹션 (2:1 비율)
+    # =========================================================
+    st.markdown("<div class='ms-section-title' style='margin-top: 40px;'>📅 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
+    
+    cal_col, chk_col = st.columns([2, 1], gap="large")
 
-<div class="ms-job-section">
+    with cal_col:
+        # 달력 헤더 및 요일 표시
+        st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <span style="font-size: 24px; font-weight: 800; color: #0f172a;">2026년 7월</span>
+                <div>
+                    <button style="background: #f1f5f9; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 16px; cursor: pointer; margin-right: 5px;">&lt;</button>
+                    <button style="background: #f1f5f9; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 16px; cursor: pointer;">&gt;</button>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: #94a3b8; font-size: 16px; margin-bottom: 15px;">
+                <span style="color:#ef4444;">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span style="color:#3b82f6;">토</span>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # 달력 날짜 생성 (스트림릿 버튼 연동)
+        weeks = [
+            ["", "", "", "1", "2", "3", "4"],
+            ["5", "6", "7", "8", "9", "10", "11"],
+            ["12", "13", "14", "15", "16", "17", "18"],
+            ["19", "20", "21", "22", "23", "24", "25"],
+            ["26", "27", "28", "29", "30", "31", ""]
+        ]
+        
+        for row in weeks:
+            cols = st.columns(7)
+            for i, day in enumerate(row):
+                with cols[i]:
+                    if day:
+                        is_selected = (day == st.session_state.selected_day)
+                        btn_type = "primary" if is_selected else "secondary"
+                        
+                        # 버튼 클릭 시 해당 날짜 선택
+                        if st.button(day, key=f"day_{day}", type=btn_type, use_container_width=True):
+                            st.session_state.selected_day = day
+                            st.rerun()
+                    else:
+                        st.write("")
+        
+        # 선택된 날짜의 경험 입력 영역
+        st.markdown(f"""
+            <div style="margin-top: 35px; padding-top: 30px; border-top: 2px dashed #e2e8f0;">
+                <div style="font-weight: 800; color: #0f172a; font-size: 20px; margin-bottom: 15px;">
+                    📝 7월 {st.session_state.selected_day}일 실습 경험 기록
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # 이전에 쓴 내용 불러오기
+        current_text = st.session_state.diary_data.get(st.session_state.selected_day, "")
+        
+        diary_input = st.text_area(
+            "다이어리 내용", 
+            value=current_text,
+            placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 복구 성공)", 
+            label_visibility="collapsed", 
+            height=120
+        )
+        
+        if st.button("✨ 다이어리 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
+            st.session_state.diary_data[st.session_state.selected_day] = diary_input
+            st.toast(f"✅ 7월 {st.session_state.selected_day}일 다이어리가 성공적으로 기록되었습니다!")
+            
+        st.markdown("</div>", unsafe_allow_html=True) # 달력 박스 닫기
+
+    with chk_col:
+        # 오늘의 체크리스트 (1비율 우측)
+        st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); height: 100%; display: flex; flex-direction: column;">
+            <div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
+                ✅ 오늘의 할 일
+            </div>
+        """, unsafe_allow_html=True)
+        
+        st.checkbox("안전교육 이수증 업로드", value=True)
+        st.checkbox("PLC 제어 도면 해석 복습")
+        # 오늘 다이어리를 썼으면 자동으로 체크됨
+        has_diary = bool(st.session_state.diary_data.get(st.session_state.selected_day, ""))
+        st.checkbox("실습 다이어리 작성 완료", value=has_diary)
+        st.checkbox("설비보전기사 기출 1회 풀이")
+        st.checkbox("이력서 자격증 항목 업데이트")
+        
+        st.markdown("<div style='flex-grow: 1;'></div>", unsafe_allow_html=True)
+        
+        if st.button("진척도 저장하기", use_container_width=True):
+            st.toast("✅ 체크리스트가 안전하게 저장되었습니다.")
+            
+        st.markdown("</div>", unsafe_allow_html=True)
+
+
+    # =========================================================
+    # 🌟 6. 하단 인기 JOB 섹션
+    # =========================================================
+    st.markdown("""<div class="ms-job-section">
 <div class="ms-section-title">주목받는 우수 실습 JOB</div>
 <div class="ms-chip-group">
-<div class="ms-chip active">기계·설비</div>
-<div class="ms-chip">전기·전자</div>
-<div class="ms-chip">소프트웨어</div>
-<div class="ms-chip">자동화·로봇</div>
-<div class="ms-chip">화학·신소재</div>
-<div class="ms-chip">건축·토목</div>
-<div class="ms-chip">디자인·설계</div>
+<div class="ms-chip active">기계·설비</div><div class="ms-chip">전기·전자</div><div class="ms-chip">소프트웨어</div>
+<div class="ms-chip">자동화·로봇</div><div class="ms-chip">화학·신소재</div><div class="ms-chip">건축·토목</div><div class="ms-chip">디자인·설계</div>
 </div>
 <div class="ms-job-grid">
 <div class="ms-job-card">
 <div class="job-card-title">[삼성전자] 2026년 하반기 DS부문 5급 신입사원 채용</div>
-<div class="job-card-comp">
-<span>삼성전자(주)</span>
-<span class="d-day">D-7</span>
-</div>
-<div class="job-tags">
-<span class="job-tag">신입·현장실습</span>
-<span class="job-tag">기숙사 제공</span>
-</div>
+<div class="job-card-comp"><span>삼성전자(주)</span><span class="d-day">D-7</span></div>
+<div class="job-tags"><span class="job-tag">신입·현장실습</span><span class="job-tag">기숙사 제공</span></div>
 </div>
 <div class="ms-job-card">
 <div class="job-card-title">2026 하반기 공개채용 [생산기술/보전 직무]</div>
-<div class="job-card-comp">
-<span>현대자동차</span>
-<span class="d-day">D-12</span>
-</div>
-<div class="job-tags">
-<span class="job-tag">신입 채용</span>
-<span class="job-tag">장기근속 포상</span>
-</div>
+<div class="job-card-comp"><span>현대자동차</span><span class="d-day">D-12</span></div>
+<div class="job-tags"><span class="job-tag">신입 채용</span><span class="job-tag">장기근속 포상</span></div>
 </div>
 <div class="ms-job-card">
 <div class="job-card-title">(주)포스코 '26년 하반기 제철설비 현장 실습생 모집</div>
-<div class="job-card-comp">
-<span>(주)포스코</span>
-<span class="d-day">D-38</span>
-</div>
-<div class="job-tags">
-<span class="job-tag">실습 연계</span>
-<span class="job-tag">우수자 채용</span>
-</div>
+<div class="job-card-comp"><span>(주)포스코</span><span class="d-day">D-38</span></div>
+<div class="job-tags"><span class="job-tag">실습 연계</span><span class="job-tag">우수자 채용</span></div>
 </div>
 <div class="ms-job-card">
 <div class="job-card-title">[LG에너지솔루션] 배터리 생산/품질 관리 신입 채용</div>
-<div class="job-card-comp">
-<span>LG에너지솔루션</span>
-<span class="d-day">D-51</span>
-</div>
-<div class="job-tags">
-<span class="job-tag">품질관리</span>
-<span class="job-tag">기숙사 지원</span>
+<div class="job-card-comp"><span>LG에너지솔루션</span><span class="d-day">D-51</span></div>
+<div class="job-tags"><span class="job-tag">품질관리</span><span class="job-tag">기숙사 지원</span></div>
 </div>
 </div>
-</div>
-</div>"""
-    st.markdown(html_string, unsafe_allow_html=True)
+</div>""", unsafe_allow_html=True)
 
 
 # =========================================================
