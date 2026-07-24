@@ -13,13 +13,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리 (다이어리 데이터 및 체크리스트 상태 유지)
+# 세션 상태 관리
 if "page" not in st.session_state:
     st.session_state.page = "main"
 if "diary_data" not in st.session_state:
     st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
 
-# 체크리스트 상태 초기화 (초기값 세팅)
+# 체크리스트 상태 초기화
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -79,14 +79,28 @@ body, [class*="css"] {
 
 header[data-testid="stHeader"] { display: none !important; }
 
-/* 🌟 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
-*, *:focus, *:active, *:focus-visible { outline: none !important; box-shadow: none !important; -webkit-tap-highlight-color: transparent !important; }
-.ms-nav span, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { user-select: none; }
+/* 🌟 클릭 시 나타나는 포커스 아웃라인 및 텍스트 커서(Caret) 완벽 제거 */
+*, *:focus, *:active, *:focus-visible { 
+    outline: none !important; 
+    box-shadow: none !important; 
+    -webkit-tap-highlight-color: transparent !important; 
+}
+/* 입력창을 제외한 모든 곳에서 텍스트 커서(깜빡이는 선) 숨김 */
+body *:not(input):not(textarea) {
+    caret-color: transparent !important;
+}
+input, textarea {
+    caret-color: auto !important;
+}
+
+.ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { 
+    user-select: none; 
+}
 
 /* 🌟 성장 나무 애니메이션 */
 @keyframes floatTree {
     0%, 100% { transform: translateY(0px) scale(1); }
-    50% { transform: translateY(-8px) scale(1.05); }
+    50% { transform: translateY(-10px) scale(1.05); }
 }
 
 /* 🌟 스트림릿 컨테이너 (글래스 효과) */
@@ -108,11 +122,11 @@ div[data-testid="column"] div.stButton > button[kind="primary"] {
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-/* 🌟 개별 체크리스트 아이템 디자인 커스텀 */
+/* 🌟 개별 체크리스트 아이템 커스텀 (깔끔한 리스트형) */
 div[data-testid="stCheckbox"] {
-    background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 16px; margin-bottom: 8px !important; transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease;
 }
-div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 4px 12px rgba(59, 178, 184, 0.08); }
+div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
 div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
 </style>
@@ -151,10 +165,12 @@ padding-right: 30px !important;
 div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 14px !important; border-radius: 50px !important; padding: 8px 20px !important; height: 42px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
 div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
+/* 앵커 태그 포커스 완벽 제거 */
 .ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; }
-.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; }
+.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
+.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -182,7 +198,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
 
-.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; }
+.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; outline: none !important; }
 .ms-job-section { margin-bottom: 80px; margin-top: 60px; }
 
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
@@ -199,9 +215,9 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 12px; font-weight: 700; padding: 6px 12px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 6px; border: 1px solid #e2e8f0;}
 
-/* 진척도 저장 버튼 하단 마진 보정 */
+/* 진척도 저장 버튼 */
 button:has(p:contains("진척도 저장하기")) {
-    margin-top: 15px !important; width: 100% !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 12px !important; font-weight: 800 !important; padding: 12px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.2s !important;
+    margin-top: 10px !important; width: 100% !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 12px !important; font-weight: 800 !important; padding: 12px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.2s !important;
 }
 button:has(p:contains("진척도 저장하기")):hover { background: #0f172a !important; color: white !important; border-color: #0f172a !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,0.15) !important; }
 button:has(p:contains("진척도 저장하기")):hover p { color: white !important; }
@@ -223,10 +239,10 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션
+    # 🌟 3. 네비게이션 (a 태그 포커스 완벽 제거)
     st.markdown("""<div class="ms-nav">
 <span class="active">진로추천</span>
-<a href="#diary-section" class="nav-anchor">다이어리</a>
+<a href="#diary-section" class="nav-anchor" tabindex="-1">다이어리</a>
 <span>자격증 검색</span>
 <span>실습 JOB 찾기</span>
 <span>공채·기업정보</span>
@@ -245,9 +261,9 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 <button class="ms-ai-btn">맞춤 공고 열람하기</button>
 </div>
 <div class="blur-card-container">
-<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 35px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 35px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 35px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 25px;"></div></div>
 </div>
 </div>
 <div class="glass-panel" style="padding: 35px 32px;">
@@ -266,11 +282,10 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 
 
     # =========================================================
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 섹션
+    # 🌟 5. 캘린더 (다이어리) & 슬림해진 체크리스트 섹션
     # =========================================================
-    st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 60px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
+    st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     
-    # 다이어리(2) : 체크리스트(1) 비율 유지
     cal_col, chk_col = st.columns([2, 1], gap="large")
 
     with cal_col:
@@ -288,7 +303,7 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
             wk_cols = st.columns(7)
             for i, wd in enumerate(["일", "월", "화", "수", "목", "금", "토"]):
                 color = "#ef4444" if i == 0 else "#3b82f6" if i == 6 else "#64748b"
-                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:15px; color:{color}; padding-bottom:10px;'>{wd}</div>", unsafe_allow_html=True)
+                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:15px; color:{color}; padding-bottom:12px;'>{wd}</div>", unsafe_allow_html=True)
             
             weeks = [
                 ["", "", "", "1", "2", "3", "4"],
@@ -322,62 +337,23 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
     with chk_col:
         with st.container(border=True):
             
-            # --- 🌟 성장 나무 데이터 연동 ---
             has_diary_today = bool(st.session_state.diary_data.get("24", ""))
             
-            # 현재 체크된 개수 파악
-            completed_count = sum([
-                st.session_state.chk_1, 
-                st.session_state.chk_2, 
-                has_diary_today, 
-                st.session_state.chk_4, 
-                st.session_state.chk_5
-            ])
-            progress_pct = int((completed_count / 5) * 100)
-            
-            # 단계별 성장 나무 로직 (게이미피케이션)
-            tree_stages = {
-                0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b"),
-                1: ("🌿", "새싹이 돋아났어요!", "#10b981"),
-                2: ("🪴", "무럭무럭 자라고 있어요!", "#059669"),
-                3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857"),
-                4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899"),
-                5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444")
-            }
-            emoji, text, color = tree_stages[completed_count]
-            
-            # 성장 나무 & 프로그레스 바 렌더링
-            st.markdown(f"""
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 20px;">
-                <div style="background: #3bb2b8; color: white; border-radius: 6px; padding: 2px 6px; font-size: 15px;">✔</div> 오늘의 할 일
-            </div>
-            
-            <div style="text-align: center; background: #f8fafc; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px dashed #cbd5e1;">
-                <div style="font-size: 55px; margin-bottom: 12px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
-                <div style="font-size: 15px; font-weight: 800; color: {color};">{text}</div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; margin-bottom: 8px;">
-                    <div style="font-size: 13px; font-weight: 700; color: #64748b;">목표 달성률</div>
-                    <div style="font-size: 14px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
-                </div>
-                <div style="width: 100%; background: #e2e8f0; height: 6px; border-radius: 10px; overflow: hidden;">
-                    <div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-                </div>
+            st.markdown("""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
+                <div style="font-size: 20px; font-weight: 800; color: #0f172a;">✅ 오늘의 할 일</div>
             </div>
             """, unsafe_allow_html=True)
             
-            # --- 🌟 예쁜 카드 형태의 체크리스트 항목 ---
+            # --- 🌟 깔끔한 카드 형태의 체크리스트 항목 ---
             st.checkbox("안전교육 이수증 업로드", key="chk_1")
             st.checkbox("PLC 제어 도면 해석 복습", key="chk_2")
-            
-            # 다이어리 작성 시 자동 체크 (비활성화 상태로 안내)
             st.checkbox("실습 다이어리 작성 (24일 📍)", value=has_diary_today, disabled=True)
-            
             st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4")
             st.checkbox("이력서 자격증 항목 업데이트", key="chk_5")
             
             if st.button("진척도 저장하기", use_container_width=True):
-                st.toast(f"✅ 체크리스트 달성률 ({progress_pct}%)이 반영되었습니다!")
+                st.toast("✅ 체크리스트 달성률이 성공적으로 저장되었습니다!")
 
 
     # =========================================================
@@ -421,6 +397,49 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 </div>
 </div>
 </div>""", unsafe_allow_html=True)
+
+    # =========================================================
+    # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 배치)
+    # =========================================================
+    
+    # 체크 개수에 따른 로직 재계산
+    has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
+    completed_count = sum([
+        st.session_state.get("chk_1", True), 
+        st.session_state.get("chk_2", False), 
+        has_diary_today_bottom, 
+        st.session_state.get("chk_4", False), 
+        st.session_state.get("chk_5", False)
+    ])
+    progress_pct = int((completed_count / 5) * 100)
+    
+    tree_stages = {
+        0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b"),
+        1: ("🌿", "새싹이 돋아났어요!", "#10b981"),
+        2: ("🪴", "무럭무럭 자라고 있어요!", "#059669"),
+        3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857"),
+        4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899"),
+        5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444")
+    }
+    emoji, text, color = tree_stages[completed_count]
+
+    st.markdown(f"""
+    <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 120px;">
+        <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 20px;">🌱 나의 커리어 성장 나무</div>
+        <div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
+        <div style="font-size: 20px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
+        
+        <div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
+                <div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
+            </div>
+            <div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
+                <div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # =========================================================
