@@ -70,37 +70,6 @@ body, [class*="css"] {
 header[data-testid="stHeader"] {
     display: none !important;
 }
-
-/* 🌟 달력 버튼 커스텀 (스트림릿 네이티브 버튼 스타일링) */
-div[data-testid="column"] div.stButton > button {
-    border-radius: 16px !important;
-    padding: 12px 0 !important;
-    font-weight: 800 !important;
-    font-size: 16px !important;
-    transition: all 0.2s ease !important;
-    background: rgba(255, 255, 255, 0.5) !important;
-    border: 1px solid rgba(226, 232, 240, 0.8) !important;
-    color: #475569 !important;
-}
-div[data-testid="column"] div.stButton > button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.05) !important;
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-}
-
-/* 기록이 있거나 선택된 버튼 강조 스타일 */
-div[data-testid="column"] div.stButton > button[kind="primary"] {
-    background: #0f172a !important;
-    color: #ffffff !important;
-    border: none !important;
-    box-shadow: 0 6px 15px rgba(15, 23, 42, 0.2) !important;
-}
-div[data-testid="column"] div.stButton > button[kind="primary"]:hover {
-    background: #1e293b !important;
-    color: #ffffff !important;
-}
 </style>
 """,
     unsafe_allow_html=True,
@@ -121,9 +90,11 @@ padding-left: 40px !important;
 padding-right: 40px !important;
 }
 
+/* 상단 풀와이드 배너 */
 .ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 4px 14px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 
+/* 로고 및 검색창 */
 .ms-logo { font-size: 36px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; cursor: pointer; padding-top: 12px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 10px; }
 .ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 8px 8px 8px 24px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -133,14 +104,13 @@ padding-right: 40px !important;
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.08); }
 
-div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 800 !important; font-size: 15px !important; border-radius: 50px !important; padding: 12px 24px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 8px; }
-div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 25px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
-
+/* 중앙 네비게이션 */
 .ms-nav { display: flex; justify-content: center; gap: 14px; padding-top: 35px; padding-bottom: 45px; flex-wrap: wrap; }
 .ms-nav span { padding: 12px 24px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
 .ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15); }
 
+/* 상단 2단 그리드 (HTML 영역) */
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 30px; margin-bottom: 60px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px); }
@@ -167,9 +137,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 30px rgba(126,87,194,0.15); transform: translateY(-4px); }
 
-.ms-section-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
-
-/* 🌟 하단 인기 실습/JOB 섹션 */
 .ms-job-section { margin-bottom: 100px; margin-top: 60px; }
 .ms-chip-group { display: flex; gap: 12px; margin-bottom: 35px; overflow-x: auto; padding-bottom: 10px; }
 .ms-chip { padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -184,6 +151,82 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .d-day { color: #3bb2b8; font-weight: 800; }
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 13px; font-weight: 600; padding: 8px 14px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 8px; border: 1px solid #e2e8f0;}
+
+/* 🌟 안전한 스트림릿 컨테이너 글래스 효과 (다이어리/체크리스트용) */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px) !important;
+    border-radius: 28px !important;
+    padding: 20px !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08) !important;
+    border-color: rgba(126, 87, 194, 0.2) !important;
+    transform: translateY(-4px) !important;
+}
+
+/* 🌟 커스텀 버튼 디자인 (홍보 버튼 & 캘린더 날짜 & 저장 버튼 분리 적용) */
+
+/* 1. 홍보 버튼 (우측 상단) */
+button:has(p:contains("서비스 소개(홍보) 가기")) {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 50px !important;
+    padding: 10px 24px !important;
+    height: 50px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important;
+    transition: all 0.3s ease !important;
+}
+button:has(p:contains("서비스 소개(홍보) 가기")):hover {
+    border-color: #3bb2b8 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(59, 178, 184, 0.15) !important;
+}
+button:has(p:contains("서비스 소개(홍보) 가기")) p { color: #1e293b !important; font-weight: 800 !important; font-size: 15px !important; }
+
+/* 2. 진척도 저장하기 버튼 */
+button:has(p:contains("진척도 저장하기")) {
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    height: 50px !important;
+    margin-top: 15px !important;
+}
+button:has(p:contains("진척도 저장하기")):hover {
+    background: #0f172a !important;
+    border-color: #0f172a !important;
+}
+button:has(p:contains("진척도 저장하기")):hover p { color: #ffffff !important; }
+button:has(p:contains("진척도 저장하기")) p { color: #334155 !important; font-weight: 800 !important; font-size: 15px !important; }
+
+/* 3. 캘린더 날짜 버튼 (기본형) */
+div[data-testid="column"] div.stButton > button {
+    border-radius: 12px !important;
+    height: 48px !important;
+    background: rgba(255,255,255,0.6) !important;
+    border: 1px solid rgba(226,232,240,0.6) !important;
+    transition: all 0.2s ease !important;
+}
+div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 16px !important; }
+div[data-testid="column"] div.stButton > button:hover {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+}
+
+/* 4. 캘린더 날짜 버튼 (작성 완료 또는 오늘 날짜 - Primary) */
+div[data-testid="column"] div.stButton > button[kind="primary"] {
+    background: #0f172a !important;
+    border-color: #0f172a !important;
+    box-shadow: 0 6px 15px rgba(15,23,42,0.2) !important;
+}
+div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; }
+div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #1e293b !important; }
 
 </style>
 """
@@ -205,7 +248,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # 🌟 3. 네비게이션
     st.markdown("""<div class="ms-nav"><span class="active">진로추천</span><span>다이어리</span><span>자격증 검색</span><span>실습 JOB 찾기</span><span>공채·기업정보</span><span>MBTI</span><span>홀랜드직무검사</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 4. 상단 AI 추천 & 요약 박스
+    # 🌟 4. 상단 AI 추천 & 요약 박스 (순수 HTML 유지)
     st.markdown("""<div class="ms-main-grid">
 <div class="glass-panel">
 <div class="ms-ai-header">
@@ -237,96 +280,84 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 
 
     # =========================================================
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 섹션 (2:1 비율)
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 섹션 (스트림릿 네이티브)
     # =========================================================
-    st.markdown("<div class='ms-section-title' style='margin-top: 40px;'>📅 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size: 28px; font-weight: 800; color: #0f172a; margin-top: 60px; margin-bottom: 24px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     
     cal_col, chk_col = st.columns([2, 1], gap="large")
 
     with cal_col:
-        # 달력 헤더 및 요일 표시 (글래스모피즘 박스 안에 구성)
-        st.markdown("""
-        <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        # 안전한 컨테이너(border=True) 사용 -> 위에서 정의한 CSS로 글래스모피즘 자동 적용됨
+        with st.container(border=True):
+            st.markdown("""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <span style="font-size: 24px; font-weight: 800; color: #0f172a;">2026년 7월</span>
-                <div>
-                    <button style="background: #f1f5f9; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 16px; cursor: pointer; margin-right: 5px;">&lt;</button>
-                    <button style="background: #f1f5f9; border: none; border-radius: 8px; width: 36px; height: 36px; font-size: 16px; cursor: pointer;">&gt;</button>
-                </div>
+                <div><span style="font-size:18px; font-weight:800; color:#cbd5e1; cursor:pointer;">&lt; &nbsp; &gt;</span></div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 800; color: #94a3b8; font-size: 16px; margin-bottom: 15px;">
-                <span style="color:#ef4444;">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span style="color:#3b82f6;">토</span>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        # 2026년 7월 달력 데이터 세팅
-        weeks = [
-            ["", "", "", "1", "2", "3", "4"],
-            ["5", "6", "7", "8", "9", "10", "11"],
-            ["12", "13", "14", "15", "16", "17", "18"],
-            ["19", "20", "21", "22", "23", "24", "25"],
-            ["26", "27", "28", "29", "30", "31", ""]
-        ]
-        
-        # 팝업 호출을 위한 스트림릿 버튼 그리드
-        for row in weeks:
-            cols = st.columns(7)
-            for i, day in enumerate(row):
-                with cols[i]:
-                    if day:
-                        # 오늘 날짜 (24일) 강조 및 작성된 글 유무 파악
-                        is_today = (day == "24")
-                        has_log = bool(st.session_state.diary_data.get(str(day), ""))
-                        
-                        btn_label = f"{day}"
-                        if has_log:
-                            btn_label += " 📝" # 작성된 일기 표시
-                        elif is_today:
-                            btn_label += " 📍" # 오늘 날짜 표시
+            """, unsafe_allow_html=True)
+            
+            # 요일 헤더
+            wk_cols = st.columns(7)
+            for i, wd in enumerate(["일", "월", "화", "수", "목", "금", "토"]):
+                color = "#ef4444" if i == 0 else "#3b82f6" if i == 6 else "#64748b"
+                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:16px; color:{color}; padding-bottom:10px;'>{wd}</div>", unsafe_allow_html=True)
+            
+            # 2026년 7월 달력 데이터 세팅
+            weeks = [
+                ["", "", "", "1", "2", "3", "4"],
+                ["5", "6", "7", "8", "9", "10", "11"],
+                ["12", "13", "14", "15", "16", "17", "18"],
+                ["19", "20", "21", "22", "23", "24", "25"],
+                ["26", "27", "28", "29", "30", "31", ""]
+            ]
+            
+            # 달력 날짜 생성
+            for row in weeks:
+                cols = st.columns(7)
+                for i, day in enumerate(row):
+                    with cols[i]:
+                        if day:
+                            is_today = (day == "24")
+                            has_log = bool(st.session_state.diary_data.get(str(day), ""))
                             
-                        btn_type = "primary" if (has_log or is_today) else "secondary"
-                        
-                        # 버튼 클릭 시 모달(팝업) 함수 호출
-                        if st.button(btn_label, key=f"day_{day}", type=btn_type, use_container_width=True):
-                            write_diary(day)
-                    else:
-                        st.write("")
-        
-        st.markdown("</div>", unsafe_allow_html=True) # 달력 박스 닫기
+                            btn_label = f"{day}"
+                            if has_log:
+                                btn_label += " 📝" # 작성된 일기 표시
+                            elif is_today:
+                                btn_label += " 📍" # 오늘 날짜 표시
+                                
+                            btn_type = "primary" if (has_log or is_today) else "secondary"
+                            
+                            # 날짜 클릭 시 팝업 띄우기
+                            if st.button(btn_label, key=f"day_{day}", type=btn_type, use_container_width=True):
+                                write_diary(day)
+                        else:
+                            # 빈 날짜는 공간만 차지하도록
+                            st.markdown("<div style='height: 48px;'></div>", unsafe_allow_html=True)
 
     with chk_col:
-        # 오늘의 체크리스트 (1비율 우측)
-        st.markdown("""
-        <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); height: 100%; display: flex; flex-direction: column;">
+        # 오늘의 할 일
+        with st.container(border=True):
+            st.markdown("""
             <div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
                 ✅ 오늘의 할 일
             </div>
-        """, unsafe_allow_html=True)
-        
-        st.checkbox("안전교육 이수증 업로드", value=True)
-        st.checkbox("PLC 제어 도면 해석 복습")
-        
-        # 24일(오늘) 다이어리를 썼으면 자동으로 체크 활성화
-        has_diary_today = bool(st.session_state.diary_data.get("24", ""))
-        st.checkbox("실습 다이어리 작성 완료 (24일 📍)", value=has_diary_today)
-        
-        st.checkbox("설비보전기사 기출 1회 풀이")
-        st.checkbox("이력서 자격증 항목 업데이트")
-        
-        st.markdown("<div style='flex-grow: 1;'></div>", unsafe_allow_html=True)
-        
-        st.markdown("""
-            <style>
-            div.stButton > button[key="save_chk"] {
-                margin-top: 30px !important; width: 100% !important; background: #f1f5f9 !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 16px !important; font-weight: 800 !important; padding: 14px !important;
-            }
-            div.stButton > button[key="save_chk"]:hover { background: #0f172a !important; color: white !important; border-color: #0f172a !important; }
-            </style>
-        """, unsafe_allow_html=True)
-        if st.button("진척도 저장하기", key="save_chk", use_container_width=True):
-            st.toast("✅ 체크리스트 진행 상황이 저장되었습니다.")
+            """, unsafe_allow_html=True)
             
-        st.markdown("</div>", unsafe_allow_html=True)
+            st.checkbox("안전교육 이수증 업로드", value=True)
+            st.checkbox("PLC 제어 도면 해석 복습")
+            
+            # 24일(오늘) 다이어리를 썼으면 자동으로 체크 활성화
+            has_diary_today = bool(st.session_state.diary_data.get("24", ""))
+            st.checkbox("실습 다이어리 작성 완료 (24일 📍)", value=has_diary_today)
+            
+            st.checkbox("설비보전기사 기출 1회 풀이")
+            st.checkbox("이력서 자격증 항목 업데이트")
+            
+            st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+            
+            if st.button("진척도 저장하기", use_container_width=True):
+                st.toast("✅ 체크리스트 진행 상황이 저장되었습니다.")
 
 
     # =========================================================
