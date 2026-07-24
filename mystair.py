@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (입력창 잔상 형태 박스 원천 차단)
+# 4. 글로벌 CSS (빈 블록 잔상 완전 제거 및 스타일 통일)
 # =========================================================
 st.markdown(
     """
@@ -117,7 +117,7 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 st.container 잔상을 없애고 순수 HTML 클래스로 완벽한 흰색 카드 구현 */
+/* 🌟 순수 흰색 카드 패널 */
 .clean-card {
     background: #ffffff !important;
     border-radius: 24px !important;
@@ -370,7 +370,7 @@ elif st.session_state.page == "main":
 </div>""", unsafe_allow_html=True)
 
     # =========================================================
-    # 🌟 5. 캘린더와 체크리스트 (순수 clean-card 클래스 적용으로 잔상 및 불투명도 완벽 해결)
+    # 🌟 5. 캘린더와 체크리스트 (순수 clean-card 적용 및 잔상 원천 차단)
     # =========================================================
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
