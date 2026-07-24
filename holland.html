@@ -75,6 +75,7 @@
             gap: 8px;
             backdrop-filter: blur(4px);
             margin-right: 8px;
+            text-decoration: none; /* 링크 밑줄 제거 */
         }
 
         .btn-header-main:hover {
@@ -90,6 +91,7 @@
             font-size: 26px;
             letter-spacing: -0.5px;
             cursor: pointer;
+            text-decoration: none; /* 링크 밑줄 제거 */
         }
 
         .hot-badge {
@@ -499,10 +501,13 @@
 <!-- Header (왼쪽 상단 메인 이동 버튼 고정) -->
 <header class="mystair-header">
     <div class="header-left">
-        <button class="btn-header-main" onclick="goToMain()">
+        <!-- 수정된 부분: button 태그를 a 태그로 변경하고 target="_top" 적용 -->
+        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_top" class="btn-header-main">
             <i class="fa-solid fa-house"></i> 메인화면으로
-        </button>
-        <span class="mystair-logo" onclick="goToMain()">MyStair</span>
+        </a>
+        <!-- 수정된 부분: span 태그를 a 태그로 변경하고 target="_top" 적용 (로고 클릭 시에도 메인으로 이동) -->
+        <a href="https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/" target="_top" class="mystair-logo">MyStair</a>
+        
         <span class="hot-badge">Holland</span>
         <span class="header-sub">전국 마이스터고 맞춤형 직업적성검사</span>
     </div>
@@ -579,14 +584,6 @@
 <div id="toast" class="toast">결과가 클립보드에 복사되었습니다!</div>
 
 <script>
-    // 메인 사이트 URL
-    const MAIN_URL = "https://mystair-kqbuqfgvmt4mtvr9zaaklf.streamlit.app/";
-
-    // 최상위 창(Streamlit 메인 앱)으로 강제 이동하는 함수
-    function goToMain() {
-        window.top.location.href = MAIN_URL;
-    }
-
     // 60 Holland Questions (10 for each code: R, I, A, S, E, C)
     const questions = [
         // R (실제형) 1-10
