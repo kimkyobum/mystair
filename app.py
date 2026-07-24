@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 토스·스픽·삼성 벤치마킹 스타일 및 인터랙티브 UI CSS 주입
+# 2. 화면 전체를 꽉 채우는 풀 와이드 레이아웃 CSS 주입
 st.markdown(
     """
 <style>
@@ -42,18 +42,18 @@ body, [class*="css"] {
     color: #1e293b;
 }
 
-/* 🌟 와이드 컨테이너 폭 (1200px) 및 여유로운 패딩 */
+/* 🌟 화면 전체(Full-Width)를 쓰도록 max-width 제한 해제 및 여백 최적화 */
 .block-container {
     padding-top: 2rem;
     padding-bottom: 10rem;
-    max-width: 1200px !important;
+    max-width: 100% !important;
     margin: 0 auto !important;
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
     animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 🌟 상단 알약 네비게이션 바 */
+/* 🌟 상단 알약 네비게이션 바 (화면 전체 폭에 맞춤) */
 .speak-navbar-container {
     display: flex;
     justify-content: center;
@@ -70,9 +70,9 @@ body, [class*="css"] {
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
     border-radius: 100px;
-    padding: 14px 36px;
+    padding: 14px 40px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 100%;
 }
 
 .nav-left {
@@ -94,7 +94,7 @@ body, [class*="css"] {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: 32px;
 }
 
 .nav-link {
@@ -140,7 +140,7 @@ body, [class*="css"] {
 }
 
 .hero-title {
-    font-size: 60px;
+    font-size: 64px;
     font-weight: 800;
     margin: 0 0 24px 0;
     line-height: 1.2;
@@ -173,7 +173,7 @@ body, [class*="css"] {
 
 .hero-graphic {
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1));
@@ -195,7 +195,7 @@ body, [class*="css"] {
 }
 
 .section-heading {
-    font-size: 38px;
+    font-size: 42px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 12px;
@@ -204,7 +204,7 @@ body, [class*="css"] {
 }
 
 .section-desc {
-    font-size: 18px;
+    font-size: 19px;
     color: #64748b;
     line-height: 1.6;
     margin-bottom: 30px;
@@ -215,7 +215,7 @@ body, [class*="css"] {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border-radius: 24px;
-    padding: 36px 32px;
+    padding: 40px 36px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -232,7 +232,7 @@ body, [class*="css"] {
 }
 
 .modern-card h3 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: #0f172a;
     margin: 0 0 14px 0;
@@ -240,19 +240,19 @@ body, [class*="css"] {
 }
 
 .modern-card p {
-    font-size: 16px;
+    font-size: 17px;
     color: #64748b;
     line-height: 1.7;
     margin: 0;
     word-break: keep-all;
 }
 
-/* 🌟 FAQ 아코디언 카드 스타일 */
+/* FAQ 아코디언 카드 스타일 */
 .faq-box {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
     border-radius: 20px;
-    padding: 30px;
+    padding: 32px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 10px 25px rgba(0,0,0,0.02);
     margin-bottom: 20px;
@@ -265,14 +265,14 @@ body, [class*="css"] {
 }
 
 .faq-q {
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 10px;
 }
 
 .faq-a {
-    font-size: 16px;
+    font-size: 17px;
     color: #64748b;
     line-height: 1.6;
     margin: 0;
@@ -287,7 +287,7 @@ body, [class*="css"] {
     flex-direction: column;
     gap: 20px;
     color: #64748b;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .footer-top {
@@ -297,7 +297,7 @@ body, [class*="css"] {
 }
 
 .footer-logo {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -0.8px;
@@ -305,7 +305,7 @@ body, [class*="css"] {
 
 .footer-links {
     display: flex;
-    gap: 24px;
+    gap: 28px;
     font-weight: 600;
 }
 
@@ -322,7 +322,7 @@ body, [class*="css"] {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
     border-radius: 24px;
-    padding: 35px;
+    padding: 40px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.03);
     border: 1px solid rgba(226, 232, 240, 0.8);
 }
@@ -371,7 +371,7 @@ st.markdown(
 if st.session_state.page == "landing":
 
   # --- [섹션 1] 첫 화면 (히어로) ---
-  hero_col1, hero_col2 = st.columns([1.05, 0.95], gap="large")
+  hero_col1, hero_col2 = st.columns([1.1, 0.9], gap="large")
 
   with hero_col1:
     st.markdown(
@@ -503,7 +503,7 @@ if st.session_state.page == "landing":
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 5] 자주 묻는 질문 (FAQ) 추가 ---
+  # --- [섹션 5] 자주 묻는 질문 (FAQ) ---
   st.markdown(
       """
 <div class="scroll-section">
@@ -545,7 +545,7 @@ if st.session_state.page == "landing":
             <span>고객센터</span>
         </div>
     </div>
-    <div style="color: #94a3b8; font-size: 13px;">
+    <div style="color: #94a3b8; font-size: 14px;">
         © 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 빛나는 내일을 응원합니다.
     </div>
 </div>
