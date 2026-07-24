@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리
+# 세션 상태 관리 (초기 화면 'main' 포털)
 if "page" not in st.session_state:
     st.session_state.page = "main"
 
@@ -21,7 +21,7 @@ def navigate_to(page_name):
     st.session_state.page = page_name
     st.rerun()
 
-# 글로벌 CSS (앰비언트 그라데이션 배경)
+# 글로벌 CSS (배경 및 기본 폰트)
 st.markdown(
     """
 <style>
@@ -50,10 +50,11 @@ header[data-testid="stHeader"] {
 )
 
 # =========================================================
-# [PAGE 1] 메인 포털 대시보드 (기획서 맞춤형 고도화)
+# [PAGE 1] 메인 포털 대시보드
 # =========================================================
 if st.session_state.page == "main":
     
+    # 메인 전용 CSS (다이어리 & 체크리스트 스타일 추가)
     css_string = """
 <style>
 .block-container {
@@ -70,7 +71,7 @@ width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; mar
 }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 4px 14px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 
-/* 🌟 로고 및 검색창 */
+/* 🌟 헤더 컬럼 디자인 */
 .ms-logo { font-size: 36px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; cursor: pointer; padding-top: 12px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 10px; }
 .ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 8px 8px 8px 24px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -80,50 +81,76 @@ width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; mar
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.08); }
 
-/* 🌟 우측 홍보 버튼 */
-div.stButton > button[kind="secondary"] { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; border-radius: 50px !important; padding: 12px 24px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.3s ease !important; float: right; margin-top: 12px; }
-div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important; box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important; transform: translateY(-2px) !important; color: #3bb2b8 !important; }
+/* 🌟 우측 상단 '홍보 가기' 버튼 */
+div.stButton > button[kind="secondary"] { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; border-radius: 50px !important; padding: 10px 20px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.3s ease !important; float: right; margin-top: 15px; }
+div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important; box-shadow: 0 6px 15px rgba(0,0,0,0.06) !important; transform: translateY(-2px) !important; }
 
-/* 🌟 중앙 네비게이션 탭 */
-.ms-nav { display: flex; justify-content: center; gap: 14px; padding-top: 35px; padding-bottom: 45px; flex-wrap: wrap; }
-.ms-nav span { padding: 12px 24px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
-.ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
+/* 🌟 네비게이션 중앙 정렬 */
+.ms-nav { display: flex; justify-content: center; gap: 16px; padding-top: 30px; padding-bottom: 40px; }
+.ms-nav span { padding: 12px 26px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
+.ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15); }
 
-/* 🌟 2단 메인 그리드 */
-.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 30px; }
+/* 🌟 메인 그리드 및 공통 글래스 카드 */
+.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 .glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px); }
 
-/* 좌측: AI 추천 */
-.ms-ai-title { font-size: 24px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+/* AI 추천 */
+.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
 .ms-ai-btn { background: #0f172a; color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-ai-btn:hover { background: #334155; transform: scale(1.05); }
+.ms-ai-btn:hover { background: #1e293b; transform: scale(1.05); }
 
-.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; filter: blur(4.5px); opacity: 0.8; pointer-events: none; }
-.blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 160px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-.blur-line { height: 14px; background: #cbd5e1; border-radius: 10px; margin-bottom: 14px; }
+.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; filter: blur(5px); opacity: 0.7; pointer-events: none; }
+.blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 150px; border: 1px solid #f1f5f9; }
+.blur-line { height: 14px; background: #e2e8f0; border-radius: 10px; margin-bottom: 12px; }
 
-/* 우측: 핵심 기획 퀵 메뉴 */
+/* 우측 요약정보 */
 .ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 20px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 24px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-gradient-banner:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(126,87,194,0.15); }
 .ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 16px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; height: 125px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
+.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 15px; font-weight: 700; color: #334155; display: flex; flex-direction: column; justify-content: space-between; height: 120px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 15px 30px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-4px); }
 
-/* 🌟 중간 10초 컷 배너 */
-.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 60px 0; backdrop-filter: blur(10px); }
+/* 🌟 10초 컷 배너 */
+.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 40px 0; backdrop-filter: blur(10px); }
 .ms-mid-banner-title { font-size: 24px; font-weight: 800; color: #0f172a; }
 .ms-mid-btns { display: flex; gap: 16px; }
 .ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 30px rgba(126,87,194,0.15); transform: translateY(-4px); }
 
-/* 🌟 하단 그리드 섹션 */
-.ms-job-section { margin-bottom: 100px; }
-.ms-section-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
+/* 🌟 다이어리(캘린더) & 체크리스트 (2:1 비율) */
+.ms-diary-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 60px; }
+.ms-section-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
 
+.ms-cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.ms-cal-month { font-size: 22px; font-weight: 800; color: #0f172a; }
+.ms-cal-nav { display: flex; gap: 8px; }
+.ms-cal-nav button { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 8px; font-size: 16px; color: #475569; cursor: pointer; transition: 0.2s; }
+.ms-cal-nav button:hover { background: #e2e8f0; color: #0f172a; }
+
+.ms-cal-week { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; color: #94a3b8; font-size: 15px; margin-bottom: 12px; }
+.ms-cal-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 8px; }
+.ms-cal-days span { padding: 14px 0; border-radius: 14px; font-size: 16px; font-weight: 700; color: #334155; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+.ms-cal-days span:hover { background: #f8fafc; border-color: #e2e8f0; transform: translateY(-2px); }
+.ms-cal-days span.empty { color: #cbd5e1; }
+.ms-cal-days span.active { background: #0f172a; color: white; box-shadow: 0 8px 15px rgba(15,23,42,0.2); }
+.ms-cal-days span.active:hover { background: #0f172a; transform: none; }
+.ms-cal-days span.has-log::after { content: ''; width: 6px; height: 6px; background: #3bb2b8; border-radius: 50%; margin-top: 6px; }
+.ms-cal-days span.active.has-log::after { background: #ffffff; }
+
+.ms-check-header { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9; }
+.ms-check-list { display: flex; flex-direction: column; gap: 18px; }
+.ms-check-item { display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600; color: #475569; cursor: pointer; }
+.ms-check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: #3bb2b8; cursor: pointer; }
+.ms-check-item input:checked + span { text-decoration: line-through; color: #cbd5e1; }
+.ms-check-btn { margin-top: 35px; width: 100%; background: #f1f5f9; border: 1px solid #e2e8f0; padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 800; color: #334155; cursor: pointer; transition: all 0.2s; }
+.ms-check-btn:hover { background: #0f172a; color: white; border-color: #0f172a; }
+
+/* 🌟 하단 인기 실습/JOB 섹션 */
+.ms-job-section { margin-bottom: 100px; }
 .ms-chip-group { display: flex; gap: 12px; margin-bottom: 35px; overflow-x: auto; padding-bottom: 10px; }
 .ms-chip { padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15,23,42,0.15); }
@@ -147,7 +174,7 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역 (스트림릿 컬럼을 이용해 '홍보 가기' 버튼을 우측에 매립)
+    # 🌟 2. 헤더 영역 (로고 / 중앙 검색창 / 우측 매립된 홍보 버튼)
     h_col1, h_col2, h_col3 = st.columns([1.5, 6, 2.5])
     
     with h_col1:
@@ -231,6 +258,7 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 </div>
 </div>
 </div>
+
 <div class="ms-mid-banner">
 <div class="ms-mid-banner-title">⚡ 10초 컷! 나의 성향 기반 실습 공고 추천 받기</div>
 <div class="ms-mid-btns">
@@ -238,6 +266,37 @@ div.stButton > button[kind="secondary"]:hover { border-color: #cbd5e1 !important
 <button class="ms-mid-btn">📖 이론 설계형 (N/F)</button>
 </div>
 </div>
+
+<div class="ms-section-title">📅 나의 실습 다이어리 & 체크리스트</div>
+<div class="ms-diary-grid">
+<div class="glass-panel" style="padding: 35px 40px;">
+<div class="ms-cal-header">
+<span class="ms-cal-month">2026년 7월</span>
+<div class="ms-cal-nav"><button>&lt;</button><button>&gt;</button></div>
+</div>
+<div class="ms-cal-week">
+<span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+</div>
+<div class="ms-cal-days">
+<span class="empty">28</span><span class="empty">29</span><span class="empty">30</span><span class="has-log">1</span><span>2</span><span>3</span><span>4</span>
+<span>5</span><span class="has-log">6</span><span>7</span><span class="has-log">8</span><span>9</span><span>10</span><span>11</span>
+<span>12</span><span>13</span><span class="has-log">14</span><span class="has-log">15</span><span>16</span><span>17</span><span>18</span>
+<span>19</span><span class="has-log">20</span><span>21</span><span>22</span><span class="has-log">23</span><span class="active">24</span><span>25</span>
+<span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span class="empty">1</span>
+</div>
+</div>
+<div class="glass-panel" style="padding: 35px 40px; display: flex; flex-direction: column;">
+<div class="ms-check-header">✅ 오늘의 할 일</div>
+<div class="ms-check-list">
+<label class="ms-check-item"><input type="checkbox" checked> <span>안전교육 이수증 업로드</span></label>
+<label class="ms-check-item"><input type="checkbox"> <span>PLC 제어 도면 해석 복습</span></label>
+<label class="ms-check-item"><input type="checkbox"> <span>다이어리 트러블슈팅 기록</span></label>
+<label class="ms-check-item"><input type="checkbox"> <span>설비보전기사 기출 1회 풀이</span></label>
+</div>
+<button class="ms-check-btn">진척도 저장하기</button>
+</div>
+</div>
+
 <div class="ms-job-section">
 <div class="ms-section-title">주목받는 우수 실습 JOB</div>
 <div class="ms-chip-group">
