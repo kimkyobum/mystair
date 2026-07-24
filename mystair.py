@@ -193,7 +193,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-job-section { margin-bottom: 80px; margin-top: 60px; }
 
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
-.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226, 232, 240, 0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
 .ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 
@@ -222,7 +222,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (홀랜드 및 MBTI 깃허브 Pages 링크 연결)
+    # 🌟 3. 네비게이션 (target="_self" 적용하여 새 창 안 띄우고 현재 창에서 바로 이동)
     holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
     mbti_github_url = "https://kimkyobum.github.io/mystair/MBTI.html"
 
@@ -232,8 +232,8 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 <span>자격증 검색</span>
 <span>실습 JOB 찾기</span>
 <span>공채·기업정보</span>
-<a href="{mbti_github_url}" target="_blank" class="nav-anchor link-btn" tabindex="-1">🧠 MBTI</a>
-<a href="{holland_github_url}" target="_blank" class="nav-anchor link-btn" tabindex="-1">✨ 홀랜드직무검사</a>
+<a href="{mbti_github_url}" target="_self" class="nav-anchor link-btn" tabindex="-1">🧠 MBTI</a>
+<a href="{holland_github_url}" target="_self" class="nav-anchor link-btn" tabindex="-1">✨ 홀랜드직무검사</a>
 </div>""", unsafe_allow_html=True)
 
     # 🌟 4. 상단 AI 추천 & 요약 박스
@@ -383,6 +383,8 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # =========================================================
     # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 단독 배치)
     # =========================================================
+    
+    # 체크 개수에 따른 로직 재계산
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
         bool(st.session_state.chk_1), 
