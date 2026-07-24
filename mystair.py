@@ -13,11 +13,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리 (초기 화면 'main' 포털)
+# 세션 상태 관리
 if "page" not in st.session_state:
     st.session_state.page = "main"
-if "selected_day" not in st.session_state:
-    st.session_state.selected_day = "24" # 기본 선택 날짜 (오늘)
 if "diary_data" not in st.session_state:
     st.session_state.diary_data = {} # 다이어리 데이터 저장소
 
@@ -25,7 +23,31 @@ def navigate_to(page_name):
     st.session_state.page = page_name
     st.rerun()
 
-# 글로벌 CSS (앰비언트 그라데이션 배경)
+# 🌟 모달(팝업) 다이어리 입력창 함수
+@st.dialog("📝 실습 다이어리 기록")
+def write_diary(day):
+    st.markdown(f"<div style='font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 10px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
+    
+    current_text = st.session_state.diary_data.get(str(day), "")
+    
+    diary_input = st.text_area(
+        "다이어리 내용", 
+        value=current_text,
+        placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 1시간 내 복구 완료)", 
+        label_visibility="collapsed", 
+        height=200
+    )
+    
+    if st.button("✨ 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
+        if diary_input.strip():
+            st.session_state.diary_data[str(day)] = diary_input
+            st.toast(f"✅ 7월 {day}일 다이어리가 성공적으로 저장되었습니다!")
+        else:
+            if str(day) in st.session_state.diary_data:
+                del st.session_state.diary_data[str(day)]
+        st.rerun() # 저장 후 팝업 닫기 및 메인 화면 갱신
+
+# 글로벌 CSS (배경 및 기본 폰트)
 st.markdown(
     """
 <style>
@@ -48,6 +70,37 @@ body, [class*="css"] {
 header[data-testid="stHeader"] {
     display: none !important;
 }
+
+/* 🌟 달력 버튼 커스텀 (스트림릿 네이티브 버튼 스타일링) */
+div[data-testid="column"] div.stButton > button {
+    border-radius: 16px !important;
+    padding: 12px 0 !important;
+    font-weight: 800 !important;
+    font-size: 16px !important;
+    transition: all 0.2s ease !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    color: #475569 !important;
+}
+div[data-testid="column"] div.stButton > button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05) !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* 기록이 있거나 선택된 버튼 강조 스타일 */
+div[data-testid="column"] div.stButton > button[kind="primary"] {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 6px 15px rgba(15, 23, 42, 0.2) !important;
+}
+div[data-testid="column"] div.stButton > button[kind="primary"]:hover {
+    background: #1e293b !important;
+    color: #ffffff !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -58,7 +111,6 @@ header[data-testid="stHeader"] {
 # =========================================================
 if st.session_state.page == "main":
     
-    # 메인 전용 CSS (홍보 버튼 및 캘린더 UI 스타일링 포함)
     css_string = """
 <style>
 .block-container {
@@ -69,13 +121,9 @@ padding-left: 40px !important;
 padding-right: 40px !important;
 }
 
-/* 🌟 최상단 풀와이드 배너 */
-.ms-top-banner {
-width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px;
-}
+.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 14px 0; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 4px 14px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 
-/* 🌟 헤더 컬럼 & 검색창 */
 .ms-logo { font-size: 36px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; cursor: pointer; padding-top: 12px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 10px; }
 .ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 8px 8px 8px 24px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -85,26 +133,18 @@ width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; mar
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.08); }
 
-/* 🌟 우측 상단 '홍보 가기' 버튼 (이미지처럼 예쁘게 커스텀) */
-div[data-testid="column"]:nth-of-type(3) div.stButton > button {
-background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 800 !important; font-size: 15px !important; border-radius: 50px !important; padding: 12px 24px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 8px;
-}
-div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover {
-border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 25px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important;
-}
+div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 800 !important; font-size: 15px !important; border-radius: 50px !important; padding: 12px 24px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 8px; }
+div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 25px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
-/* 🌟 중앙 네비게이션 정렬 */
 .ms-nav { display: flex; justify-content: center; gap: 14px; padding-top: 35px; padding-bottom: 45px; flex-wrap: wrap; }
 .ms-nav span { padding: 12px 24px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
 .ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15); }
 
-/* 🌟 상단 2단 그리드 */
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 30px; margin-bottom: 60px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px); }
 
-/* AI 추천 */
 .ms-ai-title { font-size: 24px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
@@ -115,14 +155,18 @@ border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 2
 .blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 160px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
 .blur-line { height: 14px; background: #cbd5e1; border-radius: 10px; margin-bottom: 14px; }
 
-/* 우측 퀵 메뉴 */
 .ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 20px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 24px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-gradient-banner:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(126,87,194,0.15); }
 .ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-grow: 1; }
 .ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 16px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
 .ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 15px 30px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-4px); }
 
-/* 🌟 섹션 타이틀 */
+.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 40px 0; backdrop-filter: blur(10px); }
+.ms-mid-banner-title { font-size: 24px; font-weight: 800; color: #0f172a; }
+.ms-mid-btns { display: flex; gap: 16px; }
+.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
+.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 30px rgba(126,87,194,0.15); transform: translateY(-4px); }
+
 .ms-section-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
 
 /* 🌟 하단 인기 실습/JOB 섹션 */
@@ -141,52 +185,25 @@ border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 8px 2
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 13px; font-weight: 600; padding: 8px 14px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 8px; border: 1px solid #e2e8f0;}
 
-/* 🌟 달력 버튼 커스텀 (스트림릿 네이티브 버튼 스타일링) */
-div[data-testid="column"] div.stButton > button {
-border-radius: 16px !important;
-padding: 10px 0 !important;
-font-weight: 800 !important;
-transition: all 0.2s ease !important;
-}
-div[data-testid="column"] div.stButton > button:hover {
-transform: translateY(-2px);
-box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-}
 </style>
 """
     st.markdown(css_string, unsafe_allow_html=True)
     
     # 🌟 1. 최상단 배너
-    st.markdown("""<div class="ms-top-banner">
-<span class="ms-top-banner-badge">HOT</span>
-<span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
-</div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="ms-top-banner"><span class="ms-top-banner-badge">HOT</span><span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역 (검색창 중앙, 홍보 버튼 우측)
+    # 🌟 2. 헤더 영역
     h_col1, h_col2, h_col3 = st.columns([1.5, 6, 2.5])
     with h_col1:
         st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
     with h_col2:
-        st.markdown("""<div class="ms-search-box-wrapper">
-<div class="ms-search-box">
-<input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요">
-<button class="ms-search-btn">🔍</button>
-</div>
-</div>""", unsafe_allow_html=True)
+        st.markdown("""<div class="ms-search-box-wrapper"><div class="ms-search-box"><input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요"><button class="ms-search-btn">🔍</button></div></div>""", unsafe_allow_html=True)
     with h_col3:
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (요청 순서 완벽 반영)
-    st.markdown("""<div class="ms-nav">
-<span class="active">진로추천</span>
-<span>다이어리</span>
-<span>자격증 검색</span>
-<span>실습 JOB 찾기</span>
-<span>공채·기업정보</span>
-<span>MBTI</span>
-<span>홀랜드직무검사</span>
-</div>""", unsafe_allow_html=True)
+    # 🌟 3. 네비게이션
+    st.markdown("""<div class="ms-nav"><span class="active">진로추천</span><span>다이어리</span><span>자격증 검색</span><span>실습 JOB 찾기</span><span>공채·기업정보</span><span>MBTI</span><span>홀랜드직무검사</span></div>""", unsafe_allow_html=True)
 
     # 🌟 4. 상단 AI 추천 & 요약 박스
     st.markdown("""<div class="ms-main-grid">
@@ -227,7 +244,7 @@ box-shadow: 0 6px 15px rgba(0,0,0,0.05);
     cal_col, chk_col = st.columns([2, 1], gap="large")
 
     with cal_col:
-        # 달력 헤더 및 요일 표시
+        # 달력 헤더 및 요일 표시 (글래스모피즘 박스 안에 구성)
         st.markdown("""
         <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
@@ -242,7 +259,7 @@ box-shadow: 0 6px 15px rgba(0,0,0,0.05);
             </div>
         """, unsafe_allow_html=True)
         
-        # 달력 날짜 생성 (스트림릿 버튼 연동)
+        # 2026년 7월 달력 데이터 세팅
         weeks = [
             ["", "", "", "1", "2", "3", "4"],
             ["5", "6", "7", "8", "9", "10", "11"],
@@ -251,45 +268,30 @@ box-shadow: 0 6px 15px rgba(0,0,0,0.05);
             ["26", "27", "28", "29", "30", "31", ""]
         ]
         
+        # 팝업 호출을 위한 스트림릿 버튼 그리드
         for row in weeks:
             cols = st.columns(7)
             for i, day in enumerate(row):
                 with cols[i]:
                     if day:
-                        is_selected = (day == st.session_state.selected_day)
-                        btn_type = "primary" if is_selected else "secondary"
+                        # 오늘 날짜 (24일) 강조 및 작성된 글 유무 파악
+                        is_today = (day == "24")
+                        has_log = bool(st.session_state.diary_data.get(str(day), ""))
                         
-                        # 버튼 클릭 시 해당 날짜 선택
-                        if st.button(day, key=f"day_{day}", type=btn_type, use_container_width=True):
-                            st.session_state.selected_day = day
-                            st.rerun()
+                        btn_label = f"{day}"
+                        if has_log:
+                            btn_label += " 📝" # 작성된 일기 표시
+                        elif is_today:
+                            btn_label += " 📍" # 오늘 날짜 표시
+                            
+                        btn_type = "primary" if (has_log or is_today) else "secondary"
+                        
+                        # 버튼 클릭 시 모달(팝업) 함수 호출
+                        if st.button(btn_label, key=f"day_{day}", type=btn_type, use_container_width=True):
+                            write_diary(day)
                     else:
                         st.write("")
         
-        # 선택된 날짜의 경험 입력 영역
-        st.markdown(f"""
-            <div style="margin-top: 35px; padding-top: 30px; border-top: 2px dashed #e2e8f0;">
-                <div style="font-weight: 800; color: #0f172a; font-size: 20px; margin-bottom: 15px;">
-                    📝 7월 {st.session_state.selected_day}일 실습 경험 기록
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        # 이전에 쓴 내용 불러오기
-        current_text = st.session_state.diary_data.get(st.session_state.selected_day, "")
-        
-        diary_input = st.text_area(
-            "다이어리 내용", 
-            value=current_text,
-            placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 복구 성공)", 
-            label_visibility="collapsed", 
-            height=120
-        )
-        
-        if st.button("✨ 다이어리 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
-            st.session_state.diary_data[st.session_state.selected_day] = diary_input
-            st.toast(f"✅ 7월 {st.session_state.selected_day}일 다이어리가 성공적으로 기록되었습니다!")
-            
         st.markdown("</div>", unsafe_allow_html=True) # 달력 박스 닫기
 
     with chk_col:
@@ -303,24 +305,43 @@ box-shadow: 0 6px 15px rgba(0,0,0,0.05);
         
         st.checkbox("안전교육 이수증 업로드", value=True)
         st.checkbox("PLC 제어 도면 해석 복습")
-        # 오늘 다이어리를 썼으면 자동으로 체크됨
-        has_diary = bool(st.session_state.diary_data.get(st.session_state.selected_day, ""))
-        st.checkbox("실습 다이어리 작성 완료", value=has_diary)
+        
+        # 24일(오늘) 다이어리를 썼으면 자동으로 체크 활성화
+        has_diary_today = bool(st.session_state.diary_data.get("24", ""))
+        st.checkbox("실습 다이어리 작성 완료 (24일 📍)", value=has_diary_today)
+        
         st.checkbox("설비보전기사 기출 1회 풀이")
         st.checkbox("이력서 자격증 항목 업데이트")
         
         st.markdown("<div style='flex-grow: 1;'></div>", unsafe_allow_html=True)
         
-        if st.button("진척도 저장하기", use_container_width=True):
-            st.toast("✅ 체크리스트가 안전하게 저장되었습니다.")
+        st.markdown("""
+            <style>
+            div.stButton > button[key="save_chk"] {
+                margin-top: 30px !important; width: 100% !important; background: #f1f5f9 !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 16px !important; font-weight: 800 !important; padding: 14px !important;
+            }
+            div.stButton > button[key="save_chk"]:hover { background: #0f172a !important; color: white !important; border-color: #0f172a !important; }
+            </style>
+        """, unsafe_allow_html=True)
+        if st.button("진척도 저장하기", key="save_chk", use_container_width=True):
+            st.toast("✅ 체크리스트 진행 상황이 저장되었습니다.")
             
         st.markdown("</div>", unsafe_allow_html=True)
 
 
     # =========================================================
-    # 🌟 6. 하단 인기 JOB 섹션
+    # 🌟 6. 10초 컷 맞춤 배너 및 하단 인기 JOB 섹션
     # =========================================================
-    st.markdown("""<div class="ms-job-section">
+    st.markdown("""
+<div class="ms-mid-banner">
+<div class="ms-mid-banner-title">⚡ 10초 컷! 나의 성향 기반 실습 공고 추천 받기</div>
+<div class="ms-mid-btns">
+<button class="ms-mid-btn">🛠️ 현장 실무형 (S/T)</button>
+<button class="ms-mid-btn">📖 이론 설계형 (N/F)</button>
+</div>
+</div>
+
+<div class="ms-job-section">
 <div class="ms-section-title">주목받는 우수 실습 JOB</div>
 <div class="ms-chip-group">
 <div class="ms-chip active">기계·설비</div><div class="ms-chip">전기·전자</div><div class="ms-chip">소프트웨어</div>
