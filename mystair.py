@@ -37,7 +37,6 @@ def save_db(data):
 def hash_pw(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-# 실시간 동기화 함수
 def sync_to_db():
     if st.session_state.get("logged_in") and st.session_state.get("current_user"):
         db = load_db()
@@ -57,7 +56,6 @@ if "logged_in" not in st.session_state: st.session_state.logged_in = False
 if "current_user" not in st.session_state: st.session_state.current_user = None
 if "page" not in st.session_state: st.session_state.page = "main"
 
-# 로그인 안 된 상태의 기본값
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -80,7 +78,6 @@ def logout():
     st.session_state.profile = {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
     navigate_to("main")
 
-# 모달 다이어리
 @st.dialog("📝 실습 다이어리 기록")
 def write_diary(day):
     st.markdown(f"<div style='font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
@@ -98,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (디자인 및 크기 보정)
+# 4. 글로벌 CSS (박스 깨짐 현상 완벽 해결)
 # =========================================================
 st.markdown(
     """
@@ -117,50 +114,44 @@ body, [class*="css"] { font-family: 'SUIT', -apple-system, sans-serif !important
 }
 header[data-testid="stHeader"] { display: none !important; }
 *, *:focus, *:active, *:focus-visible { outline: none !important; box-shadow: none !important; -webkit-tap-highlight-color: transparent !important; }
-body *:not(input):not(textarea) { caret-color: transparent !important; }
-input, textarea { caret-color: auto !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
+/* 🌟 컨테이너 내부 여백 안정화로 달력 박스 깨짐 방지 */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 28px 32px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
 }
 
-/* 🌟 모든 버튼(달력, 헤더 메뉴 포함) 크기 및 스타일 일치화 */
+/* 🌟 모든 버튼 디자인 통일 */
 div[data-testid="column"] div.stButton > button,
 div[data-testid="column"] div[data-testid="stPopover"] > button { 
     border-radius: 12px !important; 
-    min-height: 42px !important; 
+    height: 42px !important; 
     background: #ffffff !important; 
     border: 1px solid #e2e8f0 !important; 
-    transition: all 0.2s ease !important; 
     color: #475569 !important; 
     font-weight: 700 !important; 
     font-size: 14px !important; 
     width: 100% !important;
+    transition: all 0.2s ease !important;
 }
 div[data-testid="column"] div.stButton > button:hover,
 div[data-testid="column"] div[data-testid="stPopover"] > button:hover { 
     border-color: #3bb2b8 !important; 
     color: #3bb2b8 !important; 
     transform: translateY(-2px) !important; 
-    box-shadow: 0 4px 12px rgba(59, 178, 184, 0.1) !important; 
 }
-/* 다이어리/작성된 날짜 강조 버튼 */
+
+/* 다이어리 날짜 선택 버튼 강조 */
 div[data-testid="column"] div.stButton > button[kind="primary"] { 
     background: #ff5a5f !important; 
     border-color: #ff5a5f !important; 
-    color: #ffffff !important; 
-    box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important; 
-}
-div[data-testid="column"] div.stButton > button[kind="primary"]:hover { 
-    background: #ff4046 !important; 
     color: #ffffff !important; 
 }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; }
 
 /* 체크박스 정렬 */
-div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px !important; transition: all 0.2s ease; }
+div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; }
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
 div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
@@ -177,73 +168,54 @@ div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight:
 # =========================================================
 if st.session_state.page == "login":
     st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
-    
     col1, col2, col3 = st.columns([1, 1.2, 1])
     with col2:
         with st.container(border=True):
             st.markdown("<div class='login-title'>MyStair</div>", unsafe_allow_html=True)
             st.markdown("<div class='login-subtitle'>마이스터고 학생을 위한 단 하나의 진로 파트너</div>", unsafe_allow_html=True)
-            
             tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
             
             with tab1:
                 login_id = st.text_input("아이디", key="login_id").strip()
                 login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
-                
                 if st.button("로그인", type="primary", use_container_width=True):
-                    if not login_id or not login_pw:
-                        st.warning("아이디와 비밀번호를 모두 입력해주세요.")
+                    if not login_id or not login_pw: st.warning("아이디와 비밀번호를 모두 입력해주세요.")
                     else:
                         db = load_db()
-                        if login_id in db:
-                            if db[login_id]["password"] == hash_pw(login_pw):
-                                user_data = db[login_id]
-                                st.session_state.logged_in = True
-                                st.session_state.current_user = login_id
-                                st.session_state.chk_1 = user_data.get("chk_1", False)
-                                st.session_state.chk_2 = user_data.get("chk_2", False)
-                                st.session_state.chk_4 = user_data.get("chk_4", False)
-                                st.session_state.chk_5 = user_data.get("chk_5", False)
-                                st.session_state.diary_data = user_data.get("diary_data", {})
-                                st.session_state.profile = user_data.get("profile", {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""})
-                                
-                                st.success(f"환영합니다, {login_id}님!")
-                                time.sleep(0.5)
-                                navigate_to("main")
-                            else:
-                                st.error("비밀번호가 일치하지 않습니다.")
+                        if login_id in db and db[login_id]["password"] == hash_pw(login_pw):
+                            user_data = db[login_id]
+                            st.session_state.logged_in = True
+                            st.session_state.current_user = login_id
+                            st.session_state.chk_1 = user_data.get("chk_1", False)
+                            st.session_state.chk_2 = user_data.get("chk_2", False)
+                            st.session_state.chk_4 = user_data.get("chk_4", False)
+                            st.session_state.chk_5 = user_data.get("chk_5", False)
+                            st.session_state.diary_data = user_data.get("diary_data", {})
+                            st.session_state.profile = user_data.get("profile", {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""})
+                            st.success(f"환영합니다, {login_id}님!")
+                            time.sleep(0.5)
+                            navigate_to("main")
                         else:
-                            st.error("존재하지 않는 아이디입니다.")
-                
-                if st.button("돌아가기", use_container_width=True):
-                    navigate_to("main")
+                            st.error("아이디나 비밀번호를 확인해주세요.")
+                if st.button("돌아가기", use_container_width=True): navigate_to("main")
             
             with tab2:
                 reg_id = st.text_input("새 아이디", key="reg_id").strip()
                 reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
                 reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm").strip()
-                
                 if st.button("회원가입 완료", type="primary", use_container_width=True):
-                    if not reg_id or not reg_pw:
-                        st.error("아이디와 비밀번호를 모두 입력해주세요.")
-                    elif reg_pw != reg_pw_confirm:
-                        st.error("비밀번호가 일치하지 않습니다.")
+                    if not reg_id or not reg_pw: st.error("모두 입력해주세요.")
+                    elif reg_pw != reg_pw_confirm: st.error("비밀번호 불일치.")
                     else:
                         db = load_db()
-                        if reg_id in db:
-                            st.error("이미 존재하는 아이디입니다.")
+                        if reg_id in db: st.error("이미 존재하는 아이디입니다.")
                         else:
                             db[reg_id] = {
-                                "password": hash_pw(reg_pw),
-                                "chk_1": False,
-                                "chk_2": False,
-                                "chk_4": False,
-                                "chk_5": False,
-                                "diary_data": {},
-                                "profile": {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
+                                "password": hash_pw(reg_pw), "chk_1": False, "chk_2": False, "chk_4": False, "chk_5": False,
+                                "diary_data": {}, "profile": {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
                             }
                             save_db(db)
-                            st.success("🎉 회원가입이 완료되었습니다! 로그인 탭에서 접속해주세요.")
+                            st.success("🎉 회원가입 완료! 로그인 탭을 이용하세요.")
 
 
 # =========================================================
@@ -391,7 +363,7 @@ elif st.session_state.page == "main":
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (비율 깨짐 방지)
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (오류 완벽 해결)
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
@@ -436,8 +408,7 @@ elif st.session_state.page == "main":
                                 if st.session_state.logged_in: write_diary(day)
                                 else: st.warning("다이어리 작성은 로그인이 필요합니다.")
                         else:
-                            # 버튼과 완벽하게 동일한 높이의 투명 박스를 주어 줄바꿈 깨짐을 방지합니다.
-                            st.markdown("<div style='height: 42px; background: transparent;'></div>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 42px;'></div>", unsafe_allow_html=True)
 
     with chk_col:
         with st.container(border=True):
@@ -567,6 +538,7 @@ elif st.session_state.page == "profile":
             with btn2:
                 if st.button("돌아가기", use_container_width=True):
                     navigate_to("main")
+
 
 # =========================================================
 # [PAGE 2] 서비스 소개 페이지 (홍보 랜딩)
