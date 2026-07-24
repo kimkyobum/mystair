@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이스터고 홀랜드 직업유형 진단 검사</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f9fafb;
+            --card-bg: #ffffff;
+            --text: #111827;
+            --gray: #6b7280;
+            --light-gray: #e5e7eb;
+        }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+        .progress-bar-container {
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background-color: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-box {
+            display: none;
+        }
+        .question-box.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--light-gray);
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 5px;
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            border-color: var(--primary);
+            background-color: #f5f3ff;
+        }
+        #result-screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .result-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .result-card {
+            background-color: #f3f4f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        .result-section {
+            margin-bottom: 15px;
+        }
+        .result-section strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #1f2937;
+        }
+        .result-section p {
+            margin: 0;
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        .action-btn.secondary {
+            background-color: #4b5563;
+        }
+        .action-btn.secondary:hover {
+            background-color: #374151;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-screen">
+        <h1>📊 홀랜드 직업유형 진단</h1>
+        <div class="subtitle" id="question-counter">문항 1 / 60</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        <div id="question-container"></div>
+    </div>
+
+    <div id="result-screen">
+        <h1>🎉 진단 완료 리포트</h1>
+        <div class="result-title" id="top-type-title">당신의 최상위 유형은?</div>
+        <div class="result-card" id="result-content-box">
+            <!-- 자바스크립트로 결과 텍스트가 바인딩되는 영역 -->
+        </div>
+        <div class="btn-container">
+            <button class="action-btn" id="copy-btn" onclick="copyResult()">📋 결과 복사하기</button>
+            <button class="action-btn secondary" onclick="location.reload()">🔄 다시 테스트</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1~3단계: 홀랜드 6개 유형별 10문항 정의 (총 60문항)
+    const questions = [
+        // R: 현실형 (Realistic)
+        { id: 1, type: 'R', text: "기계 부품이나 공구를 다루고 조립하는 것을 좋아합니까?" },
+        { id: 2, type: 'R', text: "컴퓨터 하드웨어나 전자 회로를 직접 납땜하고 수리하는 일에 흥미가 있습니까?" },
+        { id: 3, type: 'R', text: "실내 사무 업무보다 야외나 현장에서 직접 몸을 움직여 작업하는 것이 편합니까?" },
+        { id: 4, type: 'R', text: "자동차, 항공기 등 운송 장비의 내부 엔진 메커니즘이 궁금합니까?" },
+        { id: 5, type: 'R', text: "설계 도면을 보고 입체적인 물건을 가공하거나 만들어내는 재능이 있습니까?" },
+        { id: 6, type: 'R', text: "가구 제작, 목공, 혹은 파이프 배관 연결 같은 기술적 작업이 흥미롭습니까?" },
+        { id: 7, type: 'R', text: "문제를 해결할 때 이론적 논쟁보다 도구를 써서 즉시 고쳐보는 편입니까?" },
+        { id: 8, type: 'R', text: "식물 재배, 동물 사육 혹은 자연 자원을 관리하는 실무에 관심이 있습니까?" },
+        { id: 9, type: 'R', text: "복잡한 생산 자동화 기계(PLC) 및 제조 설비를 다루는 일에 거부감이 없습니까?" },
+        { id: 10, type: 'R', text: "정밀 측정 장비를 사용하여 제품의 물리적 오차를 점검하는 것이 적성에 맞습니까?" },
+
+        // I: 탐구형 (Investigative)
+        { id: 11, type: 'I', text: "수학적 수식이나 과학적 원리를 깊이 파고들어 연구하는 것을 좋아합니까?" },
+        { id: 12, type: 'I', text: "특정 현상의 원인을 밝혀내기 위해 데이터를 수집하고 분석하는 것을 즐깁니까?" },
+        { id: 13, type: 'I', text: "새로운 소프트웨어 알고리즘의 구동 로직을 분석하고 디버깅하는 것이 재미있습니까?" },
+        { id: 14, type: 'I', text: "화학 성분을 분석하거나 바이오 미생물을 배양하고 관찰하는 실험에 흥미가 있습니까?" },
+        { id: 15, type: 'I', text: "질문이 생기면 논문이나 전문 서적을 찾아 끝까지 학문적으로 탐구하는 편입니까?" },
+        { id: 16, type: 'I', text: "복잡한 경제 지표나 시스템 통계 자료 속에서 트렌드를 찾아내는 것이 흥미롭습니까?" },
+        { id: 17, type: 'I', text: "의학 기술이나 우주, 원자력 등 미래 첨단 과학 기술에 관한 글을 찾아 읽습니까?" },
+        { id: 18, type: 'I', text: "반복적인 단순 작업보다 구조적인 미스터리나 난제를 해결하는 연구가 더 좋습니까?" },
+        { id: 19, type: 'I', text: "생각이 논리적이고 객관적이라는 말을 주변에서 자주 듣습니까?" },
+        { id: 20, type: 'I', text: "새로운 기술 트렌드의 장단점을 이론적으로 체계화하여 비교 분석하기를 좋아합니까?" },
+
+        // A: 예술형 (Artistic)
+        { id: 21, type: 'A', text: "음악, 미술, 영상 등 예술 콘텐츠를 감상하거나 직접 창작하는 것을 좋아합니까?" },
+        { id: 22, type: 'A', text: "틀에 박힌 규칙을 따르기보다 자유롭고 독립적인 환경에서 일하는 것을 선호합니까?" },
+        { id: 23, type: 'A', text: "웹사이트의 인터페이스(UI/UX)나 포스터 등 시각적인 디자인을 구상하는 것이 즐겁습니까?" },
+        { id: 24, type: 'A', text: "기발하고 참신한 아이디어가 많아 창의적이라는 평가를 자주 받습니까?" },
+        { id: 25, type: 'A', text: "소설, 시나리오, 게임 스토리 등의 세계관을 상상하고 글을 쓰는 일에 흥미가 있습니까?" },
+        { id: 26, type: 'A', text: "자신의 감정이나 생각을 글, 연주, 그림 등으로 자유롭게 표현하는 편입니까?" },
+        { id: 27, type: 'A', text: "건축물의 외관이나 제품의 패키징에서 아름다움(심미성)을 분석하는 것을 좋아합니까?" },
+        { id: 28, type: 'A', text: "패션, 트렌디한 인테리어, 새로운 대중문화 스타일에 민감한 편입니까?" },
+        { id: 29, type: 'A', text: "기존의 정형화된 방식 대신 나만의 독창적인 스타일로 과제를 해결하고 싶습니까?" },
+        { id: 30, type: 'A', text: "연극, 영화, 애니메이션 제작 공정의 기획 단계에 참여하고 싶습니까?" },
+
+        // S: 사회형 (Social)
+        { id: 31, type: 'S', text: "곤경에 처한 사람들의 이야기를 잘 들어주고 공감해 주는 편입니까?" },
+        { id: 32, type: 'S', text: "학교나 모임에서 새로운 친구를 사귀고 어울리는 활동을 즐깁니까?" },
+        { id: 33, type: 'S', text: "누군가에게 공부나 새로운 기술을 이해하기 쉽게 가르쳐 주는 일에 보람을 느낍니까?" },
+        { id: 34, type: 'S', text: "인간관계의 갈등이 생겼을 때, 중간에서 대화로 화해를 주도하는 편입니까?" },
+        { id: 35, type: 'S', text: "봉사활동, 자선 행사 등 사회적으로 가치 있는 연대 활동에 참여하고 싶습니까?" },
+        { id: 36, type: 'S', text: "기계나 서류를 다루는 일보다 사람들을 직접 마주하고 소통하는 직무가 더 편합니까?" },
+        { id: 37, type: 'S', text: "타인의 고민 상담을 해주고 실질적인 위로나 해법을 주는 일을 잘합니까?" },
+        { id: 38, type: 'S', text: "팀 프로젝트 시 동료들의 기분을 세심하게 살피고 배려하며 협업합니까?" },
+        { id: 39, type: 'S', text: "청소년 복지, 교육 정책, 공공 상담 서비스 분야에 관심이 있습니까?" },
+        { id: 40, type: 'S', text: "공동체 내에서 소외된 사람들을 돕고 포용하는 역할에 책임감을 느낍니까?" },
+
+        // E: 진취형 (Enterprising)
+        { id: 41, type: 'E', text: "모임이나 프로젝트 조별 과제에서 조장(리더)을 맡아 이끄는 것을 좋아합니까?" },
+        { id: 42, type: 'E', text: "자신의 의견이나 아이디어로 사람들을 설득하고 동참시키는 데 자신 있습니까?" },
+        { id: 43, type: 'E', text: "창업을 하거나 새로운 비즈니스 모델을 기획하여 경영해 보고 싶습니까?" },
+        { id: 44, type: 'E', text: "위험 부담(리스크)이 있더라도 경쟁에서 이겨 큰 성과나 인센티브를 얻고 싶습니까?" },
+        { id: 45, type: 'E', text: "사람들 앞에서 발표(프레젠테이션)나 연설을 할 때 자신감이 넘치는 편입니까?" },
+        { id: 46, type: 'E', text: "목표를 달성하기 위해 자원을 효율적으로 배분하고 예산을 관리하는 일에 흥미가 있습니까?" },
+        { id: 47, type: 'E', text: "마케팅, 제품 영업, 협상 등 기업의 매출과 직결된 공격적인 업무에 매력을 느낍니까?" },
+        { id: 48, type: 'E', text: "대인관계에서 주도권을 잡고 상황을 통제하거나 조율하는 역량이 뛰어납니까?" },
+        { id: 49, type: 'E', text: "높은 연봉, 승진, 직위 획득 등 사회적 성공을 추구하는 동기가 확실합니까?" },
+        { id: 50, type: 'E', text: "프로젝트 진행 시 지지부진한 논의를 끊고 과감하게 결단을 내리는 편입니까?" },
+
+        // C: 관습형 (Conventional)
+        { id: 51, type: 'C', text: "데이터나 서류를 체계적으로 분류하고 정해진 규칙대로 정리하는 것을 좋아합니까?" },
+        { id: 52, type: 'C', text: "회계, 예산 지출 내역, 영수증 정리를 오차 없이 꼼꼼하게 처리하는 편입니까?" },
+        { id: 53, type: 'C', text: "예상치 못한 변수가 생기는 일보다 매뉴얼과 절차가 확실한 환경이 편합니까?" },
+	{ id: 54, type: 'C', text: "약속 시간, 과제 제출 기한 등 명문화된 법규나 마감일을 철저히 지킵니까?" },{ id: 55, type: 'C', text: "명확한 지시서나 표준 운영 절차(SOP)에 따라 묵묵히 임무를 완수하는 편입니까?" },{ id: 56, type: 'C', text: "엑셀(Excel) 프로그램을 활용하여 많은 양의 정보를 규격화하고 관리하는 것이 재밌습니까?" },{ id: 57, type: 'C', text: "품질 보증 검사표를 보며 규정에 맞지 않는 불량품을 색출해 내는 일이 적성에 맞습니까?" },{ id: 58, type: 'C', text: "행정 서류 작성, 계약서 검토 등 꼼꼼한 눈바느질이 필요한 사무 처리에 자신 있습니까?" },{ id: 59, type: 'C', text: "일의 시작과 끝이 정형화되어 있어 일과 후 내 생활이 완벽히 보장되는 직무를 선호합니까?" },{ id: 60, type: 'C', text: "은행원, 세무사, 기록물 관리사처럼 정확성과 신뢰도가 최우선인 직무에 관심이 있습니까?" }];
+// 6~7단계: 6가지 유형의 상세 결과 DB 정의
+const typeDetails = {'R': {name: 'R (현실형 - Realistic / "실재가형")',desc: '분명하고 질서정연하며 체계적인 것을 선호합니다. 기계, 도구, 동물, 식물을 직접 다루는 신체적 기술 활동에 흥미를 느끼며, 이론보다 눈에 보이는 실물과 실천 중심의 정직한 노동을 가치 있게 여깁니다.',fields: '기계 제조, 전기·전자 설비, 스마트 팩토리 공정 관리, 플랜트 엔지니어링, 항공 및 선박 정비 계열',jobs: 'CNC 기계 가공 기사, PLC 자동화 제어 전문가, 반도체 장비 유지보수 테크니션, 설비 보전 정비사, 항공 정비사, 선박 운항 항해사'},'I': {name: 'I (탐구형 - Investigative / "연구가형")',desc: '관찰력과 분석력이 뛰어납니다. 과학적, 수학적, 논리적 난제를 탐구하고 데이터의 패턴을 읽어 원인을 규명하는 일을 사랑합니다. 구조적이고 지적인 호기심이 매우 높으며 학구적입니다.',fields: '소프트웨어 아키텍처, 데이터 사이언스, 바이오 의약품 연구, 정밀 화학 분석, 신재생 에너지 설계 연구원',jobs: '백엔드/알고리즘 개발자, 화학 분석기기 운용원, 바이오 GMP 품질 분석가, 임베디드 펌웨어 설계자, 빅데이터 통계 연구원'},'A': {name: 'A (예술형 - Artistic / "예술가형")',desc: '자유롭고 창의적이며 개성이 강합니다. 변화와 다양성을 선호하며 틀에 박힌 반복 규율을 기피합니다. 자신의 내면 감정과 아이디어를 독창적인 형태의 비주얼, 스토리, 디자인으로 표현해 냅니다.',fields: '게임 디자인 및 개발, 미디어콘텐츠 제작, UI/UX 웹 및 앱 프로토타이핑, 디지털 모션그래픽 영상 광고',jobs: '게임 클라이언트 개발자, 웹/앱 퍼블리셔 및 UX 디자인 디렉터, 영상 편집 감독, 3D 그래픽 모델러, 콘텐츠 기획자'},'S': {name: 'S (사회형 - Social / "교육가형")',desc: '이타적이고 소통 능력이 뛰어납니다. 기계나 사물을 관리하는 것보다 사람들과 유대관계를 맺고 타인을 가르치고, 상담하며, 치유하고 도와주는 공익적 활동에서 인생의 가장 큰 만족을 얻습니다.',fields: '교육 및 기술 전수 리더십, 고객 커뮤니케이션 CS 관리, 기업 사내 강사, HR 인재 육성, 직업 교육 멘토링',jobs: '기술 교육 컨설턴트, 고객 경험(CX) 매니저, 공공기관 민원 지원 행정관, 현장 실습 및 도제 멘토, 직업 훈련 강사'},'E': {name: 'E (진취형 - Enterprising / "기업가형")',desc: '리더십과 추진력이 우수합니다. 목표 지향적이며 조직을 이끌고 사람들을 설득하여 비즈니스적 성과를 만들어내는 데 능숙합니다. 경쟁적 환경을 즐기며 경제적 성취와 지위 획득에 에너지가 넘칩니다.',fields: '기술 영업, 공정 생산 관리(PM), 프로젝트 매니지먼트, 해외 수주 및 수출입 협상, 스타트업 창업 및 경영 기획',jobs: '프로젝트 매니저(PM), 기술 영업 엔지니어, 해외 플랜트 현장 소장, 마케팅 전략 기획자, 기업 구매 및 조달 전문가'},'C': {name: 'C (관습형 - Conventional / "사무가형")',desc: '꼼꼼함과 신뢰성의 정석입니다. 명확한 규율과 매녀얼, 조직의 표준절차(SOP)를 준수하며 데이터와 문서 자산을 한 치의 오차도 없이 분류, 기록, 검증하는 체계적인 사무 행정에 강력한 강점이 있습니다.',fields: '품질 관리(QC/QA), ERP 회계 및 자금 정산, 기업 행정 및 인사, 기록물 아카이브 관리, 공공기관 일반 서무',jobs: 'HACCP/GMP 품질 관리원, 스마트팩토리 공정 데이터 기록원, 생산 관리 행정 사무원, ERP 시스템 회계 담당자, 공공기관 기술 서무 관세 실무자'}};
+// 점수 관리 객체
+const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };let currentIdx = 0;const optionsText = ["매우 그렇지 않다", "그렇지 않다", "보통이다", "그렇다", "매우 그렇다"];const optionScores =;
+ // 5지 선다형 점수 부여 매핑// 5단계: 화면 로드 시 질문 동적 빌드
+function initQuiz() {const container = document.getElementById('question-container');questions.forEach((q, index) => {const qBox = document.createElement('div');qBox.className = question-box ${index === 0 ? 'active' : ''};qBox.id = q-${index};const qText = document.createElement('div');qText.className = 'question-text';qText.innerText = ${q.id}. ${q.text};qBox.appendChild(qText);const optsDiv = document.createElement('div');optsDiv.className = 'options';optionsText.forEach((optStr, oIdx) => {const btn = document.createElement('button');btn.className = 'option-btn';btn.innerText = optStr;
+// 한 질문 클릭 시 점수를 가산하고 '다음 질문으로 넘어가게 해줘' 구현
+btn.onclick = () => selectOption(q.type, optionScores[oIdx]);optsDiv.appendChild(btn);});qBox.appendChild(optsDiv);container.appendChild(qBox);});updateProgress();}
+//다음 문항 이동 및 점수 저장 핸들러
+function selectOption(type, score) {scores[type] += score;
+// 현재 질문 숨기기
+document.getElementById(q-${currentIdx}).classList.remove('active');currentIdx++;if (currentIdx < questions.length) {
+// 다음 질문 노출
+document.getElementById(q-${currentIdx}).classList.add('active');updateProgress();} else {
+// 모든 조사가 끝나면 결과 도출
+showResult();}}
+// 상단 진행 바 업데이트
+function updateProgress() {const progress = document.getElementById('progress');const counter = document.getElementById('question-counter');const percent = (currentIdx / questions.length) * 100;progress.style.width = ${percent}%;counter.innerText = 문항 ${currentIdx + 1} / ${questions.length};}
+// 최고 점수 유형 연산 및 화면 렌더링
+let globalResultString = ""; 
+// 복사용 글로벌 변수
+function showResult() {document.getElementById('quiz-screen').style.display = 'none';document.getElementById('result-screen').style.display = 'block';
+// 최고 점수 유형 찾기
+let topType = 'R';let maxScore = -1;for (const type in scores) {if (scores[type] > maxScore) {maxScore = scores[type];topType = type;}}const data = typeDetails[topType];document.getElementById('top-type-title').innerText = 당신의 최상위 유형은 [ ${data.name} ] 입니다.;
+// 내부에 상세 가이드 데이터 배치
+const contentBox = document.getElementById('result-content-box');contentBox.innerHTML = <div class="result-section"> <strong>📝 유형 상세 설명</strong> <p>${data.desc}</p> </div> <div class="result-section"> <strong>🚀 마이스터고 추천 전공 및 산업 분야</strong> <p>${data.fields}</p> </div> <div class="result-section"> <strong>🛠️ 졸업 후 매칭 추천 직무</strong> <p>${data.jobs}</p> </div>;
+// 8단계 복사 버튼용 가공 텍스트 포맷 저장
+globalResultString = [마이스터고 홀랜드 유형 검사 결과 리포트]\n\n +▶ 최고 유형: ${data.name}\n +▶ 상세 설명: ${data.desc}\n +▶ 추천 분야: ${data.fields}\n +▶ 추천 직무: ${data.jobs}\n\n +* 전체 유형별 누적 원점수\n +  - 현실형(R): ${scores.R}점 / 탐구형(I): ${scores.I}점 / 예술형(A): ${scores.A}점\n +  - 사회형(S): ${scores.S}점 / 진취형(E): ${scores.E}점 / 관습형(C): ${scores.C}점;}
+// 8단계: 복사하기 기능 자바스크립트 구현
+function copyResult() {if (!globalResultString) return;navigator.clipboard.writeText(globalResultString).then(() => {const btn = document.getElementById('copy-btn');btn.innerText = "✅ 성공적으로 복사되었습니다!";btn.style.backgroundColor = "#10b981";setTimeout(() => {btn.innerText = "📋 결과 복사하기";btn.style.backgroundColor = "var(--primary)";}, 2000);}).catch(err => {alert("복사에 실패했습니다. 결과 상자의 글을 드래그해서 복사해 주세요.");});}// 퀴즈 초기 실행window.onload = initQuiz;
