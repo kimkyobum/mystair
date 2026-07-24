@@ -56,8 +56,17 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "current_user" not in st.session_state:
     st.session_state.current_user = None
+
+# 🌟 처음 시작 페이지를 'main'으로 변경
 if "page" not in st.session_state:
-    st.session_state.page = "login"
+    st.session_state.page = "main"
+
+# 로그인 안 된 상태의 기본 체크리스트 값
+if "chk_1" not in st.session_state: st.session_state.chk_1 = True
+if "chk_2" not in st.session_state: st.session_state.chk_2 = False
+if "chk_4" not in st.session_state: st.session_state.chk_4 = False
+if "chk_5" not in st.session_state: st.session_state.chk_5 = False
+if "diary_data" not in st.session_state: st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
 
 def navigate_to(page_name):
     st.session_state.page = page_name
@@ -66,7 +75,13 @@ def navigate_to(page_name):
 def logout():
     st.session_state.logged_in = False
     st.session_state.current_user = None
-    navigate_to("login")
+    # 로그아웃 시 기본값으로 초기화
+    st.session_state.chk_1 = True
+    st.session_state.chk_2 = False
+    st.session_state.chk_4 = False
+    st.session_state.chk_5 = False
+    st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"}
+    navigate_to("main")
 
 # 🌟 모달(팝업) 다이어리 입력창 함수
 @st.dialog("📝 실습 다이어리 기록")
@@ -91,7 +106,7 @@ def write_diary(day):
         else:
             if str(day) in st.session_state.diary_data:
                 del st.session_state.diary_data[str(day)]
-        sync_to_db() # 🌟 DB에 영구 저장
+        sync_to_db() # 🌟 로그인 상태라면 DB에 영구 저장
         st.rerun()
 
 # =========================================================
@@ -159,36 +174,44 @@ if st.session_state.page == "login":
             
             # --- 로그인 탭 ---
             with tab1:
-                login_id = st.text_input("아이디", key="login_id")
-                login_pw = st.text_input("비밀번호", type="password", key="login_pw")
+                # 🌟 strip()을 추가하여 양끝 공백으로 인한 오류 방지
+                login_id = st.text_input("아이디", key="login_id").strip()
+                login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
                 
                 if st.button("로그인", type="primary", use_container_width=True):
-                    db = load_db()
-                    if login_id in db:
-                        if db[login_id]["password"] == hash_pw(login_pw):
-                            # 로그인 성공: DB에서 유저 데이터 불러와서 세션에 덮어쓰기
-                            user_data = db[login_id]
-                            st.session_state.logged_in = True
-                            st.session_state.current_user = login_id
-                            st.session_state.chk_1 = user_data.get("chk_1", False)
-                            st.session_state.chk_2 = user_data.get("chk_2", False)
-                            st.session_state.chk_4 = user_data.get("chk_4", False)
-                            st.session_state.chk_5 = user_data.get("chk_5", False)
-                            st.session_state.diary_data = user_data.get("diary_data", {})
-                            
-                            st.success(f"환영합니다, {login_id}님!")
-                            time.sleep(0.5)
-                            navigate_to("main")
-                        else:
-                            st.error("비밀번호가 일치하지 않습니다.")
+                    if not login_id or not login_pw:
+                        st.warning("아이디와 비밀번호를 모두 입력해주세요.")
                     else:
-                        st.warning("존재하지 않는 아이디입니다.")
+                        db = load_db()
+                        if login_id in db:
+                            if db[login_id]["password"] == hash_pw(login_pw):
+                                # 로그인 성공: DB에서 유저 데이터 불러와서 세션에 덮어쓰기
+                                user_data = db[login_id]
+                                st.session_state.logged_in = True
+                                st.session_state.current_user = login_id
+                                st.session_state.chk_1 = user_data.get("chk_1", False)
+                                st.session_state.chk_2 = user_data.get("chk_2", False)
+                                st.session_state.chk_4 = user_data.get("chk_4", False)
+                                st.session_state.chk_5 = user_data.get("chk_5", False)
+                                st.session_state.diary_data = user_data.get("diary_data", {})
+                                
+                                st.success(f"환영합니다, {login_id}님!")
+                                time.sleep(0.5)
+                                navigate_to("main")
+                            else:
+                                st.error("비밀번호가 일치하지 않습니다.")
+                        else:
+                            st.error("존재하지 않는 아이디입니다. 대소문자 및 띄어쓰기를 확인해주세요.")
+                
+                if st.button("돌아가기", use_container_width=True):
+                    navigate_to("main")
             
             # --- 회원가입 탭 ---
             with tab2:
-                reg_id = st.text_input("새 아이디", key="reg_id")
-                reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw")
-                reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm")
+                # 🌟 strip()을 추가하여 양끝 공백으로 인한 오류 방지
+                reg_id = st.text_input("새 아이디", key="reg_id").strip()
+                reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
+                reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm").strip()
                 
                 if st.button("회원가입 완료", type="primary", use_container_width=True):
                     if not reg_id or not reg_pw:
@@ -218,11 +241,6 @@ if st.session_state.page == "login":
 # =========================================================
 elif st.session_state.page == "main":
     
-    # 🌟 로그인 안 된 상태면 접근 차단 및 로그인 페이지로 이동
-    if not st.session_state.logged_in:
-        navigate_to("login")
-        st.stop()
-    
     css_string = """
 <style>
 .block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
@@ -237,8 +255,8 @@ elif st.session_state.page == "main":
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.05); }
 
-/* 상단 버튼들 */
-div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 13px !important; border-radius: 50px !important; padding: 6px 16px !important; height: 38px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
+/* 우측 상단 메뉴 버튼 스타일 */
+div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 13px !important; border-radius: 50px !important; padding: 6px 16px !important; height: 38px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; margin-top: 4px; }
 div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
 .ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; align-items: center; }
@@ -300,20 +318,32 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # 🌟 1. 최상단 배너
     st.markdown("""<div class="ms-top-banner"><span class="ms-top-banner-badge">HOT</span><span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역 (우측에 유저 인사말 및 로그아웃, 소개 가기 배치)
-    h_col1, h_col2, h_col3 = st.columns([1.5, 5.5, 3])
+    # 🌟 2. 헤더 영역 (우측에 유저 인사말 및 로그아웃, 로그인, 소개 가기 배치)
+    h_col1, h_col2, h_col3 = st.columns([1.5, 5.0, 3.5])
     with h_col1:
         st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
     with h_col2:
         st.markdown("""<div class="ms-search-box-wrapper"><div class="ms-search-box"><input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요"><button class="ms-search-btn">🔍</button></div></div>""", unsafe_allow_html=True)
     with h_col3:
-        btn_col1, btn_col2 = st.columns([1, 1])
-        with btn_col1:
-            if st.button("🚪 로그아웃", use_container_width=True):
-                logout()
-        with btn_col2:
-            if st.button("👉 서비스 소개", use_container_width=True):
-                navigate_to("intro")
+        # 로그인 상태에 따라 보여지는 버튼을 다르게 설정
+        if st.session_state.logged_in:
+            c1, c2, c3 = st.columns([1.2, 1, 1])
+            with c1:
+                st.markdown(f"<div style='text-align: right; padding-top: 12px; font-size: 14px; font-weight: 700; color: #475569;'>반갑습니다, <span style='color:#3bb2b8;'>{st.session_state.current_user}</span>님!</div>", unsafe_allow_html=True)
+            with c2:
+                if st.button("🚪 로그아웃", use_container_width=True):
+                    logout()
+            with c3:
+                if st.button("👉 서비스 소개", use_container_width=True):
+                    navigate_to("intro")
+        else:
+            c1, c2 = st.columns([1, 1])
+            with c1:
+                if st.button("🔑 로그인", use_container_width=True):
+                    navigate_to("login")
+            with c2:
+                if st.button("👉 서비스 소개", use_container_width=True):
+                    navigate_to("intro")
 
     # 🌟 3. 네비게이션
     holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
