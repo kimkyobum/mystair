@@ -1,6 +1,8 @@
 import base64
 import os
 import time
+import json
+import hashlib
 import streamlit as st
 
 # =========================================================
@@ -13,21 +15,58 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리 (초기화)
-if "page" not in st.session_state:
-    st.session_state.page = "main"
-if "diary_data" not in st.session_state:
-    st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
+# =========================================================
+# 2. 로컬 데이터베이스 (JSON) 세팅 및 함수
+# =========================================================
+DB_FILE = "users_data.json"
 
-# 체크리스트 상태 초기화
-if "chk_1" not in st.session_state: st.session_state.chk_1 = True
-if "chk_2" not in st.session_state: st.session_state.chk_2 = False
-if "chk_4" not in st.session_state: st.session_state.chk_4 = False
-if "chk_5" not in st.session_state: st.session_state.chk_5 = False
+def init_db():
+    if not os.path.exists(DB_FILE):
+        with open(DB_FILE, "w", encoding="utf-8") as f:
+            json.dump({}, f)
+
+def load_db():
+    init_db()
+    with open(DB_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_db(data):
+    with open(DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+def hash_pw(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# 실시간 동기화 함수 (체크리스트나 다이어리 변경 시 호출)
+def sync_to_db():
+    if st.session_state.get("logged_in") and st.session_state.get("current_user"):
+        db = load_db()
+        user = st.session_state.current_user
+        db[user]["chk_1"] = st.session_state.chk_1
+        db[user]["chk_2"] = st.session_state.chk_2
+        db[user]["chk_4"] = st.session_state.chk_4
+        db[user]["chk_5"] = st.session_state.chk_5
+        db[user]["diary_data"] = st.session_state.diary_data
+        save_db(db)
+
+# =========================================================
+# 3. 세션 상태 관리 (초기화)
+# =========================================================
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
+if "page" not in st.session_state:
+    st.session_state.page = "login"
 
 def navigate_to(page_name):
     st.session_state.page = page_name
     st.rerun()
+
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.current_user = None
+    navigate_to("login")
 
 # 🌟 모달(팝업) 다이어리 입력창 함수
 @st.dialog("📝 실습 다이어리 기록")
@@ -52,21 +91,18 @@ def write_diary(day):
         else:
             if str(day) in st.session_state.diary_data:
                 del st.session_state.diary_data[str(day)]
+        sync_to_db() # 🌟 DB에 영구 저장
         st.rerun()
 
-# 글로벌 CSS
+# =========================================================
+# 4. 글로벌 CSS
+# =========================================================
 st.markdown(
     """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
-
 html { scroll-behavior: smooth; }
-
-body, [class*="css"] {
-    font-family: 'SUIT', -apple-system, sans-serif !important;
-    line-height: 1.5;
-}
-
+body, [class*="css"] { font-family: 'SUIT', -apple-system, sans-serif !important; line-height: 1.5; }
 .stApp {
     background: 
         radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
@@ -76,71 +112,122 @@ body, [class*="css"] {
     background-attachment: fixed;
     color: #1e293b;
 }
-
 header[data-testid="stHeader"] { display: none !important; }
-
-*, *:focus, *:active, *:focus-visible { 
-    outline: none !important; 
-    box-shadow: none !important; 
-    -webkit-tap-highlight-color: transparent !important; 
-}
+*, *:focus, *:active, *:focus-visible { outline: none !important; box-shadow: none !important; -webkit-tap-highlight-color: transparent !important; }
 body *:not(input):not(textarea) { caret-color: transparent !important; }
 input, textarea { caret-color: auto !important; }
+.ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { user-select: none; }
 
-.ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { 
-    user-select: none; 
-}
-
-@keyframes floatTree {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    50% { transform: translateY(-10px) scale(1.05); }
-}
+@keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px 28px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
 }
-
-div[data-testid="column"] div.stButton > button {
-    border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important;
-}
+div[data-testid="column"] div.stButton > button { border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important; }
 div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
 div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; }
-
-div[data-testid="column"] div.stButton > button[kind="primary"] {
-    background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important;
-}
+div[data-testid="column"] div.stButton > button[kind="primary"] { background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-div[data-testid="stCheckbox"] {
-    background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease;
-}
+div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease; }
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
 div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
+/* 로그인 폼 전용 CSS */
+.login-title { font-size: 36px; font-weight: 900; text-align: center; margin-bottom: 10px; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+.login-subtitle { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 30px; font-weight: 500; }
 </style>
 """,
     unsafe_allow_html=True,
 )
 
+
+# =========================================================
+# [PAGE 0] 로그인 & 회원가입 화면
+# =========================================================
+if st.session_state.page == "login":
+    st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+    with col2:
+        with st.container(border=True):
+            st.markdown("<div class='login-title'>MyStair</div>", unsafe_allow_html=True)
+            st.markdown("<div class='login-subtitle'>마이스터고 학생을 위한 단 하나의 진로 파트너</div>", unsafe_allow_html=True)
+            
+            tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
+            
+            # --- 로그인 탭 ---
+            with tab1:
+                login_id = st.text_input("아이디", key="login_id")
+                login_pw = st.text_input("비밀번호", type="password", key="login_pw")
+                
+                if st.button("로그인", type="primary", use_container_width=True):
+                    db = load_db()
+                    if login_id in db:
+                        if db[login_id]["password"] == hash_pw(login_pw):
+                            # 로그인 성공: DB에서 유저 데이터 불러와서 세션에 덮어쓰기
+                            user_data = db[login_id]
+                            st.session_state.logged_in = True
+                            st.session_state.current_user = login_id
+                            st.session_state.chk_1 = user_data.get("chk_1", False)
+                            st.session_state.chk_2 = user_data.get("chk_2", False)
+                            st.session_state.chk_4 = user_data.get("chk_4", False)
+                            st.session_state.chk_5 = user_data.get("chk_5", False)
+                            st.session_state.diary_data = user_data.get("diary_data", {})
+                            
+                            st.success(f"환영합니다, {login_id}님!")
+                            time.sleep(0.5)
+                            navigate_to("main")
+                        else:
+                            st.error("비밀번호가 일치하지 않습니다.")
+                    else:
+                        st.warning("존재하지 않는 아이디입니다.")
+            
+            # --- 회원가입 탭 ---
+            with tab2:
+                reg_id = st.text_input("새 아이디", key="reg_id")
+                reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw")
+                reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm")
+                
+                if st.button("회원가입 완료", type="primary", use_container_width=True):
+                    if not reg_id or not reg_pw:
+                        st.error("아이디와 비밀번호를 모두 입력해주세요.")
+                    elif reg_pw != reg_pw_confirm:
+                        st.error("비밀번호가 일치하지 않습니다.")
+                    else:
+                        db = load_db()
+                        if reg_id in db:
+                            st.error("이미 존재하는 아이디입니다.")
+                        else:
+                            # 🌟 신규 유저 생성 및 초기 데이터 세팅
+                            db[reg_id] = {
+                                "password": hash_pw(reg_pw),
+                                "chk_1": False,
+                                "chk_2": False,
+                                "chk_4": False,
+                                "chk_5": False,
+                                "diary_data": {}
+                            }
+                            save_db(db)
+                            st.success("🎉 회원가입이 완료되었습니다! 로그인 탭에서 접속해주세요.")
+
+
 # =========================================================
 # [PAGE 1] 메인 포털 대시보드
 # =========================================================
-if st.session_state.page == "main":
+elif st.session_state.page == "main":
+    
+    # 🌟 로그인 안 된 상태면 접근 차단 및 로그인 페이지로 이동
+    if not st.session_state.logged_in:
+        navigate_to("login")
+        st.stop()
     
     css_string = """
 <style>
-.block-container {
-max-width: 1280px !important;
-padding-top: 0 !important;
-padding-bottom: 8rem !important;
-padding-left: 30px !important;
-padding-right: 30px !important;
-}
-
+.block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
 .ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
-
 .ms-logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; cursor: pointer; padding-top: 8px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 4px; }
 .ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 6px 6px 6px 20px; width: 100%; max-width: 540px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -150,7 +237,8 @@ padding-right: 30px !important;
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.05); }
 
-div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 14px !important; border-radius: 50px !important; padding: 8px 20px !important; height: 42px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
+/* 상단 버튼들 */
+div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 13px !important; border-radius: 50px !important; padding: 6px 16px !important; height: 38px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
 div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
 .ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; align-items: center; }
@@ -212,17 +300,22 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # 🌟 1. 최상단 배너
     st.markdown("""<div class="ms-top-banner"><span class="ms-top-banner-badge">HOT</span><span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역
-    h_col1, h_col2, h_col3 = st.columns([1.5, 6, 2.5])
+    # 🌟 2. 헤더 영역 (우측에 유저 인사말 및 로그아웃, 소개 가기 배치)
+    h_col1, h_col2, h_col3 = st.columns([1.5, 5.5, 3])
     with h_col1:
         st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
     with h_col2:
         st.markdown("""<div class="ms-search-box-wrapper"><div class="ms-search-box"><input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요"><button class="ms-search-btn">🔍</button></div></div>""", unsafe_allow_html=True)
     with h_col3:
-        if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
-            navigate_to("intro")
+        btn_col1, btn_col2 = st.columns([1, 1])
+        with btn_col1:
+            if st.button("🚪 로그아웃", use_container_width=True):
+                logout()
+        with btn_col2:
+            if st.button("👉 서비스 소개", use_container_width=True):
+                navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (target="_self" 적용하여 새 창 안 띄우고 현재 창에서 바로 이동)
+    # 🌟 3. 네비게이션
     holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
     mbti_github_url = "https://kimkyobum.github.io/mystair/MBTI.html"
 
@@ -331,18 +424,18 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
             </div>
             """, unsafe_allow_html=True)
             
-            st.checkbox("안전교육 이수증 업로드", key="chk_1")
-            st.checkbox("PLC 제어 도면 해석 복습", key="chk_2")
+            # 🌟 DB 연동 콜백(on_change) 적용
+            st.checkbox("안전교육 이수증 업로드", key="chk_1", on_change=sync_to_db)
+            st.checkbox("PLC 제어 도면 해석 복습", key="chk_2", on_change=sync_to_db)
             st.checkbox("실습 다이어리 작성 (24일 📍)", value=has_diary_today, disabled=True)
-            st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4")
-            st.checkbox("이력서 자격증 항목 업데이트", key="chk_5")
+            st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4", on_change=sync_to_db)
+            st.checkbox("이력서 자격증 항목 업데이트", key="chk_5", on_change=sync_to_db)
 
 
     # =========================================================
     # 🌟 6. 성장 나무 섹션 (다이어리 바로 아래로 배치)
     # =========================================================
     
-    # 체크 개수에 따른 로직 재계산
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
         bool(st.session_state.chk_1), 
