@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리
+# 세션 상태 관리 (초기 화면 'main' 포털)
 if "page" not in st.session_state:
     st.session_state.page = "main"
 
@@ -21,7 +21,7 @@ def navigate_to(page_name):
     st.session_state.page = page_name
     st.rerun()
 
-# 글로벌 CSS (앰비언트 그라데이션 배경 공통 적용)
+# 글로벌 CSS (배경 및 기본 폰트)
 st.markdown(
     """
 <style>
@@ -40,6 +40,7 @@ body, [class*="css"] {
     background-attachment: fixed;
     color: #1e293b;
 }
+
 header[data-testid="stHeader"] {
     display: none !important;
 }
@@ -53,122 +54,131 @@ header[data-testid="stHeader"] {
 # =========================================================
 if st.session_state.page == "main":
     
-    # 상단 메뉴 이동 버튼
-    col_nav_1, col_nav_2 = st.columns([8.5, 1.5])
-    with col_nav_2:
-        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-        if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
-            navigate_to("intro")
-
-    # 메인 포털 전용 CSS (중앙 정렬 및 UI 밸런스 개선)
+    # 메인 전용 CSS (헤더 레이아웃 최적화 및 홍보 버튼 스타일링)
     css_string = """
 <style>
 .block-container {
-    max-width: 100% !important;
-    padding: 0 0 10rem 0 !important;
-    margin: 0 !important;
+max-width: 1350px !important;
+padding-top: 0 !important;
+padding-bottom: 10rem !important;
+padding-left: 40px !important;
+padding-right: 40px !important;
 }
 
-/* 상단 그라데이션 배너 */
+/* 🌟 상단 100vw 풀와이드 배너 */
 .ms-top-banner {
-    width: 100%;
-    background: linear-gradient(90deg, #0f172a, #1e293b);
-    color: #ffffff;
-    text-align: center;
-    padding: 14px 0;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+width: 100vw;
+position: relative;
+left: 50%;
+right: 50%;
+margin-left: -50vw;
+margin-right: -50vw;
+background: linear-gradient(90deg, #0f172a, #1e293b);
+color: #ffffff;
+text-align: center;
+padding: 14px 0;
+font-size: 15px;
+font-weight: 600;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 15px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+margin-bottom: 20px;
 }
 .ms-top-banner-badge {
-    background: linear-gradient(90deg, #3bb2b8, #7e57c2);
-    padding: 4px 14px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 800;
+background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+padding: 4px 14px;
+border-radius: 50px;
+font-size: 12px;
+font-weight: 800;
 }
 
-.ms-container {
-    max-width: 1350px;
-    margin: 0 auto;
-    padding: 0 40px;
-}
-
-/* 🌟 헤더 (Grid를 이용해 검색창을 완벽히 중앙에 배치) */
-.ms-header {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    padding: 40px 0 30px 0;
-}
+/* 🌟 헤더 컬럼 디자인 */
 .ms-logo {
-    font-size: 36px;
-    font-weight: 900;
-    background: linear-gradient(90deg, #0f172a, #334155);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1.5px;
-    cursor: pointer;
-    justify-self: start;
+font-size: 36px;
+font-weight: 900;
+background: linear-gradient(90deg, #0f172a, #334155);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: -1.5px;
+cursor: pointer;
+padding-top: 12px;
+}
+.ms-search-box-wrapper {
+display: flex;
+justify-content: center;
+width: 100%;
+padding-top: 10px;
 }
 .ms-search-box {
-    justify-self: center;
-    display: flex;
-    align-items: center;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    border-radius: 100px;
-    padding: 8px 8px 8px 24px;
-    width: 600px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+display: flex;
+align-items: center;
+border: 1px solid rgba(226, 232, 240, 0.8);
+background: rgba(255, 255, 255, 0.9);
+backdrop-filter: blur(12px);
+border-radius: 100px;
+padding: 8px 8px 8px 24px;
+width: 100%;
+max-width: 600px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ms-search-box:focus-within {
-    border-color: rgba(59, 178, 184, 0.4);
-    box-shadow: 0 15px 40px rgba(59, 178, 184, 0.12);
-    background: #ffffff;
-    transform: translateY(-2px);
+border-color: rgba(59, 178, 184, 0.4);
+box-shadow: 0 15px 40px rgba(59, 178, 184, 0.12);
+background: #ffffff;
+transform: translateY(-2px);
 }
 .ms-search-input {
-    border: none; outline: none; width: 100%; font-size: 16px; font-family: 'SUIT'; color: #1e293b; background: transparent;
+border: none; outline: none; width: 100%; font-size: 16px; font-family: 'SUIT'; color: #1e293b; background: transparent;
 }
 .ms-search-input::placeholder { color: #94a3b8; font-weight: 500; }
 .ms-search-btn {
-    background: linear-gradient(90deg, #3bb2b8, #7e57c2);
-    border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+background: linear-gradient(90deg, #3bb2b8, #7e57c2);
+border: none; width: 46px; height: 46px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(126,87,194,0.3); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ms-search-btn:hover { transform: scale(1.08); }
 
-/* 🌟 네비게이션 (메뉴들을 화면 중앙으로 모음) */
+/* 🌟 우측 상단 '홍보 가기' 버튼 커스텀 */
+div.stButton > button[kind="secondary"] {
+background: #ffffff !important;
+border: 1px solid #e2e8f0 !important;
+color: #1e293b !important;
+font-weight: 700 !important;
+border-radius: 50px !important;
+padding: 10px 20px !important;
+box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important;
+transition: all 0.3s ease !important;
+float: right;
+margin-top: 15px;
+}
+div.stButton > button[kind="secondary"]:hover {
+border-color: #cbd5e1 !important;
+box-shadow: 0 6px 15px rgba(0,0,0,0.06) !important;
+transform: translateY(-2px) !important;
+}
+
+/* 🌟 네비게이션 중앙 정렬 */
 .ms-nav {
-    display: flex; 
-    justify-content: center; /* 중앙 정렬로 안정감 확보 */
-    gap: 16px; 
-    padding-bottom: 40px;
+display: flex; justify-content: center; gap: 16px; padding-top: 30px; padding-bottom: 40px;
 }
 .ms-nav span {
-    padding: 12px 26px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px);
+padding: 12px 26px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px);
 }
 .ms-nav span:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 .ms-nav span.active {
-    background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
 }
 
-/* 메인 그리드 및 공통 글래스 카드 */
-.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; margin-top: 10px; }
+/* 🌟 메인 그리드 및 기타 요소 */
+.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; }
 .glass-panel {
-    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-panel:hover {
-    background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px);
+background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.08); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-4px);
 }
-
 .ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
@@ -179,42 +189,39 @@ if st.session_state.page == "main":
 .blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 150px; border: 1px solid #f1f5f9; }
 .blur-line { height: 14px; background: #e2e8f0; border-radius: 10px; margin-bottom: 12px; }
 
-/* 우측 맞춤 정보 박스 */
 .ms-gradient-banner {
-    background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 20px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 24px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 20px 24px; border-radius: 20px; font-weight: 800; font-size: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 24px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ms-gradient-banner:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(126,87,194,0.15); }
 .ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .ms-quick-item {
-    background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 15px; font-weight: 700; color: #334155; display: flex; flex-direction: column; justify-content: space-between; height: 120px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 20px; padding: 24px; font-size: 15px; font-weight: 700; color: #334155; display: flex; flex-direction: column; justify-content: space-between; height: 120px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 15px 30px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-4px); }
 
-/* 🌟 10초 컷 맞춤 배너 */
 .ms-mid-banner {
-    background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 60px 0; backdrop-filter: blur(10px);
+background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 28px; padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; margin: 60px 0; backdrop-filter: blur(10px);
 }
 .ms-mid-banner-title { font-size: 24px; font-weight: 800; color: #0f172a; }
 .ms-mid-btns { display: flex; gap: 16px; }
 .ms-mid-btn {
-    background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+background: #ffffff; border: 1px solid rgba(226,232,240,0.8); padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 20px rgba(0,0,0,0.03);
 }
 .ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 15px 30px rgba(126,87,194,0.15); transform: translateY(-4px); }
 
-/* 🌟 하단 인기 실습/JOB 섹션 */
 .ms-job-section { margin-bottom: 100px; }
 .ms-section-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -1px; }
 
 .ms-chip-group { display: flex; gap: 12px; margin-bottom: 35px; overflow-x: auto; padding-bottom: 10px; }
 .ms-chip {
-    padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15,23,42,0.15); }
 .ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: translateY(-2px); }
 
 .ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .ms-job-card {
-    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 24px; padding: 32px 28px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 24px; padding: 32px 28px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.02);
 }
 .ms-job-card:hover { transform: translateY(-8px); background: #ffffff; box-shadow: 0 25px 50px rgba(126,87,194,0.08); border-color: rgba(126,87,194,0.3); }
 .job-card-title { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 14px; line-height: 1.4; letter-spacing: -0.5px; }
@@ -226,30 +233,42 @@ if st.session_state.page == "main":
 """
     st.markdown(css_string, unsafe_allow_html=True)
     
-    # 🌟 HTML 구조 (들여쓰기 완전 제거)
-    html_string = """<div class="ms-top-banner">
+    # 🌟 1. 풀와이드 배너
+    st.markdown("""
+<div class="ms-top-banner">
 <span class="ms-top-banner-badge">HOT</span>
 <span>커리어 고민 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span>
 </div>
-<div class="ms-container">
+    """, unsafe_allow_html=True)
 
-<div class="ms-header">
-<div class="ms-logo">MyStair</div>
+    # 🌟 2. 헤더 영역 (스트림릿 컬럼을 사용하여 버튼 네이티브 연동)
+    h_col1, h_col2, h_col3 = st.columns([1.5, 6, 2])
+    
+    with h_col1:
+        st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
+        
+    with h_col2:
+        st.markdown("""
+<div class="ms-search-box-wrapper">
 <div class="ms-search-box">
 <input type="text" class="ms-search-input" placeholder="관심 직무, 기업, 자격증을 검색해보세요">
 <button class="ms-search-btn">🔍</button>
 </div>
-<div></div><!-- 우측 공백 유지 (헤더 밸런스용) -->
 </div>
+        """, unsafe_allow_html=True)
+        
+    with h_col3:
+        if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
+            navigate_to("intro")
 
-<!-- 깔끔하게 중앙 정렬된 네비게이션 -->
-<div class="ms-nav">
+    # 🌟 3. 메인 레이아웃 HTML
+    html_string = """<div class="ms-nav">
 <span class="active">진로추천</span>
+<span>다이어리</span>
 <span>실습 JOB 찾기</span>
 <span>공채·기업정보</span>
 <span>MBTI</span>
 <span>홀랜드직무검사</span>
-<span>합격 자소서</span>
 </div>
 
 <div class="ms-main-grid">
@@ -371,13 +390,12 @@ if st.session_state.page == "main":
 </div>
 </div>
 </div>
-</div>
 </div>"""
     st.markdown(html_string, unsafe_allow_html=True)
 
 
 # =========================================================
-# [PAGE 2] 서비스 소개 페이지 (토스/스픽 스타일 홍보 랜딩)
+# [PAGE 2] 서비스 소개 페이지 (홍보 랜딩)
 # =========================================================
 elif st.session_state.page == "intro":
 
