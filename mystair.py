@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (컨테이너 박스 배경 불투명화 및 잔상 완전 차단)
+# 4. 글로벌 CSS (불투명 흰색 카드 및 양쪽 높이 100% 일치 설정)
 # =========================================================
 st.markdown(
     """
@@ -117,13 +117,31 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 모든 Streamlit 기본 컨테이너 박스를 완벽한 불투명 흰색 카드로 통일 */
+/* 🌟 모든 컨테이너 박스를 불투명한 순백색 카드(#ffffff)로 고정 */
 div[data-testid="stVerticalBlockBorderWrapper"] {
     background: #ffffff !important; 
+    opacity: 1 !important;
     border-radius: 24px !important; 
     padding: 28px !important; 
     border: 1px solid #e2e8f0 !important; 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* 🌟 핵심: 다이어리 & 체크리스트 양쪽 박스 높이를 완벽하게 일치시키는 Flexbox 설정 */
+div[data-testid="stHorizontalBlock"] {
+    align-items: stretch !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorderWrapper"] {
+    flex-grow: 1 !important;
 }
 
 /* 모든 버튼 스타일 일치화 */
@@ -368,7 +386,7 @@ elif st.session_state.page == "main":
 </div>""", unsafe_allow_html=True)
 
     # =========================================================
-    # 🌟 5. 캘린더와 체크리스트 (st.container(border=True) 사용으로 잔상 완전 제거)
+    # 🌟 5. 캘린더와 체크리스트 (양쪽 높이와 불투명 흰색 카드 완벽 일치)
     # =========================================================
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
