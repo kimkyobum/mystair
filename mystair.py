@@ -37,7 +37,7 @@ def save_db(data):
 def hash_pw(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-# 실시간 동기화 함수 (체크리스트나 다이어리 변경 시 호출)
+# 실시간 동기화 함수
 def sync_to_db():
     if st.session_state.get("logged_in") and st.session_state.get("current_user"):
         db = load_db()
@@ -53,14 +53,9 @@ def sync_to_db():
 # =========================================================
 # 3. 세션 상태 관리 (초기화)
 # =========================================================
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-if "current_user" not in st.session_state:
-    st.session_state.current_user = None
-
-# 🌟 처음 시작 페이지를 'main'으로 설정
-if "page" not in st.session_state:
-    st.session_state.page = "main"
+if "logged_in" not in st.session_state: st.session_state.logged_in = False
+if "current_user" not in st.session_state: st.session_state.current_user = None
+if "page" not in st.session_state: st.session_state.page = "main"
 
 # 로그인 안 된 상태의 기본값
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
@@ -77,7 +72,6 @@ def navigate_to(page_name):
 def logout():
     st.session_state.logged_in = False
     st.session_state.current_user = None
-    # 로그아웃 시 기본값으로 초기화
     st.session_state.chk_1 = True
     st.session_state.chk_2 = False
     st.session_state.chk_4 = False
@@ -86,21 +80,12 @@ def logout():
     st.session_state.profile = {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
     navigate_to("main")
 
-# 🌟 모달(팝업) 다이어리 입력창 함수
+# 모달 다이어리
 @st.dialog("📝 실습 다이어리 기록")
 def write_diary(day):
     st.markdown(f"<div style='font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
-    
     current_text = st.session_state.diary_data.get(str(day), "")
-    
-    diary_input = st.text_area(
-        "다이어리 내용", 
-        value=current_text,
-        placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 1시간 내 복구 완료)", 
-        label_visibility="collapsed", 
-        height=180
-    )
-    
+    diary_input = st.text_area("다이어리 내용", value=current_text, placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!", label_visibility="collapsed", height=180)
     st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
     if st.button("✨ 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
         if diary_input.strip():
@@ -113,7 +98,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS
+# 4. 글로벌 CSS (디자인 및 크기 보정)
 # =========================================================
 st.markdown(
     """
@@ -134,21 +119,48 @@ header[data-testid="stHeader"] { display: none !important; }
 *, *:focus, *:active, *:focus-visible { outline: none !important; box-shadow: none !important; -webkit-tap-highlight-color: transparent !important; }
 body *:not(input):not(textarea) { caret-color: transparent !important; }
 input, textarea { caret-color: auto !important; }
-.ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { user-select: none; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px 28px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 28px 32px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
 }
-div[data-testid="column"] div.stButton > button { border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important; }
-div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
-div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; }
-div[data-testid="column"] div.stButton > button[kind="primary"] { background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important; }
-div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
-div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease; }
+/* 🌟 모든 버튼(달력, 헤더 메뉴 포함) 크기 및 스타일 일치화 */
+div[data-testid="column"] div.stButton > button,
+div[data-testid="column"] div[data-testid="stPopover"] > button { 
+    border-radius: 12px !important; 
+    min-height: 42px !important; 
+    background: #ffffff !important; 
+    border: 1px solid #e2e8f0 !important; 
+    transition: all 0.2s ease !important; 
+    color: #475569 !important; 
+    font-weight: 700 !important; 
+    font-size: 14px !important; 
+    width: 100% !important;
+}
+div[data-testid="column"] div.stButton > button:hover,
+div[data-testid="column"] div[data-testid="stPopover"] > button:hover { 
+    border-color: #3bb2b8 !important; 
+    color: #3bb2b8 !important; 
+    transform: translateY(-2px) !important; 
+    box-shadow: 0 4px 12px rgba(59, 178, 184, 0.1) !important; 
+}
+/* 다이어리/작성된 날짜 강조 버튼 */
+div[data-testid="column"] div.stButton > button[kind="primary"] { 
+    background: #ff5a5f !important; 
+    border-color: #ff5a5f !important; 
+    color: #ffffff !important; 
+    box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important; 
+}
+div[data-testid="column"] div.stButton > button[kind="primary"]:hover { 
+    background: #ff4046 !important; 
+    color: #ffffff !important; 
+}
+div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; }
+
+/* 체크박스 정렬 */
+div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px !important; transition: all 0.2s ease; }
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
 div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
@@ -174,7 +186,6 @@ if st.session_state.page == "login":
             
             tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
             
-            # --- 로그인 탭 ---
             with tab1:
                 login_id = st.text_input("아이디", key="login_id").strip()
                 login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
@@ -202,12 +213,11 @@ if st.session_state.page == "login":
                             else:
                                 st.error("비밀번호가 일치하지 않습니다.")
                         else:
-                            st.error("존재하지 않는 아이디입니다. 대소문자 및 띄어쓰기를 확인해주세요.")
+                            st.error("존재하지 않는 아이디입니다.")
                 
                 if st.button("돌아가기", use_container_width=True):
                     navigate_to("main")
             
-            # --- 회원가입 탭 ---
             with tab2:
                 reg_id = st.text_input("새 아이디", key="reg_id").strip()
                 reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
@@ -244,7 +254,7 @@ elif st.session_state.page == "main":
     css_string = """
 <style>
 .block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
-.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
+.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 .ms-logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; cursor: pointer; padding-top: 8px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 4px; }
@@ -255,26 +265,19 @@ elif st.session_state.page == "main":
 .ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.05); }
 
-/* 우측 상단 메뉴 버튼 스타일 */
-div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 13px !important; border-radius: 50px !important; padding: 6px 12px !important; height: 38px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; margin-top: 4px; }
-div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
-
-.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; align-items: center; }
-.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
+.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 25px; padding-bottom: 30px; flex-wrap: wrap; align-items: center; }
+.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; }
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
-.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
 .ms-nav a.link-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
-.ms-nav a.link-btn:hover { opacity: 0.9 !important; transform: translateY(-2px) !important; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(126, 87, 194, 0.06); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-3px); }
-.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
 .ms-ai-btn { background: #0f172a; color: white; border: none; padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.ms-ai-btn:hover { background: #334155; transform: scale(1.03); }
 
 .blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; filter: blur(4px); opacity: 0.8; pointer-events: none; }
 .blur-card { background: #ffffff; border-radius: 16px; padding: 20px; height: 140px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
@@ -285,19 +288,19 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex-grow: 1; }
 .ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 16px; padding: 20px; font-size: 15px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
 .ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 12px 25px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-3px); }
+
 .ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 24px; padding: 32px 45px; display: flex; justify-content: space-between; align-items: center; margin: 50px 0; backdrop-filter: blur(10px); }
 .ms-mid-banner-title { font-size: 22px; font-weight: 800; color: #0f172a; }
 .ms-mid-btns { display: flex; gap: 14px; }
-.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
-.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
-.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; outline: none !important; }
+.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
+
+.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; }
 .ms-job-section { margin-bottom: 120px; margin-top: 60px; }
 .ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
-.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); }
 .ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
-.ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
 .ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 20px; padding: 26px 22px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
+.ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 20px; padding: 26px 22px; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
 .ms-job-card:hover { transform: translateY(-6px); background: #ffffff; box-shadow: 0 20px 40px rgba(126,87,194,0.08); border-color: rgba(126,87,194,0.3); }
 .job-card-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px; line-height: 1.4; letter-spacing: -0.3px; }
 .job-card-comp { font-size: 14px; color: #64748b; margin-bottom: 20px; display: flex; justify-content: space-between;}
@@ -311,37 +314,36 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
     # 🌟 1. 최상단 배너
     st.markdown("""<div class="ms-top-banner"><span class="ms-top-banner-badge">HOT</span><span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 2. 헤더 영역 (우측에 유저 인사말 및 로그아웃, 마이페이지, 소개 가기 배치)
-    h_col1, h_col2, h_col3 = st.columns([1.5, 4.5, 4.0])
+    # 🌟 2. 헤더 영역 (우측 상단 팝오버 프로필 구현)
+    h_col1, h_col2, h_col3 = st.columns([1.5, 5.5, 3.0], gap="medium")
     with h_col1:
         st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
     with h_col2:
         st.markdown("""<div class="ms-search-box-wrapper"><div class="ms-search-box"><input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요"><button class="ms-search-btn">🔍</button></div></div>""", unsafe_allow_html=True)
     with h_col3:
+        st.markdown("<div style='margin-top: 4px;'></div>", unsafe_allow_html=True)
         if st.session_state.logged_in:
-            # 로그인 시: 이름표, 마이페이지, 로그아웃, 서비스소개 버튼
-            c1, c2, c3, c4 = st.columns([1.2, 0.9, 0.9, 1.0])
+            display_name = st.session_state.profile.get("name", "")
+            if not display_name: display_name = st.session_state.current_user
+            
+            c1, c2 = st.columns(2)
             with c1:
-                # 닉네임이나 이름이 있으면 그걸로, 없으면 아이디로 표시
-                display_name = st.session_state.profile.get("name", "")
-                if not display_name: display_name = st.session_state.current_user
-                st.markdown(f"<div style='text-align: right; padding-top: 12px; font-size: 14px; font-weight: 700; color: #475569;'>반갑습니다, <span style='color:#3bb2b8;'>{display_name}</span>님!</div>", unsafe_allow_html=True)
+                # 팝오버(Popover) 메뉴: 클릭 시 아래로 열림
+                with st.popover(f"👤 {display_name}", use_container_width=True):
+                    st.markdown("<div style='font-size:13px; font-weight:700; color:#64748b; margin-bottom:8px;'>내 계정 관리</div>", unsafe_allow_html=True)
+                    if st.button("📝 마이페이지", use_container_width=True):
+                        navigate_to("profile")
+                    if st.button("🚪 로그아웃", use_container_width=True):
+                        logout()
             with c2:
-                if st.button("👤 마이페이지", use_container_width=True):
-                    navigate_to("profile")
-            with c3:
-                if st.button("🚪 로그아웃", use_container_width=True):
-                    logout()
-            with c4:
                 if st.button("👉 서비스 소개", use_container_width=True):
                     navigate_to("intro")
         else:
-            # 비로그인 시: 여백, 로그인, 서비스소개 버튼
-            c1, c2, c3 = st.columns([1.5, 1, 1])
-            with c2:
+            c1, c2 = st.columns(2)
+            with c1:
                 if st.button("🔑 로그인", use_container_width=True):
                     navigate_to("login")
-            with c3:
+            with c2:
                 if st.button("👉 서비스 소개", use_container_width=True):
                     navigate_to("intro")
 
@@ -389,9 +391,9 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 5. 캘린더 (다이어리) & 슬림해진 체크리스트 섹션
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (비율 깨짐 방지)
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
-    cal_col, chk_col = st.columns([2, 1], gap="large")
+    cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
     with cal_col:
         with st.container(border=True):
@@ -404,10 +406,12 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            
             wk_cols = st.columns(7)
             for i, wd in enumerate(["일", "월", "화", "수", "목", "금", "토"]):
                 color = "#ef4444" if i == 0 else "#3b82f6" if i == 6 else "#64748b"
                 wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:15px; color:{color}; padding-bottom:12px;'>{wd}</div>", unsafe_allow_html=True)
+            
             weeks = [
                 ["", "", "", "1", "2", "3", "4"],
                 ["5", "6", "7", "8", "9", "10", "11"],
@@ -415,6 +419,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
                 ["19", "20", "21", "22", "23", "24", "25"],
                 ["26", "27", "28", "29", "30", "31", ""]
             ]
+            
             for row in weeks:
                 cols = st.columns(7)
                 for i, day in enumerate(row):
@@ -426,11 +431,13 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
                             if has_log: btn_label += " 📝" 
                             elif is_today: btn_label += " 📍"
                             btn_type = "primary" if (has_log or is_today) else "secondary"
+                            
                             if st.button(btn_label, key=f"day_{day}", type=btn_type, use_container_width=True):
                                 if st.session_state.logged_in: write_diary(day)
                                 else: st.warning("다이어리 작성은 로그인이 필요합니다.")
                         else:
-                            st.markdown("<div style='height: 44px; margin-bottom: 4px;'></div>", unsafe_allow_html=True)
+                            # 버튼과 완벽하게 동일한 높이의 투명 박스를 주어 줄바꿈 깨짐을 방지합니다.
+                            st.markdown("<div style='height: 42px; background: transparent;'></div>", unsafe_allow_html=True)
 
     with chk_col:
         with st.container(border=True):
@@ -459,6 +466,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
         bool(st.session_state.chk_5)
     ])
     progress_pct = int((completed_count / 5) * 100)
+    
     tree_stages = {
         0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b", "다음: 새싹 🌿"),
         1: ("🌿", "새싹이 돋아났어요!", "#10b981", "다음: 성장하는 화분 🪴"),
@@ -487,7 +495,7 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 </div>"""
     st.markdown(html_tree, unsafe_allow_html=True)
 
-    # 🌟 7. 10초 컷 맞춤 배너 및 하단 인기 JOB 섹션
+    # 🌟 7. 하단 JOB 섹션
     st.markdown("""
 <div class="ms-mid-banner">
 <div class="ms-mid-banner-title">⚡ 10초 컷! 나의 성향 기반 실습 공고 추천 받기</div>
@@ -559,7 +567,6 @@ elif st.session_state.page == "profile":
             with btn2:
                 if st.button("돌아가기", use_container_width=True):
                     navigate_to("main")
-
 
 # =========================================================
 # [PAGE 2] 서비스 소개 페이지 (홍보 랜딩)
