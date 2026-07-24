@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 토스·스픽·삼성 벤치마킹 스타일 및 프로페셔널 푸터 CSS 주입
+# 2. 토스·스픽·삼성 벤치마킹 스타일 및 인터랙티브 UI CSS 주입
 st.markdown(
     """
 <style>
@@ -210,7 +210,7 @@ body, [class*="css"] {
     margin-bottom: 30px;
 }
 
-/* 모던 글래스 카드 스타일 (업그레이드된 호버 효과) */
+/* 모던 글래스 카드 스타일 */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -247,7 +247,38 @@ body, [class*="css"] {
     word-break: keep-all;
 }
 
-/* 🌟 프로페셔널 테크 푸터 디자인 */
+/* 🌟 FAQ 아코디언 카드 스타일 */
+.faq-box {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.faq-box:hover {
+    border-color: rgba(59, 178, 184, 0.4);
+    box-shadow: 0 15px 35px rgba(59, 178, 184, 0.06);
+}
+
+.faq-q {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.faq-a {
+    font-size: 16px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 프로페셔널 테크 푸터 디자인 */
 .footer-container {
     margin-top: 250px;
     padding: 60px 0;
@@ -472,7 +503,37 @@ if st.session_state.page == "landing":
         unsafe_allow_html=True,
     )
 
-  # --- [섹션 5] 프로페셔널 푸터 ---
+  # --- [섹션 5] 자주 묻는 질문 (FAQ) 추가 ---
+  st.markdown(
+      """
+<div class="scroll-section">
+    <div class="section-tag">FAQ</div>
+    <div class="section-heading">자주 묻는 질문</div>
+    <div class="section-desc">MyStair에 대해 자주 궁금해하시는 내용들을 정리했습니다.</div>
+</div>
+""",
+      unsafe_allow_html=True,
+  )
+
+  st.markdown(
+      """
+<div class="faq-box">
+    <div class="faq-q">Q. 일반 고등학교 학생도 사용할 수 있나요?</div>
+    <div class="faq-a">A. MyStair는 마이스터고 및 직업계고 학생들의 특수한 기술 실습 내역과 자격증, 현장 실습 경험 관리에 특화되어 설계되었습니다.</div>
+</div>
+<div class="faq-box">
+    <div class="faq-q">Q. AI 자소서는 어떻게 작성되나요?</div>
+    <div class="faq-a">A. 사용자가 캘린더에 기록한 실습 및 트러블슈팅 경험 데이터를 기반으로, 기업 채용 담당자들이 선호하는 STAR 기법(상황-과제-행동-결과)에 맞춰 자동으로 문장을 재구성해 줍니다.</div>
+</div>
+<div class="faq-box">
+    <div class="faq-q">Q. 데이터는 안전하게 보관되나요?</div>
+    <div class="faq-a">A. 학생들이 작성한 소중한 커리어 기록과 포트폴리오 데이터는 안전하게 관리되며, 언제든지 대시보드에서 확인하고 수정할 수 있습니다.</div>
+</div>
+""",
+      unsafe_allow_html=True,
+  )
+
+  # --- [섹션 6] 프로페셔널 푸터 ---
   st.markdown(
       """
 <div class="footer-container">
