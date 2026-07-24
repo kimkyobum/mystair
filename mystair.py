@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (박스 깨짐 현상 완벽 해결)
+# 4. 글로벌 CSS (컨테이너 박스 여백 및 높이 오류 완벽 수정)
 # =========================================================
 st.markdown(
     """
@@ -117,12 +117,18 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 컨테이너 내부 여백 안정화로 달력 박스 깨짐 방지 */
+/* 🌟 컨테이너 높이 충돌 및 여백 늘어짐 현상 방지 */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: rgba(255, 255, 255, 0.9) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
+    background: rgba(255, 255, 255, 0.9) !important; 
+    backdrop-filter: blur(16px) !important; 
+    border-radius: 20px !important; 
+    padding: 24px !important; 
+    border: 1px solid rgba(226, 232, 240, 0.8) !important; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
+    height: auto !important;
 }
 
-/* 🌟 모든 버튼 디자인 통일 */
+/* 🌟 모든 버튼 스타일 일치화 */
 div[data-testid="column"] div.stButton > button,
 div[data-testid="column"] div[data-testid="stPopover"] > button { 
     border-radius: 12px !important; 
@@ -150,10 +156,16 @@ div[data-testid="column"] div.stButton > button[kind="primary"] {
 }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; }
 
-/* 체크박스 정렬 */
-div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; }
+/* 체크박스 정렬 및 여백 최적화 */
+div[data-testid="stCheckbox"] { 
+    background: rgba(255, 255, 255, 0.7); 
+    border: 1px solid #e2e8f0; 
+    border-radius: 10px; 
+    padding: 8px 12px; 
+    margin-bottom: 6px !important; 
+}
 div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
-div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
+div[data-testid="stCheckbox"] label p { font-size: 14px !important; font-weight: 600 !important; color: #334155 !important; }
 
 .login-title { font-size: 36px; font-weight: 900; text-align: center; margin-bottom: 10px; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
 .login-subtitle { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 30px; font-weight: 500; }
@@ -363,7 +375,7 @@ elif st.session_state.page == "main":
 </div>
 </div>""", unsafe_allow_html=True)
 
-    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (오류 완벽 해결)
+    # 🌟 5. 캘린더 (다이어리) & 체크리스트 (박스 길이 오류 해결)
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
