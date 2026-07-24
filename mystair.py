@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (불필요한 입력창 잔상 완벽 제거 및 카드 통일)
+# 4. 글로벌 CSS (입력창 잔상 형태 박스 원천 차단)
 # =========================================================
 st.markdown(
     """
@@ -117,13 +117,14 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 Streamlit 기본 컨테이너를 주변 카드들과 똑같은 예쁜 불투명 흰색 패널로 변경 */
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: #ffffff !important; 
-    border-radius: 24px !important; 
-    padding: 32px !important; 
-    border: 1px solid #e2e8f0 !important; 
+/* 🌟 st.container 잔상을 없애고 순수 HTML 클래스로 완벽한 흰색 카드 구현 */
+.clean-card {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    padding: 32px !important;
+    border: 1px solid #e2e8f0 !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+    margin-bottom: 20px;
 }
 
 /* 모든 버튼 스타일 일치화 */
@@ -180,52 +181,53 @@ if st.session_state.page == "login":
     st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1.2, 1])
     with col2:
-        with st.container(border=True):
-            st.markdown("<div class='login-title'>MyStair</div>", unsafe_allow_html=True)
-            st.markdown("<div class='login-subtitle'>마이스터고 학생을 위한 단 하나의 진로 파트너</div>", unsafe_allow_html=True)
-            tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
-            
-            with tab1:
-                login_id = st.text_input("아이디", key="login_id").strip()
-                login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
-                if st.button("로그인", type="primary", use_container_width=True):
-                    if not login_id or not login_pw: st.warning("아이디와 비밀번호를 모두 입력해주세요.")
+        st.markdown('<div class="clean-card">', unsafe_allow_html=True)
+        st.markdown("<div class='login-title'>MyStair</div>", unsafe_allow_html=True)
+        st.markdown("<div class='login-subtitle'>마이스터고 학생을 위한 단 하나의 진로 파트너</div>", unsafe_allow_html=True)
+        tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
+        
+        with tab1:
+            login_id = st.text_input("아이디", key="login_id").strip()
+            login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
+            if st.button("로그인", type="primary", use_container_width=True):
+                if not login_id or not login_pw: st.warning("아이디와 비밀번호를 모두 입력해주세요.")
+                else:
+                    db = load_db()
+                    if login_id in db and db[login_id]["password"] == hash_pw(login_pw):
+                        user_data = db[login_id]
+                        st.session_state.logged_in = True
+                        st.session_state.current_user = login_id
+                        st.session_state.chk_1 = user_data.get("chk_1", False)
+                        st.session_state.chk_2 = user_data.get("chk_2", False)
+                        st.session_state.chk_4 = user_data.get("chk_4", False)
+                        st.session_state.chk_5 = user_data.get("chk_5", False)
+                        st.session_state.diary_data = user_data.get("diary_data", {})
+                        st.session_state.profile = user_data.get("profile", {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""})
+                        st.success(f"환영합니다, {login_id}님!")
+                        time.sleep(0.5)
+                        navigate_to("main")
                     else:
-                        db = load_db()
-                        if login_id in db and db[login_id]["password"] == hash_pw(login_pw):
-                            user_data = db[login_id]
-                            st.session_state.logged_in = True
-                            st.session_state.current_user = login_id
-                            st.session_state.chk_1 = user_data.get("chk_1", False)
-                            st.session_state.chk_2 = user_data.get("chk_2", False)
-                            st.session_state.chk_4 = user_data.get("chk_4", False)
-                            st.session_state.chk_5 = user_data.get("chk_5", False)
-                            st.session_state.diary_data = user_data.get("diary_data", {})
-                            st.session_state.profile = user_data.get("profile", {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""})
-                            st.success(f"환영합니다, {login_id}님!")
-                            time.sleep(0.5)
-                            navigate_to("main")
-                        else:
-                            st.error("아이디나 비밀번호를 확인해주세요.")
-                if st.button("돌아가기", use_container_width=True): navigate_to("main")
-            
-            with tab2:
-                reg_id = st.text_input("새 아이디", key="reg_id").strip()
-                reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
-                reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm").strip()
-                if st.button("회원가입 완료", type="primary", use_container_width=True):
-                    if not reg_id or not reg_pw: st.error("모두 입력해주세요.")
-                    elif reg_pw != reg_pw_confirm: st.error("비밀번호 불일치.")
+                        st.error("아이디나 비밀번호를 확인해주세요.")
+            if st.button("돌아가기", use_container_width=True): navigate_to("main")
+        
+        with tab2:
+            reg_id = st.text_input("새 아이디", key="reg_id").strip()
+            reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
+            reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm").strip()
+            if st.button("회원가입 완료", type="primary", use_container_width=True):
+                if not reg_id or not reg_pw: st.error("모두 입력해주세요.")
+                elif reg_pw != reg_pw_confirm: st.error("비밀번호 불일치.")
+                else:
+                    db = load_db()
+                    if reg_id in db: st.error("이미 존재하는 아이디입니다.")
                     else:
-                        db = load_db()
-                        if reg_id in db: st.error("이미 존재하는 아이디입니다.")
-                        else:
-                            db[reg_id] = {
-                                "password": hash_pw(reg_pw), "chk_1": False, "chk_2": False, "chk_4": False, "chk_5": False,
-                                "diary_data": {}, "profile": {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
-                            }
-                            save_db(db)
-                            st.success("🎉 회원가입 완료! 로그인 탭을 이용하세요.")
+                        db[reg_id] = {
+                            "password": hash_pw(reg_pw), "chk_1": False, "chk_2": False, "chk_4": False, "chk_5": False,
+                            "diary_data": {}, "profile": {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
+                        }
+                        save_db(db)
+                        st.success("🎉 회원가입 완료! 로그인 탭을 이용하세요.")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =========================================================
@@ -368,13 +370,13 @@ elif st.session_state.page == "main":
 </div>""", unsafe_allow_html=True)
 
     # =========================================================
-    # 🌟 5. 캘린더와 체크리스트 (완벽하게 불투명하고 깔끔한 흰색 카드 UI 적용)
+    # 🌟 5. 캘린더와 체크리스트 (순수 clean-card 클래스 적용으로 잔상 및 불투명도 완벽 해결)
     # =========================================================
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
     with cal_col:
-        st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+        st.markdown('<div class="clean-card">', unsafe_allow_html=True)
         st.markdown("""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <span style="font-size: 22px; font-weight: 800; color: #0f172a;">2026년 7월</span>
@@ -418,7 +420,7 @@ elif st.session_state.page == "main":
         st.markdown('</div>', unsafe_allow_html=True)
 
     with chk_col:
-        st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+        st.markdown('<div class="clean-card">', unsafe_allow_html=True)
         has_diary_today = bool(st.session_state.diary_data.get("24", ""))
         st.markdown("""
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
@@ -510,7 +512,7 @@ elif st.session_state.page == "profile":
         
     st.markdown("""
     <style>
-    div[data-testid="stVerticalBlockBorderWrapper"] {
+    .clean-card {
         background: #ffffff !important; border-radius: 20px !important; padding: 40px !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
     }
     .profile-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 20px; text-align: center;}
@@ -522,32 +524,33 @@ elif st.session_state.page == "profile":
     
     col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
-        with st.container(border=True):
-            st.markdown("<div class='profile-title'>👤 내 프로필 설정</div>", unsafe_allow_html=True)
-            st.markdown("<div class='profile-subtitle'>나의 기본 정보와 커리어 성향을 기록해두세요!</div>", unsafe_allow_html=True)
-            
-            p_name = st.text_input("이름", value=st.session_state.profile.get("name", ""))
-            p_school = st.text_input("학교 및 전공", value=st.session_state.profile.get("school", ""), placeholder="예: 한국마이스터고 자동화기계과")
-            p_mbti = st.text_input("나의 MBTI", value=st.session_state.profile.get("mbti", ""), placeholder="예: ESTJ")
-            p_holland = st.text_input("홀랜드 흥미 유형", value=st.session_state.profile.get("holland", ""), placeholder="예: 실재형(R) + 탐구형(I)")
-            p_target = st.text_input("목표 직무 및 기업", value=st.session_state.profile.get("target", ""), placeholder="예: 삼성전자 설비 엔지니어")
-            
-            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-            
-            btn1, btn2 = st.columns([1, 1])
-            with btn1:
-                if st.button("💾 정보 저장하기", type="primary", use_container_width=True):
-                    st.session_state.profile["name"] = p_name
-                    st.session_state.profile["school"] = p_school
-                    st.session_state.profile["mbti"] = p_mbti
-                    st.session_state.profile["holland"] = p_holland
-                    st.session_state.profile["target"] = p_target
-                    
-                    sync_to_db()
-                    st.success("프로필이 성공적으로 저장되었습니다!")
-            with btn2:
-                if st.button("돌아가기", use_container_width=True):
-                    navigate_to("main")
+        st.markdown('<div class="clean-card">', unsafe_allow_html=True)
+        st.markdown("<div class='profile-title'>👤 내 프로필 설정</div>", unsafe_allow_html=True)
+        st.markdown("<div class='profile-subtitle'>나의 기본 정보와 커리어 성향을 기록해두세요!</div>", unsafe_allow_html=True)
+        
+        p_name = st.text_input("이름", value=st.session_state.profile.get("name", ""))
+        p_school = st.text_input("학교 및 전공", value=st.session_state.profile.get("school", ""), placeholder="예: 한국마이스터고 자동화기계과")
+        p_mbti = st.text_input("나의 MBTI", value=st.session_state.profile.get("mbti", ""), placeholder="예: ESTJ")
+        p_holland = st.text_input("홀랜드 흥미 유형", value=st.session_state.profile.get("holland", ""), placeholder="예: 실재형(R) + 탐구형(I)")
+        p_target = st.text_input("목표 직무 및 기업", value=st.session_state.profile.get("target", ""), placeholder="예: 삼성전자 설비 엔지니어")
+        
+        st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
+        
+        btn1, btn2 = st.columns([1, 1])
+        with btn1:
+            if st.button("💾 정보 저장하기", type="primary", use_container_width=True):
+                st.session_state.profile["name"] = p_name
+                st.session_state.profile["school"] = p_school
+                st.session_state.profile["mbti"] = p_mbti
+                st.session_state.profile["holland"] = p_holland
+                st.session_state.profile["target"] = p_target
+                
+                sync_to_db()
+                st.success("프로필이 성공적으로 저장되었습니다!")
+        with btn2:
+            if st.button("돌아가기", use_container_width=True):
+                navigate_to("main")
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 # =========================================================
