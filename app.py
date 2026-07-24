@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide",
 )
 
-# 2. 풀 와이드 상태에서 중간 공백을 완벽히 해결한 최적화 CSS 주입
+# 2. 토스 스타일의 압도적인 타이포그래피와 풀 와이드 레이아웃 CSS 주입
 st.markdown(
     """
 <style>
@@ -31,7 +31,7 @@ body, [class*="css"] {
     100% { transform: translateY(0px); }
 }
 
-/* 🌟 화면 전체를 아우르는 감각적인 앰비언트 그라데이션 배경 */
+/* 🌟 화면 전체를 아우르는 토스 스타일의 감각적인 앰비언트 그라데이션 배경 */
 .stApp {
     background: 
         radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
@@ -42,7 +42,7 @@ body, [class*="css"] {
     color: #1e293b;
 }
 
-/* 🌟 와이드 화면에서 컨텐츠가 너무 멀어지지 않도록 최적의 최대 폭(1350px)과 균등 정렬 적용 */
+/* 🌟 와이드 화면 최적화 컨테이너 폭 (1350px) */
 .block-container {
     padding-top: 2rem;
     padding-bottom: 12rem;
@@ -116,35 +116,35 @@ body, [class*="css"] {
     gap: 8px;
 }
 
-/* 🌟 중간 공백을 없애고 밀착감을 높인 히어로 섹션 */
+/* 🌟 토스 스타일의 압도적이고 묵직한 히어로 타이포그래피 */
 .hero-section-left {
     text-align: left;
-    padding: 20px 0;
+    padding: 30px 0;
     animation: smoothFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 18px;
-    background: rgba(255, 255, 255, 0.85);
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
-    color: #475569;
+    color: #334155;
     border-radius: 50px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 24px;
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
 .hero-title {
-    font-size: 60px;
+    font-size: 70px;
     font-weight: 800;
-    margin: 0 0 24px 0;
-    line-height: 1.2;
-    letter-spacing: -2px;
+    margin: 0 0 28px 0;
+    line-height: 1.15;
+    letter-spacing: -2.5px;
     color: #0f172a;
 }
 
@@ -155,12 +155,12 @@ body, [class*="css"] {
 }
 
 .hero-subtitle {
-    font-size: 20px;
+    font-size: 22px;
     color: #64748b;
-    margin: 0 0 40px 0;
+    margin: 0 0 45px 0;
     font-weight: 400;
     line-height: 1.6;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
 }
 
 /* 3D 이미지 플로팅 컨테이너 */
@@ -173,7 +173,7 @@ body, [class*="css"] {
 
 .hero-graphic {
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1));
@@ -181,41 +181,41 @@ body, [class*="css"] {
 
 /* 🌟 대단원 간의 시원한 여백 (롱 스크롤) */
 .scroll-section {
-    padding-top: 240px;
+    padding-top: 260px;
     animation: smoothFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .section-tag {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: #3bb2b8;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
 
 .section-heading {
-    font-size: 40px;
+    font-size: 44px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 12px;
-    letter-spacing: -1px;
+    margin-bottom: 16px;
+    letter-spacing: -1.2px;
     line-height: 1.3;
 }
 
 .section-desc {
-    font-size: 19px;
+    font-size: 20px;
     color: #64748b;
     line-height: 1.6;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 /* 모던 글래스 카드 스타일 */
 .modern-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
-    border-radius: 24px;
-    padding: 40px 36px;
+    border-radius: 28px;
+    padding: 44px 40px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -232,17 +232,17 @@ body, [class*="css"] {
 }
 
 .modern-card h3 {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 800;
     color: #0f172a;
-    margin: 0 0 14px 0;
+    margin: 0 0 16px 0;
     letter-spacing: -0.5px;
 }
 
 .modern-card p {
-    font-size: 17px;
+    font-size: 18px;
     color: #64748b;
-    line-height: 1.7;
+    line-height: 1.75;
     margin: 0;
     word-break: keep-all;
 }
@@ -251,8 +251,8 @@ body, [class*="css"] {
 .faq-box {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 32px;
+    border-radius: 24px;
+    padding: 36px;
     border: 1px solid rgba(226, 232, 240, 0.8);
     box-shadow: 0 10px 25px rgba(0,0,0,0.02);
     margin-bottom: 20px;
@@ -265,29 +265,29 @@ body, [class*="css"] {
 }
 
 .faq-q {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .faq-a {
-    font-size: 17px;
+    font-size: 18px;
     color: #64748b;
-    line-height: 1.6;
+    line-height: 1.7;
     margin: 0;
 }
 
 /* 프로페셔널 테크 푸터 디자인 */
 .footer-container {
-    margin-top: 220px;
+    margin-top: 240px;
     padding: 60px 0;
     border-top: 1px solid rgba(226, 232, 240, 0.8);
     display: flex;
     flex-direction: column;
     gap: 20px;
     color: #64748b;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .footer-top {
@@ -297,7 +297,7 @@ body, [class*="css"] {
 }
 
 .footer-logo {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -0.8px;
@@ -305,7 +305,7 @@ body, [class*="css"] {
 
 .footer-links {
     display: flex;
-    gap: 28px;
+    gap: 32px;
     font-weight: 600;
 }
 
@@ -321,7 +321,7 @@ body, [class*="css"] {
 .bento-box {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    border-radius: 24px;
+    border-radius: 28px;
     padding: 40px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.03);
     border: 1px solid rgba(226, 232, 240, 0.8);
@@ -370,7 +370,7 @@ st.markdown(
 # =========================================================
 if st.session_state.page == "landing":
 
-  # --- [섹션 1] 첫 화면 (히어로: 좌우 균형을 1대1로 잡아 중간 공백 해결) ---
+  # --- [섹션 1] 첫 화면 (히어로: 1:1 밸런스 및 대형 타이포그래피) ---
   hero_col1, hero_col2 = st.columns([1, 1], gap="large")
 
   with hero_col1:
@@ -392,11 +392,11 @@ if st.session_state.page == "landing":
         background: #0f172a !important;
         color: #ffffff !important;
         border: none !important;
-        padding: 18px 36px !important;
-        font-size: 17px !important;
+        padding: 20px 42px !important;
+        font-size: 18px !important;
         font-weight: 700 !important;
         border-radius: 50px !important;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2) !important;
         width: fit-content !important;
         transition: all 0.3s ease !important;
     }
@@ -545,7 +545,7 @@ if st.session_state.page == "landing":
             <span>고객센터</span>
         </div>
     </div>
-    <div style="color: #94a3b8; font-size: 14px;">
+    <div style="color: #94a3b8; font-size: 15px;">
         © 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 빛나는 내일을 응원합니다.
     </div>
 </div>
@@ -563,7 +563,7 @@ elif st.session_state.page == "dashboard":
   st.markdown(
       """
 <div class="app-container">
-    <h2 style="font-size: 30px; font-weight: 800; margin: 0; color: #0f172a;">나의 진로 대시보드</h2>
+    <h2 style="font-size: 34px; font-weight: 800; margin: 0; color: #0f172a;">나의 진로 대시보드</h2>
 </div>
 """,
       unsafe_allow_html=True,
