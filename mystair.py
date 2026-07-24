@@ -159,9 +159,9 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
 .ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
 
-/* 홀랜드 검사 이동 버튼 강조 스타일 */
-.ms-nav a.holland-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
-.ms-nav a.holland-btn:hover { opacity: 0.9 !important; transform: translateY(-2px) !important; }
+/* 링크 버튼 강조 스타일 */
+.ms-nav a.link-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
+.ms-nav a.link-btn:hover { opacity: 0.9 !important; transform: translateY(-2px) !important; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -222,8 +222,9 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (holland.html을 루트 폴더로 옮겼을 때의 올바른 깃허브 Pages 주소 반영)
+    # 🌟 3. 네비게이션 (홀랜드 및 MBTI 깃허브 Pages 링크 연결)
     holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
+    mbti_github_url = "https://kimkyobum.github.io/mystair/MBTI.html"
 
     st.markdown(f"""<div class="ms-nav">
 <span class="active">진로추천</span>
@@ -231,8 +232,8 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 <span>자격증 검색</span>
 <span>실습 JOB 찾기</span>
 <span>공채·기업정보</span>
-<span>MBTI</span>
-<a href="{holland_github_url}" target="_blank" class="nav-anchor holland-btn" tabindex="-1">✨ 홀랜드직무검사</a>
+<a href="{mbti_github_url}" target="_blank" class="nav-anchor link-btn" tabindex="-1">🧠 MBTI</a>
+<a href="{holland_github_url}" target="_blank" class="nav-anchor link-btn" tabindex="-1">✨ 홀랜드직무검사</a>
 </div>""", unsafe_allow_html=True)
 
     # 🌟 4. 상단 AI 추천 & 요약 박스
