@@ -6,13 +6,13 @@ import hashlib
 import streamlit as st
 
 # =========================================================
-# 1. 페이지 기본 설정 (Wide 모드 고정, 사이드바 열림)
+# 1. 페이지 기본 설정 (Wide 모드 고정)
 # =========================================================
 st.set_page_config(
     page_title="MyStair - 마이스터고 진로 파트너",
     page_icon="📈",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # =========================================================
@@ -37,6 +37,7 @@ def save_db(data):
 def hash_pw(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+# 실시간 동기화 함수 (체크리스트나 다이어리 변경 시 호출)
 def sync_to_db():
     if st.session_state.get("logged_in") and st.session_state.get("current_user"):
         db = load_db()
@@ -52,11 +53,16 @@ def sync_to_db():
 # =========================================================
 # 3. 세션 상태 관리 (초기화)
 # =========================================================
-if "logged_in" not in st.session_state: st.session_state.logged_in = False
-if "current_user" not in st.session_state: st.session_state.current_user = None
-if "page" not in st.session_state: st.session_state.page = "main"
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
 
-# 기본값
+# 🌟 처음 시작 페이지를 'main'으로 설정
+if "page" not in st.session_state:
+    st.session_state.page = "main"
+
+# 로그인 안 된 상태의 기본값
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -71,6 +77,7 @@ def navigate_to(page_name):
 def logout():
     st.session_state.logged_in = False
     st.session_state.current_user = None
+    # 로그아웃 시 기본값으로 초기화
     st.session_state.chk_1 = True
     st.session_state.chk_2 = False
     st.session_state.chk_4 = False
@@ -79,13 +86,22 @@ def logout():
     st.session_state.profile = {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
     navigate_to("main")
 
-# 모달 다이어리
+# 🌟 모달(팝업) 다이어리 입력창 함수
 @st.dialog("📝 실습 다이어리 기록")
 def write_diary(day):
-    st.markdown(f"<div style='font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 15px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px;'>📅 2026년 7월 {day}일</div>", unsafe_allow_html=True)
+    
     current_text = st.session_state.diary_data.get(str(day), "")
-    diary_input = st.text_area("다이어리 내용", value=current_text, placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 1시간 내 복구 완료)", label_visibility="collapsed", height=200)
-    st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+    
+    diary_input = st.text_area(
+        "다이어리 내용", 
+        value=current_text,
+        placeholder="오늘의 실습 내용, 트러블슈팅 경험, 새로 배운 기술을 자유롭게 적어보세요!\n(예: PLC 컨베이어 벨트 모터 회로 단락 발생. 테스터기로 원인 파악 후 1시간 내 복구 완료)", 
+        label_visibility="collapsed", 
+        height=180
+    )
+    
+    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
     if st.button("✨ 저장 및 AI 포트폴리오 연동", type="primary", use_container_width=True):
         if diary_input.strip():
             st.session_state.diary_data[str(day)] = diary_input
@@ -97,14 +113,14 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (여백 대폭 확대)
+# 4. 글로벌 CSS
 # =========================================================
 st.markdown(
     """
 <style>
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
 html { scroll-behavior: smooth; }
-body, [class*="css"] { font-family: 'SUIT', -apple-system, sans-serif !important; line-height: 1.6; }
+body, [class*="css"] { font-family: 'SUIT', -apple-system, sans-serif !important; line-height: 1.5; }
 .stApp {
     background: 
         radial-gradient(circle at 10% 10%, rgba(59, 178, 184, 0.12) 0px, transparent 45%),
@@ -120,76 +136,36 @@ body *:not(input):not(textarea) { caret-color: transparent !important; }
 input, textarea { caret-color: auto !important; }
 .ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { user-select: none; }
 
-/* 🌟 컨테이너 기본 여백 확대 */
-.block-container { max-width: 1400px !important; padding-top: 0 !important; padding-bottom: 10rem !important; padding-left: 60px !important; padding-right: 60px !important; }
+@keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 사이드바 디자인 */
-[data-testid="stSidebar"] { background-color: #ffffff; border-right: 1px solid #e2e8f0; }
-[data-testid="stSidebar"] div.stButton > button { background: transparent !important; border: none !important; box-shadow: none !important; justify-content: flex-start !important; padding: 12px 20px !important; height: 50px !important; font-size: 16px !important; color: #475569 !important; transition: all 0.2s ease !important; border-radius: 12px !important; margin-bottom: 4px !important;}
-[data-testid="stSidebar"] div.stButton > button:hover { background: #f1f5f9 !important; color: #0f172a !important; transform: none !important; }
-[data-testid="stSidebar"] div.stButton > button p { font-weight: 700 !important; font-size: 15px !important;}
-
-/* 🌟 스트림릿 컨테이너 (글래스 효과 & 여백 확대) */
 div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 24px !important; padding: 35px 40px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 24px 28px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important; transition: all 0.3s ease !important;
 }
-
-/* 버튼 기본 디자인 */
-div[data-testid="column"] div.stButton > button { border-radius: 12px !important; height: 48px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 8px !important; }
-div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 15px !important; }
-div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 6px 15px rgba(0,0,0,0.04) !important; }
-div[data-testid="column"] div.stButton > button[kind="primary"] { background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 6px 16px rgba(255, 90, 95, 0.25) !important; }
+div[data-testid="column"] div.stButton > button { border-radius: 10px !important; height: 44px !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; transition: all 0.2s ease !important; margin-bottom: 4px !important; }
+div[data-testid="column"] div.stButton > button p { color: #475569 !important; font-weight: 700 !important; font-size: 14px !important; }
+div[data-testid="column"] div.stButton > button:hover { border-color: #cbd5e1 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; }
+div[data-testid="column"] div.stButton > button[kind="primary"] { background: #ff5a5f !important; border-color: #ff5a5f !important; box-shadow: 0 4px 12px rgba(255, 90, 95, 0.25) !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-/* 🌟 개별 체크리스트 여백 확대 */
-div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; margin-bottom: 12px !important; transition: all 0.2s ease; }
-div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 4px 10px rgba(59, 178, 184, 0.05);}
-div[data-testid="stCheckbox"] label p { font-size: 16px !important; font-weight: 600 !important; color: #334155 !important; }
+div[data-testid="stCheckbox"] { background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease; }
+div[data-testid="stCheckbox"]:hover { background: #ffffff; border-color: #3bb2b8; }
+div[data-testid="stCheckbox"] label p { font-size: 15px !important; font-weight: 600 !important; color: #334155 !important; }
 
-.login-title { font-size: 40px; font-weight: 900; text-align: center; margin-bottom: 15px; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
-.login-subtitle { font-size: 17px; color: #64748b; text-align: center; margin-bottom: 40px; font-weight: 500; }
+.login-title { font-size: 36px; font-weight: 900; text-align: center; margin-bottom: 10px; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+.login-subtitle { font-size: 16px; color: #64748b; text-align: center; margin-bottom: 30px; font-weight: 500; }
 </style>
 """,
     unsafe_allow_html=True,
 )
-
-# =========================================================
-# 5. 글로벌 사이드바 렌더링 (로그인 화면 제외)
-# =========================================================
-if st.session_state.page != "login":
-    with st.sidebar:
-        st.markdown("<div style='font-size: 28px; font-weight: 900; color: #0f172a; margin-top: 10px; margin-bottom: 40px; text-align: center; letter-spacing: -1px;'>MyStair</div>", unsafe_allow_html=True)
-        
-        if st.session_state.logged_in:
-            display_name = st.session_state.profile.get("name", "")
-            if not display_name: display_name = st.session_state.current_user
-            
-            st.markdown(f"""
-            <div style='text-align: center; margin-bottom: 40px;'>
-                <div style='width: 70px; height: 70px; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); border-radius: 50%; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);'>👤</div>
-                <div style='font-size: 18px; font-weight: 800; color: #1e293b;'>{display_name} 님</div>
-                <div style='font-size: 14px; font-weight: 600; color: #64748b; margin-top: 4px;'>미래의 명장, 환영합니다</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button("🏠 홈 대시보드", use_container_width=True): navigate_to("main")
-            if st.button("👤 내 프로필 (마이페이지)", use_container_width=True): navigate_to("profile")
-            if st.button("🚪 로그아웃", use_container_width=True): logout()
-        else:
-            st.markdown("<div style='text-align: center; color: #64748b; font-size: 15px; font-weight:600; margin-bottom: 30px;'>서비스 이용을 위해<br>로그인 해주세요</div>", unsafe_allow_html=True)
-            if st.button("🏠 홈 대시보드", use_container_width=True): navigate_to("main")
-            if st.button("🔑 로그인", use_container_width=True): navigate_to("login")
-            
-        st.markdown("<hr style='margin: 40px 0; border-color: #f1f5f9;'>", unsafe_allow_html=True)
-        if st.button("✨ 서비스 소개 (홍보)", use_container_width=True): navigate_to("intro")
 
 
 # =========================================================
 # [PAGE 0] 로그인 & 회원가입 화면
 # =========================================================
 if st.session_state.page == "login":
-    st.markdown("<div style='margin-top: 120px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns([1, 1.2, 1])
     with col2:
         with st.container(border=True):
@@ -197,11 +173,11 @@ if st.session_state.page == "login":
             st.markdown("<div class='login-subtitle'>마이스터고 학생을 위한 단 하나의 진로 파트너</div>", unsafe_allow_html=True)
             
             tab1, tab2 = st.tabs(["🔒 로그인", "📝 회원가입"])
+            
+            # --- 로그인 탭 ---
             with tab1:
-                st.markdown("<br>", unsafe_allow_html=True)
                 login_id = st.text_input("아이디", key="login_id").strip()
                 login_pw = st.text_input("비밀번호", type="password", key="login_pw").strip()
-                st.markdown("<br>", unsafe_allow_html=True)
                 
                 if st.button("로그인", type="primary", use_container_width=True):
                     if not login_id or not login_pw:
@@ -226,16 +202,16 @@ if st.session_state.page == "login":
                             else:
                                 st.error("비밀번호가 일치하지 않습니다.")
                         else:
-                            st.error("존재하지 않는 아이디입니다.")
+                            st.error("존재하지 않는 아이디입니다. 대소문자 및 띄어쓰기를 확인해주세요.")
+                
                 if st.button("돌아가기", use_container_width=True):
                     navigate_to("main")
             
+            # --- 회원가입 탭 ---
             with tab2:
-                st.markdown("<br>", unsafe_allow_html=True)
                 reg_id = st.text_input("새 아이디", key="reg_id").strip()
                 reg_pw = st.text_input("새 비밀번호", type="password", key="reg_pw").strip()
                 reg_pw_confirm = st.text_input("비밀번호 확인", type="password", key="reg_pw_confirm").strip()
-                st.markdown("<br>", unsafe_allow_html=True)
                 
                 if st.button("회원가입 완료", type="primary", use_container_width=True):
                     if not reg_id or not reg_pw:
@@ -249,12 +225,16 @@ if st.session_state.page == "login":
                         else:
                             db[reg_id] = {
                                 "password": hash_pw(reg_pw),
-                                "chk_1": False, "chk_2": False, "chk_4": False, "chk_5": False,
+                                "chk_1": False,
+                                "chk_2": False,
+                                "chk_4": False,
+                                "chk_5": False,
                                 "diary_data": {},
                                 "profile": {"name": "", "school": "", "major": "", "mbti": "", "holland": "", "target": ""}
                             }
                             save_db(db)
                             st.success("🎉 회원가입이 완료되었습니다! 로그인 탭에서 접속해주세요.")
+
 
 # =========================================================
 # [PAGE 1] 메인 포털 대시보드
@@ -263,70 +243,109 @@ elif st.session_state.page == "main":
     
     css_string = """
 <style>
-/* 🌟 요소 간격 넓히기 CSS 적용 */
-.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 16px 0; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 14px; margin-bottom: 20px; }
-.ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 4px 14px; border-radius: 50px; font-size: 13px; font-weight: 800; }
-
-.ms-search-box-wrapper { display: flex; align-items: center; width: 100%; padding-top: 10px; padding-bottom: 20px;}
-.ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 8px 8px 8px 24px; width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
+.ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
+.ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
+.ms-logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; cursor: pointer; padding-top: 8px; }
+.ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 4px; }
+.ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 100px; padding: 6px 6px 6px 20px; width: 100%; max-width: 540px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-box:focus-within { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 10px 30px rgba(59, 178, 184, 0.12); background: #ffffff; transform: translateY(-1px); }
-.ms-search-input { border: none; outline: none; width: 100%; font-size: 16px; font-family: 'SUIT'; color: #1e293b; background: transparent; }
+.ms-search-input { border: none; outline: none; width: 100%; font-size: 15px; font-family: 'SUIT'; color: #1e293b; background: transparent; }
 .ms-search-input::placeholder { color: #94a3b8; font-weight: 500; }
-.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 44px; height: 44px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s; }
+.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-search-btn:hover { transform: scale(1.05); }
 
-/* 네비게이션 여백 및 간격 확대 */
-.ms-nav { display: flex; justify-content: center; gap: 20px; padding-top: 40px; padding-bottom: 60px; flex-wrap: wrap; align-items: center; }
-.ms-nav span, .ms-nav a.nav-anchor { padding: 12px 26px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 16px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-block; }
-.ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transform: translateY(-2px); border-color: #cbd5e1; }
-.ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15); }
-.ms-nav a.link-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3) !important; }
-.ms-nav a.link-btn:hover { opacity: 0.9 !important; transform: translateY(-3px) !important; }
+/* 우측 상단 메뉴 버튼 스타일 */
+div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 13px !important; border-radius: 50px !important; padding: 6px 12px !important; height: 38px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; margin-top: 4px; }
+div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
-/* 메인 그리드 및 내부 여백 확대 */
-.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 40px; margin-bottom: 80px; }
-.glass-panel { padding: 45px 50px !important; }
-.ms-ai-title { font-size: 24px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+.ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; align-items: center; }
+.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
+.ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
+.ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
+.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
+.ms-nav a.link-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
+.ms-nav a.link-btn:hover { opacity: 0.9 !important; transform: translateY(-2px) !important; }
+
+.ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
+.glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
+.glass-panel:hover { background: rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(126, 87, 194, 0.06); border-color: rgba(126, 87, 194, 0.2); transform: translateY(-3px); }
+.ms-ai-title { font-size: 22px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
 .ms-ai-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
-.ms-ai-btn { background: #0f172a; color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.2s; }
+.ms-ai-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.ms-ai-btn { background: #0f172a; color: white; border: none; padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .ms-ai-btn:hover { background: #334155; transform: scale(1.03); }
 
-.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; filter: blur(4px); opacity: 0.8; pointer-events: none; }
-.blur-card { background: #ffffff; border-radius: 16px; padding: 24px; height: 160px; border: 1px solid #e2e8f0; }
-.blur-line { height: 14px; background: #cbd5e1; border-radius: 8px; margin-bottom: 14px; }
+.blur-card-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; filter: blur(4px); opacity: 0.8; pointer-events: none; }
+.blur-card { background: #ffffff; border-radius: 16px; padding: 20px; height: 140px; border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+.blur-line { height: 12px; background: #cbd5e1; border-radius: 8px; margin-bottom: 12px; }
 
-.ms-gradient-banner { padding: 20px 26px; border-radius: 20px; font-size: 16px; margin-bottom: 24px; }
-.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex-grow: 1; }
-.ms-quick-item { padding: 24px; border-radius: 20px; font-size: 16px; line-height: 1.5; }
-
-/* 하단 배너 및 JOB 섹션 여백 확대 */
-.ms-mid-banner { padding: 40px 50px; margin: 80px 0; border-radius: 28px; }
-.ms-mid-banner-title { font-size: 24px; }
-.ms-mid-btns { gap: 18px; }
-.ms-mid-btn { padding: 16px 32px; font-size: 16px; border-radius: 50px; }
-
-.ms-section-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 30px; letter-spacing: -0.5px; }
-.ms-job-section { margin-bottom: 140px; margin-top: 100px; }
-.ms-chip-group { gap: 14px; margin-bottom: 35px; }
-.ms-chip { padding: 12px 26px; font-size: 15px; }
-
-.ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
-.ms-job-card { padding: 32px 28px; border-radius: 24px; }
-.job-card-title { font-size: 17px; margin-bottom: 16px; line-height: 1.5; }
-.job-card-comp { font-size: 15px; margin-bottom: 24px; }
-.job-tag { font-size: 13px; padding: 8px 14px; border-radius: 8px;}
+.ms-gradient-banner { background: linear-gradient(135deg, rgba(59,178,184,0.15), rgba(126,87,194,0.15)); color: #0f172a; padding: 18px 22px; border-radius: 16px; font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 20px; border: 1px solid rgba(126,87,194,0.15); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-gradient-banner:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(126,87,194,0.12); }
+.ms-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex-grow: 1; }
+.ms-quick-item { background: rgba(255,255,255,0.6); border: 1px solid rgba(226,232,240,0.8); border-radius: 16px; padding: 20px; font-size: 15px; font-weight: 800; color: #1e293b; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); line-height: 1.4; }
+.ms-quick-item:hover { background: #ffffff; border-color: #3bb2b8; box-shadow: 0 12px 25px rgba(59,178,184,0.08); color: #0f172a; transform: translateY(-3px); }
+.ms-mid-banner { background: linear-gradient(135deg, rgba(59,178,184,0.1), rgba(126,87,194,0.1)); border: 1px solid rgba(126,87,194,0.2); border-radius: 24px; padding: 32px 45px; display: flex; justify-content: space-between; align-items: center; margin: 50px 0; backdrop-filter: blur(10px); }
+.ms-mid-banner-title { font-size: 22px; font-weight: 800; color: #0f172a; }
+.ms-mid-btns { display: flex; gap: 14px; }
+.ms-mid-btn { background: #ffffff; border: 1px solid rgba(226, 232, 240, 0.8); padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 15px; color: #0f172a; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 6px 18px rgba(0,0,0,0.03); }
+.ms-mid-btn:hover { border-color: #7e57c2; box-shadow: 0 12px 25px rgba(126,87,194,0.15); transform: translateY(-3px); }
+.ms-section-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 20px; letter-spacing: -0.5px; scroll-margin-top: 30px; outline: none !important; }
+.ms-job-section { margin-bottom: 120px; margin-top: 60px; }
+.ms-chip-group { display: flex; gap: 10px; margin-bottom: 28px; overflow-x: auto; padding-bottom: 6px; }
+.ms-chip { padding: 10px 22px; border-radius: 50px; font-size: 14px; font-weight: 700; color: #64748b; background: rgba(255,255,255,0.7); backdrop-filter: blur(5px); cursor: pointer; border: 1px solid rgba(226,232,240,0.8); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-chip.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15,23,42,0.15); }
+.ms-chip:hover:not(.active) { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); }
+.ms-job-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ms-job-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 20px; padding: 26px 22px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
+.ms-job-card:hover { transform: translateY(-6px); background: #ffffff; box-shadow: 0 20px 40px rgba(126,87,194,0.08); border-color: rgba(126,87,194,0.3); }
+.job-card-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 12px; line-height: 1.4; letter-spacing: -0.3px; }
+.job-card-comp { font-size: 14px; color: #64748b; margin-bottom: 20px; display: flex; justify-content: space-between;}
+.d-day { color: #3bb2b8; font-weight: 800; }
+.job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.job-tag { font-size: 12px; font-weight: 700; padding: 6px 12px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 6px; border: 1px solid #e2e8f0;}
 </style>
 """
     st.markdown(css_string, unsafe_allow_html=True)
     
+    # 🌟 1. 최상단 배너
     st.markdown("""<div class="ms-top-banner"><span class="ms-top-banner-badge">HOT</span><span>실습 후 커리어 고민이 있다면? 마이스터고 출신 현직자 3인에게 물어보세요!</span></div>""", unsafe_allow_html=True)
 
-    # 🌟 헤더 (버튼들이 사이드바로 이동했으므로 검색창에 공간 집중)
-    h_col1, h_col2 = st.columns([2, 8])
+    # 🌟 2. 헤더 영역 (우측에 유저 인사말 및 로그아웃, 마이페이지, 소개 가기 배치)
+    h_col1, h_col2, h_col3 = st.columns([1.5, 4.5, 4.0])
+    with h_col1:
+        st.markdown('<div class="ms-logo">MyStair</div>', unsafe_allow_html=True)
     with h_col2:
         st.markdown("""<div class="ms-search-box-wrapper"><div class="ms-search-box"><input type="text" class="ms-search-input" placeholder="관심 직무, 실습 기업, 자격증을 검색해보세요"><button class="ms-search-btn">🔍</button></div></div>""", unsafe_allow_html=True)
+    with h_col3:
+        if st.session_state.logged_in:
+            # 로그인 시: 이름표, 마이페이지, 로그아웃, 서비스소개 버튼
+            c1, c2, c3, c4 = st.columns([1.2, 0.9, 0.9, 1.0])
+            with c1:
+                # 닉네임이나 이름이 있으면 그걸로, 없으면 아이디로 표시
+                display_name = st.session_state.profile.get("name", "")
+                if not display_name: display_name = st.session_state.current_user
+                st.markdown(f"<div style='text-align: right; padding-top: 12px; font-size: 14px; font-weight: 700; color: #475569;'>반갑습니다, <span style='color:#3bb2b8;'>{display_name}</span>님!</div>", unsafe_allow_html=True)
+            with c2:
+                if st.button("👤 마이페이지", use_container_width=True):
+                    navigate_to("profile")
+            with c3:
+                if st.button("🚪 로그아웃", use_container_width=True):
+                    logout()
+            with c4:
+                if st.button("👉 서비스 소개", use_container_width=True):
+                    navigate_to("intro")
+        else:
+            # 비로그인 시: 여백, 로그인, 서비스소개 버튼
+            c1, c2, c3 = st.columns([1.5, 1, 1])
+            with c2:
+                if st.button("🔑 로그인", use_container_width=True):
+                    navigate_to("login")
+            with c3:
+                if st.button("👉 서비스 소개", use_container_width=True):
+                    navigate_to("intro")
 
+    # 🌟 3. 네비게이션
     holland_github_url = "https://kimkyobum.github.io/mystair/holland.html"
     mbti_github_url = "https://kimkyobum.github.io/mystair/MBTI.html"
 
@@ -340,53 +359,55 @@ elif st.session_state.page == "main":
 <a href="{holland_github_url}" target="_self" class="nav-anchor link-btn" tabindex="-1">✨ 홀랜드직무검사</a>
 </div>""", unsafe_allow_html=True)
 
+    # 🌟 4. 상단 AI 추천 & 요약 박스
     st.markdown("""<div class="ms-main-grid">
 <div class="glass-panel">
 <div class="ms-ai-header">
 <div>
 <div class="ms-ai-title">✨ 오늘의 <span>AI 맞춤 추천</span></div>
-<p style="margin:0; font-size: 16px; color: #64748b; margin-top: 10px;">나의 다이어리 기록과 MBTI에 맞춘 완벽한 기회!</p>
+<p style="margin:0; font-size: 15px; color: #64748b; margin-top: 8px;">나의 다이어리 기록과 MBTI에 맞춘 완벽한 기회!</p>
 </div>
 <button class="ms-ai-btn">맞춤 공고 열람하기</button>
 </div>
 <div class="blur-card-container">
-<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 30px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 30px;"></div></div>
-<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 30px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 80%;"></div><div class="blur-line" style="width: 60%;"></div><div class="blur-line" style="width: 90%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 70%;"></div><div class="blur-line" style="width: 50%;"></div><div class="blur-line" style="width: 85%; margin-top: 25px;"></div></div>
+<div class="blur-card"><div class="blur-line" style="width: 90%;"></div><div class="blur-line" style="width: 40%;"></div><div class="blur-line" style="width: 75%; margin-top: 25px;"></div></div>
 </div>
 </div>
-<div class="glass-panel">
-<div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom:26px; line-height: 1.4; letter-spacing: -0.5px;">
+<div class="glass-panel" style="padding: 35px 32px;">
+<div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom:22px; line-height: 1.4; letter-spacing: -0.5px;">
 미래의 기술 명장님을 위한<br>핵심 진로 워크스페이스
 </div>
 <div class="ms-gradient-banner"><span>⚡ 나의 커리어 취향 설정하기</span><span>></span></div>
 <div class="ms-quick-grid">
-<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 26px; text-align: right;">📝</span></div>
-<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 26px; text-align: right;">✨</span></div>
-<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 26px; text-align: right;">🏅</span></div>
-<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 26px; text-align: right;">💼</span></div>
+<div class="ms-quick-item"><span>나의 실습<br>다이어리</span><span style="font-size: 24px; text-align: right;">📝</span></div>
+<div class="ms-quick-item"><span>AI STAR<br>자소서 추출</span><span style="font-size: 24px; text-align: right;">✨</span></div>
+<div class="ms-quick-item"><span>국가기술<br>자격증 일정</span><span style="font-size: 24px; text-align: right;">🏅</span></div>
+<div class="ms-quick-item"><span>선배들의<br>합격 포트폴리오</span><span style="font-size: 24px; text-align: right;">💼</span></div>
 </div>
 </div>
 </div>""", unsafe_allow_html=True)
 
-    st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 70px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
-    cal_col, chk_col = st.columns([1.8, 1], gap="large")
+    # 🌟 5. 캘린더 (다이어리) & 슬림해진 체크리스트 섹션
+    st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
+    cal_col, chk_col = st.columns([2, 1], gap="large")
 
     with cal_col:
         with st.container(border=True):
             st.markdown("""
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <span style="font-size: 24px; font-weight: 800; color: #0f172a;">2026년 7월</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="font-size: 22px; font-weight: 800; color: #0f172a;">2026년 7월</span>
                 <div>
-                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; width: 36px; height: 36px; font-size: 16px; cursor: pointer; margin-right: 8px; color: #475569;">&lt;</button>
-                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; width: 36px; height: 36px; font-size: 16px; cursor: pointer; color: #475569;">&gt;</button>
+                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 32px; height: 32px; font-size: 14px; cursor: pointer; margin-right: 6px; color: #475569;">&lt;</button>
+                    <button style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; width: 32px; height: 32px; font-size: 14px; cursor: pointer; color: #475569;">&gt;</button>
                 </div>
             </div>
             """, unsafe_allow_html=True)
             wk_cols = st.columns(7)
             for i, wd in enumerate(["일", "월", "화", "수", "목", "금", "토"]):
                 color = "#ef4444" if i == 0 else "#3b82f6" if i == 6 else "#64748b"
-                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:16px; color:{color}; padding-bottom:16px;'>{wd}</div>", unsafe_allow_html=True)
+                wk_cols[i].markdown(f"<div style='text-align:center; font-weight:800; font-size:15px; color:{color}; padding-bottom:12px;'>{wd}</div>", unsafe_allow_html=True)
             weeks = [
                 ["", "", "", "1", "2", "3", "4"],
                 ["5", "6", "7", "8", "9", "10", "11"],
@@ -409,14 +430,14 @@ elif st.session_state.page == "main":
                                 if st.session_state.logged_in: write_diary(day)
                                 else: st.warning("다이어리 작성은 로그인이 필요합니다.")
                         else:
-                            st.markdown("<div style='height: 48px; margin-bottom: 8px;'></div>", unsafe_allow_html=True)
+                            st.markdown("<div style='height: 44px; margin-bottom: 4px;'></div>", unsafe_allow_html=True)
 
     with chk_col:
         with st.container(border=True):
             has_diary_today = bool(st.session_state.diary_data.get("24", ""))
             st.markdown("""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding-bottom: 18px; border-bottom: 2px dashed #f1f5f9;">
-                <div style="font-size: 22px; font-weight: 800; color: #0f172a;">✅ 오늘의 할 일</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
+                <div style="font-size: 20px; font-weight: 800; color: #0f172a;">✅ 오늘의 할 일</div>
             </div>
             """, unsafe_allow_html=True)
             st.checkbox("안전교육 이수증 업로드", key="chk_1", on_change=sync_to_db, disabled=not st.session_state.logged_in)
@@ -425,8 +446,10 @@ elif st.session_state.page == "main":
             st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4", on_change=sync_to_db, disabled=not st.session_state.logged_in)
             st.checkbox("이력서 자격증 항목 업데이트", key="chk_5", on_change=sync_to_db, disabled=not st.session_state.logged_in)
             if not st.session_state.logged_in:
-                st.markdown("<div style='font-size: 14px; color: #ef4444; margin-top: 15px;'>※ 로그인 후 진행 상황을 저장할 수 있습니다.</div>", unsafe_allow_html=True)
+                st.markdown("<div style='font-size: 13px; color: #ef4444; margin-top: 10px;'>※ 로그인 후 진행 상황을 저장할 수 있습니다.</div>", unsafe_allow_html=True)
 
+
+    # 🌟 6. 성장 나무 섹션
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
         bool(st.session_state.chk_1), 
@@ -446,24 +469,25 @@ elif st.session_state.page == "main":
     }
     emoji, text, color, next_step = tree_stages[completed_count]
 
-    html_tree = f"""<div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 32px; padding: 60px 50px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-top: 50px; margin-bottom: 80px;">
-<div style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">나의 커리어 성장 나무</div>
-<div style="font-size: 16px; font-weight: 600; color: #64748b; margin-bottom: 40px;">상단의 '✅ 오늘의 할 일' 체크리스트를 하나씩 달성할 때마다 나무가 성장해요!</div>
-<div style="font-size: 90px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
-<div style="font-size: 24px; font-weight: 800; color: {color}; margin-top: 20px;">{text}</div>
-<div style="font-size: 15px; font-weight: 700; color: #94a3b8; margin-top: 10px; background: #f8fafc; display: inline-block; padding: 8px 20px; border-radius: 50px;">{next_step}</div>
-<div style="margin-top: 50px; max-width: 600px; margin-left: auto; margin-right: auto;">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-<div style="font-size: 17px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
-<div style="font-size: 19px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
+    html_tree = f"""<div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 60px;">
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 5px;">나의 커리어 성장 나무</div>
+<div style="font-size: 15px; font-weight: 600; color: #64748b; margin-bottom: 30px;">상단의 '✅ 오늘의 할 일' 체크리스트를 하나씩 달성할 때마다 나무가 성장해요!</div>
+<div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
+<div style="font-size: 22px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
+<div style="font-size: 14px; font-weight: 700; color: #94a3b8; margin-top: 8px; background: #f8fafc; display: inline-block; padding: 6px 16px; border-radius: 50px;">{next_step}</div>
+<div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
+<div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
 </div>
-<div style="width: 100%; background: #e2e8f0; height: 12px; border-radius: 10px; overflow: hidden;">
+<div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
 <div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
 </div>
 </div>
 </div>"""
     st.markdown(html_tree, unsafe_allow_html=True)
 
+    # 🌟 7. 10초 컷 맞춤 배너 및 하단 인기 JOB 섹션
     st.markdown("""
 <div class="ms-mid-banner">
 <div class="ms-mid-banner-title">⚡ 10초 컷! 나의 성향 기반 실습 공고 추천 받기</div>
@@ -498,14 +522,14 @@ elif st.session_state.page == "profile":
     st.markdown("""
     <style>
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 24px !important; padding: 50px 60px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02) !important;
+        background: rgba(255, 255, 255, 0.85) !important; backdrop-filter: blur(16px) !important; border-radius: 20px !important; padding: 40px !important; border: 1px solid rgba(226, 232, 240, 0.8) !important; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02) !important;
     }
-    .profile-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 20px; text-align: center;}
-    .profile-subtitle { font-size: 16px; color: #64748b; margin-bottom: 40px; text-align: center;}
+    .profile-title { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 20px; text-align: center;}
+    .profile-subtitle { font-size: 15px; color: #64748b; margin-bottom: 30px; text-align: center;}
     </style>
     """, unsafe_allow_html=True)
     
-    st.markdown("<div style='margin-top: 80px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 50px;'></div>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 1.5, 1])
     with col2:
@@ -519,7 +543,7 @@ elif st.session_state.page == "profile":
             p_holland = st.text_input("홀랜드 흥미 유형", value=st.session_state.profile.get("holland", ""), placeholder="예: 실재형(R) + 탐구형(I)")
             p_target = st.text_input("목표 직무 및 기업", value=st.session_state.profile.get("target", ""), placeholder="예: 삼성전자 설비 엔지니어")
             
-            st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
             
             btn1, btn2 = st.columns([1, 1])
             with btn1:
@@ -529,11 +553,13 @@ elif st.session_state.page == "profile":
                     st.session_state.profile["mbti"] = p_mbti
                     st.session_state.profile["holland"] = p_holland
                     st.session_state.profile["target"] = p_target
+                    
                     sync_to_db()
                     st.success("프로필이 성공적으로 저장되었습니다!")
             with btn2:
                 if st.button("돌아가기", use_container_width=True):
                     navigate_to("main")
+
 
 # =========================================================
 # [PAGE 2] 서비스 소개 페이지 (홍보 랜딩)
@@ -542,42 +568,60 @@ elif st.session_state.page == "intro":
 
     intro_css = """
 <style>
-.block-container { padding-top: 2rem; padding-bottom: 10rem; max-width: 1400px !important; margin: 0 auto !important; padding-left: 60px !important; padding-right: 60px !important; animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.block-container { padding-top: 2rem; padding-bottom: 10rem; max-width: 1280px !important; margin: 0 auto !important; padding-left: 30px !important; padding-right: 30px !important; animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes smoothFadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 @keyframes floatAnimation { 0% { transform: translateY(0px); } 50% { transform: translateY(-14px); } 100% { transform: translateY(0px); } }
-.speak-navbar-container { display: flex; justify-content: center; width: 100%; margin-bottom: 80px; }
-.speak-navbar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-radius: 100px; padding: 16px 45px; width: 100%; max-width: 1400px; }
+.speak-navbar-container { display: flex; justify-content: center; width: 100%; margin-bottom: 70px; }
+.speak-navbar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-radius: 100px; padding: 14px 40px; width: 100%; max-width: 1280px; }
 .nav-left { display: flex; align-items: center; cursor: pointer; }
-.nav-logo-text { font-size: 24px; font-weight: 800; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
-.nav-right { display: flex; align-items: center; gap: 36px; }
-.nav-link { font-size: 16px; font-weight: 600; color: #475569; }
-.lang-btn-wrapper { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 50px; font-size: 15px; font-weight: 600; color: #334155; display: inline-flex; align-items: center; gap: 8px; }
-.hero-section-left { text-align: left; padding: 40px 0; }
-.hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); color: #475569; border-radius: 50px; font-size: 15px; font-weight: 600; margin-bottom: 28px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-.hero-title { font-size: 58px; font-weight: 800; margin: 0 0 28px 0; line-height: 1.2; letter-spacing: -2px; color: #0f172a; }
+.nav-logo-text { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+.nav-right { display: flex; align-items: center; gap: 32px; }
+.nav-link { font-size: 15px; font-weight: 600; color: #475569; }
+.lang-btn-wrapper { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 8px 18px; border-radius: 50px; font-size: 14px; font-weight: 600; color: #334155; display: inline-flex; align-items: center; gap: 8px; }
+.hero-section-left { text-align: left; padding: 30px 0; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); color: #475569; border-radius: 50px; font-size: 14px; font-weight: 600; margin-bottom: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+.hero-title { font-size: 54px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; letter-spacing: -2px; color: #0f172a; }
 .hero-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-subtitle { font-size: 20px; color: #64748b; margin: 0 0 45px 0; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px; }
+.hero-subtitle { font-size: 19px; color: #64748b; margin: 0 0 40px 0; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px; }
 .hero-graphic-container { display: flex; justify-content: center; align-items: center; animation: floatAnimation 4s ease-in-out infinite; }
-.hero-graphic { width: 100%; max-width: 480px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
-.scroll-section { padding-top: 260px; }
-.section-tag { font-size: 14px; font-weight: 700; color: #3bb2b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1.5px; }
-.section-heading { font-size: 38px; font-weight: 800; color: #0f172a; margin-bottom: 14px; letter-spacing: -1px; line-height: 1.3; }
-.section-desc { font-size: 19px; color: #64748b; line-height: 1.6; margin-bottom: 40px; }
-.modern-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 28px; padding: 40px 36px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
+.hero-graphic { width: 100%; max-width: 450px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
+.scroll-section { padding-top: 240px; }
+.section-tag { font-size: 13px; font-weight: 700; color: #3bb2b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
+.section-heading { font-size: 36px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.3; }
+.section-desc { font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
+.modern-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .modern-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.12); border-color: rgba(126, 87, 194, 0.4); }
-.modern-card h3 { font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 16px 0; letter-spacing: -0.5px; }
-.modern-card p { font-size: 17px; color: #64748b; line-height: 1.7; margin: 0; word-break: keep-all; }
-.faq-box { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.02); margin-bottom: 24px; transition: all 0.3s ease; }
+.modern-card h3 { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 14px 0; letter-spacing: -0.5px; }
+.modern-card p { font-size: 16px; color: #64748b; line-height: 1.7; margin: 0; word-break: keep-all; }
+.faq-box { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 20px; padding: 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.02); margin-bottom: 20px; transition: all 0.3s ease; }
 .faq-box:hover { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 15px 35px rgba(59, 178, 184, 0.06); }
-.faq-q { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
-.faq-a { font-size: 18px; color: #64748b; line-height: 1.6; margin: 0; }
-.footer-container { margin-top: 240px; padding: 80px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 24px; color: #64748b; font-size: 16px; }
+.faq-q { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
+.faq-a { font-size: 17px; color: #64748b; line-height: 1.6; margin: 0; }
+.footer-container { margin-top: 220px; padding: 60px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 20px; color: #64748b; font-size: 15px; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; }
-.footer-logo { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; }
-.footer-links { display: flex; gap: 32px; font-weight: 600; }
+.footer-logo { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; }
+.footer-links { display: flex; gap: 28px; font-weight: 600; }
 </style>
 """
     st.markdown(intro_css, unsafe_allow_html=True)
+
+    nav_html = """
+<div class="speak-navbar-container">
+<div class="speak-navbar">
+<div class="nav-left">
+<span class="nav-logo-text">MyStair</span>
+</div>
+<div class="nav-right">
+<span class="nav-link">서비스 소개</span>
+<span class="nav-link">팀 소개</span>
+<div class="lang-btn-wrapper">
+<span>한국어</span>
+<span style="font-size: 12px;">▼</span>
+</div>
+</div>
+</div>
+</div>
+"""
     st.markdown(nav_html, unsafe_allow_html=True)
 
     hero_col1, hero_col2 = st.columns([1.05, 0.95], gap="large")
@@ -596,7 +640,7 @@ elif st.session_state.page == "intro":
             """
             <style>
             div.stButton > button[kind="primary"] {
-                background: #0f172a !important; color: #ffffff !important; border: none !important; padding: 18px 36px !important; font-size: 17px !important; font-weight: 700 !important; border-radius: 50px !important; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important; width: fit-content !important; transition: all 0.3s ease !important;
+                background: #0f172a !important; color: #ffffff !important; border: none !important; padding: 16px 32px !important; font-size: 16px !important; font-weight: 700 !important; border-radius: 50px !important; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15) !important; width: fit-content !important; transition: all 0.3s ease !important;
             }
             div.stButton > button[kind="primary"]:hover {
                 background: #334155 !important; transform: translateY(-2px);
@@ -612,18 +656,43 @@ elif st.session_state.page == "intro":
         if os.path.exists("main_image.png"):
             with open("main_image.png", "rb") as f:
                 encoded_img = base64.b64encode(f.read()).decode("utf-8")
-            st.markdown(f"""<div class="hero-graphic-container"><img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지"></div>""", unsafe_allow_html=True)
+            st.markdown(
+                f"""
+                <div class="hero-graphic-container">
+                    <img src="data:image/png;base64,{encoded_img}" class="hero-graphic" alt="3D 계단 이미지">
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
             st.warning("⚠️ 'main_image.png' 파일이 없습니다.")
 
-    st.markdown("""<div class="scroll-section"><div class="section-tag">Project Background</div><div class="section-heading">왜 MyStair가 필요할까요?</div><div class="section-desc">일반고와 다른 마이스터고만의 특수한 현장 실습과 기술 중심 교육 과정을 온전히 담아내기 위해 기획되었습니다.</div></div>""", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="scroll-section">
+            <div class="section-tag">Project Background</div>
+            <div class="section-heading">왜 MyStair가 필요할까요?</div>
+            <div class="section-desc">일반고와 다른 마이스터고만의 특수한 현장 실습과 기술 중심 교육 과정을 온전히 담아내기 위해 기획되었습니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     bg_col1, bg_col2 = st.columns(2, gap="large")
     with bg_col1:
         st.markdown('<div class="modern-card"><h3>📝 파편화된 실습 기록의 한계</h3><p>학교 생활 중 겪은 수많은 기술 실습과 트러블슈팅 경험들이 체계적으로 관리되지 못하고 흩어져 있어, 취업 시 포트폴리오나 자소서에 효과적으로 녹여내기 어렵다는 문제점에서 출발했습니다.</p></div>', unsafe_allow_html=True)
     with bg_col2:
         st.markdown('<div class="modern-card"><h3>🚀 맞춤형 커리어 빌딩</h3><p>학생들이 흘린 실습의 땀방울을 데이터로 누적하고, 기업이 요구하는 핵심 직무 역량과 STAR 기법 자소서로 곧바로 전환하여 자신감 있게 취업 시장에 뛰어들도록 돕습니다.</p></div>', unsafe_allow_html=True)
 
-    st.markdown("""<div class="scroll-section"><div class="section-tag">Core Features</div><div class="section-heading">핵심 기능 안내</div><div class="section-desc">마이스터고 학생들의 취업 성공을 위한 3가지 핵심 솔루션입니다.</div></div>""", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="scroll-section">
+            <div class="section-tag">Core Features</div>
+            <div class="section-heading">핵심 기능 안내</div>
+            <div class="section-desc">마이스터고 학생들의 취업 성공을 위한 3가지 핵심 솔루션입니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     f_col1, f_col2, f_col3 = st.columns(3, gap="large")
     with f_col1:
         st.markdown('<div class="modern-card"><h3>🎯 맞춤형 진로 로드맵</h3><p>전공과 학년별 역량에 맞춘 단계별 성장 경로를 설계하고 취업 목표를 체계적으로 관리합니다.</p></div>', unsafe_allow_html=True)
@@ -632,7 +701,49 @@ elif st.session_state.page == "intro":
     with f_col3:
         st.markdown('<div class="modern-card"><h3>✨ AI STAR 자소서 변환</h3><p>기록된 경험 데이터를 바탕으로 기업 맞춤형 STAR(상황-과제-행동-결과) 자기소개서를 자동 완성합니다.</p></div>', unsafe_allow_html=True)
 
-    st.markdown("""<div class="scroll-section"><div class="section-tag">FAQ</div><div class="section-heading">자주 묻는 질문</div><div class="section-desc">MyStair에 대해 자주 궁금해하시는 내용들을 정리했습니다.</div></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="faq-box"><div class="faq-q">Q. 일반 고등학교 학생도 사용할 수 있나요?</div><div class="faq-a">A. MyStair는 마이스터고 및 직업계고 학생들의 특수한 기술 실습 내역과 자격증, 현장 실습 경험 관리에 특화되어 설계되었습니다.</div></div><div class="faq-box"><div class="faq-q">Q. AI 자소서는 어떻게 작성되나요?</div><div class="faq-a">A. 사용자가 캘린더에 기록한 실습 및 트러블슈팅 경험 데이터를 기반으로, 기업 채용 담당자들이 선호하는 STAR 기법(상황-과제-행동-결과)에 맞춰 자동으로 문장을 재구성해 줍니다.</div></div><div class="faq-box"><div class="faq-q">Q. 데이터는 안전하게 보관되나요?</div><div class="faq-a">A. 학생들이 작성한 소중한 커리어 기록과 포트폴리오 데이터는 안전하게 관리되며, 언제든지 대시보드에서 확인하고 수정할 수 있습니다.</div></div>""", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="scroll-section">
+            <div class="section-tag">FAQ</div>
+            <div class="section-heading">자주 묻는 질문</div>
+            <div class="section-desc">MyStair에 대해 자주 궁금해하시는 내용들을 정리했습니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        """
+        <div class="faq-box">
+            <div class="faq-q">Q. 일반 고등학교 학생도 사용할 수 있나요?</div>
+            <div class="faq-a">A. MyStair는 마이스터고 및 직업계고 학생들의 특수한 기술 실습 내역과 자격증, 현장 실습 경험 관리에 특화되어 설계되었습니다.</div>
+        </div>
+        <div class="faq-box">
+            <div class="faq-q">Q. AI 자소서는 어떻게 작성되나요?</div>
+            <div class="faq-a">A. 사용자가 캘린더에 기록한 실습 및 트러블슈팅 경험 데이터를 기반으로, 기업 채용 담당자들이 선호하는 STAR 기법(상황-과제-행동-결과)에 맞춰 자동으로 문장을 재구성해 줍니다.</div>
+        </div>
+        <div class="faq-box">
+            <div class="faq-q">Q. 데이터는 안전하게 보관되나요?</div>
+            <div class="faq-a">A. 학생들이 작성한 소중한 커리어 기록과 포트폴리오 데이터는 안전하게 관리되며, 언제든지 대시보드에서 확인하고 수정할 수 있습니다.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    st.markdown("""<div class="footer-container"><div class="footer-top"><div class="footer-logo">MyStair</div><div class="footer-links"><span>이용약관</span><span>개인정보처리방침</span><span>고객센터</span></div></div><div style="color: #94a3b8; font-size: 15px;">© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 빛나는 내일을 응원합니다.</div></div>""", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-logo">MyStair</div>
+                <div class="footer-links">
+                    <span>이용약관</span>
+                    <span>개인정보처리방침</span>
+                    <span>고객센터</span>
+                </div>
+            </div>
+            <div style="color: #94a3b8; font-size: 14px;">
+                © 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 빛나는 내일을 응원합니다.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
