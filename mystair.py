@@ -95,7 +95,7 @@ def write_diary(day):
         st.rerun()
 
 # =========================================================
-# 4. 글로벌 CSS (완벽한 불투명 흰색 박스 디자인 적용)
+# 4. 글로벌 CSS (불필요한 입력창 잔상 완벽 제거 및 카드 통일)
 # =========================================================
 st.markdown(
     """
@@ -117,17 +117,13 @@ header[data-testid="stHeader"] { display: none !important; }
 
 @keyframes floatTree { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-/* 🌟 순수 불투명 흰색 커스텀 박스 클래스 */
-.custom-box {
-    background: #ffffff !important;
-    border-radius: 24px !important;
-    padding: 30px !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
-    height: 100% !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* 🌟 Streamlit 기본 컨테이너를 주변 카드들과 똑같은 예쁜 불투명 흰색 패널로 변경 */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #ffffff !important; 
+    border-radius: 24px !important; 
+    padding: 32px !important; 
+    border: 1px solid #e2e8f0 !important; 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
 }
 
 /* 모든 버튼 스타일 일치화 */
@@ -244,15 +240,15 @@ elif st.session_state.page == "main":
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
 .ms-logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #0f172a, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; cursor: pointer; padding-top: 8px; }
 .ms-search-box-wrapper { display: flex; justify-content: center; width: 100%; padding-top: 4px; }
-.ms-search-box { display: flex; align-items: center; border: 1px solid rgba(226, 232, 240, 0.8); background: #ffffff; border-radius: 100px; padding: 6px 6px 6px 20px; width: 100%; max-width: 540px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s ease; }
-.ms-search-box:focus-within { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 10px 30px rgba(59, 178, 184, 0.12); background: #ffffff; transform: translateY(-1px); }
+.ms-search-box { display: flex; align-items: center; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 100px; padding: 6px 6px 6px 20px; width: 100%; max-width: 540px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); transition: all 0.3s ease; }
+.ms-search-box:focus-within { border-color: #3bb2b8; box-shadow: 0 10px 30px rgba(59, 178, 184, 0.12); transform: translateY(-1px); }
 .ms-search-input { border: none; outline: none; width: 100%; font-size: 15px; font-family: 'SUIT'; color: #1e293b; background: transparent; }
 .ms-search-input::placeholder { color: #94a3b8; font-weight: 500; }
-.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.ms-search-btn { background: linear-gradient(90deg, #3bb2b8, #7e57c2); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(126,87,194,0.25); transition: transform 0.2s ease; }
 .ms-search-btn:hover { transform: scale(1.05); }
 
 .ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 25px; padding-bottom: 30px; flex-wrap: wrap; align-items: center; }
-.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(226, 232, 240, 0.8); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+.ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: #ffffff; border: 1px solid #e2e8f0; font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: #ffffff; color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
 .ms-nav a.link-btn { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important; }
@@ -372,14 +368,13 @@ elif st.session_state.page == "main":
 </div>""", unsafe_allow_html=True)
 
     # =========================================================
-    # 🌟 5. 캘린더와 체크리스트 (커엠 불투명 박스로 통일 및 크기 일치화)
+    # 🌟 5. 캘린더와 체크리스트 (완벽하게 불투명하고 깔끔한 흰색 카드 UI 적용)
     # =========================================================
     st.markdown("<div id='diary-section' tabindex='-1' class='ms-section-title' style='margin-top: 50px;'>📅 나의 실습 다이어리 & 체크리스트</div>", unsafe_allow_html=True)
     cal_col, chk_col = st.columns([1.8, 1], gap="large")
 
     with cal_col:
-        # Streamlit 기본 container 대신 불투명한 custom-box 적용
-        st.markdown('<div class="custom-box">', unsafe_allow_html=True)
+        st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         st.markdown("""
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <span style="font-size: 22px; font-weight: 800; color: #0f172a;">2026년 7월</span>
@@ -419,12 +414,11 @@ elif st.session_state.page == "main":
                             if st.session_state.logged_in: write_diary(day)
                             else: st.warning("다이어리 작성은 로그인이 필요합니다.")
                     else:
-                        st.markdown("<div style='height: 42px;'></div>", unsafe_allow_html=True)
+                        st.markdown("<div style='height: 44px;'></div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with chk_col:
-        # 오른쪽 체크리스트도 동일한 custom-box를 사용하여 높이와 배경을 완벽히 맞춤
-        st.markdown('<div class="custom-box">', unsafe_allow_html=True)
+        st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
         has_diary_today = bool(st.session_state.diary_data.get("24", ""))
         st.markdown("""
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #f1f5f9;">
@@ -439,7 +433,7 @@ elif st.session_state.page == "main":
         if not st.session_state.logged_in:
             st.markdown("<div style='font-size: 13px; color: #ef4444; margin-top: 10px;'>※ 로그인 후 진행 상황을 저장할 수 있습니다.</div>", unsafe_allow_html=True)
         else:
-            st.markdown("<div style='font-size: 13px; color: #64748b; margin-top: 10px;'>&nbsp;</div>", unsafe_allow_html=True)
+            st.markdown("<div style='font-size: 13px; color: transparent; margin-top: 10px;'>&nbsp;</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
 
