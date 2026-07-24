@@ -13,13 +13,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 세션 상태 관리
+# 세션 상태 관리 (초기화)
 if "page" not in st.session_state:
     st.session_state.page = "main"
 if "diary_data" not in st.session_state:
     st.session_state.diary_data = {"10": "PLC 도면 해석 복습 완료"} 
 
-# 체크리스트 상태 초기화
+# 체크리스트 상태 초기화 (체크 유무에 따라 나무가 자람)
 if "chk_1" not in st.session_state: st.session_state.chk_1 = True
 if "chk_2" not in st.session_state: st.session_state.chk_2 = False
 if "chk_4" not in st.session_state: st.session_state.chk_4 = False
@@ -54,7 +54,7 @@ def write_diary(day):
                 del st.session_state.diary_data[str(day)]
         st.rerun()
 
-# 글로벌 CSS
+# 글로벌 CSS (배경 및 포커스 제거)
 st.markdown(
     """
 <style>
@@ -79,19 +79,14 @@ body, [class*="css"] {
 
 header[data-testid="stHeader"] { display: none !important; }
 
-/* 🌟 클릭 시 나타나는 포커스 아웃라인 및 텍스트 커서(Caret) 완벽 제거 */
+/* 🌟 화면 어디를 눌러도 발생하는 클릭 잔상/텍스트 커서 방지 */
 *, *:focus, *:active, *:focus-visible { 
     outline: none !important; 
     box-shadow: none !important; 
     -webkit-tap-highlight-color: transparent !important; 
 }
-/* 입력창을 제외한 모든 곳에서 텍스트 커서(깜빡이는 선) 숨김 */
-body *:not(input):not(textarea) {
-    caret-color: transparent !important;
-}
-input, textarea {
-    caret-color: auto !important;
-}
+body *:not(input):not(textarea) { caret-color: transparent !important; }
+input, textarea { caret-color: auto !important; }
 
 .ms-nav span, .ms-nav a, .ms-chip, .ms-job-card, .ms-quick-item, .ms-logo, .ms-top-banner, .ms-section-title { 
     user-select: none; 
@@ -122,7 +117,7 @@ div[data-testid="column"] div.stButton > button[kind="primary"] {
 div[data-testid="column"] div.stButton > button[kind="primary"] p { color: #ffffff !important; font-weight: 800 !important; }
 div[data-testid="column"] div.stButton > button[kind="primary"]:hover { background: #ff4046 !important; }
 
-/* 🌟 개별 체크리스트 아이템 커스텀 (깔끔한 리스트형) */
+/* 🌟 개별 체크리스트 아이템 커스텀 */
 div[data-testid="stCheckbox"] {
     background: rgba(255, 255, 255, 0.7); border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 6px !important; transition: all 0.2s ease;
 }
@@ -141,13 +136,7 @@ if st.session_state.page == "main":
     
     css_string = """
 <style>
-.block-container {
-max-width: 1280px !important;
-padding-top: 0 !important;
-padding-bottom: 8rem !important;
-padding-left: 30px !important;
-padding-right: 30px !important;
-}
+.block-container { max-width: 1280px !important; padding-top: 0 !important; padding-bottom: 8rem !important; padding-left: 30px !important; padding-right: 30px !important; }
 
 .ms-top-banner { width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(90deg, #0f172a, #1e293b); color: #ffffff; text-align: center; padding: 12px 0; font-size: 14px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 16px; }
 .ms-top-banner-badge { background: linear-gradient(90deg, #3bb2b8, #7e57c2); padding: 3px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; }
@@ -165,12 +154,10 @@ padding-right: 30px !important;
 div[data-testid="column"]:nth-of-type(3) div.stButton > button { background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #1e293b !important; font-weight: 700 !important; font-size: 14px !important; border-radius: 50px !important; padding: 8px 20px !important; height: 42px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important; float: right; margin-top: 4px; }
 div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-color: #3bb2b8 !important; color: #3bb2b8 !important; box-shadow: 0 6px 20px rgba(59, 178, 184, 0.15) !important; transform: translateY(-2px) !important; }
 
-/* 앵커 태그 포커스 완벽 제거 */
 .ms-nav { display: flex; justify-content: center; gap: 12px; padding-top: 30px; padding-bottom: 35px; flex-wrap: wrap; }
 .ms-nav span, .ms-nav a.nav-anchor { padding: 10px 22px; border-radius: 50px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(226, 232, 240, 0.6); font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); text-decoration: none; display: inline-block; outline: none !important; -webkit-tap-highlight-color: transparent !important;}
 .ms-nav span:hover, .ms-nav a.nav-anchor:hover { background: rgba(255, 255, 255, 0.95); color: #0f172a; box-shadow: 0 6px 15px rgba(0,0,0,0.04); transform: translateY(-2px); border-color: #cbd5e1; }
 .ms-nav span.active { background: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15); }
-.ms-nav a.nav-anchor:focus, .ms-nav a.nav-anchor:active { outline: none !important; box-shadow: none !important; background: rgba(255, 255, 255, 0.6); color: #475569; }
 
 .ms-main-grid { display: grid; grid-template-columns: 1.8fr 1.1fr; gap: 24px; margin-bottom: 50px; }
 .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 24px; padding: 32px 35px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
@@ -214,14 +201,6 @@ div[data-testid="column"]:nth-of-type(3) div.stButton > button:hover { border-co
 .d-day { color: #3bb2b8; font-weight: 800; }
 .job-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .job-tag { font-size: 12px; font-weight: 700; padding: 6px 12px; background: rgba(241,245,249,0.8); color: #475569; border-radius: 6px; border: 1px solid #e2e8f0;}
-
-/* 진척도 저장 버튼 */
-button:has(p:contains("진척도 저장하기")) {
-    margin-top: 10px !important; width: 100% !important; background: #ffffff !important; border: 1px solid #e2e8f0 !important; color: #334155 !important; border-radius: 12px !important; font-weight: 800 !important; padding: 12px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.02) !important; transition: all 0.2s !important;
-}
-button:has(p:contains("진척도 저장하기")):hover { background: #0f172a !important; color: white !important; border-color: #0f172a !important; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,0.15) !important; }
-button:has(p:contains("진척도 저장하기")):hover p { color: white !important; }
-
 </style>
 """
     st.markdown(css_string, unsafe_allow_html=True)
@@ -239,7 +218,7 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
         if st.button("👉 서비스 소개(홍보) 가기", use_container_width=True):
             navigate_to("intro")
 
-    # 🌟 3. 네비게이션 (a 태그 포커스 완벽 제거)
+    # 🌟 3. 네비게이션
     st.markdown("""<div class="ms-nav">
 <span class="active">진로추천</span>
 <a href="#diary-section" class="nav-anchor" tabindex="-1">다이어리</a>
@@ -351,9 +330,6 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
             st.checkbox("실습 다이어리 작성 (24일 📍)", value=has_diary_today, disabled=True)
             st.checkbox("설비보전기사 기출 1회 풀이", key="chk_4")
             st.checkbox("이력서 자격증 항목 업데이트", key="chk_5")
-            
-            if st.button("진척도 저장하기", use_container_width=True):
-                st.toast("✅ 체크리스트 달성률이 성공적으로 저장되었습니다!")
 
 
     # =========================================================
@@ -399,47 +375,47 @@ button:has(p:contains("진척도 저장하기")):hover p { color: white !importa
 </div>""", unsafe_allow_html=True)
 
     # =========================================================
-    # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 배치)
+    # 🌟 7. 성장 나무 섹션 (메인 화면 맨 아래 단독 배치)
     # =========================================================
     
     # 체크 개수에 따른 로직 재계산
     has_diary_today_bottom = bool(st.session_state.diary_data.get("24", ""))
     completed_count = sum([
-        st.session_state.get("chk_1", True), 
-        st.session_state.get("chk_2", False), 
-        has_diary_today_bottom, 
-        st.session_state.get("chk_4", False), 
-        st.session_state.get("chk_5", False)
+        bool(st.session_state.chk_1), 
+        bool(st.session_state.chk_2), 
+        bool(has_diary_today_bottom), 
+        bool(st.session_state.chk_4), 
+        bool(st.session_state.chk_5)
     ])
     progress_pct = int((completed_count / 5) * 100)
     
     tree_stages = {
-        0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b"),
-        1: ("🌿", "새싹이 돋아났어요!", "#10b981"),
-        2: ("🪴", "무럭무럭 자라고 있어요!", "#059669"),
-        3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857"),
-        4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899"),
-        5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444")
+        0: ("🌱", "씨앗을 심었어요! 시작해볼까요?", "#64748b", "다음: 새싹 🌿"),
+        1: ("🌿", "새싹이 돋아났어요!", "#10b981", "다음: 성장하는 화분 🪴"),
+        2: ("🪴", "무럭무럭 자라고 있어요!", "#059669", "다음: 튼튼한 나무 🌳"),
+        3: ("🌳", "제법 나무의 모습을 갖췄어요!", "#047857", "다음: 꽃 피는 나무 🌸"),
+        4: ("🌸", "예쁜 꽃이 피었어요! 조금만 더!", "#ec4899", "다음: 탐스러운 열매 🍎"),
+        5: ("🍎", "탐스러운 열매가 열렸어요! (달성🎉)", "#ef4444", "완벽해요! 모든 미션을 완료했습니다 🏆")
     }
-    emoji, text, color = tree_stages[completed_count]
+    emoji, text, color, next_step = tree_stages[completed_count]
 
-    st.markdown(f"""
-    <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 120px;">
-        <div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 20px;">🌱 나의 커리어 성장 나무</div>
-        <div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
-        <div style="font-size: 20px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
-        
-        <div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
-                <div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
-            </div>
-            <div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
-                <div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    html_tree = f"""<div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-radius: 28px; padding: 50px 40px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); text-align: center; margin-bottom: 120px;">
+<div style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 5px;">나의 커리어 성장 나무</div>
+<div style="font-size: 15px; font-weight: 600; color: #64748b; margin-bottom: 30px;">상단의 '✅ 오늘의 할 일' 체크리스트를 하나씩 달성할 때마다 나무가 성장해요!</div>
+<div style="font-size: 80px; animation: floatTree 3s ease-in-out infinite;">{emoji}</div>
+<div style="font-size: 22px; font-weight: 800; color: {color}; margin-top: 15px;">{text}</div>
+<div style="font-size: 14px; font-weight: 700; color: #94a3b8; margin-top: 8px; background: #f8fafc; display: inline-block; padding: 6px 16px; border-radius: 50px;">{next_step}</div>
+<div style="margin-top: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<div style="font-size: 16px; font-weight: 700; color: #64748b;">오늘의 체크리스트 달성률</div>
+<div style="font-size: 18px; font-weight: 800; color: #3bb2b8;">{completed_count} / 5</div>
+</div>
+<div style="width: 100%; background: #e2e8f0; height: 10px; border-radius: 10px; overflow: hidden;">
+<div style="width: {progress_pct}%; background: linear-gradient(90deg, #3bb2b8, #7e57c2); height: 100%; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);"></div>
+</div>
+</div>
+</div>"""
+    st.markdown(html_tree, unsafe_allow_html=True)
 
 
 # =========================================================
@@ -449,26 +425,9 @@ elif st.session_state.page == "intro":
 
     intro_css = """
 <style>
-.block-container {
-padding-top: 2rem;
-padding-bottom: 10rem;
-max-width: 1280px !important;
-margin: 0 auto !important;
-padding-left: 30px !important;
-padding-right: 30px !important;
-animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes smoothFadeIn {
-0% { opacity: 0; transform: translateY(20px); }
-100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes floatAnimation {
-0% { transform: translateY(0px); }
-50% { transform: translateY(-14px); }
-100% { transform: translateY(0px); }
-}
-
+.block-container { padding-top: 2rem; padding-bottom: 10rem; max-width: 1280px !important; margin: 0 auto !important; padding-left: 30px !important; padding-right: 30px !important; animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes smoothFadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+@keyframes floatAnimation { 0% { transform: translateY(0px); } 50% { transform: translateY(-14px); } 100% { transform: translateY(0px); } }
 .speak-navbar-container { display: flex; justify-content: center; width: 100%; margin-bottom: 70px; }
 .speak-navbar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-radius: 100px; padding: 14px 40px; width: 100%; max-width: 1280px; }
 .nav-left { display: flex; align-items: center; cursor: pointer; }
@@ -476,31 +435,25 @@ animation: smoothFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 .nav-right { display: flex; align-items: center; gap: 32px; }
 .nav-link { font-size: 15px; font-weight: 600; color: #475569; }
 .lang-btn-wrapper { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 8px 18px; border-radius: 50px; font-size: 14px; font-weight: 600; color: #334155; display: inline-flex; align-items: center; gap: 8px; }
-
 .hero-section-left { text-align: left; padding: 30px 0; }
 .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); color: #475569; border-radius: 50px; font-size: 14px; font-weight: 600; margin-bottom: 24px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
 .hero-title { font-size: 54px; font-weight: 800; margin: 0 0 24px 0; line-height: 1.2; letter-spacing: -2px; color: #0f172a; }
 .hero-title span { background: linear-gradient(90deg, #3bb2b8, #7e57c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero-subtitle { font-size: 19px; color: #64748b; margin: 0 0 40px 0; font-weight: 400; line-height: 1.6; letter-spacing: -0.3px; }
-
 .hero-graphic-container { display: flex; justify-content: center; align-items: center; animation: floatAnimation 4s ease-in-out infinite; }
 .hero-graphic { width: 100%; max-width: 450px; height: auto; object-fit: contain; filter: drop-shadow(0 35px 50px rgba(0, 0, 0, 0.1)); }
-
 .scroll-section { padding-top: 240px; }
 .section-tag { font-size: 13px; font-weight: 700; color: #3bb2b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
 .section-heading { font-size: 36px; font-weight: 800; color: #0f172a; margin-bottom: 12px; letter-spacing: -1px; line-height: 1.3; }
 .section-desc { font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 30px; }
-
 .modern-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 24px; padding: 36px 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; display: flex; flex-direction: column; }
 .modern-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 1); box-shadow: 0 30px 60px rgba(126, 87, 194, 0.12); border-color: rgba(126, 87, 194, 0.4); }
 .modern-card h3 { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 14px 0; letter-spacing: -0.5px; }
 .modern-card p { font-size: 16px; color: #64748b; line-height: 1.7; margin: 0; word-break: keep-all; }
-
 .faq-box { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 20px; padding: 32px; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 10px 25px rgba(0,0,0,0.02); margin-bottom: 20px; transition: all 0.3s ease; }
 .faq-box:hover { border-color: rgba(59, 178, 184, 0.4); box-shadow: 0 15px 35px rgba(59, 178, 184, 0.06); }
 .faq-q { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
 .faq-a { font-size: 17px; color: #64748b; line-height: 1.6; margin: 0; }
-
 .footer-container { margin-top: 220px; padding: 60px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; flex-direction: column; gap: 20px; color: #64748b; font-size: 15px; }
 .footer-top { display: flex; justify-content: space-between; align-items: center; }
 .footer-logo { font-size: 22px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; }
