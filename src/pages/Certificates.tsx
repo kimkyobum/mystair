@@ -22,7 +22,7 @@ export default function Certificates() {
   });
 
   return (
-    <div className="h-full flex-1 overflow-y-auto bg-[#F8FAFC] text-[#0F172A] font-sans relative">
+    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-[#F8FAFC] text-[#0F172A] font-sans relative">
       <header className="bg-[#0F172A] h-[72px] flex items-center px-10 sticky top-0 z-50 shadow-[0_4px_20px_rgba(15,23,42,0.15)]">
         <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
           MyStair

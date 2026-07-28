@@ -1,5 +1,5 @@
 import { ArrowUp } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string) => void }) {
   const [message, setMessage] = useState('');

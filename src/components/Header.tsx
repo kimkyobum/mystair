@@ -17,22 +17,13 @@ export default function Header() {
         Mystair
       </Link>
       
-      <nav className="hidden xl:flex gap-8 items-center">
+      <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
         {navItems.map(item => (
           <Link key={item.name} to={item.path} className="text-white/80 hover:text-white transition-colors text-[15px] font-medium whitespace-nowrap">
             {item.name}
           </Link>
         ))}
       </nav>
-      
-      <div className="hidden xl:flex items-center gap-4">
-        <button className="text-[15px] font-medium text-white/80 hover:text-white transition-colors">
-          로그인
-        </button>
-        <button className="text-[15px] font-bold bg-white text-black px-6 py-2.5 rounded-full hover:bg-gray-200 transition-all active:scale-95">
-          시작하기
-        </button>
-      </div>
 
       <div className="xl:hidden text-white cursor-pointer">
         <Menu size={28} />

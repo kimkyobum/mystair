@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal } from 'lucide-react';
 import { motion } from 'motion/react';
 

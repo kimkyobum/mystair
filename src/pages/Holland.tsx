@@ -103,7 +103,7 @@ export default function Holland() {
   const percent = Math.round(((currentIndex) / hollandQuestions.length) * 100);
 
   return (
-    <div className="h-full flex-1 overflow-y-auto bg-[#F8FAFC] text-[#0F172A] font-sans flex flex-col relative">
+    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-[#F8FAFC] text-[#0F172A] font-sans flex flex-col relative">
       <header className="bg-[#0F172A] h-[72px] w-full flex items-center justify-start px-10 shadow-[0_4px_20px_rgba(15,23,42,0.15)] sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
