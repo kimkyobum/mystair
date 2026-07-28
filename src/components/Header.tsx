@@ -1,0 +1,42 @@
+import { Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+export default function Header() {
+  const navItems = [
+    { name: '성장다이어리', path: '/' },
+    { name: '자격증 가이드', path: '/certificates' },
+    { name: '채용 인사이트', path: '/' },
+    { name: 'MBTI검사', path: '/mbti' },
+    { name: '홀랜드 진로적성 검사', path: '/holland' },
+    { name: '나만의 기업찾기', path: '/' }
+  ];
+
+  return (
+    <header className="relative z-20 flex items-center justify-between px-6 py-6 w-full max-w-[1600px] mx-auto">
+      <Link to="/" className="text-white font-black text-[32px] tracking-[-0.06em] cursor-pointer flex items-center leading-none">
+        Mystair
+      </Link>
+      
+      <nav className="hidden xl:flex gap-8 items-center">
+        {navItems.map(item => (
+          <Link key={item.name} to={item.path} className="text-white/80 hover:text-white transition-colors text-[15px] font-medium whitespace-nowrap">
+            {item.name}
+          </Link>
+        ))}
+      </nav>
+      
+      <div className="hidden xl:flex items-center gap-4">
+        <button className="text-[15px] font-medium text-white/80 hover:text-white transition-colors">
+          로그인
+        </button>
+        <button className="text-[15px] font-bold bg-white text-black px-6 py-2.5 rounded-full hover:bg-gray-200 transition-all active:scale-95">
+          시작하기
+        </button>
+      </div>
+
+      <div className="xl:hidden text-white cursor-pointer">
+        <Menu size={28} />
+      </div>
+    </header>
+  );
+}
