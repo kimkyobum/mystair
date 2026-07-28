@@ -14,7 +14,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   return (
     <div className="relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto mt-20 md:mt-32 px-4">
       <h1 className="text-[40px] md:text-[56px] text-white font-bold mb-12 tracking-tight text-center leading-tight">
-        진로 탐색의 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">새로운 기준</span>
+        당신의 잠재력을 깨우는 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">MyStair 전용 AI 진로 파트너</span>
       </h1>
       
       <form onSubmit={handleSubmit} className="w-full bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 animate-gradient rounded-2xl p-2.5 shadow-2xl flex items-center focus-within:ring-4 ring-purple-500/30 transition-all duration-300 relative group">
