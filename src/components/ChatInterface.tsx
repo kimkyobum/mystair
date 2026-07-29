@@ -105,10 +105,21 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY2 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY3 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY4 : '')
-    ].filter(Boolean) as string[];
+    ].filter((key): key is string => {
+      if (!key) return false;
+      const trimmed = key.trim();
+      const lower = trimmed.toLowerCase();
+      return trimmed !== "" && 
+             lower !== "my_gemini_api_key" && 
+             lower !== "your_api_key" && 
+             lower !== "your_gemini_api_key" && 
+             lower !== "null" && 
+             lower !== "undefined" &&
+             lower !== "placeholder";
+    });
 
     if (keys.length === 0) {
-      throw new Error('Vercel/Render 환경변수 설정에서 VITE_GEMINI_API_KEY 또는 GEMINI_API_KEY를 설정해주셔야 AI 응답이 가능합니다.');
+      throw new Error('Vercel/Render 환경변수 설정에서 VITE_GEMINI_API_KEY 또는 GEMINI_API_KEY를 올바르게 설정해주셔야 AI 응답이 가능합니다.');
     }
 
     const profileText = profile
@@ -183,9 +194,8 @@ ${d.content || ""}
 
     const fallbackModels = [
       "gemini-2.5-flash",
-      "gemini-2.0-flash",
       "gemini-1.5-flash",
-      "gemini-1.5-flash-8b",
+      "gemini-3.1-flash-lite",
       "gemini-3.6-flash"
     ];
 

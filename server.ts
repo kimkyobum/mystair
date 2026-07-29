@@ -52,10 +52,21 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
     process.env.GEMINI_API_KEY3,
     process.env.GEMINI_API_KEY4,
     process.env.VITE_GEMINI_API_KEY
-  ].filter(Boolean) as string[];
+  ].filter((key): key is string => {
+    if (!key) return false;
+    const trimmed = key.trim();
+    const lower = trimmed.toLowerCase();
+    return trimmed !== "" && 
+           lower !== "my_gemini_api_key" && 
+           lower !== "your_api_key" && 
+           lower !== "your_gemini_api_key" && 
+           lower !== "null" && 
+           lower !== "undefined" &&
+           lower !== "placeholder";
+  });
 
   if (keys.length === 0) {
-    throw new Error("Gemini API 키가 설정되지 않았습니다. 환경 변수를 설정해주세요.");
+    throw new Error("Gemini API 키가 설정되지 않았거나 올바르지 않습니다. AI Studio Settings > Secrets 또는 환경 변수를 설정해주세요.");
   }
 
   // Choose a random starting key to distribute traffic, then rotate through the rest as fallback on error (like 429)
@@ -64,10 +75,9 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
 
   // We rotate through multiple valid Gemini models to avoid single-model free-tier limits (e.g. 20 req/day for 3.6-flash)
   const fallbackModels = [
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite",
     "gemini-2.5-flash",
-    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-3.1-flash-lite",
     "gemini-3.6-flash"
   ];
 
