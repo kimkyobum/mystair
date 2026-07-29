@@ -174,14 +174,14 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:border-blue-500/50 transition-all duration-300 pointer-events-auto relative overflow-hidden group">
               <div className="absolute -right-10 -top-10 bg-blue-500/10 w-40 h-40 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors"></div>
               <div className="inline-block mb-6 w-16 h-16 relative transform group-hover:-translate-y-2 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" alt="Check mark" className="w-full h-full object-contain drop-shadow-2xl" />
+                <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Office%20building/3D/office_building_3d.png" alt="Office building" className="w-full h-full object-contain drop-shadow-2xl" />
               </div>
-              <h3 className="text-xl font-bold mb-4">AI 목표 달성 체크리스트</h3>
+              <h3 className="text-xl font-bold mb-4">나의 맞춤 기업 찾기</h3>
               <p className="text-gray-400 leading-relaxed text-sm mb-8 relative z-10">
-                '전기기능사 취득' 등 목표를 설정하면 AI가 오늘 당장 실천할 마이크로 체크리스트를 매일 추천합니다.
+                나의 전공학과, 성향(MBTI/홀랜드), 성장 기록을 바탕으로 나에게 가장 잘 어울리는 꿈의 기업을 AI가 매칭해 줍니다.
               </p>
               <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full w-fit mt-auto border border-blue-500/20">
-                <Flame className="w-3 h-3 animate-pulse" /> 연속 달성 스트릭 제공
+                <Compass className="w-3 h-3 animate-pulse" /> 맞춤 추천 기업 탐색
               </div>
             </div>
           </FadeIn>
@@ -193,7 +193,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               </div>
               <h3 className="text-xl font-bold mb-4">경험 기록 & 노력 일수 시각화</h3>
               <p className="text-gray-400 leading-relaxed text-sm mb-8 relative z-10">
-                교내외 실습, 대회 경험을 기록하세요. 매일 체크리스트 완료 시 캘린더에 완수 스탬프가 적재되어 성취감을 높입니다.
+                교내외 실습, 대회 경험을 기록하세요. 매일 기록할 때마다 캘린더에 완수 스탬프가 적재되어 성취감을 높입니다.
               </p>
               <div className="flex flex-wrap gap-2 mt-auto">
                 <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-500/10 px-2 py-1.5 rounded-md border border-emerald-500/20">#PLC</span>

@@ -64,10 +64,10 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
 
   // We rotate through multiple valid Gemini models to avoid single-model free-tier limits (e.g. 20 req/day for 3.6-flash)
   const fallbackModels = [
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
     "gemini-2.5-flash",
     "gemini-2.0-flash",
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
     "gemini-3.6-flash"
   ];
 
@@ -343,36 +343,24 @@ app.post("/api/chat", async (req, res) => {
 - 희망/관심 기업: ${
           Array.isArray(userProfile.targetCompanies) && userProfile.targetCompanies.length > 0
             ? userProfile.targetCompanies.join(", ")
-            : "삼성전자, 한국전력공사, 현대자동차, 한화시스템"
+            : "없음"
         }
 `
-      : "[사용자 프로필 미입력 - 마이스터고/특성화고 표준 모범 프로필 기준으로 맞춤 응답]";
+      : "[프로필 데이터 없음]";
 
     // Format student's growth diary entries
     const diariesText =
       Array.isArray(diaries) && diaries.length > 0
         ? `
 [사용자가 작성한 성장 다이어리 데이터 (${diaries.length}건)]
-${diaries
-  .slice(0, 10)
-  .map(
-    (d: any, i: number) => `
-[다이어리 #${i + 1}]
-- 작성일: ${d.date || "날짜미상"}
-- 제목: ${d.title || "제목없음"}
-- 태그: ${Array.isArray(d.tags) ? d.tags.join(", ") : "없음"}
-- 기분/상태: ${d.mood || "보통"}
-- 기록 내용:
-${d.content || ""}
-`
-  )
-  .join("\n-------------------\n")}
+${diaries.map((d: any, idx: number) => `일기 ${idx + 1}. 날짜: ${d.date}, 기분: ${d.mood}, 제목: ${d.title}\n내용: ${d.content}\n태그: ${d.tags ? d.tags.join(', ') : ''}`).join('\n\n')}
 `
         : "[성장 다이어리 기록 없음 - 자소서 작성 팁 및 예시 경험 작성 가이드 제공]";
 
     // System instruction embedding portal domain knowledge & smart conversational handling
     const systemInstruction = `
-너는 마이스터고 및 특성화고 학생들을 위한 AI 진로·취업 수석 컨설턴트이자 다정한 진로 멘토 'MyStair AI'야.
+너는 마이스터고 및 특성화고 학생들을 위한 '나만의 기업찾기' 및 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
+사용자의 학과, MBTI, 홀랜드 적성검사 코드, 그리고 작성해온 성장 다이어리(기록)를 분석하여 학생 개개인에게 가장 잘 어울리고 적합한 맞춤형 추천 기업(대기업, 공공기관, 유망 중견/강소기업 등)을 찾아주고 분석해주는 역할을 담당해.
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
@@ -384,7 +372,7 @@ ${d.content || ""}
 
 3. 🎯 **진로와 관련된 진지하고 많은 내용이 필요한 종합 컨설팅 질문** (예: "내 프로필과 다이어리 기반 종합 진로 리포트 써줘", "나한테 맞는 기업, 자격증, 액션플랜 전체 분석해줘"):
    - **5줄에서 10줄 정도로 상세하게 답변해줘.**
-   - 가독성을 위해 마크다운과 이모지를 적절히 사용하되, 너무 길어지지 않게 10줄을 넘기지 않도록 요약해서 답변해줘.
+   - 가독성을 위해 마크다운과 이모지를 적절히 사용하되, 너무 길어지지 않게 10줄을 넘기지 않도록 요약해서 답변해줘. 특히 사용자에게 적합한 '나만의 추천 기업 리스트'와 추천 이유를 명확하게 짚어줘.
 
 위 규칙을 엄격하게 지켜서 답변 길이를 조절해줘.
 `;
