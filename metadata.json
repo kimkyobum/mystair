@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "MyStair",
+  "description": "마이스터고 및 직업계고 학생들을 위한 맞춤형 AI 진로·성장 다이어리 및 마이페이지 플랫폼",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

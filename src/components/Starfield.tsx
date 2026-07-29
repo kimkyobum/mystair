@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import FloatingAliens from './FloatingAliens';
 
 export default function Starfield() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -112,5 +113,10 @@ export default function Starfield() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />;
+  return (
+    <>
+      <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
+      <FloatingAliens />
+    </>
+  );
 }

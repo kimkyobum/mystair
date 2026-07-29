@@ -1,86 +1,37 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   BookOpen, 
   Award, 
   Briefcase, 
   Brain, 
   Compass, 
-  Building2,
   User,
-  LogOut
+  LogOut,
+  LogIn
 } from 'lucide-react';
-
-interface UserProfile {
-  name: string;
-  email: string;
-}
+import { useAuth } from '../context/AuthContext';
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: '내 프로필',
-    email: 'guest@mystair.com'
-  });
+  const { user, userProfile, logout, loginWithGoogle } = useAuth();
 
   const location = useLocation();
-  const navigate = useNavigate();
   const isDarkTheme = location.pathname === '/';
 
-  useEffect(() => {
-    // 1. Check URL query parameters (e.g., ?email=...&name=...)
-    const params = new URLSearchParams(location.search);
-    const emailParam = params.get('email');
-    const nameParam = params.get('name');
+  const displayName = userProfile?.name || user?.displayName || '게스트';
 
-    if (emailParam || nameParam) {
-      const newProfile: UserProfile = {
-        name: nameParam || emailParam?.split('@')[0] || '회원',
-        email: emailParam || 'user@mystair.com'
-      };
-      setUserProfile(newProfile);
-      localStorage.setItem('mystair_user_profile', JSON.stringify(newProfile));
-
-      // Clean up search parameters from URL for clean view
-      params.delete('email');
-      params.delete('name');
-      const newSearch = params.toString();
-      navigate({
-        pathname: location.pathname,
-        search: newSearch ? `?${newSearch}` : ''
-      }, { replace: true });
-      return;
-    }
-
-    // 2. Load from localStorage if available
-    const saved = localStorage.getItem('mystair_user_profile');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.email) {
-          setUserProfile(parsed);
-        }
-      } catch (e) {
-        console.error('Failed to parse user profile', e);
-      }
-    }
-  }, [location.search, location.pathname, navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('mystair_user_profile');
-    setUserProfile({
-      name: '내 프로필',
-      email: 'guest@mystair.com'
-    });
+  const handleLogout = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    logout();
   };
 
   const navItems = [
-    { name: '성장다이어리', path: '/', icon: <BookOpen size={20} /> },
+    { name: '성장다이어리', path: '/diary', icon: <BookOpen size={20} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={20} /> },
     { name: '채용 인사이트', path: '/', icon: <Briefcase size={20} /> },
     { name: 'MBTI검사', path: '/mbti', icon: <Brain size={20} /> },
-    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> },
-    { name: '나만의 기업찾기', path: '/', icon: <Building2 size={20} /> }
+    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> }
   ];
 
   return (
@@ -132,31 +83,51 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className={`shrink-0 p-3.5 border-t ${isDarkTheme ? 'border-white/10 bg-transparent' : 'border-slate-200 bg-slate-50/50'}`}>
-        <div className="flex items-center justify-between whitespace-nowrap overflow-hidden">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${isDarkTheme ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
-              <User size={15} />
+      <div className={`shrink-0 px-3 py-3 border-t ${isDarkTheme ? 'border-white/10 bg-transparent' : 'border-slate-200 bg-slate-50/50'}`}>
+        <div className="flex items-center justify-between whitespace-nowrap">
+          <Link 
+            to="/mypage" 
+            title="마이페이지로 이동"
+            className="flex items-center gap-3 cursor-pointer group flex-1 min-w-0"
+          >
+            <div className={`w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${
+              isDarkTheme 
+                ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm' 
+                : 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-sm'
+            }`}>
+              <User size={14} className="shrink-0" />
             </div>
-            <div className={`flex flex-col transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} overflow-hidden`}>
-              <span className={`text-[13px] font-semibold leading-tight truncate ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
-                {userProfile.name}
+            <div className={`flex flex-col transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} overflow-hidden min-w-0`}>
+              <span className={`text-[13px] font-bold leading-tight truncate group-hover:text-indigo-400 transition-colors ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
+                {displayName}
               </span>
-              <span className={`text-[11px] truncate ${isDarkTheme ? 'text-white/60' : 'text-slate-500'}`}>
-                {userProfile.email}
+              <span className={`text-[11px] truncate font-medium ${isDarkTheme ? 'text-indigo-300' : 'text-indigo-600'}`}>
+                마이페이지
               </span>
             </div>
-          </div>
+          </Link>
 
-          {isHovered && userProfile.email !== 'guest@mystair.com' && (
+          {isHovered && user && (
             <button 
               onClick={handleLogout}
               title="로그아웃"
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ml-1 ${
                 isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
               }`}
             >
               <LogOut size={14} />
+            </button>
+          )}
+
+          {isHovered && !user && (
+            <button 
+              onClick={() => loginWithGoogle()}
+              title="구글 로그인"
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ml-1 ${
+                isDarkTheme ? 'hover:bg-white/10 text-indigo-300 hover:text-white' : 'hover:bg-slate-200 text-indigo-600 hover:text-indigo-800'
+              }`}
+            >
+              <LogIn size={14} />
             </button>
           )}
         </div>
@@ -164,3 +135,4 @@ export default function Sidebar() {
     </aside>
   );
 }
+

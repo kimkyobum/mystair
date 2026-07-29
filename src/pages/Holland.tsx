@@ -69,6 +69,17 @@ export default function Holland() {
     const res = calculateScores(currentAnswers);
     setResult(res);
     setScreen('result');
+    try {
+      localStorage.setItem('mystair_holland_result', JSON.stringify(res));
+
+      // Automatically update mypage data
+      const savedMyPage = localStorage.getItem('mystair_mypage_data');
+      let myPageData = savedMyPage ? JSON.parse(savedMyPage) : {};
+      myPageData.hollandCode = res.topCode;
+      localStorage.setItem('mystair_mypage_data', JSON.stringify(myPageData));
+    } catch (e) {
+      console.error('Failed to save Holland result to localStorage', e);
+    }
   };
 
   const copyResults = () => {
@@ -237,6 +248,9 @@ export default function Holland() {
               </div>
 
               <div className="flex flex-col gap-3 mt-8">
+                <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                  <span>👤 마이페이지로 이동하여 결과 확인하기</span>
+                </Link>
                 <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
                   📋 검사 결과 복사하기
                 </button>

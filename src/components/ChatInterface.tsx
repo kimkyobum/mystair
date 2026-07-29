@@ -1,115 +1,183 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal } from 'lucide-react';
+import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
+import ReactMarkdown from 'react-markdown';
+import { useAuth } from '../context/AuthContext';
 
 interface Message {
   id: string;
   role: 'user' | 'ai';
   content: string;
-}
-
-function TypewriterMessage({ text, onComplete }: { text: string; onComplete?: () => void }) {
-  const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
-
-  useEffect(() => {
-    let index = 0;
-    setIsTyping(true);
-    setDisplayedText('');
-    
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(timer);
-        setIsTyping(false);
-        onComplete?.();
-      }
-    }, 40);
-
-    return () => clearInterval(timer);
-  }, [text]);
-
-  return (
-    <span>
-      {displayedText}
-      {isTyping && <span className="inline-block w-1.5 h-4 ml-1 bg-purple-400 animate-pulse align-middle rounded-full" />}
-    </span>
-  );
-}
-
-function AIMessageBubble({ msg, setInputValue }: { msg: Message, setInputValue: (v: string) => void }) {
-  const [isTyping, setIsTyping] = useState(true);
-
-  return (
-    <div className="flex flex-col gap-3 max-w-[80%]">
-      <div className="text-white text-[16px] px-2 py-2 leading-relaxed tracking-wide min-h-[44px]">
-        <TypewriterMessage text={msg.content} onComplete={() => setIsTyping(false)} />
-      </div>
-      
-      {!isTyping && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4 px-2 text-white/40">
-          <ThumbsUp size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-          <ThumbsDown size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-          <Copy size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-          <MoreHorizontal size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-        </motion.div>
-      )}
-
-      {!isTyping && msg.id === '2' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
-          <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
-            <Sparkles size={14} />
-            채팅 예시
-          </span>
-          <div className="flex flex-wrap gap-2.5">
-            <button onClick={() => setInputValue('마이스터고 졸업 후 대기업 취업 전략은?')} className="text-[12px] text-white/60 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full transition-all active:scale-95 border border-white/10">
-              "마이스터고 졸업 후 대기업 취업 전략은?"
-            </button>
-            <button onClick={() => setInputValue('내 성향에 맞는 IT 직무 추천해줘')} className="text-[12px] text-white/60 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full transition-all active:scale-95 border border-white/10">
-              "내 성향에 맞는 IT 직무 추천해줘"
-            </button>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
+  isStreaming?: boolean;
 }
 
 export default function ChatInterface({ initialMessage }: { initialMessage: string }) {
+  const { userProfile: firestoreProfile, fetchDiaries } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', role: 'user', content: initialMessage },
-    { id: '2', role: 'ai', content: `"${initialMessage}"에 대해 궁금하시군요! 마이스터고 학생을 위한 맞춤형 답변을 준비 중입니다...` }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading]);
+
+  // Initial call on mount
+  useEffect(() => {
+    if (initialMessage && messages.length === 1) {
+      sendMessageToAI(initialMessage, []);
+    }
+  }, [initialMessage]);
+
+  const getCombinedProfileData = () => {
+    let profile = {
+      name: firestoreProfile?.name || '마이스터 인재',
+      highSchool: firestoreProfile?.highSchool || '수도전기공업고등학교',
+      major: firestoreProfile?.major || '전기제어과',
+      mbti: firestoreProfile?.mbti || 'ISTJ',
+      hollandCode: firestoreProfile?.hollandCode || 'RC',
+      targetCompanies: firestoreProfile?.targetCompanies || ['한국전력공사', '삼성전자', '현대자동차', '한화시스템']
+    };
+
+    try {
+      const savedMyPage = localStorage.getItem('mystair_mypage_data');
+      if (savedMyPage) {
+        const parsed = JSON.parse(savedMyPage);
+        profile = {
+          ...profile,
+          ...parsed,
+          name: parsed.name || profile.name,
+          highSchool: parsed.highSchool || profile.highSchool,
+          major: parsed.major || profile.major,
+          mbti: parsed.mbti || profile.mbti,
+          hollandCode: parsed.hollandCode || profile.hollandCode,
+          targetCompanies: parsed.targetCompanies || profile.targetCompanies
+        };
+      }
+    } catch (e) {
+      console.error('Error parsing local mypage data:', e);
+    }
+    return profile;
+  };
+
+  const getCombinedDiariesData = async () => {
+    let diariesList: any[] = [];
+    try {
+      const dbDiaries = await fetchDiaries();
+      if (dbDiaries && dbDiaries.length > 0) {
+        diariesList = dbDiaries;
+      }
+    } catch (e) {
+      console.error('Error fetching db diaries:', e);
+    }
+
+    if (diariesList.length === 0) {
+      try {
+        const savedDiaries = localStorage.getItem('mystair_diaries');
+        if (savedDiaries) {
+          diariesList = JSON.parse(savedDiaries);
+        }
+      } catch (e) {
+        console.error('Error parsing local diaries:', e);
+      }
+    }
+    return diariesList;
+  };
+
+  const sendMessageToAI = async (text: string, existingMessages: Message[]) => {
+    setIsLoading(true);
+
+    const tempAiMsgId = (Date.now() + 1).toString();
+    
+    // Add placeholder AI loading state
+    setMessages((prev) => [
+      ...prev,
+      { id: tempAiMsgId, role: 'ai', content: '', isStreaming: true }
+    ]);
+
+    try {
+      const profile = getCombinedProfileData();
+      const diaries = await getCombinedDiariesData();
+
+      // Format history for server
+      const chatHistory = existingMessages.map((m) => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        content: m.content
+      }));
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          chatHistory: chatHistory,
+          userProfile: profile,
+          diaries: diaries
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === tempAiMsgId
+              ? { ...m, content: `⚠️ 오류가 발생했습니다: ${data.error}`, isStreaming: false }
+              : m
+          )
+        );
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === tempAiMsgId
+              ? { ...m, content: data.response || '답변을 불러올 수 없습니다.', isStreaming: false }
+              : m
+          )
+        );
+      }
+    } catch (err: any) {
+      console.error('Chat API request failed:', err);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempAiMsgId
+            ? {
+                ...m,
+                content: '⚠️ 서버와 통신 중 연결 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+                isStreaming: false
+              }
+            : m
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isLoading) return;
 
-    const newUserMsg: Message = { id: Date.now().toString(), role: 'user', content: inputValue };
-    setMessages(prev => [...prev, newUserMsg]);
+    const userText = inputValue.trim();
+    const newUserMsg: Message = { id: Date.now().toString(), role: 'user', content: userText };
+    
+    const updatedMessages = [...messages, newUserMsg];
+    setMessages(updatedMessages);
     setInputValue('');
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMsg: Message = { 
-        id: (Date.now() + 1).toString(), 
-        role: 'ai', 
-        content: '마이스터고 특성에 맞춘 추가 정보를 찾고 있어요. 더 궁금한 점이 있으신가요?' 
-      };
-      setMessages(prev => [...prev, aiMsg]);
-    }, 1000);
+    sendMessageToAI(userText, updatedMessages);
+  };
+
+  const handleCopyText = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   return (
@@ -133,10 +201,65 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
                 {msg.content}
               </div>
             ) : (
-              <AIMessageBubble msg={msg} setInputValue={setInputValue} />
+              <div className="flex flex-col gap-3 max-w-[85%]">
+                <div className="text-white text-[16px] px-2 py-2 leading-relaxed tracking-wide min-h-[44px]">
+                  {msg.isStreaming && !msg.content ? (
+                    <div className="flex items-center gap-2 text-purple-300 font-medium">
+                      <RefreshCw size={16} className="animate-spin text-purple-400" />
+                      <span>MyStair AI가 DB 프로필, 다이어리 및 채용 정보를 분석 중입니다...</span>
+                    </div>
+                  ) : (
+                    <div className="markdown-body space-y-2 text-white">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+
+                {!msg.isStreaming && msg.content && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 px-2 text-white/40 text-sm">
+                    <ThumbsUp size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                    <ThumbsDown size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                    <button onClick={() => handleCopyText(msg.id, msg.content)} className="flex items-center gap-1 cursor-pointer hover:text-white/80 transition-colors">
+                      {copiedId === msg.id ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
+                    </button>
+                    <MoreHorizontal size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                  </motion.div>
+                )}
+              </div>
             )}
           </motion.div>
         ))}
+
+        {/* Quick Question Suggestions */}
+        {messages.length <= 2 && !isLoading && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
+            <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
+              <Sparkles size={14} />
+              추천 질의 예시
+            </span>
+            <div className="flex flex-wrap gap-2.5">
+              <button 
+                onClick={() => setInputValue('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?')} 
+                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+              >
+                "마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?"
+              </button>
+              <button 
+                onClick={() => setInputValue('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘')} 
+                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+              >
+                "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘"
+              </button>
+              <button 
+                onClick={() => setInputValue('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘')} 
+                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+              >
+                "내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘"
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -146,10 +269,15 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="추가로 궁금한 점을 물어보세요"
+            disabled={isLoading}
+            placeholder={isLoading ? "AI 답변을 준비 중입니다..." : "추가로 궁금한 점을 물어보세요"}
             className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-6 py-3 outline-none text-[16px]"
           />
-          <button type="submit" className="bg-black text-white p-3.5 rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-2 group">
+          <button 
+            type="submit" 
+            disabled={isLoading || !inputValue.trim()}
+            className="bg-black text-white p-3.5 rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-2 group cursor-pointer disabled:opacity-40"
+          >
             <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
           </button>
         </form>
@@ -157,3 +285,4 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
     </motion.div>
   );
 }
+
