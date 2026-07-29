@@ -16,10 +16,7 @@ import {
   Award,
   ChevronRight,
   Save,
-  RotateCcw,
-  LogIn,
-  LogOut,
-  Database
+  RotateCcw
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
@@ -73,7 +70,7 @@ const POPULAR_COMPANIES = [
 ];
 
 export default function MyPage() {
-  const { user, userProfile: firestoreProfile, updateProfileInFirestore, loginWithGoogle, logout } = useAuth();
+  const { userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
 
   const [isFullEditing, setIsFullEditing] = useState(false);
   const [editingField, setEditingField] = useState<'name' | 'school' | 'major' | 'mbti' | 'holland' | null>(null);
@@ -224,20 +221,15 @@ export default function MyPage() {
         name: profile.name,
         email: profile.email
       }));
-      // Sync to Firestore
-      if (user) {
-        await updateProfileInFirestore({
-          name: profile.name,
-          highSchool: profile.highSchool,
-          major: profile.major,
-          mbti: profile.mbti,
-          hollandCode: profile.hollandCode,
-          targetCompanies: profile.targetCompanies
-        });
-        showToast('Firestore 데이터베이스에 회원 정보가 저장되었습니다!');
-      } else {
-        showToast('마이페이지 정보가 로컬 저장되었습니다!');
-      }
+      await updateProfileInFirestore({
+        name: profile.name,
+        highSchool: profile.highSchool,
+        major: profile.major,
+        mbti: profile.mbti,
+        hollandCode: profile.hollandCode,
+        targetCompanies: profile.targetCompanies
+      });
+      showToast('마이페이지 프로필이 성공적으로 저장되었습니다!');
       setIsFullEditing(false);
       setEditingField(null);
     } catch (e) {
@@ -256,11 +248,9 @@ export default function MyPage() {
           email: key === 'email' ? val : profile.email
         }));
       }
-      if (user) {
-        await updateProfileInFirestore({ [key]: val });
-      }
+      await updateProfileInFirestore({ [key]: val });
       setEditingField(null);
-      showToast(`${fieldLabel} 정보가 변경·DB저장되었습니다.`);
+      showToast(`${fieldLabel} 정보가 변경·저장되었습니다.`);
     } catch (e) {
       showToast('저장 중 오류가 발생했습니다.');
     }
@@ -304,30 +294,6 @@ export default function MyPage() {
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-[#334155] pl-4 hidden sm:block">
             나의 성장의 계단 & 진로 프로필
           </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {user ? (
-            <div className="flex items-center gap-2 bg-indigo-950/80 border border-indigo-500/40 px-3 py-1.5 rounded-xl text-xs text-indigo-200">
-              <Database size={14} className="text-emerald-400" />
-              <span className="font-bold">{user.email || user.displayName || '구글 연동됨'}</span>
-              <button 
-                onClick={() => logout()}
-                className="text-slate-400 hover:text-white transition ml-1 cursor-pointer"
-                title="로그아웃"
-              >
-                <LogOut size={13} />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => loginWithGoogle()}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-sm"
-            >
-              <LogIn size={14} />
-              <span>구글 로그인 (DB 동기화)</span>
-            </button>
-          )}
         </div>
       </header>
 

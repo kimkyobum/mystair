@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
+import { GoogleGenAI } from '@google/genai';
 import { useAuth } from '../context/AuthContext';
 
 interface Message {
@@ -91,6 +92,98 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
     return diariesList;
   };
 
+  const generateClientGemini = async (text: string, profile: any, diaries: any) => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
+    if (!apiKey) {
+      throw new Error('Vercel/Render 환경변수 설정에서 VITE_GEMINI_API_KEY 또는 GEMINI_API_KEY를 설정해주셔야 AI 응답이 가능합니다.');
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+    const profileText = profile
+      ? `
+[사용자 프로필 데이터]
+- 이름: ${profile.name || "미설정"}
+- 학교 및 전공: ${profile.highSchool || "마이스터고"} / ${profile.major || "전공학과"}
+- MBTI 성격유형: ${profile.mbti || "미진단"}
+- 홀랜드 진로적성: ${profile.hollandCode || "미진단"}
+- 희망/관심 기업: ${
+          Array.isArray(profile.targetCompanies) && profile.targetCompanies.length > 0
+            ? profile.targetCompanies.join(", ")
+            : "삼성전자, 한국전력공사, 현대자동차, 한화시스템"
+        }
+`
+      : "[사용자 프로필 미입력 - 마이스터고/특성화고 표준 모범 프로필 기준으로 맞춤 응답]";
+
+    const diariesText =
+      Array.isArray(diaries) && diaries.length > 0
+        ? `
+[사용자가 작성한 성장 다이어리 데이터 (${diaries.length}건)]
+${diaries
+  .slice(0, 10)
+  .map(
+    (d: any, i: number) => `
+[다이어리 #${i + 1}]
+- 작성일: ${d.date || "날짜미상"}
+- 제목: ${d.title || "제목없음"}
+- 태그: ${Array.isArray(d.tags) ? d.tags.join(", ") : "없음"}
+- 기분/상태: ${d.mood || "보통"}
+- 기록 내용:
+${d.content || ""}
+`
+  )
+  .join("\n-------------------\n")}
+`
+        : "[성장 다이어리 기록 없음 - 자소서 작성 팁 및 예시 경험 작성 가이드 제공]";
+
+    const systemInstruction = `
+너는 마이스터고 및 특성화고 학생들을 위한 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
+너는 대한민국 대표 공공 및 민간 취업/진로 포털 데이터에 기반한 최고 수준의 도메인 지식을 갖추고 있어:
+1. 공공데이터포털 하이파이브 (Hi-Five: 직업계고 특화 채용, 산학일체형 도템, 현장실습)
+2. 마이스터넷 (MeisterNet: 산업맞춤형 마이스터고 육성 및 기업 연계 취업 DB)
+3. 커리어넷 (CareerNet: 직업학과 정보, 적성검사 분석, 진로상담)
+4. 대입정보포털 어디가 (adiga: 선취업 후진학, 계약학과, 일학습병행제)
+5. 공공기관 채용정보시스템 잡알리오 (JOBALIO: 한국전력, 한수원 등 공기업 채용요건)
+6. 공공데이터포털 (DATA.GO.KR: 국가기술자격증 정보, 산업별 인력 수요)
+7. 잡코리아 (JobKorea: 주요 대기업/중견기업/IT기업 직무기술서(JD) 및 우대 스킬)
+
+[너의 핵심 역할과 출력 가이드]
+사용자가 입력창에 물어본 질문: "${text}"
+
+제공된 [사용자 DB 프로필 데이터]와 [성장 다이어리 데이터]를 종합 분석하고, 위 공공/민간 포털 사이트들의 실제 채용 데이터와 자격증 기준을 조합하여
+반드시 깔끔하고 보기 쉬운 마크다운(#, ##, ###, -, **강조** 등)과 직관적인 이모지를 사용하여 아래 5가지 필수 구조로 정성껏 대답해줘:
+
+1. 🎯 **맞춤 추천 직무 (Job Roles)**
+2. 🏢 **취업 가능 추천 기업 (Target Companies)**
+3. ⚡ **더 갖추어야 할 직무 역량 (Required Skill Enhancements)**
+4. 📖 **성장다이어리 경험 추출 (자기소개서/면접 맞춤 활용)**
+5. 💡 **MyStair 맞춤형 취업 Action Plan**
+
+친절하고 따뜻하며, 학생에게 커다란 동기부여와 실질적인 도움을 주는 전문적인 한국어로 응답해줘.
+`;
+
+    const contents = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `${profileText}\n\n${diariesText}\n\n[사용자의 현재 질문]\n${text}`,
+          },
+        ],
+      },
+    ];
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: contents,
+      config: {
+        systemInstruction: systemInstruction,
+        temperature: 0.7,
+      },
+    });
+
+    return response.text || "답변을 생성하지 못했습니다.";
+  };
+
   const sendMessageToAI = async (text: string, existingMessages: Message[]) => {
     setIsLoading(true);
 
@@ -102,9 +195,12 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
       { id: tempAiMsgId, role: 'ai', content: '', isStreaming: true }
     ]);
 
+    let profile: any = null;
+    let diaries: any[] = [];
+
     try {
-      const profile = getCombinedProfileData();
-      const diaries = await getCombinedDiariesData();
+      profile = getCombinedProfileData();
+      diaries = await getCombinedDiariesData();
 
       // Format history for server
       const chatHistory = existingMessages.map((m) => ({
@@ -112,36 +208,52 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
         content: m.content
       }));
 
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: text,
-          chatHistory: chatHistory,
-          userProfile: profile,
-          diaries: diaries
-        })
-      });
+      let responseText = '';
+      let fetchSuccess = false;
 
-      const data = await res.json();
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            chatHistory: chatHistory,
+            userProfile: profile,
+            diaries: diaries
+          })
+        });
 
-      if (data.error) {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === tempAiMsgId
-              ? { ...m, content: `⚠️ 오류가 발생했습니다: ${data.error}`, isStreaming: false }
-              : m
-          )
-        );
-      } else {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === tempAiMsgId
-              ? { ...m, content: data.response || '답변을 불러올 수 없습니다.', isStreaming: false }
-              : m
-          )
-        );
+        if (res.ok) {
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const data = await res.json();
+            if (data.response) {
+              responseText = data.response;
+              fetchSuccess = true;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Server endpoint /api/chat unavailable, switching to client direct API...', e);
       }
+
+      // If server endpoint failed or returned non-JSON, fallback to direct client-side Gemini API
+      if (!fetchSuccess) {
+        try {
+          responseText = await generateClientGemini(text, profile, diaries);
+        } catch (clientErr: any) {
+          console.error('Client Gemini fallback error:', clientErr);
+          responseText = `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${clientErr?.message || String(clientErr)})`;
+        }
+      }
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === tempAiMsgId
+            ? { ...m, content: responseText, isStreaming: false }
+            : m
+        )
+      );
     } catch (err: any) {
       console.error('Chat API request failed:', err);
       setMessages((prev) =>
@@ -149,7 +261,7 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
           m.id === tempAiMsgId
             ? {
                 ...m,
-                content: '⚠️ 서버와 통신 중 연결 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+                content: `⚠️ 오류가 발생했습니다: ${err?.message || String(err)}`,
                 isStreaming: false
               }
             : m
@@ -206,7 +318,7 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
                   {msg.isStreaming && !msg.content ? (
                     <div className="flex items-center gap-2 text-purple-300 font-medium">
                       <RefreshCw size={16} className="animate-spin text-purple-400" />
-                      <span>MyStair AI가 DB 프로필, 다이어리 및 채용 정보를 분석 중입니다...</span>
+                      <span>MyStair AI가 프로필, 다이어리 및 채용 정보를 분석 중입니다...</span>
                     </div>
                   ) : (
                     <div className="markdown-body space-y-2 text-white">

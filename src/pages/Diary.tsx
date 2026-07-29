@@ -6,8 +6,6 @@ import {
   Calendar, 
   Smile, 
   Sparkles, 
-  LogIn, 
-  Database, 
   Check, 
   Tag,
   ArrowLeft
@@ -24,7 +22,7 @@ const MOOD_OPTIONS = [
 ];
 
 export default function Diary() {
-  const { user, fetchDiaries, saveDiary, deleteDiary, loginWithGoogle } = useAuth();
+  const { fetchDiaries, saveDiary, deleteDiary } = useAuth();
 
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -43,16 +41,14 @@ export default function Diary() {
   const loadDiaryList = async () => {
     setLoading(true);
     try {
-      if (user) {
-        const fetched = await fetchDiaries();
+      const fetched = await fetchDiaries();
+      if (fetched.length > 0) {
         setDiaries(fetched);
       } else {
-        // Fallback local storage
         const saved = localStorage.getItem('mystair_local_diaries');
         if (saved) {
           setDiaries(JSON.parse(saved));
         } else {
-          // Default sample entry
           setDiaries([{
             id: 'sample-1',
             userId: 'local',
@@ -73,7 +69,7 @@ export default function Diary() {
 
   useEffect(() => {
     loadDiaryList();
-  }, [user]);
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -100,30 +96,14 @@ export default function Diary() {
     }
 
     try {
-      if (user) {
-        await saveDiary({
-          title: title.trim(),
-          content: content.trim(),
-          date,
-          mood,
-          tags
-        });
-        showToast('Firestore 데이터베이스에 성공적으로 저장되었습니다!');
-      } else {
-        const newEntry: DiaryEntry = {
-          id: Date.now().toString(),
-          userId: 'local',
-          title: title.trim(),
-          content: content.trim(),
-          date,
-          mood,
-          tags
-        };
-        const updated = [newEntry, ...diaries];
-        setDiaries(updated);
-        localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
-        showToast('성장 다이어리가 로컬에 저장되었습니다! (로그인시 DB동기화)');
-      }
+      await saveDiary({
+        title: title.trim(),
+        content: content.trim(),
+        date,
+        mood,
+        tags
+      });
+      showToast('성장 다이어리가 성공적으로 저장되었습니다!');
 
       // Reset form
       setTitle('');
@@ -141,13 +121,7 @@ export default function Diary() {
     if (!confirm('이 다이어리 기록을 삭제하시겠습니까?')) return;
 
     try {
-      if (user) {
-        await deleteDiary(id);
-      } else {
-        const updated = diaries.filter(d => d.id !== id);
-        setDiaries(updated);
-        localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
-      }
+      await deleteDiary(id);
       showToast('다이어리 기록이 삭제되었습니다.');
       loadDiaryList();
     } catch (err) {
@@ -175,25 +149,8 @@ export default function Diary() {
           <BookOpen size={24} className="text-indigo-400" />
           <h1 className="text-xl font-black tracking-tight text-white">성장 다이어리</h1>
           <span className="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-0.5 rounded-full font-bold border border-indigo-500/30">
-            Firestore DB 연동
+            로컬 저장소
           </span>
-        </div>
-
-        <div>
-          {user ? (
-            <div className="flex items-center gap-2 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-xs text-emerald-300 font-bold">
-              <Database size={14} className="text-emerald-400" />
-              <span>{user.email || user.displayName || '구글 연동중'}</span>
-            </div>
-          ) : (
-            <button
-              onClick={() => loginWithGoogle()}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-            >
-              <LogIn size={14} />
-              <span>구글 로그인 (DB 저장)</span>
-            </button>
-          )}
         </div>
       </header>
 
@@ -208,7 +165,7 @@ export default function Diary() {
               <span>나만의 성장의 계단 기록장</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 font-medium">
-              오늘 배운 직무 기술, 자격증 공부 일지, 느낀 점을 기록하고 회원별 데이터베이스에 안전하게 보관해보세요!
+              오늘 배운 직무 기술, 자격증 공부 일지, 느낀 점을 기록하고 성장 일지를 보관해보세요!
             </p>
           </div>
 
@@ -327,7 +284,7 @@ export default function Diary() {
                 className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
               >
                 <Check size={16} />
-                <span>데이터베이스에 저장</span>
+                <span>다이어리 저장</span>
               </button>
             </div>
           </form>
@@ -337,12 +294,11 @@ export default function Diary() {
         <div className="space-y-4">
           <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
             <span>나의 성장 일지 목록 ({diaries.length}개)</span>
-            {user && <span className="text-emerald-400 text-xs font-bold">✓ Firestore DB 동기화 완료</span>}
           </h3>
 
           {loading ? (
             <div className="text-center py-12 text-slate-500 text-sm font-medium">
-              데이터베이스에서 기록을 불러오는 중...
+              기록을 불러오는 중...
             </div>
           ) : diaries.length === 0 ? (
             <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-12 text-center space-y-3">

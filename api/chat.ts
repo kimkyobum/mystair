@@ -1,170 +1,43 @@
-import express from "express";
-import path from "path";
-import dotenv from "dotenv";
+import type { IncomingMessage, ServerResponse } from "http";
 import { GoogleGenAI } from "@google/genai";
-import { createServer as createViteServer } from "vite";
 
-dotenv.config();
+// Vercel Serverless Function handler for /api/chat
+export default async function handler(req: any, res: any) {
+  // CORS Headers
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
 
-const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-
-app.use(express.json({ limit: "10mb" }));
-
-// Initialize Google Gemini Client
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      "User-Agent": "aistudio-build",
-    },
-  },
-});
-
-// Health check endpoint
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", service: "MyStair AI Assistant Server" });
-});
-
-// In-Memory Database Storage for Profiles & Diaries (Syncable with external Render DB)
-const userProfilesDb: Record<string, any> = {};
-const userDiariesDb: Record<string, any[]> = {};
-
-// Helper to proxy requests to Render Backend if RENDER_BACKEND_URL is set
-const RENDER_BACKEND_URL = process.env.RENDER_BACKEND_URL || process.env.RENDER_API_URL;
-
-// 1. User Profile API Endpoints
-app.get("/api/profile", async (req, res) => {
-  const userId = (req.query.userId as string) || "default_user";
-
-  if (RENDER_BACKEND_URL) {
-    try {
-      const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/profile?userId=${encodeURIComponent(userId)}`);
-      if (renderRes.ok) {
-        const data = await renderRes.json();
-        return res.json(data);
-      }
-    } catch (e) {
-      console.warn("Render backend proxy error for profile, using fallback DB:", e);
-    }
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
   }
 
-  const profile = userProfilesDb[userId] || null;
-  return res.json({ status: "success", userId, profile });
-});
-
-app.post("/api/profile", async (req, res) => {
-  const { userId, profile } = req.body;
-  const targetUid = userId || profile?.uid || "default_user";
-
-  if (RENDER_BACKEND_URL) {
-    try {
-      const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/profile`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: targetUid, profile })
-      });
-      if (renderRes.ok) {
-        const data = await renderRes.json();
-        return res.json(data);
-      }
-    } catch (e) {
-      console.warn("Render backend proxy error for saving profile, using fallback DB:", e);
-    }
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  userProfilesDb[targetUid] = {
-    ...profile,
-    uid: targetUid,
-    updatedAt: new Date().toISOString()
-  };
-
-  return res.json({ status: "success", userId: targetUid, profile: userProfilesDb[targetUid] });
-});
-
-// 2. User Growth Diary API Endpoints
-app.get("/api/diaries", async (req, res) => {
-  const userId = (req.query.userId as string) || "default_user";
-
-  if (RENDER_BACKEND_URL) {
-    try {
-      const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/diaries?userId=${encodeURIComponent(userId)}`);
-      if (renderRes.ok) {
-        const data = await renderRes.json();
-        return res.json(data);
-      }
-    } catch (e) {
-      console.warn("Render backend proxy error for fetching diaries, using fallback DB:", e);
-    }
-  }
-
-  const diaries = userDiariesDb[userId] || [];
-  return res.json({ status: "success", userId, diaries });
-});
-
-app.post("/api/diaries", async (req, res) => {
-  const { userId, diary } = req.body;
-  const targetUid = userId || diary?.userId || "default_user";
-
-  if (RENDER_BACKEND_URL) {
-    try {
-      const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/diaries`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: targetUid, diary })
-      });
-      if (renderRes.ok) {
-        const data = await renderRes.json();
-        return res.json(data);
-      }
-    } catch (e) {
-      console.warn("Render backend proxy error for adding diary, using fallback DB:", e);
-    }
-  }
-
-  if (!userDiariesDb[targetUid]) {
-    userDiariesDb[targetUid] = [];
-  }
-
-  const existingIndex = userDiariesDb[targetUid].findIndex(d => d.id === diary.id);
-  if (existingIndex >= 0) {
-    userDiariesDb[targetUid][existingIndex] = diary;
-  } else {
-    userDiariesDb[targetUid].unshift(diary);
-  }
-
-  return res.json({ status: "success", userId: targetUid, diary });
-});
-
-app.delete("/api/diaries/:id", async (req, res) => {
-  const diaryId = req.params.id;
-  const userId = (req.query.userId as string) || "default_user";
-
-  if (RENDER_BACKEND_URL) {
-    try {
-      const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/diaries/${encodeURIComponent(diaryId)}?userId=${encodeURIComponent(userId)}`, {
-        method: "DELETE"
-      });
-      if (renderRes.ok) {
-        const data = await renderRes.json();
-        return res.json(data);
-      }
-    } catch (e) {
-      console.warn("Render backend proxy error for deleting diary:", e);
-    }
-  }
-
-  if (userDiariesDb[userId]) {
-    userDiariesDb[userId] = userDiariesDb[userId].filter(d => d.id !== diaryId);
-  }
-
-  return res.json({ status: "success", message: "Diary deleted successfully" });
-});
-
-// Main AI Chat Route
-app.post("/api/chat", async (req, res) => {
   try {
-    const { message, chatHistory, userProfile, diaries } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "Gemini API 키가 설정되지 않았습니다. .env 환경변수를 확인하세요." });
+    }
+
+    const ai = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
+
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
+    const { message, chatHistory, userProfile, diaries } = body;
 
     if (!message || typeof message !== "string" || !message.trim()) {
       return res.status(400).json({ error: "질문 내용이 없습니다." });
@@ -208,7 +81,6 @@ ${d.content || ""}
 `
         : "[성장 다이어리 기록 없음 - 자소서 작성 팁 및 예시 경험 작성 가이드 제공]";
 
-    // System instruction embedding portal domain knowledge
     const systemInstruction = `
 너는 마이스터고 및 특성화고 학생들을 위한 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
 너는 대한민국 대표 공공 및 민간 취업/진로 포털 데이터에 기반한 최고 수준의 도메인 지식을 갖추고 있어:
@@ -251,7 +123,6 @@ ${d.content || ""}
 친절하고 따뜻하며, 학생에게 커다란 동기부여와 실질적인 도움을 주는 전문적인 한국어로 응답해줘.
 `;
 
-    // Prepare chat history if present
     let contents: any[] = [];
     if (Array.isArray(chatHistory) && chatHistory.length > 0) {
       contents = chatHistory.map((item: any) => ({
@@ -289,7 +160,7 @@ ${d.content || ""}
     });
 
     const replyText = response.text || "답변을 생성하지 못했습니다. 다시 시도해주세요.";
-    return res.json({ response: replyText });
+    return res.status(200).json({ response: replyText });
   } catch (error: any) {
     console.error("Gemini API Error in /api/chat:", error);
     return res.status(500).json({
@@ -297,26 +168,4 @@ ${d.content || ""}
       details: error?.message || String(error),
     });
   }
-});
-
-async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (_req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`MyStair Full-Stack Server listening on http://0.0.0.0:${PORT}`);
-  });
 }
-
-startServer();

@@ -1,25 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { 
   auth, 
-  db, 
   googleProvider, 
   signInWithPopup, 
   signOut as firebaseSignOut, 
   onAuthStateChanged,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  orderBy,
   FirebaseUser,
-  signInAnonymously,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  signInAnonymously
 } from '../lib/firebase';
 
 export interface UserProfileData {
@@ -80,8 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Fetch profile from Firestore
-        await loadUserProfile(currentUser);
+        loadUserProfile(currentUser);
       } else {
         setUserProfile(null);
       }
@@ -91,44 +77,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const loadUserProfile = async (currentUser: FirebaseUser) => {
-    try {
-      const userRef = doc(db, 'users', currentUser.uid);
-      const docSnap = await getDoc(userRef);
-
-      if (docSnap.exists()) {
-        setUserProfile(docSnap.data() as UserProfileData);
-      } else {
-        // Initialize user profile in Firestore
-        const newProfile: UserProfileData = {
-          uid: currentUser.uid,
-          name: currentUser.displayName || '마이스터 인재',
-          email: currentUser.email || 'user@mystair.com',
-          ...DEFAULT_PROFILE,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        await setDoc(userRef, newProfile);
-        setUserProfile(newProfile);
+  const loadUserProfile = (currentUser: FirebaseUser) => {
+    const saved = localStorage.getItem('mystair_local_user_profile');
+    if (saved) {
+      try {
+        setUserProfile(JSON.parse(saved));
+        return;
+      } catch (e) {
+        console.error('Error parsing local user profile:', e);
       }
-    } catch (error) {
-      console.error('Error loading user profile:', error);
-      // Fallback local state if offline or permission issue
-      setUserProfile({
-        uid: currentUser.uid,
-        name: currentUser.displayName || '마이스터 인재',
-        email: currentUser.email || 'user@mystair.com',
-        ...DEFAULT_PROFILE
-      });
     }
+
+    const newProfile: UserProfileData = {
+      uid: currentUser.uid,
+      name: currentUser.displayName || '마이스터 인재',
+      email: currentUser.email || 'user@mystair.com',
+      ...DEFAULT_PROFILE,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem('mystair_local_user_profile', JSON.stringify(newProfile));
+    setUserProfile(newProfile);
   };
 
   const loginWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Google login failed:', error);
-      throw error;
+      if (error?.code === 'auth/unauthorized-domain') {
+        throw new Error('현재 배포 도메인(Vercel/Render)이 Firebase의 [승인된 도메인]에 등록되지 않았습니다.');
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        throw new Error('구글 로그인 창이 닫혔습니다.');
+      }
+      throw new Error(error?.message || '구글 로그인 중 오류가 발생했습니다.');
     }
   };
 
@@ -152,60 +134,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfileInFirestore = async (data: Partial<UserProfileData>) => {
-    if (!user) return;
-    try {
-      const updated = {
-        ...userProfile,
-        ...data,
-        updatedAt: new Date().toISOString()
-      } as UserProfileData;
+    const currentUid = user ? user.uid : 'local-user';
+    const updated = {
+      uid: currentUid,
+      ...DEFAULT_PROFILE,
+      ...userProfile,
+      ...data,
+      updatedAt: new Date().toISOString()
+    } as UserProfileData;
 
-      const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, updated, { merge: true });
-      setUserProfile(updated);
-    } catch (error) {
-      console.error('Failed to update profile in Firestore:', error);
-      // Fallback update local state
-      if (userProfile) {
-        setUserProfile({ ...userProfile, ...data });
-      }
-    }
+    localStorage.setItem('mystair_local_user_profile', JSON.stringify(updated));
+    setUserProfile(updated);
   };
 
   const fetchDiaries = async (): Promise<DiaryEntry[]> => {
-    if (!user) return [];
     try {
-      const q = query(
-        collection(db, 'diaries'),
-        where('userId', '==', user.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const entries: DiaryEntry[] = [];
-      querySnapshot.forEach((docSnap) => {
-        entries.push({ id: docSnap.id, ...docSnap.data() } as DiaryEntry);
-      });
-      // Sort client-side by date descending
-      return entries.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+      const saved = localStorage.getItem('mystair_local_diaries');
+      if (saved) {
+        const entries: DiaryEntry[] = JSON.parse(saved);
+        return entries.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
+      }
     } catch (error) {
-      console.error('Error fetching diaries:', error);
-      return [];
+      console.error('Error fetching local diaries:', error);
     }
+    return [];
   };
 
   const saveDiary = async (diary: Omit<DiaryEntry, 'id' | 'userId'>): Promise<string> => {
-    if (!user) throw new Error('로그인이 필요합니다.');
+    const newId = Date.now().toString();
     const newEntry: DiaryEntry = {
       ...diary,
-      userId: user.uid,
+      id: newId,
+      userId: user ? user.uid : 'local-user',
       createdAt: new Date().toISOString()
     };
-    const docRef = await addDoc(collection(db, 'diaries'), newEntry);
-    return docRef.id;
+
+    const currentDiaries = await fetchDiaries();
+    const updated = [newEntry, ...currentDiaries];
+    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
+    return newId;
   };
 
   const deleteDiary = async (diaryId: string) => {
-    if (!user) return;
-    await deleteDoc(doc(db, 'diaries', diaryId));
+    const currentDiaries = await fetchDiaries();
+    const updated = currentDiaries.filter(d => d.id !== diaryId);
+    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
   };
 
   return (
@@ -231,3 +204,4 @@ export const useAuth = () => {
   if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };
+
