@@ -1,6 +1,62 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { GoogleGenAI } from "@google/genai";
 
+// Robust Gemini content generation with key rotation & fallback
+async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
+  const keys = [
+    process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY2,
+    process.env.GEMINI_API_KEY3,
+    process.env.GEMINI_API_KEY4,
+    process.env.VITE_GEMINI_API_KEY
+  ].filter(Boolean) as string[];
+
+  if (keys.length === 0) {
+    throw new Error("Gemini API 키가 설정되지 않았습니다. Vercel 환경 변수를 설정해주세요.");
+  }
+
+  // Choose a random starting key to distribute traffic, then rotate through the rest as fallback on error (like 429)
+  const startIndex = Math.floor(Math.random() * keys.length);
+  let lastError: any = null;
+
+  for (let i = 0; i < keys.length; i++) {
+    const keyIndex = (startIndex + i) % keys.length;
+    const apiKey = keys[keyIndex];
+    const keyName = apiKey === process.env.GEMINI_API_KEY ? "GEMINI_API_KEY" :
+                    apiKey === process.env.GEMINI_API_KEY2 ? "GEMINI_API_KEY2" :
+                    apiKey === process.env.GEMINI_API_KEY3 ? "GEMINI_API_KEY3" :
+                    apiKey === process.env.GEMINI_API_KEY4 ? "GEMINI_API_KEY4" : "VITE_GEMINI_API_KEY";
+
+    try {
+      const ai = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: {
+          headers: {
+            "User-Agent": "aistudio-build",
+          },
+        },
+      });
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: contents,
+        config: {
+          systemInstruction: systemInstruction,
+          temperature: 0.7,
+        },
+      });
+
+      console.log(`Successfully generated content using ${keyName}`);
+      return response;
+    } catch (error: any) {
+      console.warn(`[Gemini API Warning] ${keyName} failed. Error: ${error?.message || error}. Trying next key...`);
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("모든 설정된 Gemini API 키가 응답 생성에 실패했습니다.");
+}
+
 // Vercel Serverless Function handler for /api/chat
 export default async function handler(req: any, res: any) {
   // CORS Headers
@@ -22,20 +78,6 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({ error: "Gemini API 키가 설정되지 않았습니다. .env 환경변수를 확인하세요." });
-    }
-
-    const ai = new GoogleGenAI({
-      apiKey: apiKey,
-      httpOptions: {
-        headers: {
-          "User-Agent": "aistudio-build",
-        },
-      },
-    });
-
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const { message, chatHistory, userProfile, diaries } = body;
 
@@ -150,19 +192,18 @@ ${d.content || ""}
       ];
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: contents,
-      config: {
-        systemInstruction: systemInstruction,
-        temperature: 0.7,
-      },
-    });
+    const response = await generateContentWithFallback(contents, systemInstruction);
 
     const replyText = response.text || "답변을 생성하지 못했습니다. 다시 시도해주세요.";
     return res.status(200).json({ response: replyText });
   } catch (error: any) {
     console.error("Gemini API Error in /api/chat:", error);
+    const errStr = String(error?.message || error);
+    if (errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("Quota exceeded")) {
+      return res.status(200).json({
+        response: "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 친절하게 답변해 드릴게요! 😊"
+      });
+    }
     return res.status(500).json({
       error: "AI 대화 도중 오류가 발생했습니다.",
       details: error?.message || String(error),

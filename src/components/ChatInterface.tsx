@@ -96,12 +96,21 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
   };
 
   const generateClientGemini = async (text: string, profile: any, diaries: any) => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
-    if (!apiKey) {
+    const keys = [
+      import.meta.env.VITE_GEMINI_API_KEY,
+      import.meta.env.VITE_GEMINI_API_KEY2,
+      import.meta.env.VITE_GEMINI_API_KEY3,
+      import.meta.env.VITE_GEMINI_API_KEY4,
+      (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : ''),
+      (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY2 : ''),
+      (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY3 : ''),
+      (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY4 : '')
+    ].filter(Boolean) as string[];
+
+    if (keys.length === 0) {
       throw new Error('Vercel/Render 환경변수 설정에서 VITE_GEMINI_API_KEY 또는 GEMINI_API_KEY를 설정해주셔야 AI 응답이 가능합니다.');
     }
 
-    const ai = new GoogleGenAI({ apiKey });
     const profileText = profile
       ? `
 [사용자 프로필 데이터]
@@ -172,16 +181,34 @@ ${d.content || ""}
       },
     ];
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: contents,
-      config: {
-        systemInstruction: systemInstruction,
-        temperature: 0.7,
-      },
-    });
+    // Client-side Key Rotation & Fallback Loop
+    const startIndex = Math.floor(Math.random() * keys.length);
+    let lastError: any = null;
 
-    return response.text || "답변을 생성하지 못했습니다.";
+    for (let i = 0; i < keys.length; i++) {
+      const keyIndex = (startIndex + i) % keys.length;
+      const apiKey = keys[keyIndex];
+
+      try {
+        const ai = new GoogleGenAI({ apiKey });
+        const response = await ai.models.generateContent({
+          model: "gemini-3.6-flash",
+          contents: contents,
+          config: {
+            systemInstruction: systemInstruction,
+            temperature: 0.7,
+          },
+        });
+
+        console.log(`Client direct direct API call succeeded using key index ${keyIndex}`);
+        return response.text || "답변을 생성하지 못했습니다.";
+      } catch (err: any) {
+        console.warn(`Client direct API key index ${keyIndex} failed:`, err?.message || err);
+        lastError = err;
+      }
+    }
+
+    throw lastError || new Error("모든 클라이언트 Gemini API 키 호출이 실패했습니다.");
   };
 
   // Helper function for smooth character-by-character typewriter animation

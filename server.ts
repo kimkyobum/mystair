@@ -11,15 +11,61 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json({ limit: "10mb" }));
 
-// Initialize Google Gemini Client
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      "User-Agent": "aistudio-build",
-    },
-  },
-});
+// Robust Gemini content generation with key rotation & fallback
+async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
+  const keys = [
+    process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY2,
+    process.env.GEMINI_API_KEY3,
+    process.env.GEMINI_API_KEY4,
+    process.env.VITE_GEMINI_API_KEY
+  ].filter(Boolean) as string[];
+
+  if (keys.length === 0) {
+    throw new Error("Gemini API 키가 설정되지 않았습니다. 환경 변수를 설정해주세요.");
+  }
+
+  // Choose a random starting key to distribute traffic, then rotate through the rest as fallback on error (like 429)
+  const startIndex = Math.floor(Math.random() * keys.length);
+  let lastError: any = null;
+
+  for (let i = 0; i < keys.length; i++) {
+    const keyIndex = (startIndex + i) % keys.length;
+    const apiKey = keys[keyIndex];
+    const keyName = apiKey === process.env.GEMINI_API_KEY ? "GEMINI_API_KEY" :
+                    apiKey === process.env.GEMINI_API_KEY2 ? "GEMINI_API_KEY2" :
+                    apiKey === process.env.GEMINI_API_KEY3 ? "GEMINI_API_KEY3" :
+                    apiKey === process.env.GEMINI_API_KEY4 ? "GEMINI_API_KEY4" : "VITE_GEMINI_API_KEY";
+
+    try {
+      const ai = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: {
+          headers: {
+            "User-Agent": "aistudio-build",
+          },
+        },
+      });
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: contents,
+        config: {
+          systemInstruction: systemInstruction,
+          temperature: 0.7,
+        },
+      });
+
+      console.log(`Successfully generated content using ${keyName}`);
+      return response;
+    } catch (error: any) {
+      console.warn(`[Gemini API Warning] ${keyName} failed. Error: ${error?.message || error}. Trying next key...`);
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("모든 설정된 Gemini API 키가 응답 생성에 실패했습니다.");
+}
 
 // Health check endpoint
 app.get("/api/health", (_req, res) => {
@@ -260,14 +306,7 @@ ${d.content || ""}
       ];
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: contents,
-      config: {
-        systemInstruction: systemInstruction,
-        temperature: 0.7,
-      },
-    });
+    const response = await generateContentWithFallback(contents, systemInstruction);
 
     const replyText = response.text || "답변을 생성하지 못했습니다. 다시 시도해주세요.";
     return res.json({ response: replyText });
