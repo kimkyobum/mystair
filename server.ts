@@ -14,9 +14,10 @@ app.use(express.json({ limit: "10mb" }));
 // Robust Gemini content generation with key rotation & fallback
 async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
   const keys = [
-    process.env.VITE_GEMINI_API_KEY2,
-    process.env.VITE_GEMINI_API_KEY3,
-    process.env.VITE_GEMINI_API_KEY4,
+    process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY2,
+    process.env.GEMINI_API_KEY3,
+    process.env.GEMINI_API_KEY4,
     process.env.VITE_GEMINI_API_KEY
   ].filter(Boolean) as string[];
 
