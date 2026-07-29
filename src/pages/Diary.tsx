@@ -56,6 +56,45 @@ export default function Diary() {
   // View mode: 'calendar' or 'list'
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryText, setSummaryText] = useState<string | null>(null);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+
+  const handleSummarizeDiaries = async () => {
+    setShowSummaryModal(true);
+    setSummaryLoading(true);
+    setSummaryText(null);
+
+    const profileData = localStorage.getItem('mystair_profile') || '';
+    
+    const message = "지금까지 작성한 모든 성장 다이어리를 분석해서 자기소개서에 바로 쓸 수 있도록 핵심 성과, 극복 경험, 배운 점, 직무 역량 등을 구조화하여 깔끔한 마크다운으로 요약정리해줘.";
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          chatHistory: [],
+          userProfile: profileData ? JSON.parse(profileData) : null,
+          diaries: diaries
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setSummaryText(data.response || '요약 결과가 없습니다.');
+      } else {
+        setSummaryText('서버에서 요약을 생성하지 못했습니다.');
+      }
+    } catch (e) {
+      console.error(e);
+      setSummaryText('요약 중 오류가 발생했습니다.');
+    } finally {
+      setSummaryLoading(false);
+    }
+  };
+
   // Calendar State
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // 0-indexed
@@ -299,20 +338,18 @@ export default function Diary() {
               <span>달력 보기</span>
             </button>
             <button
-              onClick={() => setViewMode('list')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                viewMode === 'list' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
-              }`}
+              onClick={() => handleSummarizeDiaries()}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-white hover:bg-slate-700"
             >
-              <List size={14} />
-              <span>목록 보기</span>
+              <Sparkles size={14} className="text-amber-400" />
+              <span>자소서 요약</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col ${viewMode === 'calendar' ? 'overflow-hidden' : 'overflow-y-auto pb-8'}`}>
+      <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-hidden`}>
 
         {/* Exam Schedule Settings Collapsible Box */}
         {showExamSettings && (
@@ -465,8 +502,7 @@ export default function Diary() {
         )}
 
         {/* CALENDAR VIEW (Sleek Cosmic Theme matching starry sky environment) */}
-        {viewMode === 'calendar' ? (
-          <div className="flex-1 min-h-0 bg-slate-900/40 backdrop-blur-md rounded-3xl p-4 sm:p-5 text-white border-2 border-white/15 shadow-[0_12px_40px_-12px_rgba(99,102,241,0.25)] flex flex-col justify-between relative z-10">
+        <div className="flex-1 min-h-0 bg-slate-900/40 backdrop-blur-md rounded-3xl p-4 sm:p-5 text-white border-2 border-white/15 shadow-[0_12px_40px_-12px_rgba(99,102,241,0.25)] flex flex-col justify-between relative z-10">
             
             {/* Header: Month title, Year subtitle, & Navigation controls */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b border-white/5 flex-none">
@@ -641,91 +677,37 @@ export default function Diary() {
               })}
             </div>
           </div>
-        ) : (
-          /* LIST VIEW */
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-wider">
-                나의 성장 일지 목록 ({diaries.length}개)
+      </main>
+
+      {/* SUMMARY MODAL */}
+      {showSummaryModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-indigo-500/50 rounded-3xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 flex-none">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Sparkles size={20} className="text-amber-400" />
+                <span>AI 자소서 경험 요약</span>
               </h3>
-              <button
-                onClick={() => handleOpenDayModal(new Date().toISOString().split('T')[0])}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
-              >
-                <Plus size={16} />
-                <span>새 성장 일지 작성</span>
+              <button onClick={() => setShowSummaryModal(false)} className="text-slate-400 hover:text-white p-1">
+                <X size={20} />
               </button>
             </div>
-
-            {loading ? (
-              <div className="text-center py-12 text-slate-500 text-sm font-medium">
-                기록을 불러오는 중...
-              </div>
-            ) : diaries.length === 0 ? (
-              <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
-                <BookOpen size={36} className="mx-auto text-slate-600" />
-                <p className="text-slate-400 text-sm font-bold">아직 작성된 성장 다이어리가 없습니다.</p>
-                <p className="text-slate-500 text-xs">상단의 버튼을 눌러 첫 일기를 작성해 보세요!</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-4">
-                {diaries.map(diary => (
-                  <div 
-                    key={diary.id}
-                    className="bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all shadow-md space-y-3 relative group"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{diary.mood || '🔥'}</span>
-                          <h4 className="text-lg font-extrabold text-white">{diary.title}</h4>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs font-medium text-slate-400">
-                          <span className="flex items-center gap-1">
-                            <CalendarIcon size={13} className="text-indigo-400" />
-                            <span>{diary.date}</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleOpenDayModal(diary.date)}
-                          className="opacity-60 group-hover:opacity-100 hover:text-indigo-300 text-slate-400 p-2 transition cursor-pointer"
-                          title="수정"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(diary.id)}
-                          className="opacity-60 group-hover:opacity-100 hover:text-red-400 text-slate-500 p-2 transition cursor-pointer"
-                          title="삭제"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className="text-sm font-normal text-slate-300 leading-relaxed whitespace-pre-wrap pt-1">
-                      {diary.content}
-                    </p>
-
-                    {diary.tags && diary.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-2">
-                        {diary.tags.map(t => (
-                          <span key={t} className="bg-slate-800 text-indigo-300 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-slate-700">
-                            #{t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            
+            <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar markdown-body">
+              {summaryLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                  <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                  <p className="text-sm font-bold text-slate-400">다이어리 기록을 분석하여 자소서 소재를 추출하고 있습니다...</p>
+                </div>
+              ) : (
+                <div className="text-slate-300 text-sm whitespace-pre-wrap leading-relaxed">
+                  {summaryText}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
 
       {/* DIARY FORM MODAL FOR SELECTED DAY */}
       {showFormModal && (

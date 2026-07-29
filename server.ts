@@ -3,6 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import { Pool } from "pg";
 
 dotenv.config();
 
@@ -10,6 +11,38 @@ const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json({ limit: "10mb" }));
+
+// Initialize PostgreSQL connection if DATABASE_URL is available
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes("render.com") 
+    ? { rejectUnauthorized: false } 
+    : undefined
+});
+
+if (process.env.DATABASE_URL) {
+  pool.query(`
+    CREATE TABLE IF NOT EXISTS user_profiles (
+      uid VARCHAR(255) PRIMARY KEY,
+      profile_data JSONB NOT NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE IF NOT EXISTS user_diaries (
+      id VARCHAR(255) PRIMARY KEY,
+      user_id VARCHAR(255) NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      content TEXT NOT NULL,
+      date VARCHAR(20) NOT NULL,
+      mood VARCHAR(50),
+      tags JSONB,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `).then(() => {
+    console.log("PostgreSQL Database tables verified/created.");
+  }).catch(err => {
+    console.error("Error creating PostgreSQL tables:", err);
+  });
+}
 
 // Robust Gemini content generation with key rotation & fallback
 async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
@@ -83,6 +116,19 @@ const RENDER_BACKEND_URL = process.env.RENDER_BACKEND_URL || process.env.RENDER_
 app.get("/api/profile", async (req, res) => {
   const userId = (req.query.userId as string) || "default_user";
 
+  if (process.env.DATABASE_URL) {
+    try {
+      const result = await pool.query('SELECT profile_data FROM user_profiles WHERE uid = $1', [userId]);
+      if (result.rows.length > 0) {
+        return res.json({ status: "success", userId, profile: result.rows[0].profile_data });
+      } else {
+        return res.json({ status: "success", userId, profile: null });
+      }
+    } catch (e) {
+      console.warn("PostgreSQL profile fetch error, using fallback DB:", e);
+    }
+  }
+
   if (RENDER_BACKEND_URL) {
     try {
       const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/profile?userId=${encodeURIComponent(userId)}`);
@@ -102,6 +148,22 @@ app.get("/api/profile", async (req, res) => {
 app.post("/api/profile", async (req, res) => {
   const { userId, profile } = req.body;
   const targetUid = userId || profile?.uid || "default_user";
+
+  if (process.env.DATABASE_URL) {
+    try {
+      const profileData = { ...profile, uid: targetUid };
+      await pool.query(
+        `INSERT INTO user_profiles (uid, profile_data, updated_at) 
+         VALUES ($1, $2, CURRENT_TIMESTAMP)
+         ON CONFLICT (uid) DO UPDATE 
+         SET profile_data = EXCLUDED.profile_data, updated_at = CURRENT_TIMESTAMP`,
+        [targetUid, JSON.stringify(profileData)]
+      );
+      return res.json({ status: "success", userId: targetUid, profile: profileData });
+    } catch (e) {
+      console.warn("PostgreSQL profile save error, using fallback DB:", e);
+    }
+  }
 
   if (RENDER_BACKEND_URL) {
     try {
@@ -132,6 +194,25 @@ app.post("/api/profile", async (req, res) => {
 app.get("/api/diaries", async (req, res) => {
   const userId = (req.query.userId as string) || "default_user";
 
+  if (process.env.DATABASE_URL) {
+    try {
+      const result = await pool.query('SELECT * FROM user_diaries WHERE user_id = $1 ORDER BY date DESC, created_at DESC', [userId]);
+      const diaries = result.rows.map(row => ({
+        id: row.id,
+        userId: row.user_id,
+        title: row.title,
+        content: row.content,
+        date: row.date,
+        mood: row.mood,
+        tags: row.tags,
+        createdAt: row.created_at
+      }));
+      return res.json({ status: "success", userId, diaries });
+    } catch (e) {
+      console.warn("PostgreSQL diaries fetch error, using fallback DB:", e);
+    }
+  }
+
   if (RENDER_BACKEND_URL) {
     try {
       const renderRes = await fetch(`${RENDER_BACKEND_URL}/api/diaries?userId=${encodeURIComponent(userId)}`);
@@ -151,6 +232,21 @@ app.get("/api/diaries", async (req, res) => {
 app.post("/api/diaries", async (req, res) => {
   const { userId, diary } = req.body;
   const targetUid = userId || diary?.userId || "default_user";
+
+  if (process.env.DATABASE_URL) {
+    try {
+      await pool.query(
+        `INSERT INTO user_diaries (id, user_id, title, content, date, mood, tags)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT (id) DO UPDATE
+         SET title = EXCLUDED.title, content = EXCLUDED.content, date = EXCLUDED.date, mood = EXCLUDED.mood, tags = EXCLUDED.tags`,
+        [diary.id, targetUid, diary.title, diary.content, diary.date, diary.mood, JSON.stringify(diary.tags || [])]
+      );
+      return res.json({ status: "success", userId: targetUid, diary });
+    } catch (e) {
+      console.warn("PostgreSQL diary save error, using fallback DB:", e);
+    }
+  }
 
   if (RENDER_BACKEND_URL) {
     try {
@@ -185,6 +281,15 @@ app.post("/api/diaries", async (req, res) => {
 app.delete("/api/diaries/:id", async (req, res) => {
   const diaryId = req.params.id;
   const userId = (req.query.userId as string) || "default_user";
+
+  if (process.env.DATABASE_URL) {
+    try {
+      await pool.query('DELETE FROM user_diaries WHERE id = $1 AND user_id = $2', [diaryId, userId]);
+      return res.json({ status: "success", message: "Diary deleted successfully" });
+    } catch (e) {
+      console.warn("PostgreSQL diary delete error, using fallback DB:", e);
+    }
+  }
 
   if (RENDER_BACKEND_URL) {
     try {
@@ -260,22 +365,17 @@ ${d.content || ""}
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
-   - **절대 길게 말하지 말고 1~2문장 이내로 아주 짧고 간결하게 대답해!**
-   - 친근하고 반갑게 인사를 건네며 진로나 취업 관련 도움이 필요할 때 알려달라고 편하게 대화해.
-   - 예시: "안녕하세요! 👋 반가워요. 오늘 어떤 이야기나 진로 고민이 있으신가요? 편하게 말씀해 주세요! 😊"
+   - **반드시 2줄 이내로 매우 짧고 간결하게 대답해!**
+   - 길게 설명하지 말고, 친근하게 인사하며 도움이 필요한 점이 있는지 물어봐.
 
-2. 🌿 **단일 주제 질문** (예: "전기기능사 시험 난이도 어때?", "자소서 작성 팁 알려줘", "삼성전자 직무 추천해줘" 등):
-   - 거창한 5단계 전체 리포트 대신, **물어본 핵심 주제에 대해서만 2~4문장으로 짧고 명쾌하게 가이드를 제공**해.
+2. 🌿 **단일 주제 질문 및 가벼운 진로 질문** (예: "전기기능사 시험 난이도 어때?", "자소서 작성 팁 알려줘"):
+   - **2~3줄 이내로 핵심만 짧고 명쾌하게 가이드를 제공해.**
 
-3. 🎯 **종합 진로/취업 컨설팅 요청** (예: "내 프로필과 다이어리 기반 종합 진로 리포트 써줘", "나한테 맞는 기업, 자격증, 액션플랜 전체 분석해줘" 등 진지한 전체 컨설팅 요청):
-   - 제공된 [사용자 프로필]과 [성장 다이어리]를 종합 분석하여 아래 5가지 필수 구조와 깔끔한 마크다운(#, ##, -, **강조**), 이모지로 정성껏 보고서를 작성해줘:
-     1. 🎯 **맞춤 추천 직무**
-     2. 🏢 **취업 가능 추천 기업**
-     3. ⚡ **더 갖추어야 할 직무 역량**
-     4. 📖 **성장다이어리 경험 추출**
-     5. 💡 **MyStair 맞춤형 취업 Action Plan**
+3. 🎯 **진로와 관련된 진지하고 많은 내용이 필요한 종합 컨설팅 질문** (예: "내 프로필과 다이어리 기반 종합 진로 리포트 써줘", "나한테 맞는 기업, 자격증, 액션플랜 전체 분석해줘"):
+   - **5줄에서 10줄 정도로 상세하게 답변해줘.**
+   - 가독성을 위해 마크다운과 이모지를 적절히 사용하되, 너무 길어지지 않게 10줄을 넘기지 않도록 요약해서 답변해줘.
 
-진지한 전체 컨설팅 요청이 아니라면, 무조건 대답 길이를 획기적으로 줄여서 핵심만 짧고 다정하게 대답해줘.
+위 규칙을 엄격하게 지켜서 답변 길이를 조절해줘.
 `;
 
     // Prepare chat history if present

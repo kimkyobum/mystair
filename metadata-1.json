@@ -1,0 +1,6 @@
+{
+  "name": "3D Infinity Dashboard",
+  "description": "A modern web dashboard with an interactive 3D Spline background and Toss-style scroll interactions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,42 @@
+      {/* UNFAIR ADVANTAGE Section */}
+      <section className="mt-48">
+        <FadeIn>
+          <div className="mb-12">
+            <h3 className="text-teal-400 font-bold tracking-widest text-sm mb-4 uppercase">Unfair Advantage</h3>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">MyStair만의 독보적인 기술력</h2>
+            <p className="text-gray-400 text-lg">기존 AI 생성 방식의 한계를 뛰어넘는 마이스터고 특화 솔루션을 제공합니다.</p>
+          </div>
+        </FadeIn>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <FadeIn delay={0.1}>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 h-full flex flex-col hover:bg-white/10 transition-all duration-300 pointer-events-auto relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500 ease-out">
+                <Cpu className="w-48 h-48" />
+              </div>
+              <div className="bg-purple-500/20 p-4 rounded-2xl inline-block mb-8 border border-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.2)] w-fit relative z-10">
+                <Cpu className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white relative z-10">전공/실습 특화 AI 프롬프트</h3>
+              <p className="text-gray-400 leading-relaxed text-lg relative z-10">
+                일반적인 범용 AI가 아닌, 마이스터고와 특성화고의 전문적인 실습 및 프로젝트 도메인에 맞추어 미세 조정된 프롬프트 알고리즘을 사용합니다. 기계적인 문장이 아닌 학생의 진짜 경험을 돋보이게 합니다.
+              </p>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 h-full flex flex-col hover:bg-white/10 transition-all duration-300 pointer-events-auto relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity transform group-hover:scale-110 duration-500 ease-out">
+                <Network className="w-48 h-48" />
+              </div>
+              <div className="bg-teal-500/20 p-4 rounded-2xl inline-block mb-8 border border-teal-500/30 shadow-[0_0_30px_rgba(45,212,191,0.2)] w-fit relative z-10">
+                <Network className="w-8 h-8 text-teal-400" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-white relative z-10">NCS 역량 매핑 파이프라인</h3>
+              <p className="text-gray-400 leading-relaxed text-lg relative z-10">
+                학생이 기록한 캘린더 데이터베이스와 기업의 NCS 직무 역량 지표를 실시간으로 교차 분석하는 독자적인 추출 파이프라인을 구축했습니다. 가장 관련성 높은 에피소드만을 엄선하여 추천합니다.
+              </p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>

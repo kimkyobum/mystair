@@ -1,0 +1,6 @@
+        <div className="flex flex-col gap-4 max-w-3xl mx-auto">
+          {faqData.map((item, index) => (
+            <FAQItem key={index} q={item.q} a={item.a} index={index} />
+          ))}
+        </div>
+      </section>

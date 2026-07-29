@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './friend_site/LanguageContext';
+import MarketingApp from './friend_site/App';
 import Starfield from './components/Starfield';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -10,6 +13,21 @@ import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
 
 export default function App() {
+  const [showMainApp, setShowMainApp] = useState(() => sessionStorage.getItem('isLoggedIn') === 'true');
+
+  const handleLoginSuccess = () => {
+    sessionStorage.setItem('isLoggedIn', 'true');
+    setShowMainApp(true);
+  };
+
+  if (!showMainApp) {
+    return (
+      <LanguageProvider>
+        <MarketingApp onLoginSuccess={handleLoginSuccess} />
+      </LanguageProvider>
+    );
+  }
+
   return (
     <AuthProvider>
       <BrowserRouter>

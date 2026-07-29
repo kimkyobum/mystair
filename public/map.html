@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D South Korea Map</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+        <!-- 1. Pretendard 폰트 추가 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v3.2.1/dist/web/static/pretendard.css" />
+    <style>
+        @font-face {
+            font-family: 'GmarketSans';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+            font-weight: bold;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'GmarketSansLight';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000000; /* Deep space */
+            background-image: 
+                radial-gradient(ellipse at 50% 50%, rgba(15, 23, 42, 1), transparent 80%), 
+                radial-gradient(circle at 20% 80%, rgba(30, 58, 138, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(76, 29, 149, 0.3), transparent 50%),
+                linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9));
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+        }
+
+        .logo-link:hover .logo-icon {
+            transform: rotate(90deg);
+        }
+        #canvas-container {
+            position: absolute;
+            left: 320px;
+            width: calc(100vw - 320px);
+            height: 100vh;
+            display: block;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: calc(320px + (100vw - 320px) / 2);
+            transform: translate(-50%, -50%);
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            transition: opacity 0.5s ease;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px);
+            padding: 32px 48px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 50;
+        }
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #2dd4bf;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #sidebar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+        }
+        .sidebar-header {
+            padding: 32px 28px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+                .sidebar-header h2 {
+            margin: 0 0 12px 0;
+            font-family: 'GmarketSans', sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .search-container {
+            margin-top: 20px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: 'Pretendard', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            width: 16px;
+            height: 16px;
+        }
+        .sidebar-header .count {
+
+            display: inline-block;
+            background: rgba(45, 212, 191, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #2dd4bf;
+            font-weight: 600;
+        }
+        #school-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        #school-list::-webkit-scrollbar { width: 6px; }
+        #school-list::-webkit-scrollbar-track { background: transparent; }
+        #school-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        
+        .school-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .school-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 32px rgba(45, 212, 191, 0.15);
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+        .school-card.active-card {
+            border-color: #2dd4bf;
+            background: rgba(45, 212, 191, 0.1);
+            box-shadow: 0 4px 12px rgba(45, 212, 191, 0.2);
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .card-field { font-size: 12px; color: #94a3b8; font-weight: 500; }
+        .card-name { font-size: 15px; font-weight: 600; color: #ffffff; letter-spacing: -0.3px; }
+
+        #title-overlay {
+            position: absolute;
+            top: 24px;
+            left: 320px;
+            width: calc(100% - 320px);
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+                #title-overlay h1 {
+            margin: 0;
+            font-family: 'GmarketSans', sans-serif;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 30px rgba(255, 255, 255, 0.2);
+        }
+        
+        .region-group { margin-bottom: 24px; }
+        .region-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin: 0 0 12px 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .region-header::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 14px;
+            background: #2dd4bf;
+            border-radius: 2px;
+        }
+        .region-header .count {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .school-marker {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .marker-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .marker-label {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-top: 6px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-50%) scale(0.9) translateY(8px);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        
+        .school-marker:hover .marker-label {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1) translateY(0);
+            z-index: 100;
+        }
+        .school-marker:hover .marker-dot { 
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        .school-marker.active .marker-dot {
+            transform: scale(1.5);
+            border-color: #2dd4bf;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.8), 0 0 40px rgba(45, 212, 191, 0.4);
+        }
+        .school-marker.active .marker-label {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1) translateY(0);
+            z-index: 100;
+            border-color: #2dd4bf;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
+        }
+
+        .label-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .region-badge {
+            color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+            letter-spacing: -0.2px;
+        }
+        .field-text { color: #94a3b8; font-size: 11px; font-weight: 500;}
+        .school-name { font-weight: 600; color: #ffffff; font-size: 13px;}
+
+        /* 메인 사이트에 어울리는 고급스러운 다크 테마 포인트 컬러들 (Teal, Purple, Indigo, Rose, Blue) */
+        .bg-서울 { background-color: #6366f1; } .bg-인천 { background-color: #8b5cf6; }
+        .bg-경기 { background-color: #a855f7; } .bg-강원 { background-color: #d946ef; }
+        .bg-충남 { background-color: #ec4899; } .bg-충북 { background-color: #f43f5e; }
+        .bg-대전 { background-color: #f43f5e; } .bg-전북 { background-color: #f97316; }
+        .bg-광주 { background-color: #eab308; } .bg-전남 { background-color: #84cc16; }
+        .bg-경북 { background-color: #10b981; } .bg-대구 { background-color: #14b8a6; }
+        .bg-울산 { background-color: #06b6d4; } .bg-부산 { background-color: #0ea5e9; }
+        .bg-경남 { background-color: #3b82f6; }
+        
+        /* 마커 닷 색상을 부드럽고 빛나는 다크 테마 컬러로 통일감 있게 수정 */
+        .round-1, .round-6, .round-11, .round-16 { background-color: #2dd4bf; } /* Teal */
+        .round-2, .round-7, .round-12, .round-17 { background-color: #a855f7; } /* Purple */
+        .round-3, .round-8, .round-13, .round-18 { background-color: #6366f1; } /* Indigo */
+        .round-4, .round-9, .round-14, .round-19 { background-color: #ec4899; } /* Pink */
+        .round-5, .round-10, .round-15 { background-color: #3b82f6; } /* Blue */
+        .round-others { background-color: #2dd4bf; }
+        
+        #info {
+            position: absolute;
+            bottom: 24px;
+            left: 320px;
+            width: calc(100% - 320px);
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+            pointer-events: none;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- 좌측 목록창 추가 -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; color: white; width: fit-content;" class="logo-link">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #2dd4bf; transition: transform 0.7s ease-in-out;" class="logo-icon">
+                    <path d="M20 0L24.4903 15.5097L40 20L24.4903 24.4903L20 40L15.5097 24.4903L0 20L15.5097 15.5097L20 0Z" fill="currentColor"/>
+                </svg>
+                <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.05em; background: linear-gradient(to right, #fff, rgba(255,255,255,0.5)); -webkit-background-clip: text; color: transparent;">Mystair</span>
+            </a>
+                        <div>
+                <h2>전국 마이스터고</h2>
+                <div class="count" id="school-count">총 58개교 목록</div>
+                
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="school-search" class="search-input" placeholder="학교명, 지역, 분야 검색...">
+                </div>
+            </div>
+        </div>
+        <div id="school-list"></div>
+    </div>
+
+    <div id="title-overlay">
+        <h1>전국 마이스터고 지도</h1>
+    </div>
+    
+    <div id="loading">
+        <div class="spinner"></div>
+        <div>전국 마이스터고 3D 지도를 렌더링하고 있습니다...</div>
+    </div>
+    <div id="info">마우스를 드래그하여 지도를 회전하거나 스크롤하여 확대/축소할 수 있습니다.</div>
+    <div id="canvas-container"></div>
+
+    
+    <!-- Language Support -->
+    <script>
+        const mapTranslations = {
+            ko: {
+                'title': '전국 마이스터고',
+                'map_title': '전국 마이스터고 지도',
+                'loading': '전국 마이스터고 3D 지도를 렌더링하고 있습니다...',
+                'info': '마우스를 드래그하여 지도를 회전하거나 스크롤하여 확대/축소할 수 있습니다.',
+                'search_placeholder': '학교명, 지역, 분야 검색...',
+                'count_format': (count) => `총 ${count}개교 목록`,
+                'round': '차',
+                'field': '분야'
+            },
+            en: {
+                'title': 'Meister High Schools',
+                'map_title': 'Meister High School Map',
+                'loading': 'Rendering 3D map...',
+                'info': 'Drag to rotate, scroll to zoom.',
+                'search_placeholder': 'Search school, region, field...',
+                'count_format': (count) => `Total ${count} Schools`,
+                'round': 'Round',
+                'field': 'Field'
+            }
+        };
+
+        const regionMap = {
+            '서울': 'Seoul', '인천': 'Incheon', '부산': 'Busan', '대구': 'Daegu',
+            '광주': 'Gwangju', '대전': 'Daejeon', '울산': 'Ulsan', '세종': 'Sejong',
+            '경기': 'Gyeonggi', '강원': 'Gangwon', '충북': 'Chungbuk', '충남': 'Chungnam',
+            '전북': 'Jeonbuk', '전남': 'Jeonnam', '경북': 'Gyeongbuk', '경남': 'Gyeongnam',
+            '제주': 'Jeju'
+        };
+
+        function getCurrentLanguage() {
+            return localStorage.getItem('language') === 'en' ? 'en' : 'ko';
+        }
+
+        function updateTexts() {
+            const lang = getCurrentLanguage();
+            const t = mapTranslations[lang];
+
+            
+            if (document.querySelector('.sidebar-header h2')) document.querySelector('.sidebar-header h2').textContent = t.title;
+            if (document.querySelector('#title-overlay h1')) document.querySelector('#title-overlay h1').textContent = t.map_title;
+            if (document.querySelector('#loading div:nth-child(2)')) document.querySelector('#loading div:nth-child(2)').textContent = t.loading;
+            if (document.querySelector('#info')) document.querySelector('#info').textContent = t.info;
+            if (document.querySelector('#school-search')) document.querySelector('#school-search').placeholder = t.search_placeholder;
+
+            // Trigger search to update count text
+            const searchInput = document.getElementById('school-search');
+            searchInput.dispatchEvent(new Event('input'));
+            
+            // Re-render school cards if they exist
+            if (document.querySelectorAll('.school-card').length > 0) {
+                populateSidebar();
+            }
+
+            // Update Map labels
+            document.querySelectorAll('.school-marker').forEach(marker => {
+                const badge = marker.querySelector('.region-badge');
+                if (badge) {
+                    const origRegion = badge.getAttribute('data-original-region');
+                    badge.textContent = lang === 'en' ? (regionMap[origRegion] || origRegion) : origRegion;
+                }
+            });
+
+        }
+
+        // Listen for language changes from React app
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'language') {
+                updateTexts();
+            }
+        });
+        window.addEventListener('languageChanged', updateTexts);
+        
+        // Also observe for manual polling in case events are missed cross-iframe
+        let lastLang = getCurrentLanguage();
+        setInterval(() => {
+            if(getCurrentLanguage() !== lastLang) {
+                lastLang = getCurrentLanguage();
+                updateTexts();
+            }
+        }, 500);
+
+    </script>
+
+    <script>
+        let scene, camera, renderer, controls, labelRenderer;
+        let mapGroup, stars;
+        
+        // 데이터 소스: 통계청 2013년 기준 시도별 단순화된 GeoJSON
+        const GEOJSON_URL = 'https://raw.githubusercontent.com/southkorea/southkorea-maps/master/kostat/2013/json/skorea_provinces_geo_simple.json';
+
+        // 전국 58개 전체 마이스터고 데이터 리스트
+        const meisterSchools = [
+            // 서울 (4개교)
+            { name: '수도전기공업고', field: '에너지', region: '서울', lat: 37.48, lng: 127.06, round: 1 },
+            { name: '미림마이스터고', field: '뉴미디어콘텐츠', region: '서울', lat: 37.46, lng: 126.93, round: 1 },
+            { name: '서울로봇고', field: '로봇', region: '서울', lat: 37.49, lng: 127.08, round: 4 },
+            { name: '서울도시과학기술고', field: '해외건설·플랜트', region: '서울', lat: 37.60, lng: 127.02, round: 11 },
+            
+            // 인천 (2개교)
+            { name: '인천전자마이스터고', field: '전자·통신', region: '인천', lat: 37.43, lng: 126.67, round: 1 },
+            { name: '인천해사고', field: '해양', region: '인천', lat: 37.47, lng: 126.60, round: 2 },
+            
+            // 경기 (3개교)
+            { name: '수원하이텍고', field: '메카트로닉스', region: '경기', lat: 37.25, lng: 127.05, round: 1 },
+            { name: '평택마이스터고', field: '자동차·기계', region: '경기', lat: 37.00, lng: 127.09, round: 1 },
+            { name: '경기게임마이스터고', field: '게임콘텐츠', region: '경기', lat: 37.39, lng: 126.95, round: 15 },
+            
+            // 강원 (3개교)
+            { name: '원주의료고', field: '의료기기·바이오', region: '강원', lat: 37.33, lng: 127.92, round: 1 },
+            { name: '한국에너지마이스터고', field: '발전산업', region: '강원', lat: 37.19, lng: 129.04, round: 5 },
+            { name: '한국소방마이스터고', field: '소방', region: '강원', lat: 37.18, lng: 128.46, round: 15 },
+            
+            // 충북 (3개교)
+            { name: '충북반도체고', field: '반도체장비', region: '충북', lat: 36.99, lng: 127.58, round: 1 },
+            { name: '한국바이오마이스터고', field: '바이오', region: '충북', lat: 36.85, lng: 127.45, round: 1 },
+            { name: '충북에너지고', field: '차세대전지', region: '충북', lat: 36.62, lng: 127.49, round: 6 },
+            
+            // 충남 (6개교)
+            { name: '합덕제철고', field: '철강', region: '충남', lat: 36.81, lng: 126.73, round: 1 },
+            { name: '공주마이스터고', field: 'SMT장비/전기·전자', region: '충남', lat: 36.44, lng: 127.11, round: 3 },
+            { name: '연무마이스터고', field: '자동차부품제조', region: '충남', lat: 36.13, lng: 127.10, round: 4 },
+            { name: '한국식품마이스터고', field: '식품', region: '충남', lat: 36.27, lng: 126.91, round: 8 },
+            { name: '아산스마트팩토리마이스터고', field: '스마트공장', region: '충남', lat: 36.78, lng: 127.00, round: 13 },
+            { name: '충남반도체마이스터고', field: '반도체', region: '충남', lat: 36.67, lng: 126.84, round: 18 },
+            
+            // 대전 (2개교)
+            { name: '동아마이스터고', field: '전자·기계', region: '대전', lat: 36.33, lng: 127.44, round: 1 },
+            { name: '대덕소프트웨어마이스터고', field: '소프트웨어', region: '대전', lat: 36.39, lng: 127.39, round: 9 },
+            
+            // 전북 (4개교)
+            { name: '군산기계공업고', field: '조선·기계', region: '전북', lat: 35.97, lng: 126.73, round: 1 },
+            { name: '전북기계공업고', field: '기계', region: '전북', lat: 36.03, lng: 126.96, round: 1 },
+            { name: '한국경마축산고', field: '말 산업', region: '전북', lat: 35.41, lng: 127.38, round: 7 },
+            { name: '김제농생명마이스터고', field: '농생명자원생산·가공', region: '전북', lat: 35.80, lng: 126.88, round: 11 },
+            
+            // 광주 (2개교)
+            { name: '광주자동화설비마이스터고', field: '자동화설비', region: '광주', lat: 35.13, lng: 126.90, round: 2 },
+            { name: '광주소프트웨어마이스터고', field: '소프트웨어', region: '광주', lat: 35.14, lng: 126.79, round: 11 },
+            
+            // 전남 (4개교)
+            { name: '한국항만물류고', field: '항만물류', region: '전남', lat: 34.96, lng: 127.69, round: 1 },
+            { name: '전남생명과학고', field: '친환경농축산', region: '전남', lat: 34.75, lng: 126.79, round: 5 },
+            { name: '여수석유화학고', field: '석유화학산업', region: '전남', lat: 34.76, lng: 127.65, round: 7 },
+            { name: '완도수산고', field: '어업 및 수산물 가공', region: '전남', lat: 34.31, lng: 126.75, round: 7 },
+            
+            // 경북 (9개교)
+            { name: '구미전자공업고', field: '전자', region: '경북', lat: 36.11, lng: 128.39, round: 1 },
+            { name: '금오공업고', field: '기계·전자모바일', region: '경북', lat: 36.14, lng: 128.39, round: 2 },
+            { name: '한국원자력마이스터고', field: '원자력발전설비', region: '경북', lat: 36.99, lng: 129.40, round: 3 },
+            { name: '포항제철공업고', field: '철강', region: '경북', lat: 36.00, lng: 129.35, round: 5 },
+            { name: '한국국제통상마이스터고', field: '글로벌 비즈니스', region: '경북', lat: 35.85, lng: 129.22, round: 14 },
+            { name: '한국해양마이스터고', field: '스마트해양수산', region: '경북', lat: 36.11, lng: 129.38, round: 17 },
+            { name: '경북소프트웨어마이스터고', field: '디지털', region: '경북', lat: 36.35, lng: 128.69, round: 18 },
+            { name: '한국반도체마이스터고등학교', field: '반도체', region: '경북', lat: 36.18, lng: 128.34, round: 19 },
+            { name: '경북바이오마이스터고', field: '바이오', region: '경북', lat: 35.97, lng: 128.93, round: 12 },
+            
+            // 대구 (5개교)
+            { name: '대구일마이스터고', field: '자동차', region: '대구', lat: 35.87, lng: 128.65, round: 10 },
+            { name: '경북기계공업고', field: '기계·메카트로닉스', region: '대구', lat: 35.82, lng: 128.53, round: 1 },
+            { name: '대구소프트웨어마이스터고', field: 'SW·SW융합', region: '대구', lat: 35.65, lng: 128.46, round: 10 },
+            { name: '대구농업마이스터고', field: '도시형 첨단농업경영', region: '대구', lat: 35.84, lng: 128.68, round: 11 },
+            { name: '대구반도체마이스터고', field: '반도체', region: '대구', lat: 35.85, lng: 128.55, round: 12 },
+            
+            // 울산 (3개교)
+            { name: '울산마이스터고', field: '기계·자동화', region: '울산', lat: 35.58, lng: 129.35, round: 1 },
+            { name: '현대공업고', field: '조선해양플랜트', region: '울산', lat: 35.51, lng: 129.43, round: 8 },
+            { name: '울산에너지고', field: '에너지', region: '울산', lat: 35.59, lng: 129.36, round: 3 },
+            
+            // 부산 (4개교)
+            { name: '부산자동차마이스터고', field: '자동차산업', region: '부산', lat: 35.11, lng: 128.96, round: 1 },
+            { name: '부산기계공업고', field: '기계', region: '부산', lat: 35.16, lng: 129.16, round: 1 },
+            { name: '부산해사고', field: '해양', region: '부산', lat: 35.07, lng: 129.07, round: 2 },
+            { name: '부산소프트웨어마이스터고', field: '소프트웨어', region: '부산', lat: 35.09, lng: 128.89, round: 16 },
+            
+            // 경남 (4개교)
+            { name: '거제공업고', field: '조선', region: '경남', lat: 34.88, lng: 128.62, round: 1 },
+            { name: '삼천포공업고', field: '항공·조선', region: '경남', lat: 34.93, lng: 128.06, round: 1 },
+            { name: '공군항공과학고', field: '항공기술', region: '경남', lat: 35.18, lng: 128.11, round: 4 },
+            { name: '한국나노마이스터고', field: '나노융합', region: '경남', lat: 35.49, lng: 128.74, round: 12 }
+        ];
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            const width = window.innerWidth - 320;
+            const height = window.innerHeight;
+
+            // 1. 씬(Scene) 생성
+            scene = new THREE.Scene();
+            // css 배경이 투과되어 보이도록 씬의 고정 배경색 제거
+
+            // 2. 카메라(Camera) 생성
+            camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            // 지도가 화면에 꽉 차고 웅장하게 보이도록 설정
+            camera.position.set(0, -3.5, 4.8); 
+
+            // 3. 렌더러(Renderer) 설정 (배경 투명을 위해 alpha: true 추가)
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            // 그림자 맵 활성화
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            
+            
+            // 4. 조명(Lighting) 설정
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); 
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(-15, 20, 25);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.camera.left = -15;
+            dirLight.shadow.camera.right = 15;
+            dirLight.shadow.camera.top = 15;
+            dirLight.shadow.camera.bottom = -15;
+            dirLight.shadow.camera.near = 0.5;
+            dirLight.shadow.camera.far = 50;
+            dirLight.shadow.bias = -0.0001;
+            scene.add(dirLight);
+
+            const backLight = new THREE.DirectionalLight(0xd8b4fe, 0.5);
+            backLight.position.set(15, -20, 10);
+            scene.add(backLight);
+            
+            const pointLight1 = new THREE.PointLight(0x3b82f6, 1.5, 150); 
+            pointLight1.position.set(15, 15, 15);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0x8b5cf6, 1.5, 150); 
+            pointLight2.position.set(-15, -15, 15);
+            scene.add(pointLight2);
+            
+            // 5. 바닥 평면 (그림자 받는 용도) - 조명을 최소화했으므로 바닥 평면은 눈에 띄지 않게 처리
+            const planeGeometry = new THREE.PlaneGeometry(200, 200);
+            // 그림자만 받고 자체 색상은 보이지 않게 하거나, 배경색과 동일하게 설정
+            const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.15 }); 
+            const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+            plane.position.z = -0.5; // 지도 아래에 배치
+            plane.receiveShadow = true;
+            scene.add(plane);
+
+            labelRenderer = new THREE.CSS2DRenderer();
+            labelRenderer.setSize(width, height);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            labelRenderer.domElement.style.left = '320px'; // 라벨 렌더러 위치도 사이드바 우측으로 이동
+            labelRenderer.domElement.style.pointerEvents = 'none'; // 클릭 이벤트 투과 설정 (마커엔 별도 적용)
+            document.body.appendChild(labelRenderer.domElement);
+
+            // 6. 컨트롤(Controls) 설정 - 마우스로 회전/확대 축소
+            // 주의: OrbitControls 이벤트를 renderer.domElement에 바인딩해야 정상 동작합니다 (labelRenderer는 pointerEvents: none).
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // 좌우 회전 제한 (약 45도 범위로 조금 더 여유있게)
+            controls.minAzimuthAngle = -Math.PI / 4;
+            controls.maxAzimuthAngle = Math.PI / 4;
+            
+            // 상하 회전 제한 (위 아래로 자유롭게 움직이도록 제한 완화)
+            controls.minPolarAngle = 0.1;               // 거의 탑뷰까지 가능
+            controls.maxPolarAngle = Math.PI / 2 - 0.1; // 땅 밑으로만 안 내려가게 방지
+
+            
+            
+            
+            // 7. 별(Stars) 및 은하수(Milky Way) 배경 생성
+            stars = new THREE.Group();
+            
+            // 둥근 별 텍스처(Soft Circle) 생성
+            const starCanvas = document.createElement('canvas');
+            starCanvas.width = 32;
+            starCanvas.height = 32;
+            const starCtx = starCanvas.getContext('2d');
+            
+            // 부드러운 빛 효과를 위한 방사형 그라데이션
+            const gradient = starCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.2)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            starCtx.fillStyle = gradient;
+            starCtx.fillRect(0, 0, 32, 32);
+            
+            const starTexture = new THREE.CanvasTexture(starCanvas);
+            
+            // 일반 별 (배경)
+            const starGeo1 = new THREE.BufferGeometry();
+            const starMat1 = new THREE.PointsMaterial({ 
+                color: 0xffffff, 
+                size: 0.2, // 텍스처가 흐릿해지므로 크기 증가
+                transparent: true, 
+                opacity: 0.9,
+                map: starTexture,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true 
+            });
+            const starVerts1 = [];
+            
+            // 은하수 별 (조밀한 띠)
+            const starGeo2 = new THREE.BufferGeometry();
+            const starMat2 = new THREE.PointsMaterial({ 
+                color: 0x60a5fa, // 밝은 파랑
+                size: 0.3, 
+                transparent: true, 
+                opacity: 0.8,
+                map: starTexture,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+            const starVerts2 = [];
+
+            // 은하수 중심부 (밝고 큰 별들)
+            const starGeo3 = new THREE.BufferGeometry();
+            const starMat3 = new THREE.PointsMaterial({ 
+                color: 0xd8b4fe, // 밝은 보라
+                size: 0.4, 
+                transparent: true, 
+                opacity: 0.9,
+                map: starTexture,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+            const starVerts3 = [];
+
+            // 은하수 먼지 (거대한 희미한 입자들로 은하수 텍스처 느낌 부여)
+            const dustGeo = new THREE.BufferGeometry();
+            const dustMat = new THREE.PointsMaterial({ 
+                color: 0x312e81, // 딥 인디고
+                size: 4.0, 
+                transparent: true, 
+                opacity: 0.15,
+                map: starTexture,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const dustVerts = [];
+
+
+            // 배경 일반 별
+            for(let i = 0; i < 5000; i++) {
+                starVerts1.push(
+                    (Math.random() - 0.5) * 200, 
+                    (Math.random() - 0.5) * 200, 
+                    (Math.random() - 0.5) * 200
+                );
+            }
+
+            // 은하수 띠 생성 (나선팔 또는 띠 형태)
+            for(let i = 0; i < 8000; i++) {
+                // 원기둥 좌표계 기반의 띠 모양 (화면 대각선을 가로지르도록)
+                let r = 30 + Math.random() * 50; // 거리
+                let theta = Math.random() * Math.PI * 2; // 원통 각도
+                
+                // 중심에서 멀어질수록 퍼지게 (가우시안 분포 흉내)
+                let spread = (Math.random() + Math.random() + Math.random() - 1.5);
+                let height = spread * 15; // 띠의 두께
+                
+                // 원통 좌표계를 3D로
+                let x = r * Math.cos(theta);
+                let y = height;
+                let z = r * Math.sin(theta);
+
+                // 은하수를 45도 기울임
+                let tilt = Math.PI / 4;
+                let finalX = x * Math.cos(tilt) - y * Math.sin(tilt);
+                let finalY = x * Math.sin(tilt) + y * Math.cos(tilt);
+                let finalZ = z;
+
+                if (i < 5000) {
+                    starVerts2.push(finalX, finalY, finalZ); // 일반 은하수 별
+                } else if (i < 7000) {
+                    starVerts3.push(finalX, finalY, finalZ); // 밝은 중심부
+                } else {
+                    dustVerts.push(finalX, finalY, finalZ); // 은하수 성간 먼지
+                }
+            }
+
+            starGeo1.setAttribute('position', new THREE.Float32BufferAttribute(starVerts1, 3));
+            starGeo2.setAttribute('position', new THREE.Float32BufferAttribute(starVerts2, 3));
+            starGeo3.setAttribute('position', new THREE.Float32BufferAttribute(starVerts3, 3));
+            dustGeo.setAttribute('position', new THREE.Float32BufferAttribute(dustVerts, 3));
+
+            stars.add(new THREE.Points(starGeo1, starMat1));
+            stars.add(new THREE.Points(starGeo2, starMat2));
+            stars.add(new THREE.Points(starGeo3, starMat3));
+            stars.add(new THREE.Points(dustGeo, dustMat));
+
+            // 지도가 화면 중앙에 있으므로, 은하수가 배경에서 웅장하게 보이도록 살짝 뒤로 밀어줍니다.
+            stars.position.z = -20;
+            scene.add(stars);
+
+
+
+            
+        
+        // 검색 필터링 및 포커스 이동 기능
+        document.getElementById('school-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim().toLowerCase();
+            const cards = document.querySelectorAll('.school-card');
+            let visibleCount = 0;
+            let firstMatch = null;
+            
+            cards.forEach(card => {
+                const nameNode = card.querySelector('.card-name');
+                const badgeNode = card.querySelector('.region-badge');
+                const fieldNode = card.querySelector('.card-field');
+                
+                const name = nameNode ? nameNode.textContent.toLowerCase() : '';
+                const badge = badgeNode ? badgeNode.textContent.toLowerCase() : '';
+                const field = fieldNode ? fieldNode.textContent.toLowerCase() : '';
+                
+                if (searchTerm === '') {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else if(name.includes(searchTerm) || badge.includes(searchTerm) || field.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                    
+                    if (!firstMatch) {
+                        // find original school object from meisterSchools array
+                        firstMatch = meisterSchools.find(s => name.includes(s.name.toLowerCase()));
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            
+            const lang = getCurrentLanguage();
+            const t = mapTranslations[lang];
+            document.getElementById('school-count').textContent = t.count_format(visibleCount);
+
+            
+            // Hide empty region groups and update count
+            const groups = document.querySelectorAll('.region-group');
+            groups.forEach(group => {
+                const visibleCards = Array.from(group.querySelectorAll('.school-card')).filter(card => card.style.display !== 'none');
+                if (visibleCards.length === 0) {
+                    group.style.display = 'none';
+                } else {
+                    group.style.display = 'block';
+                    const countSpan = group.querySelector('.region-header span:nth-child(2)');
+                    if (countSpan) {
+                        countSpan.textContent = visibleCards.length + (lang === 'en' ? '' : '개');
+                    }
+                }
+            });
+
+            // 검색어가 있고 매칭되는 학교가 있다면 첫 번째 결과로 카메라와 리스트 스크롤 이동
+            if (firstMatch && searchTerm !== '') {
+                // focusOnSchool(firstMatch);
+            }
+        });
+
+        // 8. 데이터 로드 및 렌더링 시작
+            mapGroup = new THREE.Group();
+            scene.add(mapGroup);
+
+            // 9. 데이터 로드 및 렌더링 시작
+            loadMapData();
+
+            // 10. 리사이즈 이벤트 추가
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        async function loadMapData() {
+            try {
+                const response = await fetch(GEOJSON_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const geoJson = await response.json();
+                
+                // 로딩 UI 숨기기
+                document.getElementById('loading').style.opacity = '0';
+                
+                generate3DMap(geoJson);
+            } catch (error) {
+                console.error("지도 데이터를 불러오는 중 오류 발생:", error);
+                document.getElementById('loading').innerHTML = "지도 데이터를 불러오는 데 실패했습니다.<br>새로고침을 시도해주세요.";
+            }
+        }
+
+        function generate3DMap(geoJson) {
+            // D3 메르카토르 투영법을 사용하여 위도/경도를 2D X/Y 평면으로 변환
+            const projection = d3.geoMercator()
+                .center([127.5, 36.0]) // 대한민국 중심 좌표
+                .scale(42)             // 스케일을 키워서 지도를 웅장하게
+                .translate([0, 0]);
+
+            
+            
+            
+            
+            
+            // 깔끔한 기본 회색 톤
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0x9ca3af,       // 중간 회색
+                emissive: 0x374151,    // 살짝 밝은 회색 발광으로 뚜렷하게
+                roughness: 0.6,        // 매트한 느낌
+                metalness: 0.1,        // 메탈릭 감소 (자연스러운 회색)
+                clearcoat: 0.0,        // 반사 제거
+                transparent: true,
+                opacity: 0.95,
+                side: THREE.DoubleSide
+            });
+
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xd1d5db,       // 밝은 회색 테두리
+                linewidth: 1,
+                transparent: true,
+                opacity: 0.6
+            });
+
+
+
+
+            // Three.js 3D 압출(Extrude) 옵션 (세련되고 얇은 두께)
+            const extrudeSettings = {
+                depth: 0.15,         // 적당히 얇고 고급스러운 두께
+                bevelEnabled: true,  
+                bevelSegments: 4,    // 더 부드러운 모서리
+                steps: 1,
+                bevelSize: 0.02,     // 엣지 하이라이트를 위한 약간의 베벨
+                bevelThickness: 0.02
+            };
+
+            // GeoJSON의 각 Feature(지역) 순회
+            geoJson.features.forEach(feature => {
+                const geometry = feature.geometry;
+                
+                // Polygon인지 MultiPolygon인지 구별하여 처리
+                if (geometry.type === 'Polygon') {
+                    createPolygonShape(geometry.coordinates, projection, extrudeSettings, material, lineMaterial);
+                } else if (geometry.type === 'MultiPolygon') {
+                    geometry.coordinates.forEach(coords => {
+                        createPolygonShape(coords, projection, extrudeSettings, material, lineMaterial);
+                    });
+                }
+            });
+
+            addSchoolMarkers(projection);
+
+            // 지도 전체를 화면 중앙에 정렬하기 위해 BoundingBox 계산
+            const box = new THREE.Box3().setFromObject(mapGroup);
+            const center = box.getCenter(new THREE.Vector3());
+            
+            // 중심으로 이동 (사이드바를 제외한 실제 화면의 중앙)
+            mapGroup.position.x = -center.x;
+            mapGroup.position.y = -center.y;
+            // z축은 바닥 평면에 맞춤
+            mapGroup.position.z = 0; 
+        }
+
+        function addSchoolMarkers(projection) {
+            meisterSchools.forEach(school => {
+                const [x, y] = projection([school.lng, school.lat]);
+                
+                // 마커 컨테이너
+                const markerDiv = document.createElement('div');
+                markerDiv.className = 'school-marker';
+                
+                // 마커 점 (차수별 색상 클래스 적용 - 1차~19차 동적 처리)
+                const dotClass = (school.round >= 1 && school.round <= 19) ? `round-${school.round}` : 'round-others';
+                const dotDiv = document.createElement('div');
+                dotDiv.className = `marker-dot ${dotClass}`;
+                
+                // 라벨 팝업
+                const labelDiv = document.createElement('div');
+                labelDiv.className = 'marker-label';
+                
+                labelDiv.innerHTML = `
+                    <div class="label-top">
+                        <span class="region-badge bg-${school.region}" data-original-region="${school.region}">${school.region}</span>
+                        <span class="field-text" data-original-field="${school.field}">${school.field}</span>
+                    </div>
+                    <span class="school-name" data-original-name="${school.name}">${school.name}</span>
+                `;
+
+                
+                markerDiv.appendChild(dotDiv);
+                markerDiv.appendChild(labelDiv);
+                
+                // 지도 마커 클릭 시 해당 학교 포커스 및 사이드바 스크롤 이벤트 추가
+                markerDiv.onclick = () => focusOnSchool(school);
+                
+                // CSS2DObject 생성 및 3D 공간 배치
+                const cssObject = new THREE.CSS2DObject(markerDiv);
+                
+                // Three.js 좌표계에 맞게 Y값 반전 및 Z값(지도 위로 띄움, 핀이 정확하게 지도 표면에 붙도록 Z 조정)
+                cssObject.position.set(x, -y, 0.18); 
+                
+                // mapGroup에 추가하여 지도가 이동/회전할 때 함께 움직이게 함
+                mapGroup.add(cssObject); 
+                
+                // 클릭 연동을 위해 학교 객체에 cssObject 저장
+                school.cssObject = cssObject;
+            });
+            
+            // 사이드바 목록 렌더링 호출
+            populateSidebar();
+        }
+
+        // 사이드바에 데이터 동적 생성 함수 (지역별 분류 적용)
+        
+        function populateSidebar() {
+            const listContainer = document.getElementById('school-list');
+            listContainer.innerHTML = '';
+            
+            const lang = getCurrentLanguage();
+            const t = mapTranslations[lang];
+            
+            // 제목 갯수 동적 업데이트
+            document.getElementById('school-count').innerText = t.count_format(meisterSchools.length);
+
+            // 1. 지역별로 데이터 그룹화
+            const groupedSchools = {};
+            meisterSchools.forEach(school => {
+                if (!groupedSchools[school.region]) {
+                    groupedSchools[school.region] = [];
+                }
+                groupedSchools[school.region].push(school);
+            });
+
+            // 2. 지역별 노출 순서 지정
+            const regionOrder = ['서울', '인천', '경기', '강원', '충북', '충남', '대전', '전북', '전남', '광주', '경북', '대구', '울산', '부산', '경남', '세종', '제주'];
+            
+            const regions = Object.keys(groupedSchools).sort((a, b) => {
+                let indexA = regionOrder.indexOf(a);
+                let indexB = regionOrder.indexOf(b);
+                if (indexA === -1) indexA = 999;
+                if (indexB === -1) indexB = 999;
+                return indexA - indexB;
+            });
+
+            // 3. 그룹화된 데이터 순회하며 렌더링
+            regions.forEach(region => {
+                const schoolsInRegion = groupedSchools[region];
+                
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'region-group';
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'region-header';
+                
+                const regionText = lang === 'en' ? (regionMap[region] || region) : region;
+                
+                headerDiv.innerHTML = `<span class="region-badge bg-${region}">${regionText}</span> <span style="font-size:12px; color:#94a3b8; font-weight:400; margin-left:6px;">${schoolsInRegion.length}${lang === 'en' ? '' : '개'}</span>`;
+                groupDiv.appendChild(headerDiv);
+
+                // 해당 지역의 학교 카드들
+                schoolsInRegion.forEach(school => {
+                    const card = document.createElement('div');
+                    card.className = 'school-card';
+                    card.id = `card-${school.name}`;
+                    card.style.marginBottom = '10px';
+                    
+                    const fieldText = school.field;
+                    // You could add a field dictionary for full English translations, but let's leave it as is or handle common ones if needed
+                    
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="region-badge bg-${school.region}">${regionText}</span>
+                            <span class="card-field">${fieldText}</span>
+                        </div>
+                        <div class="card-name">${school.name}</div>
+                    `;
+
+                    // 리스트 클릭 시 지도 카메라 이동
+                    card.onclick = () => focusOnSchool(school);
+                    
+                    groupDiv.appendChild(card);
+                });
+                
+                listContainer.appendChild(groupDiv);
+            });
+        }
+
+
+        // 특정 학교 클릭 시 포커스 및 하이라이트 효과
+        function focusOnSchool(school) {
+            // 1. 기존 활성화 요소 초기화
+            document.querySelectorAll('.school-card').forEach(el => el.classList.remove('active-card'));
+            document.querySelectorAll('.school-marker').forEach(el => el.classList.remove('active'));
+
+            // 2. 선택된 요소 하이라이트
+            const card = document.getElementById(`card-${school.name}`);
+            if (card) {
+                card.classList.add('active-card');
+                // 사이드바에서 해당 학교 카드가 보이도록 부드럽게 스크롤 이동
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            if (school.cssObject && school.cssObject.element) {
+                school.cssObject.element.classList.add('active');
+                
+                // 3. 카메라 및 타겟 위치를 학교 위젯으로 이동
+                const targetPos = new THREE.Vector3();
+                school.cssObject.getWorldPosition(targetPos);
+
+                const offset = targetPos.clone().sub(controls.target);
+                camera.position.add(offset);
+                controls.target.copy(targetPos);
+                controls.update();
+            }
+        }
+
+        function createPolygonShape(coordinates, projection, extrudeSettings, material, lineMaterial) {
+            const shape = new THREE.Shape();
+            
+            // coordinates[0]는 외곽선, 그 이상은 구멍(Holes)
+            const outerBounds = coordinates[0];
+            outerBounds.forEach((coord, i) => {
+                const [x, y] = projection(coord);
+                // Three.js는 Y축이 위로 증가하지만, D3 투영은 반대이므로 Y를 반전
+                if (i === 0) {
+                    shape.moveTo(x, -y);
+                } else {
+                    shape.lineTo(x, -y);
+                }
+            });
+
+            // 구멍(Holes)이 있는 지역 처리 (예: 호수 등)
+            for (let i = 1; i < coordinates.length; i++) {
+                const hole = new THREE.Path();
+                coordinates[i].forEach((coord, j) => {
+                    const [x, y] = projection(coord);
+                    if (j === 0) {
+                        hole.moveTo(x, -y);
+                    } else {
+                        hole.lineTo(x, -y);
+                    }
+                });
+                shape.holes.push(hole);
+            }
+
+            // 1. 3D 메쉬 생성
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            
+            // 2. 경계선(테두리) 생성 - EdgesGeometry 사용
+            const edgesGeo = new THREE.EdgesGeometry(geometry, 20); // 20도 이상 꺾인 부분만 선으로 표시
+            const line = new THREE.LineSegments(edgesGeo, lineMaterial);
+            
+            mesh.add(line);
+            mapGroup.add(mesh);
+        }
+
+        function onWindowResize() {
+            const width = window.innerWidth - 320;
+            const height = window.innerHeight;
+            
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+            labelRenderer.setSize(width, height);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (stars) {
+                stars.rotation.y += 0.0005;
+                stars.rotation.x += 0.0002;
+            }
+            // OrbitControls 업데이트 (관성 효과)
+            controls.update();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+        // 페이지 로드 완료 시 초기화 및 애니메이션 시작
+        window.onload = function() {
+            init();
+            animate();
+        };
+    </script>
+</body>
+</html>

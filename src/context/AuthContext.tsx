@@ -70,9 +70,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        loadUserProfile(currentUser);
+        await loadUserProfile(currentUser);
       } else {
-        setUserProfile(null);
+        const localProfile = await apiService.getProfile('local-user');
+        setUserProfile(localProfile as UserProfileData);
       }
       setLoading(false);
     });

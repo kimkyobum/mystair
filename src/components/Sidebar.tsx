@@ -90,13 +90,21 @@ export default function Sidebar() {
             title="마이페이지로 이동"
             className="flex items-center gap-3 cursor-pointer group flex-1 min-w-0"
           >
-            <div className={`w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${
-              isDarkTheme 
-                ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm' 
-                : 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-sm'
-            }`}>
-              <User size={14} className="shrink-0" />
-            </div>
+            {userProfile?.avatarUrl || user?.photoURL ? (
+              <img 
+                src={userProfile?.avatarUrl || user?.photoURL || ''} 
+                alt="프로필" 
+                className="w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full object-cover shrink-0 transition-all group-hover:scale-105 shadow-sm"
+              />
+            ) : (
+              <div className={`w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${
+                isDarkTheme 
+                  ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm' 
+                  : 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white shadow-sm'
+              }`}>
+                <User size={14} className="shrink-0" />
+              </div>
+            )}
             <div className={`flex flex-col transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} overflow-hidden min-w-0`}>
               <span className={`text-[13px] font-bold leading-tight truncate group-hover:text-indigo-400 transition-colors ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
                 {displayName}
