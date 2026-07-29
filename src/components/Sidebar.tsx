@@ -29,7 +29,7 @@ export default function Sidebar() {
   const navItems = [
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={20} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={20} /> },
-    { name: '채용 인사이트', path: '/', icon: <Briefcase size={20} /> },
+    { name: '나만의 기업찾기', path: '/', icon: <Briefcase size={20} /> },
     { name: 'MBTI검사', path: '/mbti', icon: <Brain size={20} /> },
     { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> }
   ];

@@ -24,7 +24,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="관심 있는 직무나 취득하고 싶은 자격증에 대해 물어보세요"
+          placeholder="나의 전공, 적성, 관심 분야에 맞는 기업을 검색하거나 추천받아보세요!"
           className="w-full bg-transparent text-gray-900 placeholder-gray-400 px-4 py-2 outline-none text-base font-medium"
         />
         
@@ -34,14 +34,14 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       </form>
       
       <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-        <button onClick={() => onStartChat?.('프론트엔드 로드맵')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
-          프론트엔드 로드맵
+        <button onClick={() => onStartChat?.('내 전공과 성향에 맞는 기업 추천해줘')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
+          내 전공/성향 맞춤 기업 추천
         </button>
-        <button onClick={() => onStartChat?.('정보처리기능사 준비')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
-          정보처리기능사 준비
+        <button onClick={() => onStartChat?.('마이스터고 학생들이 많이 가는 대표 대기업/공기업')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
+          대표 대기업 & 공기업 리스트
         </button>
-        <button onClick={() => onStartChat?.('요즘 뜨는 IT 기업')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
-          요즘 뜨는 IT 기업
+        <button onClick={() => onStartChat?.('내 성장기록(다이어리) 바탕으로 가기 좋은 우수 중견기업 추천')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
+          성장기록 기반 우수 기업 매칭
         </button>
       </div>
     </div>

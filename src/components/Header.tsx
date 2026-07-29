@@ -5,7 +5,7 @@ export default function Header() {
   const navItems = [
     { name: '성장다이어리', path: '/diary' },
     { name: '자격증 가이드', path: '/certificates' },
-    { name: '채용 인사이트', path: '/' },
+    { name: '나만의 기업찾기', path: '/' },
     { name: 'MBTI검사', path: '/mbti' },
     { name: '홀랜드 진로적성 검사', path: '/holland' },
     { name: '마이페이지', path: '/mypage' }
