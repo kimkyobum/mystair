@@ -9,7 +9,7 @@ import {
   signInAnonymously
 } from '../lib/firebase';
 
-import { apiService } from '../Services/api';
+import { apiService } from '../services/api';
 
 export interface UserProfileData {
   uid: string;
