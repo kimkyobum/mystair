@@ -20,6 +20,13 @@ import {
 import { Link } from 'react-router-dom';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
 
+const getLocalDateString = (d: Date = new Date()) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const MOOD_OPTIONS = [
   { emoji: '🔥', label: '열정적' },
   { emoji: '😊', label: '성취감' },
@@ -119,7 +126,7 @@ export default function Diary() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getLocalDateString());
   const [mood, setMood] = useState('🔥');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>(['성장기록', '자격증']);
@@ -142,7 +149,7 @@ export default function Diary() {
             userId: 'local',
             title: '정보처리기능사 실기 공부 3일차',
             content: '오늘 알고리즘 문제 5개를 풀었다. 정렬 알고리즘 개념이 이제서야 완전히 이해되었다! 내일은 데이터베이스 SQL 기출문제를 집중 정리해야겠다.',
-            date: new Date().toISOString().split('T')[0],
+            date: getLocalDateString(),
             mood: '🔥',
             tags: ['정보처리기능사', '알고리즘', '목표달성']
           }]);
@@ -532,7 +539,7 @@ export default function Diary() {
                   <ChevronRight size={18} />
                 </button>
                 <button
-                  onClick={() => handleOpenDayModal(new Date().toISOString().split('T')[0])}
+                  onClick={() => handleOpenDayModal(getLocalDateString())}
                   className="ml-2 px-4 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all"
                 >
                   <Plus size={15} />
@@ -598,7 +605,7 @@ export default function Diary() {
                 const isSunday = dayOfWeek === 0;
                 const isSaturday = dayOfWeek === 6;
 
-                const todayStr = new Date().toISOString().split('T')[0];
+                const todayStr = getLocalDateString();
                 const isToday = fullDateStr === todayStr;
 
                 // Check for Diary entry on this day

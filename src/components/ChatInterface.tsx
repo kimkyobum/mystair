@@ -180,30 +180,40 @@ ${d.content || ""}
     const startIndex = Math.floor(Math.random() * keys.length);
     let lastError: any = null;
 
-    for (let i = 0; i < keys.length; i++) {
-      const keyIndex = (startIndex + i) % keys.length;
-      const apiKey = keys[keyIndex];
+    const fallbackModels = [
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-8b",
+      "gemini-3.6-flash"
+    ];
 
-      try {
-        const ai = new GoogleGenAI({ apiKey });
-        const response = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
-          contents: contents,
-          config: {
-            systemInstruction: systemInstruction,
-            temperature: 0.7,
-          },
-        });
+    for (const modelName of fallbackModels) {
+      for (let i = 0; i < keys.length; i++) {
+        const keyIndex = (startIndex + i) % keys.length;
+        const apiKey = keys[keyIndex];
 
-        console.log(`Client direct direct API call succeeded using key index ${keyIndex}`);
-        return response.text || "답변을 생성하지 못했습니다.";
-      } catch (err: any) {
-        console.warn(`Client direct API key index ${keyIndex} failed:`, err?.message || err);
-        lastError = err;
+        try {
+          const ai = new GoogleGenAI({ apiKey });
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents: contents,
+            config: {
+              systemInstruction: systemInstruction,
+              temperature: 0.7,
+            },
+          });
+
+          console.log(`Client direct direct API call succeeded using key index ${keyIndex} with model ${modelName}`);
+          return response.text || "답변을 생성하지 못했습니다.";
+        } catch (err: any) {
+          console.warn(`Client direct API key index ${keyIndex} failed with model ${modelName}:`, err?.message || err);
+          lastError = err;
+        }
       }
     }
 
-    throw lastError || new Error("모든 클라이언트 Gemini API 키 호출이 실패했습니다.");
+    throw lastError || new Error("모든 클라이언트 Gemini API 키 및 모델 호출이 실패했습니다.");
   };
 
   // Helper function for smooth character-by-character typewriter animation

@@ -64,10 +64,11 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
 
   // We rotate through multiple valid Gemini models to avoid single-model free-tier limits (e.g. 20 req/day for 3.6-flash)
   const fallbackModels = [
-    "gemini-3.6-flash",
-    "gemini-3.1-flash-lite",
     "gemini-2.5-flash",
-    "gemini-flash-latest"
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-3.6-flash"
   ];
 
   for (const modelName of fallbackModels) {
