@@ -62,42 +62,52 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
   const startIndex = Math.floor(Math.random() * keys.length);
   let lastError: any = null;
 
-  for (let i = 0; i < keys.length; i++) {
-    const keyIndex = (startIndex + i) % keys.length;
-    const apiKey = keys[keyIndex];
-    const keyName = apiKey === process.env.GEMINI_API_KEY ? "GEMINI_API_KEY" :
-                    apiKey === process.env.GEMINI_API_KEY2 ? "GEMINI_API_KEY2" :
-                    apiKey === process.env.GEMINI_API_KEY3 ? "GEMINI_API_KEY3" :
-                    apiKey === process.env.GEMINI_API_KEY4 ? "GEMINI_API_KEY4" : "VITE_GEMINI_API_KEY";
+  // We rotate through multiple valid Gemini models to avoid single-model free-tier limits (e.g. 20 req/day for 3.6-flash)
+  const fallbackModels = [
+    "gemini-3.6-flash",
+    "gemini-3.1-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-flash-latest"
+  ];
 
-    try {
-      const ai = new GoogleGenAI({
-        apiKey: apiKey,
-        httpOptions: {
-          headers: {
-            "User-Agent": "aistudio-build",
+  for (const modelName of fallbackModels) {
+    for (let i = 0; i < keys.length; i++) {
+      const keyIndex = (startIndex + i) % keys.length;
+      const apiKey = keys[keyIndex];
+      const keyName = apiKey === process.env.GEMINI_API_KEY ? "GEMINI_API_KEY" :
+                      apiKey === process.env.GEMINI_API_KEY2 ? "GEMINI_API_KEY2" :
+                      apiKey === process.env.GEMINI_API_KEY3 ? "GEMINI_API_KEY3" :
+                      apiKey === process.env.GEMINI_API_KEY4 ? "GEMINI_API_KEY4" : "VITE_GEMINI_API_KEY";
+
+      try {
+        const ai = new GoogleGenAI({
+          apiKey: apiKey,
+          httpOptions: {
+            headers: {
+              "User-Agent": "aistudio-build",
+            },
           },
-        },
-      });
+        });
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
-        contents: contents,
-        config: {
-          systemInstruction: systemInstruction,
-          temperature: 0.7,
-        },
-      });
+        const response = await ai.models.generateContent({
+          model: modelName,
+          contents: contents,
+          config: {
+            systemInstruction: systemInstruction,
+            temperature: 0.7,
+          },
+        });
 
-      console.log(`Successfully generated content using ${keyName}`);
-      return response;
-    } catch (error: any) {
-      console.warn(`[Gemini API Warning] ${keyName} failed. Error: ${error?.message || error}. Trying next key...`);
-      lastError = error;
+        console.log(`Successfully generated content using ${keyName} with model ${modelName}`);
+        return response;
+      } catch (error: any) {
+        console.warn(`[Gemini API Warning] ${keyName} failed with model ${modelName}. Error: ${error?.message || error}. Trying next...`);
+        lastError = error;
+      }
     }
   }
 
-  throw lastError || new Error("모든 설정된 Gemini API 키가 응답 생성에 실패했습니다.");
+  throw lastError || new Error("모든 설정된 Gemini API 키와 모델이 응답 생성에 실패했습니다.");
 }
 
 // Health check endpoint

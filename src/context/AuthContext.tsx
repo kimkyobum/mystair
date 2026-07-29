@@ -67,15 +67,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        await loadUserProfile(currentUser);
-      } else {
-        const localProfile = await apiService.getProfile('local-user');
-        setUserProfile(localProfile as UserProfileData);
+    // Check if we have a saved mock user from previous fallback login
+    const savedMockUser = localStorage.getItem('mystair_mock_user');
+    if (savedMockUser) {
+      try {
+        const parsedUser = JSON.parse(savedMockUser);
+        setUser(parsedUser);
+        loadUserProfile(parsedUser);
+        setLoading(false);
+      } catch (e) {
+        console.error('Failed to parse mock user', e);
       }
-      setLoading(false);
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        localStorage.removeItem('mystair_mock_user'); // Clear mock if real user authenticated
+        setUser(currentUser);
+        await loadUserProfile(currentUser);
+        setLoading(false);
+      } else {
+        // If there's no firebase user AND no saved mock user, reset profile to local fallback
+        if (!localStorage.getItem('mystair_mock_user')) {
+          setUser(null);
+          const localProfile = await apiService.getProfile('local-user');
+          setUserProfile(localProfile as UserProfileData);
+          setLoading(false);
+        }
+      }
+    }, (error) => {
+      console.warn('onAuthStateChanged subscription error (likely invalid Firebase key):', error);
+      // Ensure we clear loading even if Firebase has API key initialization issues
+      if (!localStorage.getItem('mystair_mock_user')) {
+        setLoading(false);
+      }
     });
 
     return () => unsubscribe();
@@ -101,10 +126,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithGoogle = async () => {
+    // Pre-emptively detect dummy/invalid key to bypass Firebase Auth popups that will fail
+    const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+    if (isDummyKey) {
+      console.warn('Using graceful mock Google login since real Firebase credentials are not provided.');
+      const mockUser = {
+        uid: 'mock-google-user-123',
+        displayName: '마이스터 구글 인재',
+        email: 'meister_google@mystair.com',
+        photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+      };
+      localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+      setUser(mockUser as any);
+      await loadUserProfile(mockUser as any);
+      return;
+    }
+
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error('Google login failed:', error);
+      // If the error indicates invalid key, use fallback
+      if (
+        error?.message?.includes('api-key-not-valid') || 
+        error?.code?.includes('api-key-not-valid') || 
+        error?.message?.includes('API key')
+      ) {
+        console.warn('Firebase key invalid, falling back to mock Google login.');
+        const mockUser = {
+          uid: 'mock-google-user-123',
+          displayName: '마이스터 구글 인재',
+          email: 'meister_google@mystair.com',
+          photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+        };
+        localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+        setUser(mockUser as any);
+        await loadUserProfile(mockUser as any);
+        return;
+      }
+
       if (error?.code === 'auth/unauthorized-domain') {
         throw new Error('현재 배포 도메인(Vercel/Render)이 Firebase의 [승인된 도메인]에 등록되지 않았습니다.');
       } else if (error?.code === 'auth/popup-closed-by-user') {
@@ -115,21 +175,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginAnonymously = async () => {
+    const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+    if (isDummyKey) {
+      console.warn('Using graceful mock Anonymous login since real Firebase credentials are not provided.');
+      const mockUser = {
+        uid: 'mock-anon-user-123',
+        displayName: '익명 마이스터',
+        email: 'anon@mystair.com'
+      };
+      localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+      setUser(mockUser as any);
+      await loadUserProfile(mockUser as any);
+      return;
+    }
+
     try {
       await signInAnonymously(auth);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Anonymous login failed:', error);
+      if (
+        error?.message?.includes('api-key-not-valid') || 
+        error?.code?.includes('api-key-not-valid') || 
+        error?.message?.includes('API key')
+      ) {
+        console.warn('Firebase key invalid, falling back to mock Anonymous login.');
+        const mockUser = {
+          uid: 'mock-anon-user-123',
+          displayName: '익명 마이스터',
+          email: 'anon@mystair.com'
+        };
+        localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+        setUser(mockUser as any);
+        await loadUserProfile(mockUser as any);
+        return;
+      }
       throw error;
     }
   };
 
   const logout = async () => {
     try {
+      localStorage.removeItem('mystair_mock_user');
       await firebaseSignOut(auth);
-      setUser(null);
-      setUserProfile(null);
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setUserProfile(null);
     }
   };
 
