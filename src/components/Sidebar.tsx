@@ -17,7 +17,7 @@ export default function Sidebar() {
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
 
   const location = useLocation();
-  const isDarkTheme = location.pathname === '/';
+  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile';
 
   const displayName = userProfile?.name || user?.displayName || '게스트';
 
@@ -38,7 +38,7 @@ export default function Sidebar() {
     <aside 
       className={`fixed top-0 left-0 h-full z-[100] transition-all duration-300 ease-in-out flex flex-col ${
         isDarkTheme 
-          ? 'bg-black/20 backdrop-blur-md border-r border-white/10 text-white shadow-[0_0_25px_rgba(0,0,0,0.5)]' 
+          ? 'bg-slate-950/15 backdrop-blur-md border-r border-white/10 text-white shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
           : 'bg-white border-r border-slate-200 text-slate-800 shadow-[0_0_25px_rgba(0,0,0,0.08)]'
       } ${isHovered ? 'w-64' : 'w-14'}`}
       onMouseEnter={() => setIsHovered(true)}

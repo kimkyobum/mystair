@@ -30,9 +30,12 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const initialSentRef = useRef(false);
+
   // Initial call on mount
   useEffect(() => {
-    if (initialMessage && messages.length === 1) {
+    if (initialMessage && !initialSentRef.current) {
+      initialSentRef.current = true;
       sendMessageToAI(initialMessage, []);
     }
   }, [initialMessage]);
@@ -136,29 +139,26 @@ ${d.content || ""}
         : "[성장 다이어리 기록 없음 - 자소서 작성 팁 및 예시 경험 작성 가이드 제공]";
 
     const systemInstruction = `
-너는 마이스터고 및 특성화고 학생들을 위한 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
-너는 대한민국 대표 공공 및 민간 취업/진로 포털 데이터에 기반한 최고 수준의 도메인 지식을 갖추고 있어:
-1. 공공데이터포털 하이파이브 (Hi-Five: 직업계고 특화 채용, 산학일체형 도템, 현장실습)
-2. 마이스터넷 (MeisterNet: 산업맞춤형 마이스터고 육성 및 기업 연계 취업 DB)
-3. 커리어넷 (CareerNet: 직업학과 정보, 적성검사 분석, 진로상담)
-4. 대입정보포털 어디가 (adiga: 선취업 후진학, 계약학과, 일학습병행제)
-5. 공공기관 채용정보시스템 잡알리오 (JOBALIO: 한국전력, 한수원 등 공기업 채용요건)
-6. 공공데이터포털 (DATA.GO.KR: 국가기술자격증 정보, 산업별 인력 수요)
-7. 잡코리아 (JobKorea: 주요 대기업/중견기업/IT기업 직무기술서(JD) 및 우대 스킬)
+너는 마이스터고 및 특성화고 학생들을 위한 AI 진로·취업 수석 컨설턴트이자 다정한 진로 멘토 'MyStair AI'야.
 
-[너의 핵심 역할과 출력 가이드]
-사용자가 입력창에 물어본 질문: "${text}"
+[중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
+1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
+   - **절대 길게 말하지 말고 1~2문장 이내로 아주 짧고 간결하게 대답해!**
+   - 친근하고 반갑게 인사를 건네며 진로나 취업 관련 도움이 필요할 때 알려달라고 편하게 대화해.
+   - 예시: "안녕하세요! 👋 반가워요. 오늘 어떤 이야기나 진로 고민이 있으신가요? 편하게 말씀해 주세요! 😊"
 
-제공된 [사용자 DB 프로필 데이터]와 [성장 다이어리 데이터]를 종합 분석하고, 위 공공/민간 포털 사이트들의 실제 채용 데이터와 자격증 기준을 조합하여
-반드시 깔끔하고 보기 쉬운 마크다운(#, ##, ###, -, **강조** 등)과 직관적인 이모지를 사용하여 아래 5가지 필수 구조로 정성껏 대답해줘:
+2. 🌿 **단일 주제 질문** (예: "전기기능사 시험 난이도 어때?", "자소서 작성 팁 알려줘", "삼성전자 직무 추천해줘" 등):
+   - 거창한 5단계 전체 리포트 대신, **물어본 핵심 주제에 대해서만 2~4문장으로 짧고 명쾌하게 가이드를 제공**해.
 
-1. 🎯 **맞춤 추천 직무 (Job Roles)**
-2. 🏢 **취업 가능 추천 기업 (Target Companies)**
-3. ⚡ **더 갖추어야 할 직무 역량 (Required Skill Enhancements)**
-4. 📖 **성장다이어리 경험 추출 (자기소개서/면접 맞춤 활용)**
-5. 💡 **MyStair 맞춤형 취업 Action Plan**
+3. 🎯 **종합 진로/취업 컨설팅 요청** (예: "내 프로필과 다이어리 기반 종합 진로 리포트 써줘", "나한테 맞는 기업, 자격증, 액션플랜 전체 분석해줘" 등 진지한 전체 컨설팅 요청):
+   - 제공된 [사용자 프로필]과 [성장 다이어리]를 종합 분석하여 아래 5가지 필수 구조와 깔끔한 마크다운(#, ##, -, **강조**), 이모지로 정성껏 보고서를 작성해줘:
+     1. 🎯 **맞춤 추천 직무**
+     2. 🏢 **취업 가능 추천 기업**
+     3. ⚡ **더 갖추어야 할 직무 역량**
+     4. 📖 **성장다이어리 경험 추출**
+     5. 💡 **MyStair 맞춤형 취업 Action Plan**
 
-친절하고 따뜻하며, 학생에게 커다란 동기부여와 실질적인 도움을 주는 전문적인 한국어로 응답해줘.
+진지한 전체 컨설팅 요청이 아니라면, 무조건 대답 길이를 획기적으로 줄여서 핵심만 짧고 다정하게 대답해줘.
 `;
 
     const contents = [
@@ -182,6 +182,39 @@ ${d.content || ""}
     });
 
     return response.text || "답변을 생성하지 못했습니다.";
+  };
+
+  // Helper function for smooth character-by-character typewriter animation
+  const animateTyping = (msgId: string, fullText: string): Promise<void> => {
+    return new Promise((resolve) => {
+      let currentIndex = 0;
+      // Step size: 1 character for short texts, 2~3 characters for longer responses for smooth pace
+      const stepSize = fullText.length > 500 ? 3 : (fullText.length > 200 ? 2 : 1);
+      
+      const timer = setInterval(() => {
+        currentIndex += stepSize;
+        if (currentIndex >= fullText.length) {
+          clearInterval(timer);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msgId
+                ? { ...m, content: fullText, isStreaming: false }
+                : m
+            )
+          );
+          resolve();
+        } else {
+          const currentChunk = fullText.slice(0, currentIndex);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msgId
+                ? { ...m, content: currentChunk, isStreaming: true }
+                : m
+            )
+          );
+        }
+      }, 15);
+    });
   };
 
   const sendMessageToAI = async (text: string, existingMessages: Message[]) => {
@@ -243,17 +276,17 @@ ${d.content || ""}
           responseText = await generateClientGemini(text, profile, diaries);
         } catch (clientErr: any) {
           console.error('Client Gemini fallback error:', clientErr);
-          responseText = `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${clientErr?.message || String(clientErr)})`;
+          const errStr = String(clientErr?.message || clientErr);
+          if (errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("Quota exceeded")) {
+            responseText = "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 바로 답변해 드릴게요! 😊";
+          } else {
+            responseText = `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${errStr})`;
+          }
         }
       }
 
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === tempAiMsgId
-            ? { ...m, content: responseText, isStreaming: false }
-            : m
-        )
-      );
+      // Animate the text character by character (typewriter effect)
+      await animateTyping(tempAiMsgId, responseText);
     } catch (err: any) {
       console.error('Chat API request failed:', err);
       setMessages((prev) =>

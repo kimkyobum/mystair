@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Header() {
   const navItems = [
-    { name: '성장다이어리', path: '/' },
+    { name: '성장다이어리', path: '/diary' },
     { name: '자격증 가이드', path: '/certificates' },
     { name: '채용 인사이트', path: '/' },
     { name: 'MBTI검사', path: '/mbti' },

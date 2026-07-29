@@ -9,10 +9,13 @@ import {
   signInAnonymously
 } from '../lib/firebase';
 
+import { apiService } from '../services/api';
+
 export interface UserProfileData {
   uid: string;
   name: string;
   email: string;
+  avatarUrl?: string;
   highSchool: string;
   major: string;
   mbti: string;
@@ -77,15 +80,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const loadUserProfile = (currentUser: FirebaseUser) => {
-    const saved = localStorage.getItem('mystair_local_user_profile');
-    if (saved) {
-      try {
-        setUserProfile(JSON.parse(saved));
-        return;
-      } catch (e) {
-        console.error('Error parsing local user profile:', e);
-      }
+  const loadUserProfile = async (currentUser: FirebaseUser) => {
+    const remoteProfile = await apiService.getProfile(currentUser.uid);
+    if (remoteProfile) {
+      setUserProfile(remoteProfile as UserProfileData);
+      return;
     }
 
     const newProfile: UserProfileData = {
@@ -96,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    localStorage.setItem('mystair_local_user_profile', JSON.stringify(newProfile));
+    await apiService.updateProfile(newProfile, currentUser.uid);
     setUserProfile(newProfile);
   };
 
@@ -143,42 +142,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updatedAt: new Date().toISOString()
     } as UserProfileData;
 
-    localStorage.setItem('mystair_local_user_profile', JSON.stringify(updated));
-    setUserProfile(updated);
+    const savedProfile = await apiService.updateProfile(updated, currentUid);
+    setUserProfile(savedProfile as UserProfileData);
   };
 
   const fetchDiaries = async (): Promise<DiaryEntry[]> => {
-    try {
-      const saved = localStorage.getItem('mystair_local_diaries');
-      if (saved) {
-        const entries: DiaryEntry[] = JSON.parse(saved);
-        return entries.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
-      }
-    } catch (error) {
-      console.error('Error fetching local diaries:', error);
-    }
-    return [];
+    const currentUid = user ? user.uid : 'local-user';
+    const diaries = await apiService.getDiaries(currentUid);
+    return diaries.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
   };
 
   const saveDiary = async (diary: Omit<DiaryEntry, 'id' | 'userId'>): Promise<string> => {
-    const newId = Date.now().toString();
-    const newEntry: DiaryEntry = {
-      ...diary,
-      id: newId,
-      userId: user ? user.uid : 'local-user',
-      createdAt: new Date().toISOString()
-    };
-
-    const currentDiaries = await fetchDiaries();
-    const updated = [newEntry, ...currentDiaries];
-    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
-    return newId;
+    const currentUid = user ? user.uid : 'local-user';
+    const savedEntry = await apiService.addDiary(diary, currentUid);
+    return savedEntry.id;
   };
 
   const deleteDiary = async (diaryId: string) => {
-    const currentDiaries = await fetchDiaries();
-    const updated = currentDiaries.filter(d => d.id !== diaryId);
-    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
+    const currentUid = user ? user.uid : 'local-user';
+    await apiService.deleteDiary(diaryId, currentUid);
   };
 
   return (

@@ -3,12 +3,19 @@ import {
   BookOpen, 
   Plus, 
   Trash2, 
-  Calendar, 
-  Smile, 
+  Calendar as CalendarIcon, 
   Sparkles, 
   Check, 
-  Tag,
-  ArrowLeft
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap,
+  Award,
+  Settings,
+  X,
+  List,
+  Edit3,
+  CalendarCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
@@ -21,17 +28,59 @@ const MOOD_OPTIONS = [
   { emoji: '😌', label: '평온함' },
 ];
 
+const MONTH_NAMES_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+interface ExamSchedule {
+  firstMid: { start: string; end: string; name: string; color: string };
+  firstFinal: { start: string; end: string; name: string; color: string };
+  secondMid: { start: string; end: string; name: string; color: string };
+  secondFinal: { start: string; end: string; name: string; color: string };
+}
+
+const DEFAULT_EXAM_SCHEDULE: ExamSchedule = {
+  firstMid: { start: '2026-04-20', end: '2026-04-23', name: '1학기 중간고사', color: 'bg-amber-100 text-amber-900 border-amber-400' },
+  firstFinal: { start: '2026-06-22', end: '2026-06-25', name: '1학기 기말고사', color: 'bg-rose-100 text-rose-900 border-rose-400' },
+  secondMid: { start: '2026-10-19', end: '2026-10-22', name: '2학기 중간고사', color: 'bg-indigo-100 text-indigo-900 border-indigo-400' },
+  secondFinal: { start: '2026-12-14', end: '2026-12-17', name: '2학기 기말고사', color: 'bg-purple-100 text-purple-900 border-purple-400' },
+};
+
 export default function Diary() {
   const { fetchDiaries, saveDiary, deleteDiary } = useAuth();
 
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(false);
-  const [showAddForm, setShowAddForm] = useState(false);
+  
+  // View mode: 'calendar' or 'list'
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
-  // Form inputs
+  // Calendar State
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // 0-indexed
+
+  // Exam schedule state
+  const [examSchedule, setExamSchedule] = useState<ExamSchedule>(() => {
+    const saved = localStorage.getItem('mystair_exam_schedule');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return DEFAULT_EXAM_SCHEDULE;
+      }
+    }
+    return DEFAULT_EXAM_SCHEDULE;
+  });
+
+  const [showExamSettings, setShowExamSettings] = useState(false);
+
+  // Form Modal for Selected Date / New Entry
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [mood, setMood] = useState('🔥');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>(['성장기록', '자격증']);
@@ -76,6 +125,13 @@ export default function Diary() {
     setTimeout(() => setToastMsg(null), 2500);
   };
 
+  const handleSaveExamSchedule = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('mystair_exam_schedule', JSON.stringify(examSchedule));
+    setShowExamSettings(false);
+    showToast('시험 일정이 성공적으로 저장되었습니다!');
+  };
+
   const handleAddTag = () => {
     if (!tagInput.trim()) return;
     if (!tags.includes(tagInput.trim())) {
@@ -88,7 +144,27 @@ export default function Diary() {
     setTags(tags.filter(tag => tag !== t));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Open modal for a specific date cell
+  const handleOpenDayModal = (dateStr: string) => {
+    setSelectedDate(dateStr);
+    const existing = diaries.find(d => d.date === dateStr);
+    if (existing) {
+      setEditingId(existing.id || null);
+      setTitle(existing.title);
+      setContent(existing.content);
+      setMood(existing.mood || '🔥');
+      setTags(existing.tags || ['성장기록']);
+    } else {
+      setEditingId(null);
+      setTitle('');
+      setContent('');
+      setMood('🔥');
+      setTags(['성장기록']);
+    }
+    setShowFormModal(true);
+  };
+
+  const handleSubmitDiary = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       showToast('제목과 내용을 입력해주세요.');
@@ -99,16 +175,12 @@ export default function Diary() {
       await saveDiary({
         title: title.trim(),
         content: content.trim(),
-        date,
+        date: selectedDate,
         mood,
         tags
       });
       showToast('성장 다이어리가 성공적으로 저장되었습니다!');
-
-      // Reset form
-      setTitle('');
-      setContent('');
-      setShowAddForm(false);
+      setShowFormModal(false);
       loadDiaryList();
     } catch (err) {
       console.error(err);
@@ -123,6 +195,7 @@ export default function Diary() {
     try {
       await deleteDiary(id);
       showToast('다이어리 기록이 삭제되었습니다.');
+      setShowFormModal(false);
       loadDiaryList();
     } catch (err) {
       console.error(err);
@@ -130,8 +203,63 @@ export default function Diary() {
     }
   };
 
+  // Check if a date string falls within an exam period
+  const getExamForDate = (dateStr: string) => {
+    if (!dateStr) return null;
+    const { firstMid, firstFinal, secondMid, secondFinal } = examSchedule;
+
+    if (firstMid.start && firstMid.end && dateStr >= firstMid.start && dateStr <= firstMid.end) {
+      return firstMid;
+    }
+    if (firstFinal.start && firstFinal.end && dateStr >= firstFinal.start && dateStr <= firstFinal.end) {
+      return firstFinal;
+    }
+    if (secondMid.start && secondMid.end && dateStr >= secondMid.start && dateStr <= secondMid.end) {
+      return secondMid;
+    }
+    if (secondFinal.start && secondFinal.end && dateStr >= secondFinal.start && dateStr <= secondFinal.end) {
+      return secondFinal;
+    }
+    return null;
+  };
+
+  // Calendar calculations
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay(); // 0 = Sun
+  const prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(prev => prev - 1);
+    } else {
+      setCurrentMonth(prev => prev - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(prev => prev + 1);
+    } else {
+      setCurrentMonth(prev => prev + 1);
+    }
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    setCurrentYear(today.getFullYear());
+    setCurrentMonth(today.getMonth());
+  };
+
+  const monthFormatted = String(currentMonth + 1).padStart(2, '0');
+
   return (
-    <div className="h-full flex-1 overflow-y-auto bg-[#0B0F17] text-white font-sans flex flex-col relative pb-28">
+    <div className="h-full flex-1 overflow-hidden bg-slate-950/45 text-white font-sans flex flex-col relative">
+      {/* Soft Ambient Cosmic Glows */}
+      <div className="absolute top-[15%] left-[20%] w-[380px] h-[380px] rounded-full bg-indigo-500/10 blur-[100px] pointer-events-none z-0" />
+      <div className="absolute bottom-[25%] right-[15%] w-[450px] h-[450px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none z-0" />
+
       {/* Toast Notification */}
       {toastMsg && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border border-indigo-400 animate-bounce">
@@ -148,74 +276,512 @@ export default function Diary() {
           </Link>
           <BookOpen size={24} className="text-indigo-400" />
           <h1 className="text-xl font-black tracking-tight text-white">성장 다이어리</h1>
-          <span className="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-0.5 rounded-full font-bold border border-indigo-500/30">
-            로컬 저장소
-          </span>
+        </div>
+
+        {/* View Mode Toggle */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowExamSettings(!showExamSettings)}
+            className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+          >
+            <Settings size={15} />
+            <span className="hidden sm:inline">시험 일정 설정</span>
+          </button>
+
+          <div className="bg-slate-800 p-1 rounded-2xl border border-slate-700 flex items-center gap-1">
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'calendar' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <CalendarIcon size={14} />
+              <span>달력 보기</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'list' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <List size={14} />
+              <span>목록 보기</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="max-w-4xl mx-auto w-full px-4 sm:px-8 py-8 space-y-6">
-        
-        {/* Banner */}
-        <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 rounded-3xl p-6 sm:p-8 border border-indigo-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold flex items-center gap-2">
-              <Sparkles className="text-amber-400" size={24} />
-              <span>나만의 성장의 계단 기록장</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 font-medium">
-              오늘 배운 직무 기술, 자격증 공부 일지, 느낀 점을 기록하고 성장 일지를 보관해보세요!
+      <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col ${viewMode === 'calendar' ? 'overflow-hidden' : 'overflow-y-auto pb-8'}`}>
+
+        {/* Exam Schedule Settings Collapsible Box */}
+        {showExamSettings && (
+          <form onSubmit={handleSaveExamSchedule} className="bg-slate-900/90 border-2 border-amber-500/50 rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-amber-300 flex items-center gap-2">
+                <GraduationCap size={20} className="text-amber-400" />
+                <span>1·2학기 중간 / 기말고사 시험 일정 설정</span>
+              </h3>
+              <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300">
+              시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.
             </p>
-          </div>
-
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-5 py-3 rounded-2xl text-xs font-extrabold transition shadow-lg flex items-center gap-2 shrink-0 cursor-pointer"
-          >
-            <Plus size={18} />
-            <span>{showAddForm ? '작성 취소' : '새 다이어리 작성'}</span>
-          </button>
-        </div>
-
-        {/* Form Modal / Inline Box */}
-        {showAddForm && (
-          <form onSubmit={handleSubmit} className="bg-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-2xl space-y-4 animate-in fade-in duration-200">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-              <BookOpen size={18} className="text-indigo-400" />
-              <span>새 성장 일지 작성하기</span>
-            </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* 1학기 중간고사 */}
+              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
+                <label className="text-xs font-extrabold text-amber-400 flex items-center gap-1">
+                  <span>📝 1학기 중간고사</span>
+                </label>
+                <div className="flex items-center gap-2 text-xs">
+                  <input
+                    type="date"
+                    value={examSchedule.firstMid.start}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      firstMid: { ...examSchedule.firstMid, start: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                  <span>~</span>
+                  <input
+                    type="date"
+                    value={examSchedule.firstMid.end}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      firstMid: { ...examSchedule.firstMid, end: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                </div>
+              </div>
+
+              {/* 1학기 기말고사 */}
+              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
+                <label className="text-xs font-extrabold text-rose-400 flex items-center gap-1">
+                  <span>💯 1학기 기말고사</span>
+                </label>
+                <div className="flex items-center gap-2 text-xs">
+                  <input
+                    type="date"
+                    value={examSchedule.firstFinal.start}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      firstFinal: { ...examSchedule.firstFinal, start: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                  <span>~</span>
+                  <input
+                    type="date"
+                    value={examSchedule.firstFinal.end}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      firstFinal: { ...examSchedule.firstFinal, end: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                </div>
+              </div>
+
+              {/* 2학기 중간고사 */}
+              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
+                <label className="text-xs font-extrabold text-indigo-400 flex items-center gap-1">
+                  <span>📝 2학기 중간고사</span>
+                </label>
+                <div className="flex items-center gap-2 text-xs">
+                  <input
+                    type="date"
+                    value={examSchedule.secondMid.start}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      secondMid: { ...examSchedule.secondMid, start: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                  <span>~</span>
+                  <input
+                    type="date"
+                    value={examSchedule.secondMid.end}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      secondMid: { ...examSchedule.secondMid, end: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                </div>
+              </div>
+
+              {/* 2학기 기말고사 */}
+              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
+                <label className="text-xs font-extrabold text-purple-400 flex items-center gap-1">
+                  <span>🎓 2학기 기말고사</span>
+                </label>
+                <div className="flex items-center gap-2 text-xs">
+                  <input
+                    type="date"
+                    value={examSchedule.secondFinal.start}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      secondFinal: { ...examSchedule.secondFinal, start: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                  <span>~</span>
+                  <input
+                    type="date"
+                    value={examSchedule.secondFinal.end}
+                    onChange={e => setExamSchedule({
+                      ...examSchedule,
+                      secondFinal: { ...examSchedule.secondFinal, end: e.target.value }
+                    })}
+                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setExamSchedule(DEFAULT_EXAM_SCHEDULE)}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
+              >
+                기본값 복원
+              </button>
+              <button
+                type="submit"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md"
+              >
+                <Check size={16} />
+                <span>시험 일정 저장</span>
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* CALENDAR VIEW (Sleek Cosmic Theme matching starry sky environment) */}
+        {viewMode === 'calendar' ? (
+          <div className="flex-1 min-h-0 bg-slate-900/40 backdrop-blur-md rounded-3xl p-4 sm:p-5 text-white border-2 border-white/15 shadow-[0_12px_40px_-12px_rgba(99,102,241,0.25)] flex flex-col justify-between relative z-10">
+            
+            {/* Header: Month title, Year subtitle, & Navigation controls */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b border-white/5 flex-none">
+              <div className="text-center sm:text-left">
+                <h2 className="text-3xl sm:text-4xl font-black tracking-wider text-white font-sans uppercase">
+                  {MONTH_NAMES_EN[currentMonth]}
+                </h2>
+                <div className="text-sm font-extrabold text-indigo-400/80 tracking-widest mt-0.5">
+                  {currentYear}.{monthFormatted}
+                </div>
+              </div>
+
+              {/* Month Switcher Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrevMonth}
+                  className="p-2 rounded-xl border border-white/15 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+                  title="이전 달"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  onClick={handleNextMonth}
+                  className="p-2 rounded-xl border border-white/15 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer"
+                  title="다음 달"
+                >
+                  <ChevronRight size={18} />
+                </button>
+                <button
+                  onClick={() => handleOpenDayModal(new Date().toISOString().split('T')[0])}
+                  className="ml-2 px-4 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <Plus size={15} />
+                  <span>일기 쓰기</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Day Headers (Sleek sci-fi terminal styled pills) */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center flex-none my-2.5">
+              {/* SUN */}
+              <div className="bg-rose-500/10 text-rose-400 font-extrabold text-xs py-1.5 rounded-lg border border-rose-500/20 shadow-sm">
+                SUN
+              </div>
+              {/* MON */}
+              <div className="bg-slate-800/55 text-slate-300 font-bold text-xs py-1.5 rounded-lg border border-slate-700/40 shadow-sm">
+                MON
+              </div>
+              {/* TUE */}
+              <div className="bg-slate-800/55 text-slate-300 font-bold text-xs py-1.5 rounded-lg border border-slate-700/40 shadow-sm">
+                TUE
+              </div>
+              {/* WED */}
+              <div className="bg-slate-800/55 text-slate-300 font-bold text-xs py-1.5 rounded-lg border border-slate-700/40 shadow-sm">
+                WED
+              </div>
+              {/* THU */}
+              <div className="bg-slate-800/55 text-slate-300 font-bold text-xs py-1.5 rounded-lg border border-slate-700/40 shadow-sm">
+                THU
+              </div>
+              {/* FRI */}
+              <div className="bg-slate-800/55 text-slate-300 font-bold text-xs py-1.5 rounded-lg border border-slate-700/40 shadow-sm">
+                FRI
+              </div>
+              {/* SAT */}
+              <div className="bg-sky-500/10 text-sky-400 font-extrabold text-xs py-1.5 rounded-lg border border-sky-500/20 shadow-sm">
+                SAT
+              </div>
+            </div>
+
+            {/* 7-Column Calendar Grid */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-1.5 flex-1 min-h-0 auto-rows-fr">
+              {/* Empty leading cells from previous month */}
+              {Array.from({ length: firstDayOfWeek }).map((_, idx) => {
+                const prevDayNum = prevMonthDays - firstDayOfWeek + idx + 1;
+                return (
+                  <div 
+                    key={`prev-${idx}`}
+                    className="bg-slate-950/20 rounded-xl border border-white/5 min-h-0 p-1 flex flex-col opacity-20 select-none"
+                  >
+                    <span className="text-xs font-bold text-slate-600">{prevDayNum}</span>
+                  </div>
+                );
+              })}
+
+              {/* Current Month Days */}
+              {Array.from({ length: daysInMonth }).map((_, idx) => {
+                const dayNum = idx + 1;
+                const dayStr = String(dayNum).padStart(2, '0');
+                const fullDateStr = `${currentYear}-${monthFormatted}-${dayStr}`;
+
+                const dayOfWeek = (firstDayOfWeek + idx) % 7; // 0 = Sun, 6 = Sat
+                const isSunday = dayOfWeek === 0;
+                const isSaturday = dayOfWeek === 6;
+
+                const todayStr = new Date().toISOString().split('T')[0];
+                const isToday = fullDateStr === todayStr;
+
+                // Check for Diary entry on this day
+                const diaryEntry = diaries.find(d => d.date === fullDateStr);
+
+                // Check for Exam on this day
+                const exam = getExamForDate(fullDateStr);
+
+                // Make exam badges dark, glowing, cosmic
+                let examBadgeClass = "bg-amber-500/10 text-amber-300 border-amber-500/30";
+                if (exam) {
+                  if (exam.name.includes("기말고사")) {
+                    examBadgeClass = exam.name.includes("1학기") 
+                      ? "bg-rose-500/10 text-rose-300 border-rose-500/25"
+                      : "bg-purple-500/10 text-purple-300 border-purple-500/25";
+                  } else {
+                    examBadgeClass = exam.name.includes("1학기")
+                      ? "bg-amber-500/10 text-amber-300 border-amber-500/25"
+                      : "bg-indigo-500/10 text-indigo-300 border-indigo-500/25";
+                  }
+                }
+
+                return (
+                  <div
+                    key={fullDateStr}
+                    onClick={() => handleOpenDayModal(fullDateStr)}
+                    className={`rounded-xl border-2 transition-all p-1.5 sm:p-2 flex flex-col justify-between min-h-0 cursor-pointer relative group ${
+                      isToday 
+                        ? 'bg-indigo-950/45 border-indigo-500 ring-1 ring-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.25)] hover:border-indigo-400' 
+                        : 'bg-slate-900/55 hover:bg-slate-800/85 border-white/15 hover:border-white/35 shadow-md hover:shadow-[0_4px_16px_rgba(255,255,255,0.05)]'
+                    }`}
+                  >
+                    {/* Header line inside date cell */}
+                    <div className="flex items-center justify-between w-full">
+                      <span className={`text-xs sm:text-sm font-bold ${
+                        isSunday ? 'text-rose-400/90' : isSaturday ? 'text-sky-400/90' : 'text-slate-300'
+                      }`}>
+                        {dayNum}
+                      </span>
+
+                      {/* Today Badge */}
+                      {isToday && (
+                        <span className="bg-indigo-500 text-white text-[8px] font-black px-1 rounded border border-indigo-400 shadow-sm">
+                          TODAY
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Cell Content: Exam Badge & Diary Entry */}
+                    <div className="space-y-1 my-1 flex-1 flex flex-col justify-center">
+                      {/* EXAM BADGE DISPLAY */}
+                      {exam && (
+                        <div className={`p-1 rounded-lg border text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-xs animate-pulse ${examBadgeClass}`}>
+                          <span>📝</span>
+                          <span className="truncate">{exam.name}</span>
+                        </div>
+                      )}
+
+                      {/* DIARY ENTRY DISPLAY */}
+                      {diaryEntry && (
+                        <div className="bg-indigo-500/10 border border-indigo-500/25 p-1 sm:p-1.5 rounded-lg flex items-center gap-1 text-[11px] font-bold text-indigo-200 truncate shadow-xs">
+                          <span className="text-sm shrink-0">{diaryEntry.mood || '🔥'}</span>
+                          <span className="truncate">{diaryEntry.title}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Hover add prompt if empty */}
+                    {!diaryEntry && !exam && (
+                      <div className="opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-indigo-400 text-center">
+                        + 일기 쓰기
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          /* LIST VIEW */
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-wider">
+                나의 성장 일지 목록 ({diaries.length}개)
+              </h3>
+              <button
+                onClick={() => handleOpenDayModal(new Date().toISOString().split('T')[0])}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow"
+              >
+                <Plus size={16} />
+                <span>새 성장 일지 작성</span>
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-12 text-slate-500 text-sm font-medium">
+                기록을 불러오는 중...
+              </div>
+            ) : diaries.length === 0 ? (
+              <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
+                <BookOpen size={36} className="mx-auto text-slate-600" />
+                <p className="text-slate-400 text-sm font-bold">아직 작성된 성장 다이어리가 없습니다.</p>
+                <p className="text-slate-500 text-xs">상단의 버튼을 눌러 첫 일기를 작성해 보세요!</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {diaries.map(diary => (
+                  <div 
+                    key={diary.id}
+                    className="bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all shadow-md space-y-3 relative group"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{diary.mood || '🔥'}</span>
+                          <h4 className="text-lg font-extrabold text-white">{diary.title}</h4>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs font-medium text-slate-400">
+                          <span className="flex items-center gap-1">
+                            <CalendarIcon size={13} className="text-indigo-400" />
+                            <span>{diary.date}</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenDayModal(diary.date)}
+                          className="opacity-60 group-hover:opacity-100 hover:text-indigo-300 text-slate-400 p-2 transition cursor-pointer"
+                          title="수정"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(diary.id)}
+                          className="opacity-60 group-hover:opacity-100 hover:text-red-400 text-slate-500 p-2 transition cursor-pointer"
+                          title="삭제"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-sm font-normal text-slate-300 leading-relaxed whitespace-pre-wrap pt-1">
+                      {diary.content}
+                    </p>
+
+                    {diary.tags && diary.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-2">
+                        {diary.tags.map(t => (
+                          <span key={t} className="bg-slate-800 text-indigo-300 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-slate-700">
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      {/* DIARY FORM MODAL FOR SELECTED DAY */}
+      {showFormModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <form 
+            onSubmit={handleSubmitDiary}
+            className="bg-slate-900 border-2 border-indigo-500/50 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in zoom-in-95 duration-150"
+          >
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <CalendarCheck size={20} className="text-indigo-400" />
+                <span>{selectedDate} 성장 다이어리 {editingId ? '수정' : '작성'}</span>
+              </h3>
+              <button 
+                type="button" 
+                onClick={() => setShowFormModal(false)}
+                className="text-slate-400 hover:text-white p-1"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-400">제목</label>
                 <input 
                   type="text" 
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
-                  placeholder="예: PLC 제어 실습 성공 기록"
+                  placeholder="예: 전기기능사 회로 실습 성공 기록"
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none focus:border-indigo-500"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400">날짜 및 기분</label>
-                <div className="flex items-center gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-400">날짜</label>
                   <input 
                     type="date" 
-                    value={date} 
-                    onChange={e => setDate(e.target.value)}
-                    className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none"
+                    value={selectedDate} 
+                    onChange={e => setSelectedDate(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none focus:border-indigo-500"
                   />
-                  <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700">
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-400">오늘의 기분</label>
+                  <div className="flex items-center justify-between bg-slate-800 p-1.5 rounded-xl border border-slate-700 h-[46px]">
                     {MOOD_OPTIONS.map(m => (
                       <button
                         key={m.emoji}
                         type="button"
                         onClick={() => setMood(m.emoji)}
-                        className={`p-1.5 rounded-lg text-sm transition cursor-pointer ${
-                          mood === m.emoji ? 'bg-indigo-600 scale-110 shadow' : 'hover:bg-slate-700'
+                        className={`flex-1 py-1 rounded-lg text-sm transition-all cursor-pointer flex items-center justify-center ${
+                          mood === m.emoji ? 'bg-indigo-600 scale-105 shadow text-base' : 'hover:bg-slate-700/50 text-slate-400'
                         }`}
                         title={m.label}
                       >
@@ -228,12 +794,12 @@ export default function Diary() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-400">일지 내용</label>
+              <label className="text-xs font-bold text-slate-400 font-sans">오늘의 성장 기록 및 일기 내용</label>
               <textarea 
-                rows={4}
+                rows={5}
                 value={content}
                 onChange={e => setContent(e.target.value)}
-                placeholder="오늘 배운 핵심 내용, 해결한 과제, 자격증 준비 상황 등을 솔직하게 자유롭게 적어보세요..."
+                placeholder="오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요..."
                 className="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-sm font-medium text-white outline-none focus:border-indigo-500 leading-relaxed"
                 required
               />
@@ -271,90 +837,39 @@ export default function Diary() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setShowAddForm(false)}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-xs font-bold cursor-pointer"
-              >
-                취소
-              </button>
-              <button
-                type="submit"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
-              >
-                <Check size={16} />
-                <span>다이어리 저장</span>
-              </button>
+            <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+              {editingId ? (
+                <button
+                  type="button"
+                  onClick={() => handleDelete(editingId)}
+                  className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                  <span>일기 삭제</span>
+                </button>
+              ) : <div />}
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowFormModal(false)}
+                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
+                >
+                  <Check size={16} />
+                  <span>{editingId ? '수정 완료' : '일기 저장'}</span>
+                </button>
+              </div>
             </div>
           </form>
-        )}
-
-        {/* Diary List */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-extrabold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-            <span>나의 성장 일지 목록 ({diaries.length}개)</span>
-          </h3>
-
-          {loading ? (
-            <div className="text-center py-12 text-slate-500 text-sm font-medium">
-              기록을 불러오는 중...
-            </div>
-          ) : diaries.length === 0 ? (
-            <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
-              <BookOpen size={36} className="mx-auto text-slate-600" />
-              <p className="text-slate-400 text-sm font-bold">아직 작성된 성장 다이어리가 없습니다.</p>
-              <p className="text-slate-500 text-xs">상단의 [새 다이어리 작성] 버튼을 눌러 첫 기록을 남겨보세요!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {diaries.map(diary => (
-                <div 
-                  key={diary.id}
-                  className="bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 rounded-3xl p-6 transition-all shadow-md space-y-3 relative group"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl">{diary.mood || '🔥'}</span>
-                        <h4 className="text-lg font-extrabold text-white">{diary.title}</h4>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs font-medium text-slate-400">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={13} className="text-indigo-400" />
-                          <span>{diary.date}</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleDelete(diary.id)}
-                      className="opacity-60 group-hover:opacity-100 hover:text-red-400 text-slate-500 p-2 transition cursor-pointer"
-                      title="삭제"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-
-                  <p className="text-sm font-normal text-slate-300 leading-relaxed whitespace-pre-wrap pt-1">
-                    {diary.content}
-                  </p>
-
-                  {diary.tags && diary.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {diary.tags.map(t => (
-                        <span key={t} className="bg-slate-800 text-indigo-300 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-slate-700">
-                          #{t}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
-      </main>
+      )}
     </div>
   );
 }
+

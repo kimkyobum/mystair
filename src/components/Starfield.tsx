@@ -1,8 +1,13 @@
 import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import FloatingAliens from './FloatingAliens';
 
 export default function Starfield() {
+  const location = useLocation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Show aliens only on space-themed pages (e.g. home page '/')
+  const isSpacePage = location.pathname === '/';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -116,7 +121,7 @@ export default function Starfield() {
   return (
     <>
       <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
-      <FloatingAliens />
+      {isSpacePage && <FloatingAliens />}
     </>
   );
 }
