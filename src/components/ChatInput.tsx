@@ -36,8 +36,8 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       </form>
       
       <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-        <button onClick={() => onStartChat?.('내 전공과 성향에 맞는 기업 추천해줘')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
-          내 전공/성향 맞춤 기업 추천
+        <button onClick={() => onStartChat?.('내 MBTI와 홀랜드검사, 학교, 전공등을 분석하여 회사 데이터를 기반으로 대기업 10곳과 공기업 10곳 차례대로 추천해줘')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
+          나만의 기업찾기 (대기업/공기업 TOP 10)
         </button>
         <button onClick={() => onStartChat?.('마이스터고 학생들이 많이 가는 대표 대기업/공기업')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium">
           대표 대기업 & 공기업 리스트

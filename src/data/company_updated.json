@@ -1,0 +1,2074 @@
+[
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DS부문 (반도체)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자/반도체",
+            "제조업",
+            "경기권",
+            "충청권"
+        ],
+        "main_business_products": "메모리 반도체(DRAM, NAND), 시스템 LSI, 반도체 위탁생산(Foundry)",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "반도체 8대 공정 이해 및 메인테넌스 능력"
+        ],
+        "core_talent_keywords": [
+            "열정",
+            "창의혁신",
+            "인간미/도덕성",
+            "초격차 기술"
+        ],
+        "organizational_culture": "첨단 팹(FAB) 기반의 엄격한 공정·안전 수칙 준수, 4조 3교대 중심의 현장 기술 전문성 우대 문화",
+        "employee_review_summary": "최고 수준의 성과급(OPI) 및 복리후생 보유. 교대근무에 따른 체력 관리와 교대 라인 적응이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 6,500만 원 이상 (성과급 및 교대수당 포함 시)"
+        },
+        "work_locations": [
+            "경기 기흥",
+            "경기 화성",
+            "경기 평택",
+            "충남 천안",
+            "충남 온양"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT(직무적성검사)",
+            "종합면접(직무/인성)",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사내 기숙사 무상 제공",
+            "1일 3식 사내식당 무료",
+            "의료비 및 건강검진 지원",
+            "자녀 학자금 지원",
+            "개인연금 지원",
+            "복지포인트 지급"
+        ],
+        "meister_career_path": "설비엔지니어(메인테넌스)로 입사하여, 장기 근속 시 사내대학(SSIT) 등 진학 지원을 통해 학사 학위 취득 및 공정 엔지니어로의 직무 전환 기회를 부여함. 현장 마스터(명장) 제도를 통한 최고 기술자 우대."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DX부문 (가전/모바일/네트워크)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자/IT",
+            "가전",
+            "모바일",
+            "제조업"
+        ],
+        "main_business_products": "스마트폰(Galaxy), 스마트 TV, 프리미엄 가전(Bespoke), 5G 통신장비",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "금형과",
+            "소프트웨어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "컴퓨터응용밀링/선반기능사",
+            "정보처리기능사",
+            "생산자동화기능사"
+        ],
+        "core_talent_keywords": [
+            "글로벌 선도",
+            "고객 중심",
+            "변화 주도",
+            "최고 지향"
+        ],
+        "organizational_culture": "글로벌 시장 중심의 품질 제로 결함 추진, 공정 자동화 및 스마트 팩토리 기반 문화",
+        "employee_review_summary": "안정적인 근무 환경과 쾌적한 사내 복지 시설. 정해진 생산 타임라인 이행 중심의 규칙적인 업무 스타일.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,500만 원 수준"
+        },
+        "work_locations": [
+            "경기 수원",
+            "경북 구미",
+            "광주광역시"
+        ],
+        "expected_work_hours": "주간 2교대 또는 상주근무 (부서별 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT(직무적성검사)",
+            "종합면접(직무/인성)",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사내 기숙사 및 통근버스",
+            "1일 3식(사내식당)",
+            "의료비 및 건강검진",
+            "복지포인트",
+            "사내 피트니스",
+            "자주적 출퇴근제"
+        ],
+        "meister_career_path": "생산 및 품질/테스트 엔지니어로 입사하여 제조 라인 전문가로 성장. 우수 인력은 품질 검증 및 라인 관리자(직장/기장)로 승격."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성디스플레이",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "디스플레이",
+            "제조업",
+            "충청권"
+        ],
+        "main_business_products": "중소형/대형 OLED 패널, QD-OLED, 폴더블 디스플레이 모듈",
+        "preferred_majors": [
+            "디스플레이과",
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "재료공정과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "클린룸 설비 점검 및 초정밀 박막 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "기술 혁신",
+            "도전 정신",
+            "상생 협력"
+        ],
+        "organizational_culture": "디스플레이 글로벌 1위를 유지하기 위한 기술력 중시, 클린룸 내 표준작업지침(SOP) 철저 준수",
+        "employee_review_summary": "기숙사, 사내 식당 등 생활 복지가 뛰어남. 라인 유지보수 시 임기응변과 정밀 조작 역량이 요구됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,500만 원 수준"
+        },
+        "work_locations": [
+            "충남 아산",
+            "충남 천안",
+            "경기 기흥"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "최고 수준 사내 기숙사/식당",
+            "통근버스",
+            "의료비/건강검진",
+            "자녀 학자금",
+            "사내병원/약국",
+            "어린이집"
+        ],
+        "meister_career_path": "클린룸 내 OLED/QD 증착 및 노광 설비 유지보수 전문가로 육성. 아이디어 제안 및 특허 발명 포상 제도를 통한 엔지니어 성장 지원."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성SDI",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "배터리/이차전지",
+            "소재",
+            "제조업",
+            "충청권",
+            "영남권"
+        ],
+        "main_business_products": "전기차용 리튬이온 배터리, ESS(에너지저장장치), 반도체/디스플레이 전자재료",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사"
+        ],
+        "core_talent_keywords": [
+            "안전 우선",
+            "친환경 가치",
+            "최고 품질"
+        ],
+        "organizational_culture": "배터리 안전성 강화를 최우선으로 하는 환경/안전 중심 문화, 지속적인 공정 수율 개선 활동",
+        "employee_review_summary": "친환경 전기차 배터리 시장 성장에 따른 미래 비전 양호. 화학물질 취급 시 엄격한 안전 수칙 적용.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,300만 원 수준"
+        },
+        "work_locations": [
+            "충남 천안",
+            "충북 청주",
+            "울산광역시",
+            "경기 구미"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사내 기숙사",
+            "통근버스",
+            "의료비 지원",
+            "복지포인트",
+            "학자금 지원",
+            "사내식당"
+        ],
+        "meister_career_path": "전기차 배터리 극판/조립/화성 공정 설비 전문가로 성장. 전기차 시장 성장에 따라 해외 법인(유럽, 미주) 생산 라인 셋업 파견 기회 부여."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성전기",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자부품",
+            "소재/부품",
+            "제조업"
+        ],
+        "main_business_products": "MLCC(적층세라믹콘덴서), 카메라 모듈, 반도체 패키지 기판(FC-BGA)",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "신소재/화공과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "생산자동화기능사",
+            "정밀 부품 테스트 및 도면 해독 능력"
+        ],
+        "core_talent_keywords": [
+            "현장 중심",
+            "끊임없는 탐구",
+            "신뢰와 협업"
+        ],
+        "organizational_culture": "수원·세종·부산 사업장 기반의 제조 현장 실무 중시, 차세대 전자부품 기술 내실화 강조",
+        "employee_review_summary": "고졸/마이스터고 출신 기술 인재에 대한 차별 없는 역량 평가. 내실 있는 복지와 수당 체계 운영.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        },
+        "work_locations": [
+            "경기 수원",
+            "세종특별자치시",
+            "부산광역시"
+        ],
+        "expected_work_hours": "4조 3교대 (라인별 3조 2교대 혼용)",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT",
+            "종합면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "기숙사/통근버스",
+            "의료비 및 건강검진",
+            "복지포인트",
+            "1일 3식 제공",
+            "리프레시 휴가"
+        ],
+        "meister_career_path": "MLCC 및 반도체 기판 정밀 제조 라인의 설비 보전 및 품질 테스트 전문가 육성. 사내 기술 자격 제도를 통한 명장 트랙."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성바이오로직스",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "바이오/제약",
+            "제조업",
+            "수도권"
+        ],
+        "main_business_products": "바이오의약품 위탁생산(CMO) 및 위탁개발(CDO)",
+        "preferred_majors": [
+            "바이오/생명공학과",
+            "화학공업과",
+            "전기과",
+            "전자과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "GMP(의약품 제조품질관리기준) 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "고객 지향",
+            "글로벌 전문성",
+            "최우선 품질"
+        ],
+        "organizational_culture": "FDA/EMA 등 글로벌 규제 기관 기준에 맞춘 철저한 문서화 및 공정 관리, 젊고 생기 있는 조직 분위기",
+        "employee_review_summary": "송도 바이오클러스터 최신 시설 및 우수한 복지. 바이오 제조 표준 이행을 위한 꼼꼼한 성향 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        },
+        "work_locations": [
+            "인천 송도"
+        ],
+        "expected_work_hours": "4조 3교대 (교대조), 주간상주 (지원/QA조)",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 제공(인천 외 거주자)",
+            "통근버스",
+            "사내 피트니스/수영장",
+            "의료비 지원",
+            "복지포인트"
+        ],
+        "meister_career_path": "바이오 의약품 배양/정제 공정 테크니션(Operator) 입사. 글로벌 GMP 규제 대응 및 생산/품질(QA/QC) 관리 전문가로 사내 직무 순환 가능."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성물산 (건설부문)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "건설/플랜트",
+            "건축/토목"
+        ],
+        "main_business_products": "하이테크 플랜트(반도체/바이오 공장 시공), 토목, 건축, 주택(래미안)",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "건축목공/도장기능사",
+            "전기기능사",
+            "건설안전기능사",
+            "CAD 도면 작성 및 현장 안전 관리 능력"
+        ],
+        "core_talent_keywords": [
+            "현장 무재해",
+            "도전",
+            "실행력",
+            "신뢰"
+        ],
+        "organizational_culture": "안전보건 관리가 가장 정밀하게 작용하는 현장 중심 문화, 프로젝트 단위 직무 체계",
+        "employee_review_summary": "하이테크 현장(평택/용인 등) 중심 근무 시 체재비 및 현장 수당 지급. 현장 통제력과 커뮤니케이션 능력이 우수해야 함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,300만 원 수준 (현장 수당 포함 시)"
+        },
+        "work_locations": [
+            "전국 주요 건설 및 하이테크 현장 (평택, 용인 등)"
+        ],
+        "expected_work_hours": "주 6일(현장별 상이) 또는 탄력근무제",
+        "recruitment_process": [
+            "서류전형",
+            "직무적성검사",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "현장 숙소 및 식대 지원",
+            "현장 수당",
+            "의료비 및 자녀학자금",
+            "복지포인트",
+            "통신비 지원"
+        ],
+        "meister_career_path": "현장 안전관리 및 시공/전기설비 담당자로 시작하여, 대형 반도체/하이테크 플랜트 현장 소장(관리감독자) 급으로 경력 개발."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성중공업",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "조선/해양",
+            "제조업",
+            "영남권"
+        ],
+        "main_business_products": "LNG 운반선, 컨테이너선, 해양플랜트(FLNG), 스마트 선박 기술",
+        "preferred_majors": [
+            "조선과",
+            "기계과",
+            "용접과",
+            "전기과",
+            "배관/설비과"
+        ],
+        "required_competencies_certifications": [
+            "용접기능사",
+            "특수용접기능사",
+            "동력기계정비기능사",
+            "전기기능사",
+            "도면 해독 및 중공업 현장 안전 역량"
+        ],
+        "core_talent_keywords": [
+            "세계 최고 조선 기술",
+            "안전 책임감",
+            "열정"
+        ],
+        "organizational_culture": "거제 조선소 중심의 끈끈한 선후배 상호 협력 기술 문화, 안전 작업 절차 엄격 적용",
+        "employee_review_summary": "선박 수주 호조 시 성과급 확대 기대감. 거제도 현장 근무 적응 및 야외 작업 체력 보유자가 유리함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 5,000만 원 수준"
+        },
+        "work_locations": [
+            "경남 거제"
+        ],
+        "expected_work_hours": "주간 2교대 또는 상주근무 (현장별 특근 발생)",
+        "recruitment_process": [
+            "서류전형",
+            "직무적성검사",
+            "실무/임원 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 무상 제공",
+            "통근버스",
+            "의료비 지원",
+            "주택자금 대출 지원",
+            "자녀 학자금",
+            "복지포인트"
+        ],
+        "meister_career_path": "특수 용접, 배관, 기계 의장 및 선체 조립 전문가로 육성. 고기량자(마이스터) 중심으로 현장 반장 및 기장 승격 지원."
+    },
+    {
+        "company": "삼성",
+        "sector": "에스원",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "서비스/보안",
+            "IT/통신"
+        ],
+        "main_business_products": "첨단 보안 시스템(SECOM), 건물 관리 서비스(Blue Asset), 정보보안 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "통신과",
+            "정보처리/소프트웨어과",
+            "경호/체육계열"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "운전면허증",
+            "무도 단증(보안 직종 우대)"
+        ],
+        "core_talent_keywords": [
+            "고객 신뢰",
+            "안심 서비스",
+            "정직과 도덕성"
+        ],
+        "organizational_culture": "신뢰성과 정직함을 핵심 가치로 두고 고객 접점 및 사업장 인프라 유지 관리에 집중",
+        "employee_review_summary": "삼성 계열사로서의 고용 안정성과 복지 혜택 보유. 출동/기술 엔지니어의 경우 교대 및 이동 업무 적응 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        },
+        "work_locations": [
+            "전국 지사 및 출동 거점"
+        ],
+        "expected_work_hours": "3조 2교대 또는 주야비휴 교대근무",
+        "recruitment_process": [
+            "서류전형",
+            "운전테스트",
+            "GSAT/체력검정",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "자녀 학자금",
+            "의료비 지원",
+            "복지포인트",
+            "개인연금 지원",
+            "통신비 지원",
+            "휴양소 이용"
+        ],
+        "meister_career_path": "첨단 보안기기 설치(CS) 및 출동/유지보수 엔지니어로 시작하여 보안 시스템 컨설턴트 및 지사장 등 관리자 직급으로 승격 가능."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성물산 (리조트부문)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "서비스/레저",
+            "조경/건축"
+        ],
+        "main_business_products": "에버랜드/캐리비안베이 운영, 조경사업(Plant & Landscape), 골프장 운영",
+        "preferred_majors": [
+            "조경과",
+            "기계과",
+            "전기과",
+            "생명자원과",
+            "원예과"
+        ],
+        "required_competencies_certifications": [
+            "조경기능사",
+            "전기기능사",
+            "종자기능사",
+            "원동기 및 시설물 유지보수 자격"
+        ],
+        "core_talent_keywords": [
+            "고객 행복",
+            "창의적 서비스",
+            "전문성"
+        ],
+        "organizational_culture": "유원시설 및 식물·조경 공간을 다루는 밝고 서비스 지향적인 현장 문화",
+        "employee_review_summary": "에버랜드 등 활기찬 현장 분위기 및 우수한 주거 지원 복지. 성수기 시즌 현장 대응력 요구.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,500만 원 수준"
+        },
+        "work_locations": [
+            "경기 용인 (에버랜드)"
+        ],
+        "expected_work_hours": "주간 상주 (성수기 및 주말 스케줄 근무 혼용)",
+        "recruitment_process": [
+            "서류전형",
+            "직무적성검사",
+            "면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 제공",
+            "에버랜드/캐리비안베이 무상 이용",
+            "식사 제공",
+            "의료비 지원",
+            "복지포인트"
+        ],
+        "meister_career_path": "유원시설(어트랙션) 기계/전기 유지보수 및 식물/조경 관리 전문가로 성장. 파크 엔지니어링 마스터 제도 운용."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성웰스토리",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "식품/유통",
+            "서비스"
+        ],
+        "main_business_products": "기업/병원/학교 단체급식 서비스, 식자재 유통, 푸드테크 솔루션",
+        "preferred_majors": [
+            "식품가공과",
+            "조리과",
+            "바이오/화공과",
+            "농생명과"
+        ],
+        "required_competencies_certifications": [
+            "한식/양식/일식조리기능사",
+            "식품가공기능사",
+            "위생/품질관리 지식"
+        ],
+        "core_talent_keywords": [
+            "식음 안전",
+            "고객 만족",
+            "혁신적 푸드서비스"
+        ],
+        "organizational_culture": "위생과 안전 수칙 준수가 최우선이며, 대규모 사업장 식음 인프라 운용 문화",
+        "employee_review_summary": "식음업계 최고 수준의 처우와 삼성그룹 동일 복지 혜택 적용. 식자재 품질 관리 체계 수준이 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,700만 원 ~ 4,400만 원 수준"
+        },
+        "work_locations": [
+            "전국 주요 단체급식 사업장 및 물류센터"
+        ],
+        "expected_work_hours": "사업장별 교대 또는 상주 스케줄 근무",
+        "recruitment_process": [
+            "서류전형",
+            "실무면접(조리실기 등)",
+            "인성면접",
+            "건강검진(보건증)"
+        ],
+        "welfare_benefits": [
+            "식사 제공",
+            "복지포인트",
+            "의료비 지원",
+            "삼성 계열사 할인 혜택",
+            "휴양시설 이용"
+        ],
+        "meister_career_path": "위생사, 조리사, 품질검사원(QA)으로 시작하여 대형 사업장 총괄 점장 및 메뉴/품질 개발 연구원으로 직무 순환 및 승격."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성화재 / 삼성 금융 계열 (지점지원/IT인프라)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "금융/보험",
+            "IT/사무지원"
+        ],
+        "main_business_products": "손해보험, 자동차보험, 보상서비스 인프라, 전산 업무 지원",
+        "preferred_majors": [
+            "금융정보과",
+            "경영정보과",
+            "정보처리/소프트웨어과",
+            "행정/사무 관련과"
+        ],
+        "required_competencies_certifications": [
+            "전산회계/전산세무기능사",
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급"
+        ],
+        "core_talent_keywords": [
+            "신뢰성",
+            "고객 가치",
+            "정직함과 투명성"
+        ],
+        "organizational_culture": "정확한 엑셀/데이터 처리 및 고객 보상 지원 업무 수행, 쾌적한 오피스 근무 환경",
+        "employee_review_summary": "금융권 특유의 높은 고용 안정성과 정시 퇴근 문화. 사무 데이터 처리의 정확성이 철저히 요구됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        },
+        "work_locations": [
+            "서울 본사 및 전국 지역본부/지점"
+        ],
+        "expected_work_hours": "주간 상주근무 (9 to 6)",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT(사무직)",
+            "종합면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "의료비 지원",
+            "복지포인트",
+            "자녀 학자금",
+            "개인연금 지원",
+            "PC/통신비 지원",
+            "유연근무제"
+        ],
+        "meister_career_path": "지점 총무, 보상 심사 데이터 입력, IT 인프라 보조 직무로 입사하여, 실무 데이터 전문가 및 본사 경영지원 스태프로 경력 확대."
+    },
+    {
+        "company": "SK",
+        "sector": "SK하이닉스 (반도체 제조 및 설비 유지보수)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자/반도체",
+            "제조업",
+            "충청권",
+            "수도권"
+        ],
+        "main_business_products": "DRAM, NAND Flash, HBM(고대역폭메모리) 등 첨단 메모리 반도체",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "클린룸 설비 메인테넌스 및 반도체 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "VWBE(자발적·의욕적 두뇌활용)",
+            "패기",
+            "SUPEX(최고 수준 달성)",
+            "SKMS(SK 경영관리체계)"
+        ],
+        "organizational_culture": "기술 전문성을 존중하는 호칭 일원화(기술사무직/현장직 수평 문화), 4조 3교대 중심의 현장 기술 밀착 문화",
+        "employee_review_summary": "업계 최상위권 복리후생(기숙사, 식사, 의료비 지원)과 성과급(PS) 제도를 운용함. 반도체 수율 및 공정 관리를 위한 꼼꼼함과 교대근무 적응력이 필요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,300만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 7,000만 원 이상 (성과급, 교대수당, 야간수당 포함 시)"
+        },
+        "work_locations": [
+            "경기 이천",
+            "충북 청주"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT(심층역량검사)",
+            "직무/인성 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "최고급 기숙사",
+            "1일 3식(무료)",
+            "통근버스",
+            "의료비 지원",
+            "자녀 학자금",
+            "개인연금 지원",
+            "PS(초과이익분배금)"
+        ],
+        "meister_career_path": "메인테넌스(장비 유지보수) 특화 직군(Technical Operator)으로 육성되며, 사내 대학(SKHU) 프로그램 및 학위 지원을 통해 공정 엔지니어로의 승격 기회 제공."
+    },
+    {
+        "company": "SK",
+        "sector": "SK온 (전기차용 2차전지 배터리)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "배터리/이차전지",
+            "소재",
+            "제조업",
+            "충청권",
+            "영남권"
+        ],
+        "main_business_products": "전기차(EV)용 리튬이온 배터리 셀, 모듈, 팩 및 ESS(에너지저장장치)",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "배터리 극판/조립/화성 공정 이해 및 화학물질 취급 안전 역량"
+        ],
+        "core_talent_keywords": [
+            "패기",
+            "글로벌 도전",
+            "혁신",
+            "안전 책임감"
+        ],
+        "organizational_culture": "신기술·글로벌 사업 확장에 따른 역동적인 분위기, 안전보건 및 라인 수율 관리 강조",
+        "employee_review_summary": "서산/울산 등 국내 생산 거점 중심의 깨끗한 근무 환경. 2차전지 산업 성장세에 따른 기술 습득 기회와 복지 수준이 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준"
+        },
+        "work_locations": [
+            "충남 서산",
+            "울산광역시"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 지원",
+            "의료비/학자금 지원",
+            "복지포인트",
+            "사내식당/통근버스",
+            "리프레시 휴가"
+        ],
+        "meister_career_path": "전기차 배터리 셀/모듈 제조 및 라인 설비 관리자로 육성. 북미/유럽 등 해외 기지 확장에 따른 글로벌 셋업 파견 근무 우선 기회 부여."
+    },
+    {
+        "company": "SK",
+        "sector": "SK실트론 (반도체 웨이퍼 소재)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "반도체소재",
+            "제조업",
+            "영남권"
+        ],
+        "main_business_products": "반도체용 규소(Silicon) 웨이퍼 및 차세대 SiC(탄화규소) 전력반도체 웨이퍼",
+        "preferred_majors": [
+            "신소재과",
+            "재료공정과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "화학분석기능사",
+            "위험물기능사",
+            "설비보전기능사",
+            "결정성장 및 정밀가공 설비 조작 능력"
+        ],
+        "core_talent_keywords": [
+            "VWBE",
+            "끈기",
+            "최고의 기술력",
+            "지속가능성"
+        ],
+        "organizational_culture": "구미 사업장 중심의 내실 있는 현장 기술 문화, 안전 및 수율 제로 결함 추구",
+        "employee_review_summary": "지역 최고 수준의 처우와 안정적인 근무 여건. 기숙사와 사내 식당 등 생활 복지 혜택에 대한 만족도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준"
+        },
+        "work_locations": [
+            "경북 구미"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "직무/인성 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 제공",
+            "사내식당",
+            "통근버스",
+            "의료비/치과 진료 지원",
+            "주택자금 대출",
+            "복지포인트"
+        ],
+        "meister_career_path": "단결정 성장 및 웨이퍼 연마/세정 공정 오퍼레이터 및 설비 보전 전문가로 육성. 미세 공정 제어 기술 습득 지원."
+    },
+    {
+        "company": "SK",
+        "sector": "SKC 및 SK넥실리스 (첨단/친환경 소재)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "화학/소재",
+            "배터리/이차전지",
+            "제조업",
+            "호남권",
+            "수도권"
+        ],
+        "main_business_products": "이차전지용 동박(Copper Foil), 반도체 유리기판, 친환경 생분해 소재",
+        "preferred_majors": [
+            "화학공업과",
+            "신소재과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "컴퓨터응용선반/밀링기능사"
+        ],
+        "core_talent_keywords": [
+            "변화와 혁신",
+            "과감한 도전",
+            "딥체인지(Deep Change)"
+        ],
+        "organizational_culture": "첨단소재 중심의 체질 개선을 추진하는 도전적 분위기, 정읍·수원 등 거점 중심의 현장 중심 문화",
+        "employee_review_summary": "배터리 및 반도체 소재 영역 확장에 따른 성장 가치 우수. 고졸 기술 인재에 대한 명확한 직무 교육 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        },
+        "work_locations": [
+            "전북 정읍",
+            "경기 수원",
+            "충남 천안"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT(인성검사)",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 제공",
+            "의료비 및 치과 치료비 지원",
+            "복지포인트",
+            "자녀 학자금",
+            "통근버스"
+        ],
+        "meister_career_path": "동박 제조 및 반도체 기판 라인 생산/설비 오퍼레이터로 성장. 공정 트러블슈팅 및 수율 개선 전문가로 육성."
+    },
+    {
+        "company": "SK",
+        "sector": "SK이노베이션 계열 (정유/석유화학 플랜트)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "정유/석유화학",
+            "플랜트",
+            "영남권",
+            "수도권"
+        ],
+        "main_business_products": "휘발유/경유/등유, 석유화학 기초유분(에틸렌, 파라자일렌 등), 윤활유",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "가스기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "플랜트 계장 및 공정 흐름 해독"
+        ],
+        "core_talent_keywords": [
+            "패기",
+            "안전보건(SHE)",
+            "SUPEX",
+            "소통과 협력"
+        ],
+        "organizational_culture": "울산/인천 대규모 컴플렉스 기반의 최우선 안전보건 문화, 교대근무 기반의 탄탄한 선후배 상호 지원",
+        "employee_review_summary": "업계 최고 수준의 초봉과 고용 안정성(정년 보장 기조). 정유/화학 공정 특성상 철저한 안전 수칙 준수가 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,300만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,000만 원 이상 (성과급 및 오버타임 수당 포함 시)"
+        },
+        "work_locations": [
+            "울산광역시",
+            "인천광역시",
+            "충남 서산"
+        ],
+        "expected_work_hours": "4조 2교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "최고 수준 사택/기숙사 제공",
+            "의료비 전액 지원 수준",
+            "복지포인트",
+            "리프레시 휴가",
+            "주택자금 대출"
+        ],
+        "meister_career_path": "석유화학 플랜트 DCS(분산제어시스템) 보드맨 및 현장 오퍼레이터로 성장. 공정 효율화 및 안전관리 명장으로 도약."
+    },
+    {
+        "company": "SK",
+        "sector": "SK스페셜티 (반도체/디스플레이 특수가스)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "화학/소재",
+            "가스/에너지",
+            "영남권"
+        ],
+        "main_business_products": "삼불화질소(NF3), 육불화텅스텐(WF6) 등 반도체 공정용 고순도 특수가스",
+        "preferred_majors": [
+            "화학공업과",
+            "가스과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "고압가스 취급 및 안전 계측 역량"
+        ],
+        "core_talent_keywords": [
+            "안전 우선",
+            "전문성",
+            "패기",
+            "고객 신뢰"
+        ],
+        "organizational_culture": "영주 사업장 중심, 가스 안전에 직결된 엄격한 작업 절차 이행 및 독보적 가스 기술력 강조",
+        "employee_review_summary": "특수가스 시장 점유율 1위로 사업 안정성이 매우 뛰어남. 사내 식당, 주거 지원 등 지방 근무 복지가 알참.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,500만 원 수준"
+        },
+        "work_locations": [
+            "경북 영주"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "실무/임원 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 및 아파트 무상 제공",
+            "의료비 지원",
+            "복지포인트",
+            "통근버스",
+            "자녀 학자금"
+        ],
+        "meister_career_path": "특수가스 화학 공정 오퍼레이터 및 계기/전기 설비 유지보수 전문가로 육성. 고압가스 안전관리자로 직무 전문성 확보."
+    },
+    {
+        "company": "SK",
+        "sector": "SK텔레콤 / SK브로드밴드 / SK오앤에스 (통신 네트워크 인프라)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "통신/네트워크",
+            "IT",
+            "전국"
+        ],
+        "main_business_products": "5G/6G 이동통신, 초고속 인터넷, 데이터센터(IDC) 네트워크 인프라 구축 및 유지보수",
+        "preferred_majors": [
+            "통신과",
+            "전자과",
+            "전기과",
+            "소프트웨어과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "무선설비기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "네트워크 광케이블 접속 및 계측 장비 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "AI 컴퍼니 혁신",
+            "고객 가치",
+            "도전",
+            "협력"
+        ],
+        "organizational_culture": "통신 네트워크 무장애 운용을 목표로 하는 실시간 모니터링 및 현장 대처 중심 문화",
+        "employee_review_summary": "국내 1위 통신 사업자로서의 신뢰성과 높은 고용 안정성. 기상 악화 시 현장 긴급 출동에 따른 상시 대응력 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        },
+        "work_locations": [
+            "전국 주요 통신 국사 및 데이터센터(IDC)"
+        ],
+        "expected_work_hours": "통신망 관제 교대 근무 또는 주간 상주 (직무별 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "통신비 지원",
+            "의료비 및 건강검진",
+            "복지포인트",
+            "자녀 학자금",
+            "유연근무제"
+        ],
+        "meister_career_path": "통신 기지국 및 광케이블 네트워크 엔지니어로 입사하여 네트워크 품질 분석 및 인프라 설계 기획자로 성장 가능."
+    },
+    {
+        "company": "SK",
+        "sector": "SK에코플랜트 (건설 및 친환경 플랜트)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "건설/플랜트",
+            "환경/에너지",
+            "전국"
+        ],
+        "main_business_products": "반도체/배터리 하이테크 플랜트 시공, 수처리/폐기물 처리 친환경 솔루션",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "환경과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "토목기능사",
+            "배관기능사",
+            "CAD 도면 해독 및 현장 안전 관리"
+        ],
+        "core_talent_keywords": [
+            "환경가치 창출",
+            "안전",
+            "무재해",
+            "실행력"
+        ],
+        "organizational_culture": "기존 건설업에서 친환경 솔루션 기업으로 전환, 현장 안전보건(SHE) 기준 최우선 준수",
+        "employee_review_summary": "하이테크 현장(평택, 용인 등) 순환 근무 시 체재비 및 현장 수당 지급. 현장 안전 관리에 대한 철저함이 강조됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준 (현장 수당 포함 시)"
+        },
+        "work_locations": [
+            "경기 이천",
+            "충북 청주 등 주요 하이테크 플랜트 현장"
+        ],
+        "expected_work_hours": "현장 스케줄에 따른 탄력적 주 6일(또는 격주 휴무) 체제",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "현장 숙식 및 체재비 지원",
+            "의료비/학자금 지원",
+            "복지포인트",
+            "휴양시설 이용"
+        ],
+        "meister_career_path": "건설 현장 시공, 전기설비 및 안전(SHE) 관리자로 시작하여 대형 플랜트 현장 책임자(소장) 및 환경 솔루션 전문가로 성장."
+    },
+    {
+        "company": "SK",
+        "sector": "SK바이오사이언스 (바이오 및 백신 제조)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "바이오/제약",
+            "제조업",
+            "영남권",
+            "수도권"
+        ],
+        "main_business_products": "백신 위탁생산(CMO) 및 자사 백신(독감, 코로나19 등) 제조",
+        "preferred_majors": [
+            "바이오/생명공학과",
+            "식품가공과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "GMP(의약품 제조품질관리기준) 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "인류 건강 기여",
+            "글로벌 백신 허브",
+            "최고 품질",
+            "안전"
+        ],
+        "organizational_culture": "안동 L하우스 등 첨단 바이오 공장 기반의 무균 상태 유지 및 정밀 공정 표준지침 이행",
+        "employee_review_summary": "송도/안동 거점의 쾌적한 클린룸 시설 보유. 바이오 산업 성장세에 따른 자부심 및 사내 복지 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        },
+        "work_locations": [
+            "경북 안동",
+            "경기 판교",
+            "인천 송도(예정)"
+        ],
+        "expected_work_hours": "3조 2교대 또는 주간 상주 (생산 일정에 따라 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "실무면접",
+            "임원면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "기숙사 제공",
+            "의료비 및 치과 진료비 지원",
+            "복지포인트",
+            "자기계발비 지원",
+            "통근버스"
+        ],
+        "meister_career_path": "백신 원액 배양 및 정제, 완제(충진) 공정의 제조 오퍼레이터로 성장. 우수자는 공정 개선 및 GMP 품질 보증(QA) 파트로 경력 확대."
+    },
+    {
+        "company": "SK",
+        "sector": "SK가스 및 SK E&S (가스 유통 및 발전 인프라)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "가스/에너지",
+            "발전",
+            "영남권",
+            "수도권"
+        ],
+        "main_business_products": "LPG/LNG 수입·유통, 집단에너지, 민간 LNG 발전소 운용",
+        "preferred_majors": [
+            "가스과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "보일러기능사"
+        ],
+        "core_talent_keywords": [
+            "에너지 전환",
+            "친환경 리더십",
+            "안전",
+            "고객 가치"
+        ],
+        "organizational_culture": "울산/인천/광양 터미널 및 발전소 기반의 철저한 안전 관리 및 인프라 안정화 기조",
+        "employee_review_summary": "높은 매출 대비 효율적인 인원 운용으로 1인당 생산성과 복지 수준이 매우 우수함. 정년 안정성 상위권.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,000만 원 수준"
+        },
+        "work_locations": [
+            "울산광역시",
+            "인천광역시",
+            "경기 평택",
+            "전남 광양"
+        ],
+        "expected_work_hours": "4조 2교대 또는 4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사택/기숙사 지원",
+            "의료비 및 가족 건강검진",
+            "복지포인트",
+            "개인연금",
+            "자녀 학자금"
+        ],
+        "meister_career_path": "가스 터미널 및 열병합 발전소의 설비 유지보수 및 공정 운전(보드맨) 전문가로 성장. 고압가스 및 발전 제어 특화 기술 체득."
+    },
+    {
+        "company": "SK",
+        "sector": "SK스피드메이트 / SK렌터카 (모빌리티 및 차량 정비)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차정비",
+            "모빌리티",
+            "서비스"
+        ],
+        "main_business_products": "자동차 경정비, 수입차 정비, 타이어/부품 유통, 렌터카 차량 관리",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "자동차차체수리기능사",
+            "전기기능사",
+            "운전면허증",
+            "친환경차(EV) 진단 지식"
+        ],
+        "core_talent_keywords": [
+            "Customer First",
+            "기술 혁신",
+            "신뢰",
+            "도덕성"
+        ],
+        "organizational_culture": "전국 정비 거점 중심의 고객 응대 및 정비 기술 서비스 현장 문화",
+        "employee_review_summary": "전문 정비 엔지니어로서의 기술 습득 및 체계적인 정비 교육 시스템 제공. 공임 및 성과 수당 제도운용.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,500만 원 수준"
+        },
+        "work_locations": [
+            "전국 주요 정비 거점 및 사업장"
+        ],
+        "expected_work_hours": "주간 상주 (스케줄 근무 및 주말 로테이션 혼용)",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT(온라인)",
+            "실무/인성 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "정비 공임 수당",
+            "복지포인트",
+            "의료비 지원",
+            "자녀 학자금",
+            "우수 사원 포상"
+        ],
+        "meister_career_path": "수입차 및 전기차(EV) 등 첨단 모빌리티 전문 정비 마스터로 육성되며, 점장 및 지역 기술 관리자로 승격 가능."
+    },
+    {
+        "company": "SK",
+        "sector": "SK 계열사 IT 인프라 운용 및 사무지원",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "IT/네트워크",
+            "사무지원",
+            "수도권"
+        ],
+        "main_business_products": "데이터센터 현장 관리, 사내 IT 시스템 인프라 운용, 사업장 시설 보안 및 데이터 처리 지원",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "경영정보과",
+            "금융정보과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "전기기능사"
+        ],
+        "core_talent_keywords": [
+            "IT 혁신",
+            "정직",
+            "정확성",
+            "서비스 마인드"
+        ],
+        "organizational_culture": "데이터센터 및 본사/지사 오피스 중심의 정밀 데이터 모니터링 및 행정 지원 업무 수행",
+        "employee_review_summary": "쾌적한 사무/전산실 환경 및 안정적인 업무 스케줄. 정확한 데이터 관리 및 커뮤니케이션 능력 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        },
+        "work_locations": [
+            "경기 판교",
+            "전국 데이터센터"
+        ],
+        "expected_work_hours": "4조 3교대 (관제 직무) 또는 주간 상주",
+        "recruitment_process": [
+            "서류전형",
+            "SKCT(온라인)",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "의료비 지원",
+            "복지포인트",
+            "통신비 지원",
+            "리프레시 휴가",
+            "자기계발비"
+        ],
+        "meister_career_path": "서버 및 네트워크 모니터링, IT 인프라 지원 실무에서 시작하여 그룹 내 클라우드 시스템 및 보안 관리 전문가로 성장."
+    },
+    {
+        "company": "현대",
+        "sector": "현대자동차 (완성차 제조 및 생산기술)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차",
+            "제조업",
+            "영남권",
+            "충청권",
+            "호남권"
+        ],
+        "main_business_products": "승용차, SUV, 제네시스, 친환경차(EV, FCEV) 완성차 제조 및 생산 라인 운용",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "금형과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반/밀링기능사",
+            "차량 조립 및 로봇 공정 제어 이해"
+        ],
+        "core_talent_keywords": [
+            "고객 최우선",
+            "도전적 실행",
+            "소통과 협력",
+            "인재 존중",
+            "글로벌 지향"
+        ],
+        "organizational_culture": "울산·아산·전주 공장 중심의 주간연속 2교대 체제, 노사합의 기반의 고용 안정성과 현장 기술 자부심이 강한 문화",
+        "employee_review_summary": "업계 최고 수준의 연봉 및 신차 할인 혜택 보유. 체계적인 생산 라인 적응과 규칙적인 반복 작업 숙련도가 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,500만 원 이상 (성과급, 교대수당, 성과 적립금 포함 시)"
+        },
+        "work_locations": [
+            "울산광역시",
+            "충남 아산",
+            "전북 전주"
+        ],
+        "expected_work_hours": "주간연속 2교대",
+        "recruitment_process": [
+            "서류전형",
+            "직무적성검사(HMAT)",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "자사 차량(신차) 구매 평생 할인",
+            "의료비 및 가족 건강검진 지원",
+            "자녀 학자금 전액 지원",
+            "복지포인트",
+            "통근버스/사내식당",
+            "휴양시설 이용"
+        ],
+        "meister_career_path": "차량 조립, 도장, 프레스, 차체, 설비 보전 등 생산직(기술직) 엔지니어로 근무하며, 기능장 등 우수 숙련 기술자로 성장 시 포상 및 직장(반장) 승격 기회."
+    },
+    {
+        "company": "현대",
+        "sector": "현대자동차 (R&D 기술 및 남양/의왕 연구소 시험 지원)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차",
+            "R&D/연구지원",
+            "수도권"
+        ],
+        "main_business_products": "신차 시험 차량 제작, 파워트레인/EV 내구 시험, 차량 평가 및 R&D 기술 지원",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "소프트웨어과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "전자기기기능사",
+            "정보처리기능사",
+            "전기기능사",
+            "실차 데이터 측정 및 센서 기초 활용 역량"
+        ],
+        "core_talent_keywords": [
+            "창의적 사고",
+            "기술 집착",
+            "품질 우선",
+            "도전과 융합"
+        ],
+        "organizational_culture": "남양연구소·의왕연구소 중심의 연구 개발 지원 문화, 최첨단 시제차 및 데이터 계측 장비를 다루는 기술 수평 문화",
+        "employee_review_summary": "연구원들과의 소통 기회가 많고 고졸 기술 인재의 신차 시험 역량을 인정해 줌. 시험 차량 문제점 분석 시 꼼꼼함 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        },
+        "work_locations": [
+            "경기 화성 (남양연구소)",
+            "경기 의왕"
+        ],
+        "expected_work_hours": "주간 상주",
+        "recruitment_process": [
+            "서류전형",
+            "직무적성검사(HMAT)",
+            "실무진 면접",
+            "임원 면접",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "자사 차량 할인",
+            "학자금/의료비 지원",
+            "통근버스/사내식당",
+            "복지포인트",
+            "최신 R&D 인프라 혜택"
+        ],
+        "meister_career_path": "연구소 내 시작차(프로토타입) 조립, 엔진/모터 테스트, 데이터 계측 전문 테크니션으로 육성. 차세대 모빌리티 R&D 역량 체득."
+    },
+    {
+        "company": "현대",
+        "sector": "기아 (완성차 제조 및 생산 설비 메인테넌스)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차",
+            "제조업",
+            "수도권",
+            "호남권"
+        ],
+        "main_business_products": "EV시리즈(EV3/EV6/EV9), SUV(스포티지, 쏘렌토), PBV(목적 기반 모빌리티) 완성차",
+        "preferred_majors": [
+            "자동차과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "자동차정비기능사",
+            "생산자동화기능사",
+            "자동화 로봇 제어 자격"
+        ],
+        "core_talent_keywords": [
+            "도전",
+            "창의",
+            "열정",
+            "영감(Inspiration)",
+            "협력"
+        ],
+        "organizational_culture": "화성 AutoLand, 광명, 광주 중심의 높은 자동화 라인 운용, 주간연속 2교대 기반의 효율적인 근무 시스템",
+        "employee_review_summary": "현대차와 동일한 수준의 최상위 처우와 차량 할인 복지 제공. 자동화 공정의 설비 비가동 시간을 줄이는 메인테넌스 능력이 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,200만 원 수준"
+        },
+        "work_locations": [
+            "경기 화성",
+            "경기 광명",
+            "광주광역시"
+        ],
+        "expected_work_hours": "주간연속 2교대",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "자사 차량 구매 할인",
+            "자녀 학자금 지원",
+            "의료비 및 건강검진",
+            "휴양소 지원",
+            "통근버스 및 사내식당",
+            "복지포인트"
+        ],
+        "meister_career_path": "PBV 및 전기차 전용 라인 구축에 발맞춰 스마트팩토리 제어, 로봇 캘리브레이션 및 자동화 설비 유지보수 전문 인력으로 성장."
+    },
+    {
+        "company": "현대",
+        "sector": "현대모비스 (자동차 핵심 모듈 및 전장부품 제조)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차부품",
+            "제조업",
+            "충청권",
+            "영남권"
+        ],
+        "main_business_products": "섀시/운전석/프론트 모듈, 배터리 시스템(BSA), 수소연료전지 스택, 제동/조향/현가 전장부품",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "SMT/지그 점검 및 전장 검사 장비 활용 능력"
+        ],
+        "core_talent_keywords": [
+            "고객 최우선",
+            "자율적 도전",
+            "협업",
+            "글로벌 품질"
+        ],
+        "organizational_culture": "진천, 충주, 창원 등 전국 생산 거점 중심의 스마트팩토리 문화, 전장 제품 고품질 관리 강조",
+        "employee_review_summary": "모빌리티 부품 선도 기업으로서 안정적 복지 및 교육 시스템 보유. 전자 회로 및 정밀 자동화 설비 운용 역량이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,200만 원 수준"
+        },
+        "work_locations": [
+            "충북 진천",
+            "충북 충주",
+            "경남 창원",
+            "전국 주요 모듈 공장"
+        ],
+        "expected_work_hours": "주간 2교대 또는 3교대 (공장별 생산 계획에 따라 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접전형",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "현대차/기아 차량 할인 혜택",
+            "자녀 학자금 지원",
+            "의료비 지원",
+            "기숙사 지원",
+            "복지포인트"
+        ],
+        "meister_career_path": "전기차용 BSA(배터리시스템) 및 전장 모듈 조립/검사 테크니션으로 성장. 차량 전자화(SDV)에 발맞춘 정밀 품질 보증 인력으로 육성."
+    },
+    {
+        "company": "현대",
+        "sector": "현대제철 (자동차용 강판, 봉형강, 제철 설비 보전)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "철강/금속",
+            "제조업",
+            "충청권",
+            "수도권",
+            "영남권"
+        ],
+        "main_business_products": "자동차용 초고장력 강판, 열연/냉연 판재, 형강, 철도용 레일, 특수강",
+        "preferred_majors": [
+            "재료공정과",
+            "금속과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "전기기능사",
+            "제선/제강기능사",
+            "위험물기능사",
+            "설비보전기능사"
+        ],
+        "core_talent_keywords": [
+            "지속가능성",
+            "도전",
+            "안전보건",
+            "신뢰"
+        ],
+        "organizational_culture": "당진제철소, 인천, 포항 중심의 4조 3교대 현장 기술 전문 문화, 철저한 안전 작업 수칙 준수",
+        "employee_review_summary": "그룹 내 대표적인 장수 고용 사업장으로 높은 급여 수준과 고용 안정성 자랑. 중공업 사업장 특성상 안전의식 우선.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        },
+        "work_locations": [
+            "충남 당진",
+            "인천광역시",
+            "경북 포항",
+            "전남 순천"
+        ],
+        "expected_work_hours": "4조 3교대 (사업장에 따라 4조 2교대 시범 운용 혼용)",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "자사 차량 구매 할인",
+            "자녀 학자금 전액 지원",
+            "의료비 지원",
+            "통근버스/사내식당",
+            "기숙사 지원"
+        ],
+        "meister_career_path": "고로/전기로 조업 및 압연 공정의 베테랑 오퍼레이터 또는 대형 기계/전기 설비 보전 전문가로 육성. 사내 명장 제도로 평생 기술인 양성."
+    },
+    {
+        "company": "현대",
+        "sector": "현대위아 (자동차 파워트레인, 공작기계, 방산 설비)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차부품",
+            "기계/방산",
+            "영남권",
+            "호남권"
+        ],
+        "main_business_products": "엔진, 4WD 시스템, 열관리 모듈, 공작기계(CNC 선반/밀링), 화포/방산 부품",
+        "preferred_majors": [
+            "기계과",
+            "금형과",
+            "메카트로닉스과",
+            "전기과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "정밀가공 도면 해독 역량"
+        ],
+        "core_talent_keywords": [
+            "기술 가치",
+            "도전",
+            "고객 만족",
+            "소통"
+        ],
+        "organizational_culture": "창원, 광주 사업장 중심의 정밀 가공 및 공작기계 베이스 현장 기술 인재 중시 분위기",
+        "employee_review_summary": "기계/금속 계열 전공 마이스터고 학생들의 선호도가 매우 높음. 정밀 가공 치수 제어와 도면 해독 능력이 핵심 실무.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준"
+        },
+        "work_locations": [
+            "경남 창원",
+            "광주광역시",
+            "경기 안산"
+        ],
+        "expected_work_hours": "주야 2교대 또는 주간 2교대",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "현대차/기아 차량 할인 혜택",
+            "학자금/의료비 지원",
+            "복지포인트",
+            "주택자금 대출",
+            "사내식당"
+        ],
+        "meister_career_path": "엔진 파워트레인 및 방산 화포 부품의 CNC/MCT 초정밀 가공 전문가로 육성. 공작기계 세팅 및 유지보수 특화 기술자로 발전."
+    },
+    {
+        "company": "현대",
+        "sector": "현대트랜시스 (자동차 변속기, 휠드라이브, 시트 시스템)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차부품",
+            "제조업",
+            "충청권",
+            "수도권"
+        ],
+        "main_business_products": "자동/수동/DCT/EV용 변속기, 감속기, 제네시스/승용 프리미엄 자동차 시트",
+        "preferred_majors": [
+            "기계과",
+            "자동차과",
+            "메카트로닉스과",
+            "전기과",
+            "재료/섬유과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "정밀 조립 검사 역량"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "도전",
+            "열정",
+            "소통"
+        ],
+        "organizational_culture": "서산, 동탄, 화성 등 파워트레인 및 시트 전문 생산 라인의 높은 품질 관리 기조",
+        "employee_review_summary": "친환경차 감속기 및 고급 시트 라인 확장에 따른 안정적인 근로 환경. 정밀 조립 및 공정 테스터 능력 활용도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,700만 원 수준"
+        },
+        "work_locations": [
+            "충남 서산",
+            "경기 화성",
+            "경기 동탄"
+        ],
+        "expected_work_hours": "주야 2교대",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "자사 차량 구매 할인",
+            "자녀 학자금 지원",
+            "의료비 지원",
+            "복지포인트",
+            "통근버스/기숙사 제공"
+        ],
+        "meister_career_path": "내연기관 변속기에서 전동화(EV) 감속기 체제로 전환됨에 따라, 초정밀 기어 가공 및 시트 전장화 부품 조립/테스트 전문가로 육성."
+    },
+    {
+        "company": "현대",
+        "sector": "현대로템 (K2 전차 방산, KTX/전동차 철도, 스마트 팩토리 설비)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "방위산업(방산)",
+            "철도/플랜트",
+            "영남권"
+        ],
+        "main_business_products": "K2 흑표 전차, 차륜형장갑차, KTX-이음, 지하철 전동차, 프레스/물류 설비",
+        "preferred_majors": [
+            "조선/철도과",
+            "기계과",
+            "용접과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "용접기능사",
+            "특수용접기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "제어 배선 및 도면 해독 자격"
+        ],
+        "core_talent_keywords": [
+            "국가산업 기여",
+            "기술 선도",
+            "고객 신뢰",
+            "안전"
+        ],
+        "organizational_culture": "창원 공장 중심의 방산·철도 대형 중공업 현장, 숙련 기술자의 노하우 전수 및 철저한 품질 검사 문화",
+        "employee_review_summary": "방산 수출 및 KTX 주문 확대에 따른 안정적인 성과. 대형 구조물 조립/용접 및 전장 배선 기술자 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,900만 원 수준"
+        },
+        "work_locations": [
+            "경남 창원"
+        ],
+        "expected_work_hours": "주간 상주 (수주 물량에 따라 연장 및 특근 발생)",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "실무면접",
+            "임원면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "차량 할인 혜택",
+            "의료비/학자금 지원",
+            "통근버스/사내식당",
+            "복지포인트",
+            "주택자금 대출"
+        ],
+        "meister_career_path": "전차/열차 대형 구조물 제관/특수 용접 및 전장 배선 베테랑 기술자로 도약. 방산 무기체계 및 철도 시스템 종합 조립 역량 확보."
+    },
+    {
+        "company": "현대",
+        "sector": "현대글로비스 (완성차/부품 물류 인프라, CKD 유통, 자동화 창고)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "물류/유통",
+            "자동차",
+            "전국"
+        ],
+        "main_business_products": "완성차 해상/육상 수송, CKD(반제품) 포장/유통, 스마트 물류센터 운용",
+        "preferred_majors": [
+            "물류과",
+            "기계과",
+            "전기과",
+            "정보처리과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "물류관리사 기초",
+            "지게차운전기능사",
+            "전기기능사",
+            "컴퓨터활용능력",
+            "WMS(창고관리시스템) 이해"
+        ],
+        "core_talent_keywords": [
+            "글로벌 물류 혁신",
+            "고객 최우선",
+            "도전을 통한 성공",
+            "협력"
+        ],
+        "organizational_culture": "울산, 평택, 아산 등 항만 및 완성차 출하장/물류 센터 기반의 신속하고 안전한 물류 프로세 제어",
+        "employee_review_summary": "그룹 핵심 물류 기업으로서 높은 직무 안정성. 물류 자동화 설비 점검 및 입출고 데이터 관리 직무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        },
+        "work_locations": [
+            "울산광역시",
+            "경기 평택",
+            "충남 아산",
+            "전국 주요 물류센터"
+        ],
+        "expected_work_hours": "주간 상주 또는 교대 (물류센터 스케줄에 따라 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "차량 할인 혜택",
+            "자녀 학자금 지원",
+            "의료비 지원",
+            "복지포인트",
+            "자기계발비 지원"
+        ],
+        "meister_career_path": "완성차 야드 물류 관제 및 중장비(지게차 등) 운용, WMS 데이터 관리자로 입사하여 스마트 물류 센터장 및 현장 책임자로 성장."
+    },
+    {
+        "company": "현대",
+        "sector": "현대건설 / 현대엔지니어링 (하이테크 플랜트, 건축 및 전기/설비 시공)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "건설/플랜트",
+            "건축/토목",
+            "전국"
+        ],
+        "main_business_products": "현대차그룹 신공장(전기차 전용 공장 등) 및 하이테크 플랜트, 건축, 전기/소방 인프라",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "건설안전기능사",
+            "CAD 도면 작성 및 현장 관리 역량"
+        ],
+        "core_talent_keywords": [
+            "도전과 창의",
+            "안전 최우선",
+            "글로벌 리더십",
+            "신뢰"
+        ],
+        "organizational_culture": "글로벌 건설 현장 및 국내 대형 하이테크 현장 중심, 안전보건 관리 및 현장 책임감 강조",
+        "employee_review_summary": "현장 수당 및 숙식 지원 등 실질 수령액이 높음. 전국 현장 적응력 및 안전 관리 능력이 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준 (현장 수당 포함 시)"
+        },
+        "work_locations": [
+            "전국 주요 건설 및 플랜트 현장"
+        ],
+        "expected_work_hours": "현장 공정 스케줄에 따른 탄력 근무 (주 6일 베이스 운영 등)",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "현장 숙식 전액 지원",
+            "현장 수당/출장비",
+            "차량 할인 혜택",
+            "의료비 및 학자금 지원",
+            "복지포인트"
+        ],
+        "meister_career_path": "전기/기계 설비 시공 및 현장 안전관리 담당으로 시작하여, 현대차그룹 글로벌 신공장(HMGMA 등) 셋업 및 현장 소장 급으로 경력 발전."
+    },
+    {
+        "company": "현대",
+        "sector": "현대케피코 (자동차 제어기, 센서, 액추에이터, EV 제어 시스템)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "자동차부품",
+            "전자/제어",
+            "수도권",
+            "충청권"
+        ],
+        "main_business_products": "파워트레인 제어기(ECU), 친환경차 제어기(VCU), 각종 차량용 센서 및 액추에이터",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "정보통신과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "SMT 공정 및 전자 회로 테스트 능력"
+        ],
+        "core_talent_keywords": [
+            "제어 기술 선도",
+            "최고의 품질",
+            "열정",
+            "소통"
+        ],
+        "organizational_culture": "군포, 진천 등 전자제어 부품 특화 사업장의 첨단 SMT 및 정밀 검사 중심의 클린 근무 환경",
+        "employee_review_summary": "차량 전자화 및 소프트웨어 중심 차량(SDV) 전환의 핵심 계열사. 정밀 전자 부품 생산 관리에 최적화됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,100만 수준"
+        },
+        "work_locations": [
+            "경기 군포",
+            "충북 진천"
+        ],
+        "expected_work_hours": "주야 2교대 또는 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "인적성검사",
+            "면접",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "차량 할인 혜택",
+            "의료비 및 가족 건강검진",
+            "학자금 지원",
+            "복지포인트",
+            "사내식당/기숙사(진천)"
+        ],
+        "meister_career_path": "차량 제어기 SMT 표면실장 공정 및 센서 테스트 장비(Tester) 운영/보전 엔지니어로 성장하며 전자 품질 관리 명장으로 우대."
+    },
+    {
+        "company": "현대",
+        "sector": "현대오토에버 (그룹 스마트팩토리 IT 인프라, 설비 관제, HW/SW 현장 지원)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "IT/네트워크",
+            "사무지원",
+            "전국"
+        ],
+        "main_business_products": "스마트팩토리 MES/ERP 시스템 운용, 네트워크 인프라, 차량 SW 플랫폼, 현장 ICT 단말 모니터링",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "컴퓨터과",
+            "정보통신과",
+            "전기/전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "컴퓨터활용능력 1/2급",
+            "네트워크 기초 자격",
+            "Linux/DB 기초 역량"
+        ],
+        "core_talent_keywords": [
+            "IT 혁신",
+            "고객 가치",
+            "전문성",
+            "협업"
+        ],
+        "organizational_culture": "그룹 공장 및 연구소 데이터센터 중심의 스마트한 ICT 제어 관리 환경, 데이터 정확성 강조",
+        "employee_review_summary": "현대차그룹 IT 총괄 계열사로서 쾌적한 오피스 및 데이터센터 근무 여건. 생산 라인 IT 인프라 점검 실무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        },
+        "work_locations": [
+            "경기 의왕",
+            "전국 현대차/기아/현대모비스 공장 내 IT 센터"
+        ],
+        "expected_work_hours": "IT 관제 교대 근무 또는 주간 상주",
+        "recruitment_process": [
+            "서류전형",
+            "코딩테스트(또는 직무적성검사)",
+            "면접전형",
+            "건강검진"
+        ],
+        "welfare_benefits": [
+            "차량 할인 혜택",
+            "유연근무제",
+            "의료비 및 건강검진",
+            "복지포인트",
+            "통신비 지원",
+            "학자금 지원"
+        ],
+        "meister_career_path": "그룹 생산 라인 내 MES 모니터링, 단말기 셋업 및 네트워크 트러블슈팅 엔지니어로 입사하여, 스마트팩토리 인프라 총괄 관리자로 성장."
+    }
+]

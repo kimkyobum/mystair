@@ -1,0 +1,125 @@
+[
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DS부문 (반도체)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자/반도체",
+            "제조업",
+            "경기권",
+            "충청권"
+        ],
+        "main_business_products": "메모리 반도체(DRAM, NAND), 시스템 LSI, 반도체 위탁생산(Foundry)",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "반도체 8대 공정 이해 및 메인테넌스 능력"
+        ],
+        "core_talent_keywords": [
+            "열정",
+            "창의혁신",
+            "인간미/도덕성",
+            "초격차 기술"
+        ],
+        "organizational_culture": "첨단 팹(FAB) 기반의 엄격한 공정·안전 수칙 준수, 4조 3교대 중심의 현장 기술 전문성 우대 문화",
+        "employee_review_summary": "최고 수준의 성과급(OPI) 및 복리후생 보유. 교대근무에 따른 체력 관리와 교대 라인 적응이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 6,500만 원 이상 (성과급 및 교대수당 포함 시)"
+        },
+        "work_locations": [
+            "경기 기흥",
+            "경기 화성",
+            "경기 평택",
+            "충남 천안",
+            "충남 온양"
+        ],
+        "expected_work_hours": "4조 3교대",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT(직무적성검사)",
+            "종합면접(직무/인성)",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사내 기숙사 무상 제공",
+            "1일 3식 사내식당 무료",
+            "의료비 및 건강검진 지원",
+            "자녀 학자금 지원",
+            "개인연금 지원",
+            "복지포인트 지급"
+        ],
+        "meister_career_path": "설비엔지니어(메인테넌스)로 입사하여, 장기 근속 시 사내대학(SSIT) 등 진학 지원을 통해 학사 학위 취득 및 공정 엔지니어로의 직무 전환 기회를 부여함. 현장 마스터(명장) 제도를 통한 최고 기술자 우대."
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DX부문 (가전/모바일/네트워크)",
+        "company_size": "대기업",
+        "search_categories": [
+            "대기업",
+            "전자/IT",
+            "가전",
+            "모바일",
+            "제조업"
+        ],
+        "main_business_products": "스마트폰(Galaxy), 스마트 TV, 프리미엄 가전(Bespoke), 5G 통신장비",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "금형과",
+            "소프트웨어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "컴퓨터응용밀링/선반기능사",
+            "정보처리기능사",
+            "생산자동화기능사"
+        ],
+        "core_talent_keywords": [
+            "글로벌 선도",
+            "고객 중심",
+            "변 주도",
+            "최고 지향"
+        ],
+        "organizational_culture": "글로벌 시장 중심의 품질 제로 결함 추진, 공정 자동화 및 스마트 팩토리 기반 문화",
+        "employee_review_summary": "안정적인 근무 환경과 쾌적한 사내 복지 시설. 정해진 생산 타임라인 이행 중심의 규칙적인 업무 스타일.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,500만 원 수준"
+        },
+        "work_locations": [
+            "경기 수원",
+            "경북 구미",
+            "광주광역시"
+        ],
+        "expected_work_hours": "주간 2교대 또는 상주근무 (부서별 상이)",
+        "recruitment_process": [
+            "서류전형",
+            "GSAT(직무적성검사)",
+            "종합면접(직무/인성)",
+            "채용검진"
+        ],
+        "welfare_benefits": [
+            "사내 기숙사 및 통근버스",
+            "1일 3식(사내식당)",
+            "의료비 및 건강검진",
+            "복지포인트",
+            "사내 피트니스",
+            "자주적 출퇴근제"
+        ],
+        "meister_career_path": "생산 및 품질/테스트 엔지니어로 입사하여 제조 라인 전문가로 성장. 우수 인력은 품질 검증 및 라인 관리자(직장/기장)로 승격."
+    }
+]

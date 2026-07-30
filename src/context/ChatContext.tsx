@@ -26,59 +26,70 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
+  const getStorageKey = (key: string) => {
+    const uid = user?.uid || 'guest';
+    return `${key}_${uid}`;
+  };
+
   const [chatActive, setChatActive] = useState<boolean>(false);
   
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const saved = sessionStorage.getItem('mystair_chat_messages');
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [inputValue, setInputValue] = useState<string>(() => {
-    return sessionStorage.getItem('mystair_chat_input_value') || '';
-  });
-
-  const [initialMessage, setInitialMessage] = useState<string>(() => {
-    return sessionStorage.getItem('mystair_chat_initial_message') || '';
-  });
-
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [initialMessage, setInitialMessage] = useState<string>('');
   const [showAliens, setShowAliens] = useState<boolean>(true);
 
+  // Load user-specific data when user changes
   useEffect(() => {
-    const uid = user?.uid || 'local-user';
-    const saved = localStorage.getItem(`mystair_show_aliens_${uid}`);
-    setShowAliens(saved !== 'false');
-  }, [user]);
+    const savedMessages = sessionStorage.getItem(getStorageKey('mystair_chat_messages'));
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    } else {
+      setMessages([]);
+    }
+
+    const savedInput = sessionStorage.getItem(getStorageKey('mystair_chat_input_value'));
+    setInputValue(savedInput || '');
+
+    const savedInitial = sessionStorage.getItem(getStorageKey('mystair_chat_initial_message'));
+    setInitialMessage(savedInitial || '');
+
+    const savedActive = sessionStorage.getItem(getStorageKey('mystair_chat_active'));
+    setChatActive(savedActive === 'true');
+
+    const savedAliens = localStorage.getItem(`mystair_show_aliens_${user?.uid || 'guest'}`);
+    setShowAliens(savedAliens !== 'false');
+  }, [user?.uid]);
+
+  // Save to storage on change
+  useEffect(() => {
+    sessionStorage.setItem(getStorageKey('mystair_chat_active'), String(chatActive));
+  }, [chatActive, user?.uid]);
 
   useEffect(() => {
-    sessionStorage.setItem('mystair_chat_active', String(chatActive));
-  }, [chatActive]);
+    sessionStorage.setItem(getStorageKey('mystair_chat_messages'), JSON.stringify(messages));
+  }, [messages, user?.uid]);
 
   useEffect(() => {
-    sessionStorage.setItem('mystair_chat_messages', JSON.stringify(messages));
-  }, [messages]);
+    sessionStorage.setItem(getStorageKey('mystair_chat_input_value'), inputValue);
+  }, [inputValue, user?.uid]);
 
   useEffect(() => {
-    sessionStorage.setItem('mystair_chat_input_value', inputValue);
-  }, [inputValue]);
+    sessionStorage.setItem(getStorageKey('mystair_chat_initial_message'), initialMessage);
+  }, [initialMessage, user?.uid]);
 
   useEffect(() => {
-    sessionStorage.setItem('mystair_chat_initial_message', initialMessage);
-  }, [initialMessage]);
-
-  useEffect(() => {
-    const uid = user?.uid || 'local-user';
-    localStorage.setItem(`mystair_show_aliens_${uid}`, String(showAliens));
-  }, [showAliens, user]);
+    localStorage.setItem(`mystair_show_aliens_${user?.uid || 'guest'}`, String(showAliens));
+  }, [showAliens, user?.uid]);
 
   const clearChat = () => {
     setMessages([]);
     setChatActive(false);
     setInputValue('');
     setInitialMessage('');
-    sessionStorage.removeItem('mystair_chat_active');
-    sessionStorage.removeItem('mystair_chat_messages');
-    sessionStorage.removeItem('mystair_chat_input_value');
-    sessionStorage.removeItem('mystair_chat_initial_message');
+    sessionStorage.removeItem(getStorageKey('mystair_chat_active'));
+    sessionStorage.removeItem(getStorageKey('mystair_chat_messages'));
+    sessionStorage.removeItem(getStorageKey('mystair_chat_input_value'));
+    sessionStorage.removeItem(getStorageKey('mystair_chat_initial_message'));
   };
 
   return (

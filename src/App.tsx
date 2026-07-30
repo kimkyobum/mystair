@@ -12,13 +12,11 @@ import MBTI from './pages/MBTI';
 import Holland from './pages/Holland';
 import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
-import Creators from './pages/Creators';
+import CompanySearch from './pages/CompanySearch';
 
 export default function App() {
   const [showMainApp, setShowMainApp] = useState(() => {
-    // Clear logged in session state to show the promotional (marketing) site immediately
-    sessionStorage.removeItem('isLoggedIn');
-    return false;
+    return sessionStorage.getItem('isLoggedIn') === 'true' || true; // For easy editing, default to true
   });
 
   const handleLoginSuccess = () => {
@@ -45,12 +43,12 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/diary" element={<Diary />} />
+                <Route path="/company-search" element={<CompanySearch />} />
                 <Route path="/certificates" element={<Certificates />} />
                 <Route path="/mbti" element={<MBTI />} />
                 <Route path="/holland" element={<Holland />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/profile" element={<MyPage />} />
-                <Route path="/creators" element={<Creators />} />
               </Routes>
             </div>
           </div>

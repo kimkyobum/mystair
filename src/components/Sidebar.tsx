@@ -18,11 +18,11 @@ import { useChat } from '../context/ChatContext';
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
-  const { clearChat } = useChat();
+  const { clearChat, setInitialMessage, setChatActive } = useChat();
   const navigate = useNavigate();
 
   const location = useLocation();
-  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/creators';
+  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/company-search';
 
   const displayName = userProfile?.name || user?.displayName || '게스트';
 
@@ -46,10 +46,9 @@ export default function Sidebar() {
     { name: 'MyStair AI', path: '/', icon: <Sparkles size={20} className="text-teal-400" /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={20} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={20} /> },
-    { name: '나만의 기업찾기', path: '/', icon: <Briefcase size={20} /> },
+    { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={20} /> },
     { name: 'MBTI검사', path: '/mbti', icon: <Brain size={20} /> },
-    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> },
-    { name: '만든 사람들', path: '/creators', icon: <Users size={20} /> }
+    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> }
   ];
 
   return (
@@ -96,7 +95,7 @@ export default function Sidebar() {
           // Highlight first item (MyStair AI) or exact matches. Avoid double highlighting of index 3 (나만의 기업찾기) which also uses '/'
           const isActive = (item.path === '/' && index === 0 && location.pathname === '/') || 
                            (item.path !== '/' && location.pathname === item.path);
-          
+
           return (
             <Link 
               key={index} 

@@ -1,22 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const data: any[] = [];
-
 export default function Certificates() {
-  const [licensesData, setLicensesData] = useState<any[]>(data);
+  const [licensesData, setLicensesData] = useState<any[]>([]);
   const [currentCategory, setCurrentCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedModalItem, setSelectedModalItem] = useState<any>(null);
   const [loadingError, setLoadingError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/certificates')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        setLicensesData(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching certificates:', err);
+        setLoadingError(true);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const MEISTER_CATEGORY_MAP: Record<string, string[]> = {
+    '전기/전자/에너지': ['전기/전자/에너지'],
+    '기계/메카/모빌리티': ['기계/메카트로닉스', '모빌리티/자동차/항공'],
+    '화학/바이오/환경': ['화학/바이오/환경', '농림/환경'],
+    'IT/소프트웨어/OA': ['IT/소프트웨어', '공통/OA/데이터'],
+    '건설/중장비/안전': ['중장비/물류/안전', '건설/부동산', '건설/기계', '건설/건축'],
+    '공통/어학/사무': ['공통/어학/한국사', '공통/경영/사무', '공통/어학/무역', '공통/어학', '금융/보험', '복지/보건', '조리/식품', '미용/패션']
+  };
+
+  const categories = [
+    'ALL',
+    '전기/전자/에너지',
+    '기계/메카/모빌리티',
+    '화학/바이오/환경',
+    'IT/소프트웨어/OA',
+    '건설/중장비/안전',
+    '공통/어학/사무'
+  ];
 
   const filteredLicenses = licensesData.filter(item => {
-    const matchesCat = currentCategory === 'ALL' || item.category === currentCategory;
+    const matchesCat = 
+      currentCategory === 'ALL' || 
+      (MEISTER_CATEGORY_MAP[currentCategory] 
+        ? MEISTER_CATEGORY_MAP[currentCategory].includes(item.category) 
+        : item.category === currentCategory);
+
     const query = searchQuery.toLowerCase().trim();
     const matchesSearch = 
+      !query ||
       item.name.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query) ||
-      item.category.toLowerCase().includes(query) ||
+      (item.description && item.description.toLowerCase().includes(query)) ||
+      (item.category && item.category.toLowerCase().includes(query)) ||
       (item.advantage_companies && item.advantage_companies.some((c: string) => c.toLowerCase().includes(query)));
 
     return matchesCat && matchesSearch;
@@ -56,26 +97,27 @@ export default function Certificates() {
             />
           </div>
 
-          <div className="flex justify-center flex-wrap gap-2 mb-8">
-            {['ALL', '기계/메카트로닉스', '전기/전자/에너지', '화학/바이오/환경', 'IT/소프트웨어', '중장비/물류/안전', '공통/어학/한국사'].map(cat => (
+          <div className="flex justify-center flex-wrap gap-2 mb-8 p-1">
+            {categories.map(cat => (
               <button 
                 key={cat}
                 onClick={() => setCurrentCategory(cat)}
-                className={`px-[18px] py-2 rounded-full text-[14px] font-semibold border transition-all cursor-pointer shadow-md ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-white hover:text-indigo-600 hover:border-indigo-300'}`}
+                className={`px-[16px] py-2 rounded-full text-[13px] font-semibold border transition-all cursor-pointer shadow-sm ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-white hover:text-indigo-600 hover:border-indigo-300'}`}
               >
-                {cat === 'ALL' ? '전체보기' : 
-                 cat === '기계/메카트로닉스' ? '기계/메카' : 
-                 cat === '전기/전자/에너지' ? '전기/전자' : 
-                 cat === '화학/바이오/환경' ? '화학/바이오' : 
-                 cat === 'IT/소프트웨어' ? 'IT/SW' : 
-                 cat === '중장비/물류/안전' ? '중장비/안전' : '어학/한국사'}
+                {cat === 'ALL' ? '전체보기' : cat}
               </button>
             ))}
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {loadingError ? (
+          {isLoading ? (
+            <div className="col-span-full text-center py-15 text-slate-500 font-medium">
+              <div className="inline-block w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+              <br />
+              자격증 데이터를 불러오는 중입니다...
+            </div>
+          ) : loadingError ? (
             <div className="col-span-full text-center py-15 text-slate-500">
               ⚠️ 'Data/certificates.json' 데이터를 불러올 수 없습니다.
             </div>
