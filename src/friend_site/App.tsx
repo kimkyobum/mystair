@@ -36,7 +36,8 @@ export default function App({ onLoginSuccess }: { onLoginSuccess?: () => void })
           </span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-          <a href="/map.html" className="hover:text-white transition-colors">{t('nav.map')}</a>
+          <a href="/map.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t('nav.map')}</a>
+          <a href="/creators.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t('nav.creators')}</a>
         </div>
         <div className="flex items-center gap-3">
           <select 

@@ -8,6 +8,7 @@ export default function Header() {
     { name: '나만의 기업찾기', path: '/' },
     { name: 'MBTI검사', path: '/mbti' },
     { name: '홀랜드 진로적성 검사', path: '/holland' },
+    { name: '만든 사람들', path: '/creators' },
     { name: '마이페이지', path: '/mypage' }
   ];
 

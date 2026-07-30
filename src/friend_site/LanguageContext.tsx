@@ -11,6 +11,7 @@ interface LanguageContextType {
 const translations = {
   ko: {
     'nav.map': '마이스터고 지도',
+    'nav.creators': '만든 사람들',
     'nav.traffic': '트래픽 리포트',
     'nav.settings': '설정',
     'nav.login': '로그인',
@@ -39,6 +40,7 @@ const translations = {
   },
   en: {
     'nav.map': 'Meister High School Map',
+    'nav.creators': 'Creators',
     'nav.traffic': 'Traffic Report',
     'nav.settings': 'Settings',
     'nav.login': 'Login',

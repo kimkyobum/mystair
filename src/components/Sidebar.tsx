@@ -9,7 +9,8 @@ import {
   User,
   LogOut,
   LogIn,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -21,7 +22,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates';
+  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/creators';
 
   const displayName = userProfile?.name || user?.displayName || '게스트';
 
@@ -47,7 +48,8 @@ export default function Sidebar() {
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={20} /> },
     { name: '나만의 기업찾기', path: '/', icon: <Briefcase size={20} /> },
     { name: 'MBTI검사', path: '/mbti', icon: <Brain size={20} /> },
-    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> }
+    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={20} /> },
+    { name: '만든 사람들', path: '/creators', icon: <Users size={20} /> }
   ];
 
   return (
