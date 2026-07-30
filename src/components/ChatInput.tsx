@@ -1,8 +1,10 @@
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, History } from 'lucide-react';
 import React, { useState } from 'react';
+import { useChat } from '../context/ChatContext';
 
 export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string) => void }) {
   const [message, setMessage] = useState('');
+  const { messages, setChatActive } = useChat();
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -44,6 +46,16 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
           성장기록 기반 우수 기업 매칭
         </button>
       </div>
+
+      {messages.length > 0 && (
+        <button 
+          onClick={() => setChatActive(true)}
+          className="mt-8 flex items-center gap-2 px-6 py-2.5 rounded-full border border-teal-500/30 text-teal-300 text-sm hover:bg-teal-500/10 hover:border-teal-500/50 transition-all bg-teal-500/5 backdrop-blur-md font-semibold cursor-pointer shadow-[0_0_15px_rgba(45,212,191,0.1)] active:scale-95"
+        >
+          <History size={14} className="animate-pulse" />
+          <span>이전 대화 이어하기 ({messages.length}개 대화)</span>
+        </button>
+      )}
     </div>
   );
 }

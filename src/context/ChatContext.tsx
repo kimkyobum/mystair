@@ -17,14 +17,14 @@ interface ChatContextType {
   initialMessage: string;
   setInitialMessage: (value: string) => void;
   clearChat: () => void;
+  showAliens: boolean;
+  setShowAliens: (show: boolean) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [chatActive, setChatActive] = useState<boolean>(() => {
-    return sessionStorage.getItem('mystair_chat_active') === 'true';
-  });
+  const [chatActive, setChatActive] = useState<boolean>(false);
   
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = sessionStorage.getItem('mystair_chat_messages');
@@ -37,6 +37,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [initialMessage, setInitialMessage] = useState<string>(() => {
     return sessionStorage.getItem('mystair_chat_initial_message') || '';
+  });
+
+  const [showAliens, setShowAliens] = useState<boolean>(() => {
+    const saved = localStorage.getItem('mystair_show_aliens');
+    return saved !== 'false';
   });
 
   useEffect(() => {
@@ -54,6 +59,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     sessionStorage.setItem('mystair_chat_initial_message', initialMessage);
   }, [initialMessage]);
+
+  useEffect(() => {
+    localStorage.setItem('mystair_show_aliens', String(showAliens));
+  }, [showAliens]);
 
   const clearChat = () => {
     setMessages([]);
@@ -76,7 +85,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setInputValue,
       initialMessage,
       setInitialMessage,
-      clearChat
+      clearChat,
+      showAliens,
+      setShowAliens
     }}>
       {children}
     </ChatContext.Provider>

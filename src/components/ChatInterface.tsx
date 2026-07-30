@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw, Trash2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { createPortal } from 'react-dom';
+import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw, Trash2, MessageSquare, ArrowRight, History } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from '@google/genai';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,7 @@ export default function ChatInterface() {
   } = useChat();
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -368,125 +370,230 @@ ${d.content || ""}
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ type: "spring", bounce: 0.3, duration: 0.8 }}
-      className="w-full h-full max-w-4xl mx-auto flex flex-col p-6 sm:p-8 relative z-20 bg-transparent rounded-[40px] border border-white/20"
-    >
-      {/* Chat header with reset button */}
-      <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 select-none">
-        <div className="flex items-center gap-2">
-          <Sparkles size={16} className="text-indigo-400 animate-pulse" />
-          <span className="text-white/70 text-[14px] font-semibold">MyStair AI 대화 분석</span>
-        </div>
-        <button 
-          onClick={clearChat}
-          className="flex items-center gap-1.5 text-white/50 hover:text-white text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm"
-          title="새로운 대화 시작하기"
-        >
-          <Trash2 size={13} />
-          <span>새 대화 시작</span>
-        </button>
-      </div>
+  const scrollToMessage = (id: string) => {
+    const element = document.getElementById(`msg-${id}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add('bg-white/10');
+      setTimeout(() => {
+        element.classList.remove('bg-white/10');
+      }, 1000);
+    }
+  };
 
-      <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-8 pb-6 pr-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        {messages.map((msg) => (
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", bounce: 0.4 }}
-            key={msg.id} 
-            className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            {msg.role === 'user' ? (
-              <div className="bg-[#e4e4e7] text-gray-800 px-6 py-3.5 rounded-[24px] rounded-tr-lg text-[16px] shadow-sm max-w-[80%] tracking-wide">
-                {msg.content}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 max-w-[85%]">
-                <div className="text-white text-[16px] px-2 py-2 leading-relaxed tracking-wide min-h-[44px]">
-                  {msg.isStreaming && !msg.content ? (
-                    <div className="flex items-center gap-2 text-purple-300 font-medium">
-                      <RefreshCw size={16} className="animate-spin text-purple-400" />
-                      <span>MyStair AI가 프로필과 다이어리를 바탕으로 나만의 기업을 탐색 중입니다...</span>
+  return (
+    <div className="w-full h-full max-w-4xl mx-auto flex flex-col relative z-20">
+      {/* 1. Sliding History Drawer Overlay */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showHistory && (
+            <div className="fixed inset-0 z-[9999] flex justify-start select-none" onClick={() => setShowHistory(false)}>
+              {/* Backdrop */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+              />
+              
+              {/* Drawer Panel */}
+              <motion.div 
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="relative w-80 max-w-[85vw] bg-slate-900/95 border-r border-white/10 h-full p-6 flex flex-col z-10 shadow-2xl backdrop-blur-xl"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <History size={18} className="text-teal-400" />
+                    <span className="text-white text-[15px] font-bold">이전 질문 기록</span>
+                    <span className="bg-teal-400/10 text-teal-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-teal-500/10">
+                      {messages.filter(m => m.role === 'user').length}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => setShowHistory(false)}
+                    className="bg-white/5 hover:bg-white/10 text-white/50 hover:text-white border border-white/10 w-8 h-8 rounded-full text-[12px] font-bold cursor-pointer flex items-center justify-center transition-all active:scale-90"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto space-y-2 pr-1" style={{ scrollbarWidth: 'thin' }}>
+                  {messages.filter(m => m.role === 'user').length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-center text-white/40 text-[13px] p-4 gap-2">
+                      <Sparkles size={28} className="text-white/20 animate-pulse" />
+                      <span>아직 질문 기록이 없습니다.</span>
+                      <span className="text-[11px] text-white/30">AI에게 질문을 시작해보세요!</span>
                     </div>
                   ) : (
-                    <div className="markdown-body space-y-2 text-white">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </div>
+                    messages.filter(m => m.role === 'user').map((msg) => (
+                      <button
+                        key={msg.id}
+                        onClick={() => {
+                          scrollToMessage(msg.id);
+                          setShowHistory(false);
+                        }}
+                        className="w-full text-left group flex items-start gap-2.5 p-3 rounded-xl hover:bg-white/10 active:bg-white/5 transition-all cursor-pointer border border-transparent hover:border-white/5"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 shrink-0 group-hover:scale-125 transition-transform" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[13px] text-white/70 group-hover:text-white line-clamp-2 leading-relaxed break-all font-medium transition-colors">
+                            {msg.content}
+                          </div>
+                        </div>
+                        <ArrowRight size={13} className="text-white/20 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all mt-1 shrink-0" />
+                      </button>
+                    ))
                   )}
                 </div>
 
-                {!msg.isStreaming && msg.content && (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 px-2 text-white/40 text-sm">
-                    <ThumbsUp size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-                    <ThumbsDown size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-                    <button onClick={() => handleCopyText(msg.id, msg.content)} className="flex items-center gap-1 cursor-pointer hover:text-white/80 transition-colors">
-                      {copiedId === msg.id ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
-                    </button>
-                    <MoreHorizontal size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-                  </motion.div>
+                <div className="mt-4 pt-4 border-t border-white/10 text-center text-[11px] text-white/30">
+                  기록을 클릭하면 해당 대화로 이동합니다.
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* 2. MAIN CHAT PANEL */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
+        className="flex-1 h-full flex flex-col p-6 sm:p-8 relative z-20 bg-[#050505]/45 backdrop-blur-md rounded-[40px] border border-white/20 min-w-0"
+      >
+        {/* Chat header with control buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6 border-b border-white/10 pb-4 select-none shrink-0">
+          <div className="flex items-center gap-2">
+            <Sparkles size={16} className="text-indigo-400 animate-pulse" />
+            <span className="text-white/70 text-[14px] font-semibold">MyStair AI 대화 분석</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setShowHistory(true)}
+              className="flex items-center gap-1.5 text-white/80 hover:text-white text-[13px] font-semibold bg-teal-500/10 hover:bg-teal-500/20 px-3.5 py-1.5 rounded-full border border-teal-500/20 hover:border-teal-500/45 cursor-pointer transition-all active:scale-95 shadow-sm"
+              title="이전 질문 기록 보기"
+            >
+              <History size={13} className="text-teal-400 animate-pulse" />
+              <span>이전 기록 ({messages.filter(m => m.role === 'user').length})</span>
+            </button>
+            <button 
+              onClick={clearChat}
+              className="flex items-center gap-1.5 text-white/50 hover:text-white text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm"
+              title="새로운 대화 시작하기"
+            >
+              <Trash2 size={13} />
+              <span>새 대화 시작</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-8 pb-6 pr-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          {messages.map((msg) => (
+            <motion.div 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: "spring", bounce: 0.4 }}
+              key={msg.id} 
+              id={`msg-${msg.id}`}
+              className="flex w-full transition-all duration-500 rounded-3xl p-1"
+            >
+              <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                {msg.role === 'user' ? (
+                  <div className="bg-[#e4e4e7] text-gray-800 px-6 py-3.5 rounded-[24px] rounded-tr-lg text-[16px] shadow-sm max-w-[80%] tracking-wide">
+                    {msg.content}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3 max-w-[85%]">
+                    <div className="text-white text-[16px] px-2 py-2 leading-relaxed tracking-wide min-h-[44px]">
+                      {msg.isStreaming && !msg.content ? (
+                        <div className="flex items-center gap-2 text-purple-300 font-medium">
+                          <RefreshCw size={16} className="animate-spin text-purple-400" />
+                          <span>MyStair AI가 프로필과 다이어리를 바탕으로 나만의 기업을 탐색 중입니다...</span>
+                        </div>
+                      ) : (
+                        <div className="markdown-body space-y-2 text-white">
+                          <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        </div>
+                      )}
+                    </div>
+
+                    {!msg.isStreaming && msg.content && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 px-2 text-white/40 text-sm">
+                        <ThumbsUp size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                        <ThumbsDown size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                        <button onClick={() => handleCopyText(msg.id, msg.content)} className="flex items-center gap-1 cursor-pointer hover:text-white/80 transition-colors">
+                          {copiedId === msg.id ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
+                        </button>
+                        <MoreHorizontal size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                      </motion.div>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
 
-        {/* Quick Question Suggestions */}
-        {messages.length <= 2 && !isLoading && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
-            <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
-              <Sparkles size={14} />
-              추천 질의 예시
-            </span>
-            <div className="flex flex-wrap gap-2.5">
-              <button 
-                onClick={() => setInputValue('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?')} 
-                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
-              >
-                "마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?"
-              </button>
-              <button 
-                onClick={() => setInputValue('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘')} 
-                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
-              >
-                "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘"
-              </button>
-              <button 
-                onClick={() => setInputValue('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘')} 
-                className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
-              >
-                "내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘"
-              </button>
-            </div>
-          </motion.div>
-        )}
+          {/* Quick Question Suggestions */}
+          {messages.length <= 2 && !isLoading && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
+              <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
+                <Sparkles size={14} />
+                추천 질의 예시
+              </span>
+              <div className="flex flex-wrap gap-2.5">
+                <button 
+                  onClick={() => setInputValue('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?')} 
+                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                >
+                  "마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?"
+                </button>
+                <button 
+                  onClick={() => setInputValue('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘')} 
+                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                >
+                  "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘"
+                </button>
+                <button 
+                  onClick={() => setInputValue('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘')} 
+                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                >
+                  "내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘"
+                </button>
+              </div>
+            </motion.div>
+          )}
 
-        <div ref={messagesEndRef} />
-      </div>
+          <div ref={messagesEndRef} />
+        </div>
 
-      <div className="pt-4 mt-auto">
-        <form onSubmit={handleSubmit} className="w-full bg-white rounded-[32px] p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ring-purple-400/30 transition-all duration-300">
-          <input 
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            disabled={isLoading}
-            placeholder={isLoading ? "AI 답변을 준비 중입니다..." : "추가로 궁금한 점을 물어보세요"}
-            className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-6 py-3 outline-none text-[16px]"
-          />
-          <button 
-            type="submit" 
-            disabled={isLoading || !inputValue.trim()}
-            className="bg-black text-white p-3.5 rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-2 group cursor-pointer disabled:opacity-40"
-          >
-            <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
-          </button>
-        </form>
-      </div>
-    </motion.div>
+        <div className="pt-4 mt-auto shrink-0">
+          <form onSubmit={handleSubmit} className="w-full bg-white rounded-[32px] p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ring-purple-400/30 transition-all duration-300">
+            <input 
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              disabled={isLoading}
+              placeholder={isLoading ? "AI 답변을 준비 중입니다..." : "추가로 궁금한 점을 물어보세요"}
+              className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-6 py-3 outline-none text-[16px]"
+            />
+            <button 
+              type="submit" 
+              disabled={isLoading || !inputValue.trim()}
+              className="bg-black text-white p-3.5 rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-2 group cursor-pointer disabled:opacity-40"
+            >
+              <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
+            </button>
+          </form>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 

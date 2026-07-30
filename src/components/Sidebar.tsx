@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   BookOpen, 
   Award, 
@@ -8,13 +8,17 @@ import {
   Compass, 
   User,
   LogOut,
-  LogIn
+  LogIn,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
+  const { clearChat } = useChat();
+  const navigate = useNavigate();
 
   const location = useLocation();
   const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates';
@@ -26,7 +30,14 @@ export default function Sidebar() {
     logout();
   };
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    clearChat();
+    navigate('/');
+  };
+
   const navItems = [
+    { name: 'MyStair AI', path: '/', icon: <Sparkles size={20} className="text-teal-400" /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={20} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={20} /> },
     { name: '나만의 기업찾기', path: '/', icon: <Briefcase size={20} /> },
@@ -48,26 +59,36 @@ export default function Sidebar() {
         isDarkTheme ? 'border-white/10' : 'border-slate-200'
       }`}>
         {isHovered ? (
-          <Link to="/" className={`${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}>
+          <a 
+            href="/" 
+            onClick={handleLogoClick}
+            className={`${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}
+          >
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 shrink-0 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
             <span className="transition-colors duration-300">Mystair</span>
-          </Link>
+          </a>
         ) : (
-          <Link to="/" className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-7 leading-none group select-none transition-all duration-300 hover:scale-110`}>
+          <a 
+            href="/" 
+            onClick={handleLogoClick}
+            className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-7 leading-none group select-none transition-all duration-300 hover:scale-110`}
+          >
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 transition-transform duration-500 ease-out">
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
-          </Link>
+          </a>
         )}
       </div>
       
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 flex flex-col gap-1.5 px-2">
         {navItems.map((item, index) => {
-          const isActive = (location.pathname === item.path && item.path !== '/') || (item.path === '/' && location.pathname === '/' && index === 0);
+          // Highlight first item (MyStair AI) or exact matches. Avoid double highlighting of index 3 (나만의 기업찾기) which also uses '/'
+          const isActive = (item.path === '/' && index === 0 && location.pathname === '/') || 
+                           (item.path !== '/' && location.pathname === item.path);
           
           return (
             <Link 

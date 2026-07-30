@@ -21,6 +21,7 @@ import {
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 
 interface MyProfileData {
   name: string;
@@ -72,6 +73,7 @@ const POPULAR_COMPANIES = [
 
 export default function MyPage() {
   const { userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
+  const { showAliens, setShowAliens } = useChat();
 
   const [isFullEditing, setIsFullEditing] = useState(false);
   const [editingField, setEditingField] = useState<'name' | 'school' | 'major' | 'mbti' | 'holland' | null>(null);
@@ -807,6 +809,54 @@ export default function MyPage() {
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+            </div>
+
+            {/* Box 7: 우주인/외계인 배경 설정 */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-indigo-500/10 text-indigo-600 rounded-lg">
+                    <Sparkles size={16} className="text-indigo-600 animate-pulse" />
+                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+                    배경 외계인 설정
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between gap-4 pt-1">
+                <div className="flex-1">
+                  <div className="text-sm font-extrabold text-slate-950">
+                    우주를 떠다니는 외계인 캐릭터
+                  </div>
+                  <div className="text-xs text-slate-500 mt-0.5 font-medium leading-relaxed">
+                    홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.
+                  </div>
+                </div>
+
+                <div className="shrink-0 flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                  <button
+                    onClick={() => setShowAliens(true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      showAliens 
+                        ? 'bg-indigo-600 text-white shadow-sm' 
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    보이기
+                  </button>
+                  <button
+                    onClick={() => setShowAliens(false)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      !showAliens 
+                        ? 'bg-slate-600 text-white shadow-sm' 
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    숨기기
+                  </button>
                 </div>
               </div>
             </div>
