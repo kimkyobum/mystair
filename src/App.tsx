@@ -16,7 +16,7 @@ import CompanySearch from './pages/CompanySearch';
 
 export default function App() {
   const [showMainApp, setShowMainApp] = useState(() => {
-    return sessionStorage.getItem('isLoggedIn') === 'true' || true; // For easy editing, default to true
+    return sessionStorage.getItem('isLoggedIn') === 'true';
   });
 
   const handleLoginSuccess = () => {
