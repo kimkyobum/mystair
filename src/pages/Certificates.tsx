@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
+import certificatesJson from '../../Data/certificates.json';
 
 export default function Certificates() {
   const { t } = useLanguage();
-  const [licensesData, setLicensesData] = useState<any[]>([]);
+  const [licensesData, setLicensesData] = useState<any[]>(certificatesJson || []);
   const [currentCategory, setCurrentCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedModalItem, setSelectedModalItem] = useState<any>(null);
   const [loadingError, setLoadingError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetch('/api/certificates')
@@ -18,12 +19,23 @@ export default function Certificates() {
         return res.json();
       })
       .then(data => {
-        setLicensesData(data);
-        setIsLoading(false);
+        if (Array.isArray(data) && data.length > 0) {
+          setLicensesData(data);
+          setLoadingError(false);
+        }
       })
       .catch(err => {
-        console.error('Error fetching certificates:', err);
-        setLoadingError(true);
+        console.warn('Vercel/Static environment detected: fallback to imported certificates.json', err);
+        if (!licensesData || licensesData.length === 0) {
+          if (Array.isArray(certificatesJson) && certificatesJson.length > 0) {
+            setLicensesData(certificatesJson);
+            setLoadingError(false);
+          } else {
+            setLoadingError(true);
+          }
+        }
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   }, []);
