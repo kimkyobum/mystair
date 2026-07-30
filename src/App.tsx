@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { AuthProvider } from './context/AuthContext';
+import { ChatProvider } from './context/ChatContext';
 import { LanguageProvider } from './friend_site/LanguageContext';
 import MarketingApp from './friend_site/App';
 import Starfield from './components/Starfield';
@@ -30,23 +31,25 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <div className="h-screen bg-black text-white font-sans overflow-hidden selection:bg-purple-500/30 flex relative">
-          <Sidebar />
-          <Starfield />
-          <div className="flex-1 h-full pl-14 relative flex flex-col min-w-0 overflow-hidden">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/diary" element={<Diary />} />
-              <Route path="/certificates" element={<Certificates />} />
-              <Route path="/mbti" element={<MBTI />} />
-              <Route path="/holland" element={<Holland />} />
-              <Route path="/mypage" element={<MyPage />} />
-              <Route path="/profile" element={<MyPage />} />
-            </Routes>
+      <ChatProvider>
+        <BrowserRouter>
+          <div className="h-screen bg-black text-white font-sans overflow-hidden selection:bg-purple-500/30 flex relative">
+            <Sidebar />
+            <Starfield />
+            <div className="flex-1 h-full pl-14 relative flex flex-col min-w-0 overflow-hidden">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/diary" element={<Diary />} />
+                <Route path="/certificates" element={<Certificates />} />
+                <Route path="/mbti" element={<MBTI />} />
+                <Route path="/holland" element={<Holland />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/profile" element={<MyPage />} />
+              </Routes>
+            </div>
           </div>
-        </div>
-      </BrowserRouter>
+        </BrowserRouter>
+      </ChatProvider>
     </AuthProvider>
   );
 }

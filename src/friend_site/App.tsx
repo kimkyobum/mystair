@@ -26,11 +26,12 @@ export default function App({ onLoginSuccess }: { onLoginSuccess?: () => void })
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-5 bg-black/20 backdrop-blur-md border-b border-white/5">
-        <div className="text-2xl font-extrabold tracking-tighter flex items-center gap-1 group cursor-pointer">
-          <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-90 transition-transform duration-700 ease-in-out">
-            <path d="M20 0L24.4903 15.5097L40 20L24.4903 24.4903L20 40L15.5097 24.4903L0 20L15.5097 15.5097L20 0Z" fill="currentColor"/>
+        <div className="text-2xl font-extrabold tracking-tighter flex items-center gap-2 group cursor-pointer select-none transition-all duration-300 hover:scale-105 active:scale-95">
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
+            <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+            <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
           </svg>
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/50 ml-1">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/50 group-hover:text-teal-300 transition-colors duration-300">
             Mystair
           </span>
         </div>

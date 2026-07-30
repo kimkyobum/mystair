@@ -17,7 +17,7 @@ export default function Sidebar() {
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
 
   const location = useLocation();
-  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile';
+  const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates';
 
   const displayName = userProfile?.name || user?.displayName || '게스트';
 
@@ -38,7 +38,7 @@ export default function Sidebar() {
     <aside 
       className={`fixed top-0 left-0 h-full z-[100] transition-all duration-300 ease-in-out flex flex-col ${
         isDarkTheme 
-          ? 'bg-slate-950/15 backdrop-blur-md border-r border-white/10 text-white shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
+          ? 'bg-slate-950/50 backdrop-blur-md border-r border-white/10 text-white shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
           : 'bg-white border-r border-slate-200 text-slate-800 shadow-[0_0_25px_rgba(0,0,0,0.08)]'
       } ${isHovered ? 'w-64' : 'w-14'}`}
       onMouseEnter={() => setIsHovered(true)}
@@ -48,12 +48,19 @@ export default function Sidebar() {
         isDarkTheme ? 'border-white/10' : 'border-slate-200'
       }`}>
         {isHovered ? (
-          <Link to="/" className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center leading-none pl-1`}>
-            Mystair
+          <Link to="/" className={`${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 shrink-0 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+            </svg>
+            <span className="transition-colors duration-300">Mystair</span>
           </Link>
         ) : (
-          <Link to="/" className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} font-black text-[20px] tracking-[-0.06em] cursor-pointer flex items-center justify-center w-7 leading-none`}>
-            M
+          <Link to="/" className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-7 leading-none group select-none transition-all duration-300 hover:scale-110`}>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 transition-transform duration-500 ease-out">
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+            </svg>
           </Link>
         )}
       </div>

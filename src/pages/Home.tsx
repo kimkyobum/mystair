@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import ChatInput from '../components/ChatInput';
 import ChatInterface from '../components/ChatInterface';
 import Header from '../components/Header';
 import TopBanner from '../components/TopBanner';
+import { useChat } from '../context/ChatContext';
 
 export default function Home() {
-  const [chatActive, setChatActive] = useState(false);
-  const [initialMessage, setInitialMessage] = useState('');
+  const { chatActive, setChatActive, setInitialMessage } = useChat();
 
   const handleStartChat = (message: string) => {
     setInitialMessage(message);
@@ -21,7 +20,7 @@ export default function Home() {
         {!chatActive ? (
           <ChatInput onStartChat={handleStartChat} />
         ) : (
-          <ChatInterface initialMessage={initialMessage} />
+          <ChatInterface />
         )}
       </main>
     </div>

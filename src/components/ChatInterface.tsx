@@ -1,23 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw } from 'lucide-react';
+import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from '@google/genai';
 import { useAuth } from '../context/AuthContext';
+import { useChat, Message } from '../context/ChatContext';
 
-interface Message {
-  id: string;
-  role: 'user' | 'ai';
-  content: string;
-  isStreaming?: boolean;
-}
-
-export default function ChatInterface({ initialMessage }: { initialMessage: string }) {
+export default function ChatInterface() {
   const { userProfile: firestoreProfile, fetchDiaries } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'user', content: initialMessage },
-  ]);
-  const [inputValue, setInputValue] = useState('');
+  const {
+    messages,
+    setMessages,
+    inputValue,
+    setInputValue,
+    initialMessage,
+    clearChat
+  } = useChat();
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -34,8 +32,10 @@ export default function ChatInterface({ initialMessage }: { initialMessage: stri
 
   // Initial call on mount
   useEffect(() => {
-    if (initialMessage && !initialSentRef.current) {
+    if (initialMessage && !initialSentRef.current && messages.length === 0) {
       initialSentRef.current = true;
+      const initialMsg: Message = { id: '1', role: 'user', content: initialMessage };
+      setMessages([initialMsg]);
       sendMessageToAI(initialMessage, []);
     }
   }, [initialMessage]);
@@ -375,6 +375,22 @@ ${d.content || ""}
       transition={{ type: "spring", bounce: 0.3, duration: 0.8 }}
       className="w-full h-full max-w-4xl mx-auto flex flex-col p-6 sm:p-8 relative z-20 bg-transparent rounded-[40px] border border-white/20"
     >
+      {/* Chat header with reset button */}
+      <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4 select-none">
+        <div className="flex items-center gap-2">
+          <Sparkles size={16} className="text-indigo-400 animate-pulse" />
+          <span className="text-white/70 text-[14px] font-semibold">MyStair AI 대화 분석</span>
+        </div>
+        <button 
+          onClick={clearChat}
+          className="flex items-center gap-1.5 text-white/50 hover:text-white text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm"
+          title="새로운 대화 시작하기"
+        >
+          <Trash2 size={13} />
+          <span>새 대화 시작</span>
+        </button>
+      </div>
+
       <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-8 pb-6 pr-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {messages.map((msg) => (
           <motion.div 

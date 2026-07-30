@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
+import ReactMarkdown from 'react-markdown';
 
 const getLocalDateString = (d: Date = new Date()) => {
   const year = d.getFullYear();
@@ -66,15 +67,74 @@ export default function Diary() {
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [summaryText, setSummaryText] = useState<string | null>(null);
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [summaryData, setSummaryData] = useState<{
+    certificates: any[];
+    activities: any[];
+    awards: any[];
+    others: any[];
+  } | null>(null);
+  const [activeSummaryTab, setActiveSummaryTab] = useState<'certificates' | 'activities' | 'awards' | 'others'>('certificates');
 
   const handleSummarizeDiaries = async () => {
     setShowSummaryModal(true);
     setSummaryLoading(true);
     setSummaryText(null);
+    setSummaryData(null);
 
     const profileData = localStorage.getItem('mystair_profile') || '';
     
-    const message = "지금까지 작성한 모든 성장 다이어리를 분석해서 자기소개서에 바로 쓸 수 있도록 핵심 성과, 극복 경험, 배운 점, 직무 역량 등을 구조화하여 깔끔한 마크다운으로 요약정리해줘.";
+    const message = `지금까지 작성한 모든 성장 다이어리(일기) 기록과 프로필 정보를 완벽히 분석해서, 자기소개서에 즉시 활용할 수 있도록 **STAR 공법(Situation - Task - Action - Result)**을 기반으로 세분화된 자소서 맞춤형 요약을 작성해줘.
+
+반드시 다른 군더더기 말 없이 아래 지정된 JSON 포맷으로만 응답을 반환해줘. 마크다운 기호 없이 순수한 JSON 텍스트 또는 \`\`\`json \`\`\` 마크다운 블록 내에 JSON만 있어야 해.
+
+JSON 구조 규격:
+{
+  "certificates": [
+    {
+      "title": "자격증 명칭 또는 자격증 준비 행동 제목",
+      "date": "이 행동을 본격적으로 진행한 날짜 (예: 2026.07.15, 다이어리 기록의 날짜 기준)",
+      "situation": "상황에 대한 구체적 설명",
+      "task": "당시 당면 과제 또는 달성하고자 한 구체적 목표",
+      "action": "해결을 위해 내가 직접 수행한 노력과 행동",
+      "result": "구체적인 성과 및 이 과정을 통해 배운 직무/내적 성장 역량"
+    }
+  ],
+  "activities": [
+    {
+      "title": "대내외 활동, 프로젝트, 실습, 동아리 등 관련 활동 제목",
+      "date": "활동을 한 날짜 (예: 2026.07.15)",
+      "situation": "상황 설명",
+      "task": "목표 및 직면 과제",
+      "action": "내가 직접 주도하거나 수행한 해결 노력과 행동",
+      "result": "활동 결과 및 배운 점과 내적 변화"
+    }
+  ],
+  "awards": [
+    {
+      "title": "수상 실적, 교내외 대회, 성과, 목표 초과 달성 성과",
+      "date": "해당 사건/행동을 한 날짜 (예: 2026.07.15)",
+      "situation": "상황 설명",
+      "task": "목표 및 달성하고 자 했던 과제",
+      "action": "성과 달성을 위해 내가 취한 구체적 행동",
+      "result": "최종 결과(수상, 성취 등) 및 이 경험을 통해 얻은 교훈"
+    }
+  ],
+  "others": [
+    {
+      "title": "기타 성장 경험, 극복 사례, 일상의 성취 경험",
+      "date": "해당 행동/경험 날짜 (예: 2026.07.15)",
+      "situation": "상황 설명",
+      "task": "목표 및 당면 문제",
+      "action": "해결을 위해 취한 구체적 행동",
+      "result": "결과 및 배운 점"
+    }
+  ]
+}
+
+주의사항:
+1. 다이어리 기록에 해당 카테고리에 해당하는 내용이 없다면 빈 배열 \`[]\`로 설정해줘. 절대 속성을 누락시키지 마.
+2. 날짜("date")는 해당 다이어리 일기 날짜를 참고하여 'YYYY.MM.DD' 또는 '몇월 몇일' 형태로 반드시 한눈에 들어오게 채워줘.
+3. 구체적이고 생생하게 적어주고 전문적인 자소서 가이드의 따뜻한 톤앤매너로 작성해줘.`;
 
     try {
       const res = await fetch('/api/chat', {
@@ -90,7 +150,22 @@ export default function Diary() {
 
       if (res.ok) {
         const data = await res.json();
-        setSummaryText(data.response || '요약 결과가 없습니다.');
+        const rawResponse = data.response || '';
+        setSummaryText(rawResponse);
+
+        try {
+          // Parse JSON block out of response
+          let jsonText = rawResponse.trim();
+          const jsonMatch = jsonText.match(/```(?:json)?([\s\S]*?)```/);
+          if (jsonMatch) {
+            jsonText = jsonMatch[1];
+          }
+          const parsed = JSON.parse(jsonText.trim());
+          setSummaryData(parsed);
+        } catch (parseErr) {
+          console.error("JSON parse failed. Displaying raw markdown fallback.", parseErr);
+          // We keep summaryText as fallback raw display
+        }
       } else {
         setSummaryText('서버에서 요약을 생성하지 못했습니다.');
       }
@@ -689,11 +764,11 @@ export default function Diary() {
       {/* SUMMARY MODAL */}
       {showSummaryModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border-2 border-indigo-500/50 rounded-3xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150">
+          <div className="bg-slate-900 border-2 border-indigo-500/50 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 flex-none">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles size={20} className="text-amber-400" />
-                <span>AI 자소서 경험 요약</span>
+                <Sparkles size={20} className="text-amber-400 animate-pulse" />
+                <span>AI 자소서 경험 요약 (STAR 공법 분석)</span>
               </h3>
               <button onClick={() => setShowSummaryModal(false)} className="text-slate-400 hover:text-white p-1">
                 <X size={20} />
@@ -702,13 +777,143 @@ export default function Diary() {
             
             <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar markdown-body">
               {summaryLoading ? (
-                <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                  <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                  <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
                   <p className="text-sm font-bold text-slate-400">다이어리 기록을 분석하여 자소서 소재를 추출하고 있습니다...</p>
+                  <p className="text-xs text-slate-500">각 경험을 탭과 타임라인 날짜별 STAR 공법으로 완벽히 분류 중입니다.</p>
+                </div>
+              ) : summaryData ? (
+                <div className="space-y-4">
+                  {/* Category Filter Buttons */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-slate-800 pb-4">
+                    <button
+                      onClick={() => setActiveSummaryTab('certificates')}
+                      className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
+                        activeSummaryTab === 'certificates'
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
+                          : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="text-base mb-1">🏆</span>
+                      <span className="text-xs font-bold">자격증 노력</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveSummaryTab('activities')}
+                      className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
+                        activeSummaryTab === 'activities'
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
+                          : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="text-base mb-1">👥</span>
+                      <span className="text-xs font-bold">대내외 활동</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveSummaryTab('awards')}
+                      className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
+                        activeSummaryTab === 'awards'
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
+                          : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="text-base mb-1">🥇</span>
+                      <span className="text-xs font-bold">수상 및 성과</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveSummaryTab('others')}
+                      className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
+                        activeSummaryTab === 'others'
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
+                          : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className="text-base mb-1">💡</span>
+                      <span className="text-xs font-bold">기타 성장경험</span>
+                    </button>
+                  </div>
+
+                  {/* Active Tab Content */}
+                  <div className="space-y-4 pt-1">
+                    {(!summaryData[activeSummaryTab] || summaryData[activeSummaryTab].length === 0) ? (
+                      <div className="flex flex-col items-center justify-center py-16 text-center space-y-3 bg-slate-800/20 rounded-2xl border border-slate-800 p-6">
+                        <span className="text-3xl">📭</span>
+                        <h4 className="text-sm font-bold text-slate-300">추출된 경험이 아직 없습니다</h4>
+                        <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
+                          해당 카테고리(자격증, 대내외활동 등) 관련 키워드가 다이어리나 프로필에 충분하지 않은 것 같아요. 일기에 관련 내용(시험, 실습, 성과, 대회 등)을 더 자세히 기록하면 AI가 정확히 분류해서 보여줍니다!
+                        </p>
+                      </div>
+                    ) : (
+                      summaryData[activeSummaryTab].map((item: any, idx: number) => (
+                        <div key={idx} className="bg-slate-800/30 border border-slate-800/80 rounded-3xl p-5 space-y-4 shadow-sm hover:border-indigo-500/30 transition-all">
+                          {/* Card Header (Date & Title) */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
+                            <h4 className="text-base font-extrabold text-white leading-snug flex items-center gap-2">
+                              <span className="text-indigo-400 text-lg">✦</span> {item.title}
+                            </h4>
+                            <div className="bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-extrabold px-3 py-1 rounded-full shrink-0 flex items-center gap-1 w-fit">
+                              <CalendarIcon size={12} />
+                              <span>{item.date || '날짜 미지정'}</span>
+                            </div>
+                          </div>
+
+                          {/* STAR Methods Layout */}
+                          <div className="space-y-4 pt-1">
+                            {/* Situation */}
+                            <div className="flex items-start gap-3">
+                              <span className="bg-amber-500/10 text-amber-400 text-xs font-black px-2 py-1 rounded-lg border border-amber-500/25 shrink-0 w-8 text-center" title="Situation">S</span>
+                              <div className="space-y-0.5">
+                                <span className="text-xs font-extrabold text-amber-300/80">Situation (상황 배경)</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{item.situation}</p>
+                              </div>
+                            </div>
+
+                            {/* Task */}
+                            <div className="flex items-start gap-3">
+                              <span className="bg-sky-500/10 text-sky-400 text-xs font-black px-2 py-1 rounded-lg border border-sky-500/25 shrink-0 w-8 text-center" title="Task">T</span>
+                              <div className="space-y-0.5">
+                                <span className="text-xs font-extrabold text-sky-300/80">Task (목표와 과제)</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{item.task}</p>
+                              </div>
+                            </div>
+
+                            {/* Action */}
+                            <div className="flex items-start gap-3">
+                              <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded-lg border border-emerald-500/25 shrink-0 w-8 text-center" title="Action">A</span>
+                              <div className="space-y-0.5">
+                                <span className="text-xs font-extrabold text-emerald-300/80">Action (내가 취한 구체적 행동)</span>
+                                <p className="text-sm text-slate-200 leading-relaxed font-bold">{item.action}</p>
+                              </div>
+                            </div>
+
+                            {/* Result */}
+                            <div className="flex items-start gap-3">
+                              <span className="bg-purple-500/10 text-purple-400 text-xs font-black px-2 py-1 rounded-lg border border-purple-500/25 shrink-0 w-8 text-center" title="Result">R</span>
+                              <div className="space-y-0.5">
+                                <span className="text-xs font-extrabold text-purple-300/80">Result (최종 성과 및 내적 성장)</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{item.result}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               ) : (
-                <div className="text-slate-300 text-sm whitespace-pre-wrap leading-relaxed">
-                  {summaryText}
+                /* Fallback raw display in case of JSON parse errors */
+                <div className="space-y-4">
+                  <div className="bg-amber-500/10 border border-amber-500/25 rounded-2xl p-4 flex items-start gap-3">
+                    <span className="text-xl">⚠️</span>
+                    <div>
+                      <h4 className="text-sm font-bold text-amber-300">구조화 탭 로딩 실패</h4>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        AI 요약 데이터가 JSON 규격에 맞지 않아 일반 텍스트 형태로 출력합니다. 아래 분석글을 참고해 주세요.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-slate-300 text-sm leading-relaxed space-y-2 p-4 bg-slate-800/20 border border-slate-800 rounded-2xl">
+                    <ReactMarkdown>{summaryText || ''}</ReactMarkdown>
+                  </div>
                 </div>
               )}
             </div>

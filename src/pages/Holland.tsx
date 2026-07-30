@@ -114,8 +114,8 @@ export default function Holland() {
   const percent = Math.round(((currentIndex) / hollandQuestions.length) * 100);
 
   return (
-    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-[#F8FAFC] text-[#0F172A] font-sans flex flex-col relative">
-      <header className="bg-[#0F172A] h-[72px] w-full flex items-center justify-start px-10 shadow-[0_4px_20px_rgba(15,23,42,0.15)] sticky top-0 z-50">
+    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-[#0F172A] font-sans flex flex-col relative">
+      <header className="bg-[#0F172A]/80 backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-[0_4px_20px_rgba(15,23,42,0.15)] sticky top-0 z-50 border-b border-white/5">
         <div className="flex items-center gap-4">
           <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
             MyStair
@@ -129,7 +129,7 @@ export default function Holland() {
         </div>
       </header>
 
-      <Link to="/" className="hidden sm:flex absolute top-[92px] left-10 w-20 h-[50px] rounded-xl justify-center items-center text-[30px] font-bold bg-white border-[1.5px] border-[#E2E8F0] text-[#64748B] shadow-[0_2px_8px_rgba(15,23,42,0.05)] hover:border-[#6366F1] hover:text-[#6366F1] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(99,102,241,0.15)] transition-all duration-200 z-40">
+      <Link to="/" className="hidden sm:flex absolute top-[92px] left-10 w-20 h-[50px] rounded-xl justify-center items-center text-[24px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#6366F1] hover:text-[#6366F1] hover:-translate-y-0.5 transition-all duration-200 z-40">
         ←
       </Link>
 

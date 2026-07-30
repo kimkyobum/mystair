@@ -17,3 +17,75 @@ html, body, #root {
   animation: gradient 10s ease infinite;
   background-size: 300% 300%;
 }
+
+/* Beautiful & highly readable dark mode Markdown styling */
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+  font-weight: 800;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+}
+.markdown-body h1 {
+  font-size: 1.6rem;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.4);
+  padding-bottom: 0.5rem;
+}
+.markdown-body h2 {
+  font-size: 1.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 0.4rem;
+  color: #f1f5f9;
+}
+.markdown-body h3 {
+  font-size: 1.15rem;
+  color: #e2e8f0;
+}
+.markdown-body p {
+  margin-bottom: 0.85rem;
+  line-height: 1.7;
+  color: #cbd5e1;
+}
+.markdown-body ul, .markdown-body ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  list-style-position: outside;
+}
+.markdown-body ul {
+  list-style-type: disc;
+}
+.markdown-body ol {
+  list-style-type: decimal;
+}
+.markdown-body li {
+  margin-bottom: 0.45rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+.markdown-body strong {
+  color: #f8fafc;
+  font-weight: 700;
+}
+.markdown-body blockquote {
+  border-left: 4px solid #6366f1;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #94a3b8;
+  font-style: italic;
+  background: rgba(99, 102, 241, 0.05);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.markdown-body code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.125rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: monospace;
+  color: #f472b6;
+}
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 1.5rem 0;
+}
