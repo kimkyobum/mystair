@@ -27,7 +27,12 @@ export default function Sidebar() {
 
   const handleLogout = (e: React.MouseEvent) => {
     e.stopPropagation();
-    logout();
+    sessionStorage.removeItem('isLoggedIn');
+    logout().then(() => {
+      window.location.href = '/';
+    }).catch(() => {
+      window.location.href = '/';
+    });
   };
 
   const handleLogoClick = (e: React.MouseEvent) => {
@@ -143,28 +148,29 @@ export default function Sidebar() {
             </div>
           </Link>
 
-          {isHovered && user && (
-            <button 
-              onClick={handleLogout}
-              title="로그아웃"
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ml-1 ${
-                isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <LogOut size={14} />
-            </button>
-          )}
-
-          {isHovered && !user && (
-            <button 
-              onClick={() => loginWithGoogle()}
-              title="구글 로그인"
-              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ml-1 ${
-                isDarkTheme ? 'hover:bg-white/10 text-indigo-300 hover:text-white' : 'hover:bg-slate-200 text-indigo-600 hover:text-indigo-800'
-              }`}
-            >
-              <LogIn size={14} />
-            </button>
+          {isHovered && (
+            <div className="flex items-center gap-1 shrink-0 ml-1">
+              {!user && (
+                <button 
+                  onClick={() => loginWithGoogle()}
+                  title="구글 로그인"
+                  className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                    isDarkTheme ? 'hover:bg-white/10 text-indigo-300 hover:text-white' : 'hover:bg-slate-200 text-indigo-600 hover:text-indigo-800'
+                  }`}
+                >
+                  <LogIn size={14} />
+                </button>
+              )}
+              <button 
+                onClick={handleLogout}
+                title={user ? "로그아웃" : "홍보 페이지로 이동"}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                  isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
           )}
         </div>
       </div>

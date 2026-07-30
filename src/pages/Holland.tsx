@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { hollandQuestions, hollandMeta } from '../data/hollandData';
+import { useAuth } from '../context/AuthContext';
 
 export default function Holland() {
+  const { user } = useAuth();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(new Array(hollandQuestions.length).fill(null));
@@ -70,13 +72,14 @@ export default function Holland() {
     setResult(res);
     setScreen('result');
     try {
-      localStorage.setItem('mystair_holland_result', JSON.stringify(res));
+      const uid = user?.uid || 'local-user';
+      localStorage.setItem(`mystair_holland_result_${uid}`, JSON.stringify(res));
 
       // Automatically update mypage data
-      const savedMyPage = localStorage.getItem('mystair_mypage_data');
+      const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
       let myPageData = savedMyPage ? JSON.parse(savedMyPage) : {};
       myPageData.hollandCode = res.topCode;
-      localStorage.setItem('mystair_mypage_data', JSON.stringify(myPageData));
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(myPageData));
     } catch (e) {
       console.error('Failed to save Holland result to localStorage', e);
     }

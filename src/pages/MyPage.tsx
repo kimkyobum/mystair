@@ -72,7 +72,7 @@ const POPULAR_COMPANIES = [
 ];
 
 export default function MyPage() {
-  const { userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
+  const { user, userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
   const { showAliens, setShowAliens } = useChat();
 
   const [isFullEditing, setIsFullEditing] = useState(false);
@@ -93,15 +93,15 @@ export default function MyPage() {
 
   // Main Profile State
   const [profile, setProfile] = useState<MyProfileData>({
-    name: '김계단',
-    email: 'meister@mystair.com',
+    name: '',
+    email: '',
     avatarUrl: '',
-    highSchool: '수도전기공업고등학교',
-    major: '전기제어과',
-    mbti: 'ISTJ',
-    hollandCode: 'RC',
-    hollandNote: '기계 및 전기 설비 다루기에 강점이 있으며, 규칙적이고 체계적인 현장 관리 직무에 높은 적성을 나타냅니다.',
-    targetCompanies: ['한국전력공사', '삼성전자', '현대자동차', '한화시스템']
+    highSchool: '',
+    major: '',
+    mbti: '',
+    hollandCode: '',
+    hollandNote: '',
+    targetCompanies: []
   });
 
   // Sync profile from Firestore whenever userProfile updates
@@ -109,14 +109,14 @@ export default function MyPage() {
     if (firestoreProfile) {
       setProfile(prev => ({
         ...prev,
-        name: firestoreProfile.name || prev.name,
+        name: firestoreProfile.name !== undefined ? firestoreProfile.name : prev.name,
         email: firestoreProfile.email || prev.email,
         avatarUrl: firestoreProfile.avatarUrl || prev.avatarUrl,
-        highSchool: firestoreProfile.highSchool || prev.highSchool,
-        major: firestoreProfile.major || prev.major,
-        mbti: firestoreProfile.mbti || prev.mbti,
-        hollandCode: firestoreProfile.hollandCode || prev.hollandCode,
-        targetCompanies: firestoreProfile.targetCompanies || prev.targetCompanies
+        highSchool: firestoreProfile.highSchool !== undefined ? firestoreProfile.highSchool : prev.highSchool,
+        major: firestoreProfile.major !== undefined ? firestoreProfile.major : prev.major,
+        mbti: firestoreProfile.mbti !== undefined ? firestoreProfile.mbti : prev.mbti,
+        hollandCode: firestoreProfile.hollandCode !== undefined ? firestoreProfile.hollandCode : prev.hollandCode,
+        targetCompanies: firestoreProfile.targetCompanies || []
       }));
     }
   }, [firestoreProfile]);
@@ -126,10 +126,12 @@ export default function MyPage() {
   const [hollandResult, setHollandResult] = useState<any>(null);
 
   const loadData = () => {
+    const uid = user?.uid || 'local-user';
+
     // 1. Load basic user profile from localStorage if exists
-    const savedSidebarProfile = localStorage.getItem('mystair_user_profile');
-    let baseName = '김계단';
-    let baseEmail = 'meister@mystair.com';
+    const savedSidebarProfile = localStorage.getItem(`mystair_user_profile_${uid}`);
+    let baseName = '';
+    let baseEmail = user?.email || '';
     if (savedSidebarProfile) {
       try {
         const parsed = JSON.parse(savedSidebarProfile);
@@ -145,22 +147,22 @@ export default function MyPage() {
       name: baseName,
       email: baseEmail,
       avatarUrl: '',
-      highSchool: '수도전기공업고등학교',
-      major: '전기제어과',
-      mbti: 'ISTJ',
-      hollandCode: 'RC',
-      hollandNote: '기계 및 전기 설비 다루기에 강점이 있으며, 규칙적이고 체계적인 현장 관리 직무에 높은 적성을 나타냅니다.',
-      targetCompanies: ['한국전력공사', '삼성전자', '현대자동차', '한화시스템']
+      highSchool: '',
+      major: '',
+      mbti: '',
+      hollandCode: '',
+      hollandNote: '',
+      targetCompanies: [] as string[]
     };
 
-    const savedMyPage = localStorage.getItem('mystair_mypage_data');
+    const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
     if (savedMyPage) {
       try {
         const parsed = JSON.parse(savedMyPage);
         currentProfile = {
           ...currentProfile,
           ...parsed,
-          name: parsed.name || baseName,
+          name: parsed.name !== undefined ? parsed.name : baseName,
           email: parsed.email || baseEmail
         };
       } catch (e) {
@@ -169,7 +171,7 @@ export default function MyPage() {
     }
 
     // 3. Load saved MBTI test results automatically
-    const savedMbti = localStorage.getItem('mystair_mbti_result');
+    const savedMbti = localStorage.getItem(`mystair_mbti_result_${uid}`);
     if (savedMbti) {
       try {
         const parsed = JSON.parse(savedMbti);
@@ -183,7 +185,7 @@ export default function MyPage() {
     }
 
     // 4. Load saved Holland test results automatically
-    const savedHolland = localStorage.getItem('mystair_holland_result');
+    const savedHolland = localStorage.getItem(`mystair_holland_result_${uid}`);
     if (savedHolland) {
       try {
         const parsed = JSON.parse(savedHolland);
@@ -213,7 +215,7 @@ export default function MyPage() {
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [user, firestoreProfile]);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -238,9 +240,10 @@ export default function MyPage() {
   };
 
   const handleFullSave = async () => {
+    const uid = user?.uid || 'local-user';
     try {
-      localStorage.setItem('mystair_mypage_data', JSON.stringify(profile));
-      localStorage.setItem('mystair_user_profile', JSON.stringify({
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
+      localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
         name: profile.name,
         email: profile.email,
         avatarUrl: profile.avatarUrl
@@ -263,12 +266,13 @@ export default function MyPage() {
   };
 
   const savePartialField = async (key: keyof MyProfileData, val: any, fieldLabel: string) => {
+    const uid = user?.uid || 'local-user';
     const updated = { ...profile, [key]: val };
     setProfile(updated);
     try {
-      localStorage.setItem('mystair_mypage_data', JSON.stringify(updated));
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(updated));
       if (key === 'name' || key === 'email' || key === 'avatarUrl') {
-        localStorage.setItem('mystair_user_profile', JSON.stringify({
+        localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
           name: key === 'name' ? val : profile.name,
           email: key === 'email' ? val : profile.email,
           avatarUrl: key === 'avatarUrl' ? val : profile.avatarUrl
@@ -300,11 +304,14 @@ export default function MyPage() {
   };
 
 
-  const currentMbtiMeta = mbtiMeta[profile.mbti] || mbtiMeta['ISTJ'];
-  const firstHollandChar = profile.hollandCode?.[0] || 'R';
-  const secondHollandChar = profile.hollandCode?.[1] || 'C';
-  const primaryHollandMeta = hollandMeta[firstHollandChar] || hollandMeta['R'];
-  const secondaryHollandMeta = hollandMeta[secondHollandChar] || hollandMeta['C'];
+  const currentMbtiMeta = profile.mbti ? mbtiMeta[profile.mbti] : null;
+  const modalMbtiMeta = currentMbtiMeta || mbtiMeta['ISTJ'];
+  const firstHollandChar = profile.hollandCode?.[0];
+  const secondHollandChar = profile.hollandCode?.[1];
+  const primaryHollandMeta = firstHollandChar ? hollandMeta[firstHollandChar] : null;
+  const secondaryHollandMeta = secondHollandChar ? hollandMeta[secondHollandChar] : null;
+  const modalPrimaryHollandMeta = primaryHollandMeta || hollandMeta['R'];
+  const modalSecondaryHollandMeta = secondaryHollandMeta || hollandMeta['C'];
 
   return (
     <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-white font-sans flex flex-col relative pb-28">
@@ -644,6 +651,7 @@ export default function MyPage() {
                       onChange={e => isFullEditing ? setProfile({ ...profile, mbti: e.target.value }) : setTempMbti(e.target.value)}
                       className="flex-1 bg-white border border-pink-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 outline-none"
                     >
+                      <option value="">선택 안 함 (미진단)</option>
                       {Object.keys(mbtiMeta).map(type => (
                         <option key={type} value={type}>
                           {type} - {mbtiMeta[type].alias}
@@ -660,12 +668,12 @@ export default function MyPage() {
                     )}
                   </div>
                 </div>
-              ) : (
+              ) : profile.mbti ? (
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div>
                     <span className="text-xl font-black text-pink-400 tracking-tight">{profile.mbti}</span>
                     <span className="text-xs font-extrabold text-slate-500 block mt-0.5">
-                      {currentMbtiMeta.alias}
+                      {currentMbtiMeta?.alias}
                     </span>
                   </div>
 
@@ -676,6 +684,23 @@ export default function MyPage() {
                     <span>상세분석</span>
                     <ChevronRight size={14} />
                   </button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <div>
+                    <span className="text-sm font-bold text-slate-400">진단 결과 없음</span>
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5">
+                      MBTI 진단 검사를 진행해보세요
+                    </span>
+                  </div>
+
+                  <Link
+                    to="/mbti"
+                    className="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
+                  >
+                    <span>검사하기</span>
+                    <ChevronRight size={14} />
+                  </Link>
                 </div>
               )}
             </div>
@@ -717,7 +742,7 @@ export default function MyPage() {
                         else setTempHolland(val);
                       }}
                       className="flex-1 bg-white border border-cyan-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 uppercase outline-none"
-                      placeholder="예: RC"
+                      placeholder="예: RC (비워두면 미진단)"
                     />
                     {!isFullEditing && (
                       <button
@@ -729,12 +754,12 @@ export default function MyPage() {
                     )}
                   </div>
                 </div>
-              ) : (
+              ) : profile.hollandCode ? (
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div>
                     <span className="text-xl font-black text-cyan-400 tracking-tight">{profile.hollandCode}형</span>
                     <span className="text-xs font-extrabold text-slate-500 block mt-0.5">
-                      {primaryHollandMeta.name} & {secondaryHollandMeta.name}
+                      {primaryHollandMeta?.name} & {secondaryHollandMeta?.name}
                     </span>
                   </div>
 
@@ -745,6 +770,23 @@ export default function MyPage() {
                     <span>상세분석</span>
                     <ChevronRight size={14} />
                   </button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <div>
+                    <span className="text-sm font-bold text-slate-400">진단 결과 없음</span>
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5">
+                      홀랜드 적성 검사를 진행해보세요
+                    </span>
+                  </div>
+
+                  <Link
+                    to="/holland"
+                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
+                  >
+                    <span>검사하기</span>
+                    <ChevronRight size={14} />
+                  </Link>
                 </div>
               )}
             </div>
@@ -912,11 +954,11 @@ export default function MyPage() {
               <div className="bg-gradient-to-r from-pink-950/20 to-indigo-950/20 p-5 rounded-2xl border border-pink-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-pink-400">{profile.mbti}</span>
-                    <span className="text-sm font-extrabold text-slate-300">({currentMbtiMeta.alias})</span>
+                    <span className="text-2xl font-black text-pink-400">{profile.mbti || '미진단'}</span>
+                    <span className="text-sm font-extrabold text-slate-300">({modalMbtiMeta.alias})</span>
                   </div>
                   <p className="text-xs text-slate-300 font-medium mt-1 leading-relaxed">
-                    {currentMbtiMeta.desc}
+                    {modalMbtiMeta.desc}
                   </p>
                 </div>
 
@@ -971,7 +1013,7 @@ export default function MyPage() {
                   🎯 MBTI 유형별 추천 직무 전체 목록
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {currentMbtiMeta.jobs.map((job: string) => (
+                  {modalMbtiMeta.jobs.map((job: string) => (
                     <span 
                       key={job} 
                       className="bg-slate-950/80 border border-white/10 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs"
@@ -1028,9 +1070,9 @@ export default function MyPage() {
               <div className="bg-gradient-to-r from-cyan-950/20 to-indigo-950/20 p-5 rounded-2xl border border-cyan-500/20 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-cyan-400">{profile.hollandCode}형</span>
+                    <span className="text-2xl font-black text-cyan-400">{profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}</span>
                     <span className="text-xs font-extrabold text-slate-300">
-                      ({primaryHollandMeta.name} & {secondaryHollandMeta.name})
+                      ({modalPrimaryHollandMeta.name} & {modalSecondaryHollandMeta.name})
                     </span>
                   </div>
 
@@ -1045,12 +1087,12 @@ export default function MyPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   <div className="bg-slate-950/80 p-3 rounded-xl border border-white/10 space-y-1">
-                    <span className="font-extrabold text-cyan-400 block">1순위: {primaryHollandMeta.name}</span>
-                    <p className="text-slate-300 font-medium leading-relaxed">{primaryHollandMeta.desc}</p>
+                    <span className="font-extrabold text-cyan-400 block">1순위: {modalPrimaryHollandMeta.name}</span>
+                    <p className="text-slate-300 font-medium leading-relaxed">{modalPrimaryHollandMeta.desc}</p>
                   </div>
                   <div className="bg-slate-950/80 p-3 rounded-xl border border-white/10 space-y-1">
-                    <span className="font-extrabold text-indigo-400 block">2순위: {secondaryHollandMeta.name}</span>
-                    <p className="text-slate-300 font-medium leading-relaxed">{secondaryHollandMeta.desc}</p>
+                    <span className="font-extrabold text-indigo-400 block">2순위: {modalSecondaryHollandMeta.name}</span>
+                    <p className="text-slate-300 font-medium leading-relaxed">{modalSecondaryHollandMeta.desc}</p>
                   </div>
                 </div>
               </div>
@@ -1105,7 +1147,7 @@ export default function MyPage() {
                   🎯 맞춤 추천 직무
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {Array.from(new Set([...primaryHollandMeta.jobs, ...secondaryHollandMeta.jobs])).map((job: string) => (
+                  {Array.from(new Set([...modalPrimaryHollandMeta.jobs, ...modalSecondaryHollandMeta.jobs])).map((job: string) => (
                     <span 
                       key={job} 
                       className="bg-slate-950/80 border border-white/10 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs"
@@ -1127,7 +1169,8 @@ export default function MyPage() {
               </Link>
               <button
                 onClick={() => {
-                  localStorage.setItem('mystair_mypage_data', JSON.stringify(profile));
+                  const uid = user?.uid || 'local-user';
+                  localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
                   setActiveModal(null);
                   showToast('소견 저장 완료');
                 }}
@@ -1250,7 +1293,8 @@ export default function MyPage() {
             <div className="pt-4 border-t border-white/10 flex items-center justify-end">
               <button
                 onClick={() => {
-                  localStorage.setItem('mystair_mypage_data', JSON.stringify(profile));
+                  const uid = user?.uid || 'local-user';
+                  localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
                   setActiveModal(null);
                   showToast('희망 기업 설정이 저장되었습니다.');
                 }}

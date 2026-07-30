@@ -39,7 +39,7 @@
         }
 
         .logo-link:hover .logo-icon {
-            transform: rotate(90deg);
+            transform: rotate(180deg) scale(1.1);
         }
         #canvas-container {
             position: absolute;
@@ -355,8 +355,9 @@
     <div id="sidebar">
         <div class="sidebar-header">
             <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; color: white; width: fit-content;" class="logo-link">
-                <svg width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #2dd4bf; transition: transform 0.7s ease-in-out;" class="logo-icon">
-                    <path d="M20 0L24.4903 15.5097L40 20L24.4903 24.4903L20 40L15.5097 24.4903L0 20L15.5097 15.5097L20 0Z" fill="currentColor"/>
+                <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #2dd4bf; transition: transform 0.5s ease-out;" class="logo-icon">
+                    <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" stroke-width="8" stroke-linejoin="round" transform="rotate(45 50 50)" />
+                    <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" stroke-width="8" stroke-linejoin="round" transform="rotate(-45 50 50)" />
                 </svg>
                 <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.05em; background: linear-gradient(to right, #fff, rgba(255,255,255,0.5)); -webkit-background-clip: text; color: transparent;">Mystair</span>
             </a>
@@ -886,7 +887,7 @@
             // D3 메르카토르 투영법을 사용하여 위도/경도를 2D X/Y 평면으로 변환
             const projection = d3.geoMercator()
                 .center([127.5, 36.0]) // 대한민국 중심 좌표
-                .scale(42)             // 스케일을 키워서 지도를 웅장하게
+                .scale(35)             // 전국 마이스터고 지도 제목이 가려지지 않도록 스케일을 살짝 작게 조절
                 .translate([0, 0]);
 
             

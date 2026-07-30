@@ -14,7 +14,11 @@ import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
 
 export default function App() {
-  const [showMainApp, setShowMainApp] = useState(() => sessionStorage.getItem('isLoggedIn') === 'true');
+  const [showMainApp, setShowMainApp] = useState(() => {
+    // Clear logged in session state to show the promotional (marketing) site immediately
+    sessionStorage.removeItem('isLoggedIn');
+    return false;
+  });
 
   const handleLoginSuccess = () => {
     sessionStorage.setItem('isLoggedIn', 'true');

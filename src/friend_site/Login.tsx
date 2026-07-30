@@ -8,7 +8,7 @@ interface LoginProps {
 
 export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const { t } = useLanguage();
-  const [step, setStep] = useState<'email' | 'password' | 'signup'>('email');
+  const [step, setStep] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -25,41 +25,49 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 'email') {
-      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!isValid) {
-        setEmailError(true);
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValid) {
+      setEmailError(true);
+      return;
+    }
+    setEmailError(false);
+
+    if (!password) {
+      setServerError('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    setServerError('');
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (response.ok) {
+         const data = await response.json();
+         const loggedInUser = {
+           uid: data.uid,
+           email: data.email,
+           displayName: data.displayName || data.email.split('@')[0],
+         };
+         localStorage.setItem('mystair_mock_user', JSON.stringify(loggedInUser));
+
+         if (onLoginSuccess) {
+           onLoginSuccess();
+         } else {
+           window.location.href = '/';
+         }
       } else {
-        setEmailError(false);
-        setStep('password');
+         const data = await response.json().catch(() => ({}));
+         setServerError(data.message || '이메일 또는 비밀번호가 올바르지 않습니다.');
       }
-    } else {
-      // Proceed with login logic
-      setServerError('');
-      setIsLoading(true);
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://mystair-backend.onrender.com';
-        const response = await fetch(`${apiUrl}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        
-        if (response.ok) {
-           if (onLoginSuccess) {
-             onLoginSuccess();
-           } else {
-             window.location.href = 'https://mystair3-three.vercel.app/';
-           }
-        } else {
-           const data = await response.json().catch(() => ({}));
-           setServerError(data.message || '로그인에 실패했습니다.');
-        }
-      } catch (error) {
-        setServerError('서버와 통신할 수 없습니다.');
-      } finally {
-        setIsLoading(false);
-      }
+    } catch (error) {
+      setServerError('서버와 통신할 수 없습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,8 +93,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       setServerError('');
       setIsLoading(true);
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'https://mystair-backend.onrender.com';
-        const response = await fetch(`${apiUrl}/api/signup`, {
+        const response = await fetch('/api/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: signupEmail, password: signupPassword })
@@ -95,7 +102,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         if (response.ok) {
            alert('회원가입이 완료되었습니다. 로그인해주세요.');
            setEmail(signupEmail);
-           setStep('email');
+           setStep('login');
            setSignupPassword('');
            setSignupConfirmPassword('');
         } else {
@@ -117,7 +124,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         <iframe 
           src="https://my.spline.design/robotfollowcursorforlandingpage-xEAezW31ESPydMaGMIwVZ55C/" 
           frameBorder="0" 
-          style={{ width: '170vw', height: '100vh', marginLeft: '-70vw' }}
+          style={{ width: '170vw', height: '100vh', marginLeft: '-65vw' }}
           title="Spline 3D Robot"
         ></iframe>
       </div>
@@ -139,8 +146,9 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
           <div className="w-full max-w-sm px-8 relative z-10 pointer-events-auto">
             <div className="flex justify-center mb-8">
               <div className="flex items-center group cursor-pointer">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-500 group-hover:rotate-90 transition-transform duration-700 ease-in-out">
-                  <path d="M20 0L24.4903 15.5097L40 20L24.4903 24.4903L20 40L15.5097 24.4903L0 20L15.5097 15.5097L20 0Z" fill="currentColor"/>
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
+                  <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+                  <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
                 </svg>
               </div>
             </div>
@@ -204,82 +212,81 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 {isLoading ? t('login.button.processing') : t('login.button.signup')}
               </button>
               <div className="mt-2 text-center text-sm text-gray-500">
-                {t('login.has_account')} <button type="button" onClick={() => setStep('email')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.login')}</button>
+                {t('login.has_account')} <button type="button" onClick={() => setStep('login')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.login')}</button>
               </div>
             </form>
           ) : (
             <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
               {serverError && <div className="p-3 bg-red-100 text-red-600 rounded-lg text-sm">{serverError}</div>}
-                {step === 'email' ? (
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-sm text-gray-600 font-medium">{t('login.email')}</label>
-                    <div className="relative">
-                      <input 
-                        type="text" 
-                        id="email" 
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          if (emailError) setEmailError(false);
-                        }}
-                        placeholder={t('login.placeholder.email')} 
-                        className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
-                          emailError 
-                            ? 'border-red-500 focus:ring-red-500 text-red-900' 
-                            : 'border-gray-300 focus:ring-indigo-500'
-                        }`}
-                      />
-                    </div>
-                    {emailError && (
-                      <p className="text-red-500 text-xs">{t('login.error.email')}</p>
-                    )}
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="password" className="text-sm text-gray-600 font-medium">{t('login.password.for')} {email}</label>
-                    <div className="relative">
-                      <input 
-                        type={showPassword ? "text" : "password"}
-                        id="password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder={t('login.placeholder.password.enter')} 
-                        className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 pr-10"
-                      />
-                      <button 
-                        type="button" 
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                            <line x1="1" y1="1" x2="23" y2="23"></line>
-                          </svg>
-                        ) : (
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )}
-                
-                <button 
-                  type="submit" 
-                  disabled={isLoading}
-                  className="w-full bg-[#5C55FA] hover:bg-[#4d46e5] text-white rounded-lg py-3 font-semibold transition-colors mt-2 disabled:opacity-50"
-                >
-                  {isLoading ? t('login.button.processing') : (step === 'email' ? t('login.button.letsgo') : t('login.button.login'))}
-                </button>
-
-                <div className="mt-2 text-center text-sm text-gray-500">
-                  {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
+              
+              <div className="flex flex-col gap-2">
+                <label htmlFor="email" className="text-sm text-gray-600 font-medium">{t('login.email')}</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    id="email" 
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError(false);
+                    }}
+                    placeholder={t('login.placeholder.email')} 
+                    className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
+                      emailError 
+                        ? 'border-red-500 focus:ring-red-500 text-red-900' 
+                        : 'border-gray-300 focus:ring-indigo-500'
+                    }`}
+                  />
                 </div>
-              </form>
-            )}
+                {emailError && (
+                  <p className="text-red-500 text-xs">{t('login.error.email')}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="password" className="text-sm text-gray-600 font-medium">{t('login.password')}</label>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"}
+                    id="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={t('login.placeholder.password.enter')} 
+                    className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 pr-10"
+                  />
+                  <button 
+                    type="button" 
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    ) : (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-[#5C55FA] hover:bg-[#4d46e5] text-white rounded-lg py-3 font-semibold transition-colors mt-2 disabled:opacity-50 animate-pulse-subtle"
+              >
+                {isLoading ? t('login.button.processing') : t('login.button.login')}
+              </button>
+
+              <div className="mt-2 text-center text-sm text-gray-500">
+                {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
+              </div>
+            </form>
+          )}
           </div>
         </div>
       </div>

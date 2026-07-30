@@ -22,6 +22,13 @@ const pool = new Pool({
 
 if (process.env.DATABASE_URL) {
   pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      email VARCHAR(255) PRIMARY KEY,
+      password VARCHAR(255) NOT NULL,
+      uid VARCHAR(255) UNIQUE NOT NULL,
+      display_name VARCHAR(255),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     CREATE TABLE IF NOT EXISTS user_profiles (
       uid VARCHAR(255) PRIMARY KEY,
       profile_data JSONB NOT NULL,
@@ -127,11 +134,74 @@ app.get("/api/health", (_req, res) => {
 });
 
 // In-Memory Database Storage for Profiles & Diaries (Syncable with external Render DB)
+const usersDb: Record<string, any> = {};
 const userProfilesDb: Record<string, any> = {};
 const userDiariesDb: Record<string, any[]> = {};
 
 // Helper to proxy requests to Render Backend if RENDER_BACKEND_URL is set
 const RENDER_BACKEND_URL = process.env.RENDER_BACKEND_URL || process.env.RENDER_API_URL;
+
+// Local Authentication Endpoints
+app.post("/api/signup", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "이메일과 비밀번호를 입력해주세요." });
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+  const uid = "user_" + Math.random().toString(36).substring(2, 11);
+
+  if (process.env.DATABASE_URL) {
+    try {
+      const checkRes = await pool.query('SELECT * FROM users WHERE email = $1', [normalizedEmail]);
+      if (checkRes.rows.length > 0) {
+        return res.status(400).json({ message: "이미 가입된 이메일입니다." });
+      }
+      await pool.query('INSERT INTO users (email, password, uid, display_name) VALUES ($1, $2, $3, $4)', [
+        normalizedEmail,
+        password,
+        uid,
+        normalizedEmail.split('@')[0]
+      ]);
+      return res.json({ status: "success", uid, email: normalizedEmail });
+    } catch (e) {
+      console.error("PG signup error, falling back to memory:", e);
+    }
+  }
+
+  if (usersDb[normalizedEmail]) {
+    return res.status(400).json({ message: "이미 가입된 이메일입니다." });
+  }
+  usersDb[normalizedEmail] = { email: normalizedEmail, password, uid, displayName: normalizedEmail.split('@')[0] };
+  return res.json({ status: "success", uid, email: normalizedEmail });
+});
+
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "이메일과 비밀번호를 입력해주세요." });
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+
+  if (process.env.DATABASE_URL) {
+    try {
+      const result = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [normalizedEmail, password]);
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.display_name });
+      }
+    } catch (e) {
+      console.error("PG login error, falling back to memory:", e);
+    }
+  }
+
+  const user = usersDb[normalizedEmail];
+  if (user && user.password === password) {
+    return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.displayName });
+  }
+  return res.status(400).json({ message: "이메일 또는 비밀번호가 틀렸습니다." });
+});
 
 // 1. User Profile API Endpoints
 app.get("/api/profile", async (req, res) => {

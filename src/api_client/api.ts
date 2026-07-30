@@ -24,6 +24,11 @@ export interface DiaryEntry {
 
 const getUserId = (): string => {
   try {
+    const mockSaved = localStorage.getItem('mystair_mock_user');
+    if (mockSaved) {
+      const parsed = JSON.parse(mockSaved);
+      if (parsed?.uid) return parsed.uid;
+    }
     const saved = localStorage.getItem('mystair_local_user_profile');
     if (saved) {
       const parsed = JSON.parse(saved);
@@ -49,7 +54,7 @@ export const apiService = {
       if (res.ok) {
         const data = await res.json();
         if (data && data.profile) {
-          localStorage.setItem('mystair_local_user_profile', JSON.stringify(data.profile));
+          localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(data.profile));
           return data.profile;
         }
       }
@@ -58,7 +63,7 @@ export const apiService = {
     }
     
     // Local fallback
-    const saved = localStorage.getItem('mystair_local_user_profile');
+    const saved = localStorage.getItem(`mystair_local_user_profile_${uid}`);
     return saved ? JSON.parse(saved) : null;
   },
 
@@ -67,7 +72,7 @@ export const apiService = {
     const payload = { ...profileData, uid };
 
     // Update Local Storage
-    localStorage.setItem('mystair_local_user_profile', JSON.stringify(payload));
+    localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(payload));
 
     try {
       const res = await fetch('/api/profile', {
@@ -94,7 +99,7 @@ export const apiService = {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.diaries)) {
-          localStorage.setItem('mystair_local_diaries', JSON.stringify(data.diaries));
+          localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(data.diaries));
           return data.diaries;
         }
       }
@@ -102,7 +107,7 @@ export const apiService = {
       console.warn('Backend diaries fetch failed, using local fallback:', err);
     }
 
-    const saved = localStorage.getItem('mystair_local_diaries');
+    const saved = localStorage.getItem(`mystair_local_diaries_${uid}`);
     return saved ? JSON.parse(saved) : [];
   },
 
@@ -118,7 +123,7 @@ export const apiService = {
     // Update Local Storage
     const existing = await this.getDiaries(uid);
     const updated = [newEntry, ...existing];
-    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
+    localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(updated));
 
     try {
       const res = await fetch('/api/diaries', {
@@ -143,7 +148,7 @@ export const apiService = {
     // Local update
     const existing = await this.getDiaries(uid);
     const updated = existing.filter(d => d.id !== diaryId);
-    localStorage.setItem('mystair_local_diaries', JSON.stringify(updated));
+    localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(updated));
 
     try {
       const res = await fetch(`/api/diaries/${encodeURIComponent(diaryId)}?userId=${encodeURIComponent(uid)}`, {

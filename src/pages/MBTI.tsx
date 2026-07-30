@@ -2,8 +2,10 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 import { mbtiQuestions, mbtiMeta } from '../data/mbtiData';
+import { useAuth } from '../context/AuthContext';
 
 export default function MBTI() {
+  const { user } = useAuth();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(new Array(mbtiQuestions.length).fill(null));
@@ -84,13 +86,14 @@ export default function MBTI() {
     setResult(res);
     setScreen('result');
     try {
-      localStorage.setItem('mystair_mbti_result', JSON.stringify(res));
+      const uid = user?.uid || 'local-user';
+      localStorage.setItem(`mystair_mbti_result_${uid}`, JSON.stringify(res));
 
       // Automatically update mypage data
-      const savedMyPage = localStorage.getItem('mystair_mypage_data');
+      const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
       let myPageData = savedMyPage ? JSON.parse(savedMyPage) : {};
       myPageData.mbti = res.baseType;
-      localStorage.setItem('mystair_mypage_data', JSON.stringify(myPageData));
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(myPageData));
     } catch (e) {
       console.error('Failed to save MBTI result to localStorage', e);
     }

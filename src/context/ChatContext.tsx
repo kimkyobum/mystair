@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface Message {
   id: string;
@@ -24,6 +25,7 @@ interface ChatContextType {
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
   const [chatActive, setChatActive] = useState<boolean>(false);
   
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -39,10 +41,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionStorage.getItem('mystair_chat_initial_message') || '';
   });
 
-  const [showAliens, setShowAliens] = useState<boolean>(() => {
-    const saved = localStorage.getItem('mystair_show_aliens');
-    return saved !== 'false';
-  });
+  const [showAliens, setShowAliens] = useState<boolean>(true);
+
+  useEffect(() => {
+    const uid = user?.uid || 'local-user';
+    const saved = localStorage.getItem(`mystair_show_aliens_${uid}`);
+    setShowAliens(saved !== 'false');
+  }, [user]);
 
   useEffect(() => {
     sessionStorage.setItem('mystair_chat_active', String(chatActive));
@@ -61,8 +66,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [initialMessage]);
 
   useEffect(() => {
-    localStorage.setItem('mystair_show_aliens', String(showAliens));
-  }, [showAliens]);
+    const uid = user?.uid || 'local-user';
+    localStorage.setItem(`mystair_show_aliens_${uid}`, String(showAliens));
+  }, [showAliens, user]);
 
   const clearChat = () => {
     setMessages([]);

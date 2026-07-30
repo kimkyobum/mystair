@@ -55,6 +55,8 @@ const FAQItem = ({ q, a, index }: { q: string, a: string, index: number }) => {
   );
 };
 export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: () => void }) {
+  const [showCopyrightModal, setShowCopyrightModal] = useState(false);
+
   return (
     <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-32 pb-64 text-white">
       
@@ -208,9 +210,9 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               <div className="inline-block mb-6 w-16 h-16 relative transform group-hover:-translate-y-2 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                 <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Sparkles/3D/sparkles_3d.png" alt="Sparkles" className="w-full h-full object-contain drop-shadow-2xl" />
               </div>
-              <h3 className="text-xl font-bold mb-4">맞춤형 자소서 & STAR 가이드</h3>
+              <h3 className="text-xl font-bold mb-4">자소서 핵심 요소 & STAR 가이드</h3>
               <p className="text-gray-400 leading-relaxed text-sm mb-8 relative z-10">
-                지원 기업과 문항을 분석하여 캘린더 속 최적의 에피소드를 추출하고, 상황·과제·행동·결과 구조에 맞춘 개요를 제공합니다.
+                AI가 대필하는 것이 아니라, 지원하는 기업과 자소서 문항에 맞춰 내 실습 기록에서 최적의 경험 요소를 추출하고 STAR 구조의 뼈대를 완성해 줍니다.
               </p>
               <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full w-fit mt-auto border border-amber-500/20">
                 <LayoutTemplate className="w-3 h-3" /> NCS 역량 매핑
@@ -255,9 +257,9 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               <div className="bg-teal-500/20 p-4 rounded-2xl inline-block mb-8 border border-teal-500/30 shadow-[0_0_30px_rgba(45,212,191,0.2)] w-fit relative z-10">
                 <Network className="w-8 h-8 text-teal-400" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-white relative z-10">NCS 역량 매핑 파이프라인</h3>
+              <h3 className="text-2xl font-bold mb-4 text-white relative z-10">NCS 역량 매핑 & 통합 AI 연동</h3>
               <p className="text-gray-400 leading-relaxed text-lg relative z-10">
-                학생이 기록한 캘린더 데이터베이스와 기업의 NCS 직무 역량 지표를 실시간으로 교차 분석하는 독자적인 추출 파이프라인을 구축했습니다. 가장 관련성 높은 에피소드만을 엄선하여 추천합니다.
+                전국 마이스터고의 교육 과정과 실습 과목 데이터를 중심으로 풍부한 전공지식 베이스가 완벽하게 구축되어 있습니다. 일기 작성부터 진로 진단(MBTI/Holland), 자소서 핵심 요소 분석에 이르는 모든 기능들이 MyStair AI 플랫폼과 유기적으로 연동되어 나만의 맞춤형 취업 파이프라인을 완성합니다.
               </p>
             </div>
           </FadeIn>
@@ -272,7 +274,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           </div>
         </FadeIn>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
           {/* 학생 */}
           <FadeIn delay={0.1}>
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:-translate-y-2 transition-all duration-300 pointer-events-auto">
@@ -281,7 +283,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               </div>
               <h3 className="text-2xl font-bold mb-4 text-white">학생 관점</h3>
               <p className="text-gray-400 leading-relaxed">
-                AI 대필이 아닌 본인의 정직한 실습 기록 기반으로 진정성 있는 자소서 작성 및 면접 신뢰도가 극대화됩니다.
+                AI 대필이 아닌 본인의 정직한 실습 기록을 기반으로 스스로 자소서를 채워나갈 수 있는 핵심 요소를 확보하여 진정성과 신뢰도가 극대화됩니다.
               </p>
             </div>
           </FadeIn>
@@ -295,19 +297,6 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               <h3 className="text-2xl font-bold mb-4 text-white">학교 관점</h3>
               <p className="text-gray-400 leading-relaxed">
                 학생들의 일상적인 준비 상태 모니터링, 체계적인 경력 포트폴리오 관리 및 교사의 자소서 지도 효율화가 이루어집니다.
-              </p>
-            </div>
-          </FadeIn>
-
-          {/* 기업 */}
-          <FadeIn delay={0.3}>
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:-translate-y-2 transition-all duration-300 pointer-events-auto">
-              <div className="bg-rose-500/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 border border-rose-500/30">
-                <Activity className="w-8 h-8 text-rose-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-white">기업 관점</h3>
-              <p className="text-gray-400 leading-relaxed">
-                허위나 과장 없는 3년간의 연속적인 실습과 노력 일수가 검증된 우수 기술 인재를 확보할 수 있습니다.
               </p>
             </div>
           </FadeIn>
@@ -340,7 +329,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               경험이 스펙이 되는 첫걸음
             </h2>
             <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto relative z-20">
-              더 이상 자소서 앞에서 막막해하지 마세요. MyStair와 함께 당신의 노력 일수를 증명하세요.
+              더 이상 자소서 소재 고갈로 막막해하지 마세요. MyStair와 함께 당신의 노력 일수를 증명하세요.
             </p>
             <button onClick={onNavigateToLogin} className="relative z-30 bg-white text-black px-10 py-5 rounded-full font-bold text-lg hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.4)] pointer-events-auto flex items-center gap-3 mx-auto">
               지금 시작하기 <ArrowRight className="w-6 h-6" />
@@ -353,14 +342,70 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
       <footer className="mt-32 pt-12 border-t border-white/10 pb-12">
         <FadeIn>
           <div className="flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
-            <div>
+            <div className="w-full">
               <h2 className="text-2xl font-bold mb-2 text-white">MyStair</h2>
               <p className="text-gray-400 text-sm mb-4">구미전자공고 학생들이 만든 웹사이트입니다</p>
-              <p className="text-gray-500 text-xs">© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 눈부시고 찬란한 내일을 진심으로 응원합니다.</p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-gray-500 text-xs">
+                <span>© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 눈부시고 찬란한 내일을 진심으로 응원합니다.</span>
+                <button 
+                  onClick={() => setShowCopyrightModal(true)}
+                  className="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors cursor-pointer pointer-events-auto"
+                >
+                  저작권 정보
+                </button>
+              </div>
             </div>
           </div>
         </FadeIn>
       </footer>
+
+      {/* Copyright Modal */}
+      {showCopyrightModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => setShowCopyrightModal(false)}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-zinc-900 border border-white/10 rounded-3xl p-8 max-w-md w-full relative z-10 shadow-2xl pointer-events-auto text-left"
+          >
+            <h3 className="text-xl font-bold mb-4 text-white">MyStair 3D 저작권 정보</h3>
+            <p className="text-gray-400 text-sm mb-6 leading-relaxed">
+              MyStair 플랫폼에서 사용된 3D 인터랙티브 그래픽 에셋은 Spline Community의 창작물을 라이선스에 따라 합법적으로 사용하고 있습니다.
+            </p>
+            <div className="flex flex-col gap-3 mb-8">
+              <a 
+                href="https://app.spline.design/community/file/6c10e2d8-a3e4-43a6-b43c-eecbbd75cf78" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-white group"
+              >
+                <span className="text-sm font-semibold group-hover:text-teal-400 transition-colors">🤖 로봇 3D 모델 저작권</span>
+                <span className="text-xs text-teal-400 flex items-center gap-1 group-hover:underline">바로가기 <ArrowUpRight className="w-3.5 h-3.5" /></span>
+              </a>
+              <a 
+                href="https://app.spline.design/community/file/75f6717a-d4ba-4410-8213-073609079677" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-white group"
+              >
+                <span className="text-sm font-semibold group-hover:text-teal-400 transition-colors">🌌 우주 3D 모델 저작권</span>
+                <span className="text-xs text-teal-400 flex items-center gap-1 group-hover:underline">바로가기 <ArrowUpRight className="w-3.5 h-3.5" /></span>
+              </a>
+            </div>
+            <button 
+              onClick={() => setShowCopyrightModal(false)}
+              className="w-full py-3 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors cursor-pointer"
+            >
+              닫기
+            </button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

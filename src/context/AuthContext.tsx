@@ -50,13 +50,13 @@ interface AuthContextType {
 }
 
 const DEFAULT_PROFILE: Omit<UserProfileData, 'uid'> = {
-  name: '홍길동',
-  email: 'meister@mystair.com',
-  highSchool: '서울로봇고등학교',
-  major: '로봇소프트웨어과',
-  mbti: 'INTJ',
-  hollandCode: 'RC',
-  targetCompanies: ['삼성전자', '현대자동차', '한화에어로스페이스', 'LG에너지솔루션']
+  name: '',
+  email: '',
+  highSchool: '',
+  major: '',
+  mbti: '',
+  hollandCode: '',
+  targetCompanies: []
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

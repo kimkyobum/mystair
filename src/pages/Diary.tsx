@@ -49,6 +49,13 @@ interface ExamSchedule {
 }
 
 const DEFAULT_EXAM_SCHEDULE: ExamSchedule = {
+  firstMid: { start: '', end: '', name: '1학기 중간고사', color: 'bg-amber-100 text-amber-900 border-amber-400' },
+  firstFinal: { start: '', end: '', name: '1학기 기말고사', color: 'bg-rose-100 text-rose-900 border-rose-400' },
+  secondMid: { start: '', end: '', name: '2학기 중간고사', color: 'bg-indigo-100 text-indigo-900 border-indigo-400' },
+  secondFinal: { start: '', end: '', name: '2학기 기말고사', color: 'bg-purple-100 text-purple-900 border-purple-400' },
+};
+
+const SAMPLE_EXAM_SCHEDULE: ExamSchedule = {
   firstMid: { start: '2026-04-20', end: '2026-04-23', name: '1학기 중간고사', color: 'bg-amber-100 text-amber-900 border-amber-400' },
   firstFinal: { start: '2026-06-22', end: '2026-06-25', name: '1학기 기말고사', color: 'bg-rose-100 text-rose-900 border-rose-400' },
   secondMid: { start: '2026-10-19', end: '2026-10-22', name: '2학기 중간고사', color: 'bg-indigo-100 text-indigo-900 border-indigo-400' },
@@ -56,7 +63,7 @@ const DEFAULT_EXAM_SCHEDULE: ExamSchedule = {
 };
 
 export default function Diary() {
-  const { fetchDiaries, saveDiary, deleteDiary } = useAuth();
+  const { fetchDiaries, saveDiary, deleteDiary, user } = useAuth();
 
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -182,17 +189,7 @@ JSON 구조 규격:
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // 0-indexed
 
   // Exam schedule state
-  const [examSchedule, setExamSchedule] = useState<ExamSchedule>(() => {
-    const saved = localStorage.getItem('mystair_exam_schedule');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return DEFAULT_EXAM_SCHEDULE;
-      }
-    }
-    return DEFAULT_EXAM_SCHEDULE;
-  });
+  const [examSchedule, setExamSchedule] = useState<ExamSchedule>(DEFAULT_EXAM_SCHEDULE);
 
   const [showExamSettings, setShowExamSettings] = useState(false);
 
@@ -212,22 +209,28 @@ JSON 구조 규격:
     setLoading(true);
     try {
       const fetched = await fetchDiaries();
-      if (fetched.length > 0) {
+      if (fetched && fetched.length > 0) {
         setDiaries(fetched);
       } else {
-        const saved = localStorage.getItem('mystair_local_diaries');
+        const uid = user?.uid || 'local-user';
+        const saved = localStorage.getItem(`mystair_local_diaries_${uid}`);
         if (saved) {
           setDiaries(JSON.parse(saved));
         } else {
-          setDiaries([{
-            id: 'sample-1',
-            userId: 'local',
-            title: '정보처리기능사 실기 공부 3일차',
-            content: '오늘 알고리즘 문제 5개를 풀었다. 정렬 알고리즘 개념이 이제서야 완전히 이해되었다! 내일은 데이터베이스 SQL 기출문제를 집중 정리해야겠다.',
-            date: getLocalDateString(),
-            mood: '🔥',
-            tags: ['정보처리기능사', '알고리즘', '목표달성']
-          }]);
+          // Only show sample starter diaries for non-logged-in guest 'local-user'
+          if (uid === 'local-user') {
+            setDiaries([{
+              id: 'sample-1',
+              userId: 'local',
+              title: '정보처리기능사 실기 공부 3일차',
+              content: '오늘 알고리즘 문제 5개를 풀었다. 정렬 알고리즘 개념이 이제서야 완전히 이해되었다! 내일은 데이터베이스 SQL 기출문제를 집중 정리해야겠다.',
+              date: getLocalDateString(),
+              mood: '🔥',
+              tags: ['정보처리기능사', '알고리즘', '목표달성']
+            }]);
+          } else {
+            setDiaries([]);
+          }
         }
       }
     } catch (err) {
@@ -239,7 +242,20 @@ JSON 구조 규격:
 
   useEffect(() => {
     loadDiaryList();
-  }, []);
+
+    // Load user specific exam schedule
+    const uid = user?.uid || 'local-user';
+    const saved = localStorage.getItem(`mystair_exam_schedule_${uid}`);
+    if (saved) {
+      try {
+        setExamSchedule(JSON.parse(saved));
+      } catch (e) {
+        setExamSchedule(DEFAULT_EXAM_SCHEDULE);
+      }
+    } else {
+      setExamSchedule(DEFAULT_EXAM_SCHEDULE);
+    }
+  }, [user]);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -248,7 +264,8 @@ JSON 구조 규격:
 
   const handleSaveExamSchedule = (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem('mystair_exam_schedule', JSON.stringify(examSchedule));
+    const uid = user?.uid || 'local-user';
+    localStorage.setItem(`mystair_exam_schedule_${uid}`, JSON.stringify(examSchedule));
     setShowExamSettings(false);
     showToast('시험 일정이 성공적으로 저장되었습니다!');
   };
@@ -567,10 +584,23 @@ JSON 구조 규격:
             <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
-                onClick={() => setExamSchedule(DEFAULT_EXAM_SCHEDULE)}
+                onClick={() => {
+                  setExamSchedule(DEFAULT_EXAM_SCHEDULE);
+                  showToast('모든 일정을 비웠습니다.');
+                }}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
               >
-                기본값 복원
+                일정 모두 비우기
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setExamSchedule(SAMPLE_EXAM_SCHEDULE);
+                  showToast('샘플 시험 일정이 적용되었습니다.');
+                }}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
+              >
+                샘플 일정 채우기
               </button>
               <button
                 type="submit"
@@ -997,38 +1027,6 @@ JSON 구조 규격:
                 className="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-sm font-medium text-white outline-none focus:border-indigo-500 leading-relaxed"
                 required
               />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400">태그 추가</label>
-              <div className="flex items-center gap-2">
-                <input 
-                  type="text" 
-                  value={tagInput}
-                  onChange={e => setTagInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                  placeholder="태그 입력 후 Enter"
-                  className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs font-medium text-white outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddTag}
-                  className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
-                >
-                  추가
-                </button>
-              </div>
-
-              <div className="flex flex-wrap gap-1.5">
-                {tags.map(t => (
-                  <span key={t} className="bg-indigo-900/60 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-indigo-500/30 flex items-center gap-1">
-                    <span>#{t}</span>
-                    <button type="button" onClick={() => handleRemoveTag(t)} className="hover:text-red-400 cursor-pointer">
-                      &times;
-                    </button>
-                  </span>
-                ))}
-              </div>
             </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-slate-800">
