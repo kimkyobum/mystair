@@ -62,12 +62,12 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
   ];
 
   return (
-    <div className="relative z-10 w-full max-w-6xl mx-auto px-6 pt-32 pb-64 text-white">
+    <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-48 sm:pb-64 text-white">
       
       {/* Hero Section */}
-      <section className="min-h-[60vh] flex flex-col justify-start pt-24 relative">
+      <section className="min-h-[55vh] sm:min-h-[60vh] flex flex-col justify-start pt-16 sm:pt-24 relative">
         <FadeIn>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-4 sm:mb-6 leading-tight break-keep">
             {t('내 손으로 만들어가는', 'Building with my own hands')}<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-purple-500">
               {t('당신만의 멋진 계단', 'Your Own Amazing Stairs')}
@@ -75,12 +75,12 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           </h1>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <p className="text-xl md:text-2xl text-gray-400 font-medium mb-10 max-w-2xl leading-relaxed">
-            {t('당신의 노력의 땀방울이 꿈을 이루는', 'Every drop of your effort will become')}<br className="hidden md:block" /> {t('가장 단단한 다리가 되어줄 거에요.', 'the solid bridge to achieve your dreams.')}
+          <p className="text-base sm:text-xl md:text-2xl text-gray-400 font-medium mb-8 sm:mb-10 max-w-2xl leading-relaxed break-keep">
+            {t('당신의 노력의 땀방울이 꿈을 이루는', 'Every drop of your effort will become')}<br className="hidden sm:block" /> {t('가장 단단한 다리가 되어줄 거에요.', 'the solid bridge to achieve your dreams.')}
           </p>
         </FadeIn>
         <FadeIn delay={0.2}>
-          <button onClick={onNavigateToLogin} className="relative z-30 flex items-center gap-2 bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition-colors shadow-[0_0_40px_rgba(255,255,255,0.3)] pointer-events-auto cursor-pointer">
+          <button onClick={onNavigateToLogin} className="relative z-30 flex items-center justify-center gap-2 bg-white text-black px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-bold text-base sm:text-lg hover:bg-gray-200 transition-colors shadow-[0_0_40px_rgba(255,255,255,0.3)] pointer-events-auto cursor-pointer w-full sm:w-auto">
             {t('무료로 시작하기', 'Start for Free')} <ArrowUpRight className="w-5 h-5" />
           </button>
         </FadeIn>

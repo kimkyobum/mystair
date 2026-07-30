@@ -265,16 +265,16 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         <div className="hidden md:block w-[30%] h-full"></div>
 
         {/* Right side: Login Form */}
-        <div className="w-full md:w-[70%] h-full flex flex-col justify-center items-center relative pointer-events-none">
+        <div className="w-full md:w-[70%] h-full flex flex-col justify-center items-center relative pointer-events-none overflow-y-auto py-8">
           <div className="absolute inset-0 bg-white pointer-events-none"></div>
           {/* Back button */}
           <button 
             onClick={onBack}
-            className="absolute top-8 right-8 text-gray-500 hover:text-black transition-colors z-10 pointer-events-auto"
+            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-gray-500 hover:text-black transition-colors z-10 pointer-events-auto px-3 py-1.5 rounded-lg text-sm sm:text-base"
           >{t('login.back')}</button>
 
-          <div className="w-full max-w-sm px-8 relative z-10 pointer-events-auto">
-            <div className="flex justify-center mb-8">
+          <div className="w-full max-w-sm px-6 sm:px-8 relative z-10 pointer-events-auto my-auto">
+            <div className="flex justify-center mb-6 sm:mb-8">
               <div className="flex items-center group cursor-pointer">
                 <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
                   <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />

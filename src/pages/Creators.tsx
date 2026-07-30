@@ -10,10 +10,10 @@ export default function Creators() {
     {
       name: "김교범",
       school: "구미전자공업고등학교 2학년",
-      role: "Lead Developer & Chief Architect",
+      role: "GitHub & Main Page Design",
       codeName: "DEV // 01",
-      description: "전체 시스템 아키텍처 설계 및 핵심 알고리즘, AI 프롬프트 최적화와 서비스 플랫폼 총괄 개발.",
-      tags: ["System Architecture", "AI Platform", "Full-Stack"],
+      description: "프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 담당.",
+      tags: ["GitHub", "Main Page Design", "UI/UX"],
       accent: "from-cyan-500 to-blue-600",
       accentText: "text-cyan-400",
       borderHover: "hover:border-cyan-500/50",
@@ -24,10 +24,10 @@ export default function Creators() {
     {
       name: "박영진",
       school: "구미전자공업고등학교 2학년",
-      role: "UI/UX Designer & Frontend Engineer",
-      codeName: "DESIGN // 02",
-      description: "사용자 중심의 직관적이고 감각적인 다크 글래스모피즘 UI/UX 인터페이스 및 반응형 인터랙션 설계.",
-      tags: ["UI/UX Design", "Frontend Dev", "Design System"],
+      role: "Backend & Data Collection",
+      codeName: "BACKEND // 02",
+      description: "서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 취업 데이터 수집·분석 담당.",
+      tags: ["Backend Dev", "Data Collection", "Database"],
       accent: "from-purple-500 to-indigo-600",
       accentText: "text-purple-400",
       borderHover: "hover:border-purple-500/50",
@@ -38,10 +38,10 @@ export default function Creators() {
     {
       name: "노현우",
       school: "구미전자공업고등학교 2학년",
-      role: "Data Research & AI Systems Engineer",
-      codeName: "DATA // 03",
-      description: "전국 마이스터고 전공·자격증·기업 분석 데이터베이스 구축 및 맞춤형 진로 큐레이션 로직 검증.",
-      tags: ["Data Architecture", "AI Search", "Career DB"],
+      role: "Planning & Promo Page Design",
+      codeName: "PLAN // 03",
+      description: "서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.",
+      tags: ["Service Planning", "Promo Page Design", "UI/UX"],
       accent: "from-emerald-400 to-teal-600",
       accentText: "text-emerald-400",
       borderHover: "hover:border-emerald-500/50",
@@ -58,7 +58,7 @@ export default function Creators() {
       <div className="absolute bottom-10 right-10 w-[350px] h-[350px] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none" />
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="mb-10">
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-10">
           <Link 
             to="/" 
             className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-all duration-200 bg-white/[0.04] hover:bg-white/[0.08] px-4 py-2.5 rounded-full border border-white/10 shadow-sm"
@@ -66,6 +66,16 @@ export default function Creators() {
             <ArrowLeft size={16} />
             <span>{t('메인으로 돌아가기')}</span>
           </Link>
+
+          <button
+            onClick={() => {
+              sessionStorage.removeItem('isLoggedIn');
+              window.location.href = '/';
+            }}
+            className="inline-flex items-center gap-2 text-sm font-bold text-teal-300 hover:text-teal-200 transition-all duration-200 bg-teal-500/10 hover:bg-teal-500/20 px-5 py-2.5 rounded-full border border-teal-500/30 shadow-[0_0_15px_rgba(20,184,166,0.15)] cursor-pointer"
+          >
+            <span>🌐 홍보사이트 보기</span>
+          </button>
         </div>
 
         {/* Hero Section */}

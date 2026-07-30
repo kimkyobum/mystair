@@ -13,6 +13,7 @@ import Holland from './pages/Holland';
 import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
 import CompanySearch from './pages/CompanySearch';
+import Creators from './pages/Creators';
 
 export default function App() {
   const [showMainApp, setShowMainApp] = useState(() => {
@@ -45,6 +46,7 @@ export default function App() {
                     <Route path="/holland" element={<Holland />} />
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/profile" element={<MyPage />} />
+                    <Route path="/creators" element={<Creators />} />
                   </Routes>
                 </div>
               </div>
