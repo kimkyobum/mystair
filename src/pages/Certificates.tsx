@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import data from '../../Data/certificates.json';
+
+const data: any[] = [];
 
 export default function Certificates() {
   const [licensesData, setLicensesData] = useState<any[]>(data);

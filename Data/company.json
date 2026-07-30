@@ -1,0 +1,5464 @@
+[
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DS부문 (반도체)",
+        "company_size": "대기업",
+        "main_business_products": "메모리 반도체(DRAM, NAND), 시스템 LSI, 반도체 위탁생산(Foundry)",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "반도체 8대 공정 이해 및 메인테넌스(설비 유지보수) 능력"
+        ],
+        "core_talent_keywords": [
+            "열정",
+            "창의혁신",
+            "인간미/도덕성",
+            "초격차 기술"
+        ],
+        "organizational_culture": "첨단 팹(FAB) 기반의 엄격한 공정·안전 수칙 준수, 4조 3교대 중심의 현장 기술 전문성 우대 문화",
+        "employee_review_summary": "최고 수준의 성과급(OPI) 및 복리후생 보유. 교대근무에 따른 체력 관리와 교대 라인 적응이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 6,500만 원 이상 (성과급 및 교대수당 포함 시)"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성전자 DX부문 (가전/모바일/네트워크)",
+        "company_size": "대기업",
+        "main_business_products": "스마트폰(Galaxy), 스마트 TV, 프리미엄 가전(Bespoke), 5G 통신장비",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "금형과",
+            "소프트웨어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "컴퓨터응용밀링/선반기능사",
+            "정보처리기능사",
+            "생산자동화기능사"
+        ],
+        "core_talent_keywords": [
+            "글로벌 선도",
+            "고객 중심",
+            "변화 주도",
+            "최고 지향"
+        ],
+        "organizational_culture": "글로벌 시장 중심의 품질 제로 결함 추진, 공정 자동화 및 스마트 팩토리 기반 문화",
+        "employee_review_summary": "안정적인 근무 환경과 쾌적한 사내 복지 시설. 정해진 생산 타임라인 이행 중심의 규칙적인 업무 스타일.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성디스플레이",
+        "company_size": "대기업",
+        "main_business_products": "중소형/대형 OLED 패널, QD-OLED, 폴더블 디스플레이 모듈",
+        "preferred_majors": [
+            "디스플레이과",
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "재료공정과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "클린룸 설비 점검 및 초정밀 박막 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "기술 혁신",
+            "도전 정신",
+            "상생 협력"
+        ],
+        "organizational_culture": "디스플레이 글로벌 1위를 유지하기 위한 기술력 중시, 클린룸 내 표준작업지침(SOP) 철저 준수",
+        "employee_review_summary": "기숙사, 사내 식당 등 생활 복지가 뛰어남. 라인 유지보수 시 임기응변과 정밀 조작 역량이 요구됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성SDI",
+        "company_size": "대기업",
+        "main_business_products": "전기차용 리튬이온 배터리, ESS(에너지저장장치), 반도체/디스플레이 전자재료",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사"
+        ],
+        "core_talent_keywords": [
+            "안전 우선",
+            "친환경 가치",
+            "최고 품질"
+        ],
+        "organizational_culture": "배터리 안전성 강화를 최우선으로 하는 환경/안전 중심 문화, 지속적인 공정 수율 개선 활동",
+        "employee_review_summary": "친환경 전기차 배터리 시장 성장에 따른 미래 비전 양호. 화학물질 취급 시 엄격한 안전 수칙 적용.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성전기",
+        "company_size": "대기업",
+        "main_business_products": "MLCC(적층세라믹콘덴서), 카메라 모듈, 반도체 패키지 기판(FC-BGA)",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "신소재/화공과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "생산자동화기능사",
+            "정밀 부품 테스트 및 도면 해독 능력"
+        ],
+        "core_talent_keywords": [
+            "현장 중심",
+            "끊임없는 탐구",
+            "신뢰와 협업"
+        ],
+        "organizational_culture": "수원·세종·부산 사업장 기반의 제조 현장 실무 중시, 차세대 전자부품 기술 내실화 강조",
+        "employee_review_summary": "고졸/마이스터고 출신 기술 인재에 대한 차별 없는 역량 평가. 내실 있는 복지와 수당 체계 운영.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성바이오로직스",
+        "company_size": "대기업",
+        "main_business_products": "바이오의약품 위탁생산(CMO) 및 위탁개발(CDO)",
+        "preferred_majors": [
+            "바이오/생명공학과",
+            "화학공업과",
+            "전기과",
+            "전자과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "GMP(의약품 제조품질관리기준) 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "고객 지향",
+            "글로벌 전문성",
+            "최우선 품질"
+        ],
+        "organizational_culture": "FDA/EMA 등 글로벌 규제 기관 기준에 맞춘 철저한 문서화 및 공정 관리, 젊고 생기 있는 조직 분위기",
+        "employee_review_summary": "송도 바이오클러스터 최신 시설 및 우수한 복지. 바이오 제조 표준 이행을 위한 꼼꼼한 성향 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성물산 (건설부문)",
+        "company_size": "대기업",
+        "main_business_products": "하이테크 플랜트(반도체/바이오 공장 시공), 토목, 건축, 주택(래미안)",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "건축목공/도장기능사",
+            "전기기능사",
+            "건설안전기능사",
+            "CAD 도면 작성 및 현장 안전 관리 능력"
+        ],
+        "core_talent_keywords": [
+            "현장 무재해",
+            "도전",
+            "실행력",
+            "신뢰"
+        ],
+        "organizational_culture": "안전보건 관리가 가장 정밀하게 작용하는 현장 중심 문화, 프로젝트 단위 직무 체계",
+        "employee_review_summary": "하이테크 현장(평택/용인 등) 중심 근무 시 체재비 및 현장 수당 지급. 현장 통제력과 커뮤니케이션 능력이 우수해야 함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,300만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성중공업",
+        "company_size": "대기업",
+        "main_business_products": "LNG 운반선, 컨테이너선, 해양플랜트(FLNG), 스마트 선박 기술",
+        "preferred_majors": [
+            "조선과",
+            "기계과",
+            "용접과",
+            "전기과",
+            "배관/설비과"
+        ],
+        "required_competencies_certifications": [
+            "용접기능사",
+            "특수용접기능사",
+            "동력기계정비기능사",
+            "전기기능사",
+            "도면 해독 및 중공업 현장 안전 역량"
+        ],
+        "core_talent_keywords": [
+            "세계 최고 조선 기술",
+            "안전 책임감",
+            "열정"
+        ],
+        "organizational_culture": "거제 조선소 중심의 끈끈한 선후배 상호 협력 기술 문화, 안전 작업 절차 엄격 적용",
+        "employee_review_summary": "선박 수주 호조 시 성과급 확대 기대감. 거제도 현장 근무 적응 및 야외 작업 체력 보유자가 유리함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "에스원",
+        "company_size": "대기업",
+        "main_business_products": "첨단 보안 시스템(SECOM), 건물 관리 서비스(Blue Asset), 정보보안 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "통신과",
+            "정보처리/소프트웨어과",
+            "경호/체육계열"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "운전면허증",
+            "무도 단증(보안 직종 우대)"
+        ],
+        "core_talent_keywords": [
+            "고객 신뢰",
+            "안심 서비스",
+            "정직과 도덕성"
+        ],
+        "organizational_culture": "신뢰성과 정직함을 핵심 가치로 두고 고객 접점 및 사업장 인프라 유지 관리에 집중",
+        "employee_review_summary": "삼성 계열사로서의 고용 안정성과 복지 혜택 보유. 출동/기술 엔지니어의 경우 교대 및 이동 업무 적응 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성물산 (리조트부문)",
+        "company_size": "대기업",
+        "main_business_products": "에버랜드/캐리비안베이 운영, 조경사업(Plant & Landscape), 골프장 운영",
+        "preferred_majors": [
+            "조경과",
+            "기계과",
+            "전기과",
+            "생명자원과",
+            "원예과"
+        ],
+        "required_competencies_certifications": [
+            "조경기능사",
+            "전기기능사",
+            "종자기능사",
+            "원동기 및 시설물 유지보수 자격"
+        ],
+        "core_talent_keywords": [
+            "고객 행복",
+            "창의적 서비스",
+            "전문성"
+        ],
+        "organizational_culture": "유원시설 및 식물·조경 공간을 다루는 밝고 서비스 지향적인 현장 문화",
+        "employee_review_summary": "에버랜드 등 활기찬 현장 분위기 및 우수한 주거 지원 복지. 성수기 시즌 현장 대응력 요구.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,500만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성웰스토리",
+        "company_size": "대기업",
+        "main_business_products": "기업/병원/학교 단체급식 서비스, 식자재 유통, 푸드테크 솔루션",
+        "preferred_majors": [
+            "식품가공과",
+            "조리과",
+            "바이오/화공과",
+            "농생명과"
+        ],
+        "required_competencies_certifications": [
+            "한식/양식/일식조리기능사",
+            "식품가공기능사",
+            "위생/품질관리 지식"
+        ],
+        "core_talent_keywords": [
+            "식음 안전",
+            "고객 만족",
+            "혁신적 푸드서비스"
+        ],
+        "organizational_culture": "위생과 안전 수칙 준수가 최우선이며, 대규모 사업장 식음 인프라 운용 문화",
+        "employee_review_summary": "식음업계 최고 수준의 처우와 삼성그룹 동일 복지 혜택 적용. 식자재 품질 관리 체계 수준이 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,700만 원 ~ 4,400만 원 수준"
+        }
+    },
+    {
+        "company": "삼성",
+        "sector": "삼성화재 / 삼성 금융 계열 (지점지원/IT인프라)",
+        "company_size": "대기업",
+        "main_business_products": "손해보험, 자동차보험, 보상서비스 인프라, 전산 업무 지원",
+        "preferred_majors": [
+            "금융정보과",
+            "경영정보과",
+            "정보처리/소프트웨어과",
+            "행정/사무 관련과"
+        ],
+        "required_competencies_certifications": [
+            "전산회계/전산세무기능사",
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급"
+        ],
+        "core_talent_keywords": [
+            "신뢰성",
+            "고객 가치",
+            "정직함과 투명성"
+        ],
+        "organizational_culture": "정확한 엑셀/데이터 처리 및 고객 보상 지원 업무 수행, 쾌적한 오피스 근무 환경",
+        "employee_review_summary": "금융권 특유의 높은 고용 안정성과 정시 퇴근 문화. 사무 데이터 처리의 정확성이 철저히 요구됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK하이닉스 (반도체 제조 및 설비 유지보수)",
+        "company_size": "대기업",
+        "main_business_products": "DRAM, NAND Flash, HBM(고대역폭메모리) 등 첨단 메모리 반도체",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "클린룸 설비 메인테넌스 및 반도체 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "VWBE(자발적·의욕적 두뇌활용)",
+            "패기",
+            "SUPEX(최고 수준 달성)",
+            "SKMS(SK 경영관리체계)"
+        ],
+        "organizational_culture": "기술 전문성을 존중하는 호칭 일원화(기술사무직/현장직 수평 문화), 4조 3교대 중심의 현장 기술 밀착 문화",
+        "employee_review_summary": "업계 최상위권 복리후생(기숙사, 식사, 의료비 지원)과 성과급(PS) 제도를 운용함. 반도체 수율 및 공정 관리를 위한 꼼꼼함과 교대근무 적응력이 필요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,300만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 7,000만 원 이상 (성과급, 교대수당, 야간수당 포함 시)"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK온 (전기차용 2차전지 배터리)",
+        "company_size": "대기업",
+        "main_business_products": "전기차(EV)용 리튬이온 배터리 셀, 모듈, 팩 및 ESS(에너지저장장치)",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "배터리 극판/조립/화성 공정 이해 및 화학물질 취급 안전 역량"
+        ],
+        "core_talent_keywords": [
+            "패기",
+            "글로벌 도전",
+            "혁신",
+            "안전 책임감"
+        ],
+        "organizational_culture": "신기술·글로벌 사업 확장에 따른 역동적인 분위기, 안전보건 및 라인 수율 관리 강조",
+        "employee_review_summary": "서산/울산 등 국내 생산 거점 중심의 깨끗한 근무 환경. 2차전지 산업 성장세에 따른 기술 습득 기회와 복지 수준이 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK실트론 (반도체 웨이퍼 소재)",
+        "company_size": "대기업",
+        "main_business_products": "반도체용 규소(Silicon) 웨이퍼 및 차세대 SiC(탄화규소) 전력반도체 웨이퍼",
+        "preferred_majors": [
+            "신소재과",
+            "재료공정과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "화학분석기능사",
+            "위험물기능사",
+            "설비보전기능사",
+            "결정성장 및 정밀가공 설비 조작 능력"
+        ],
+        "core_talent_keywords": [
+            "VWBE",
+            "끈기",
+            "최고의 기술력",
+            "지속가능성"
+        ],
+        "organizational_culture": "구미 사업장 중심의 내실 있는 현장 기술 문화, 안전 및 수율 제로 결함 추구",
+        "employee_review_summary": "지역 최고 수준의 처우와 안정적인 근무 여건. 기숙사와 사내 식당 등 생활 복지 혜택에 대한 만족도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SKC 및 SK넥실리스 (첨단/친환경 소재)",
+        "company_size": "대기업",
+        "main_business_products": "이차전지용 동박(Copper Foil), 반도체 유리기판, 친환경 생분해 소재",
+        "preferred_majors": [
+            "화학공업과",
+            "신소재과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "컴퓨터응용선반/밀링기능사"
+        ],
+        "core_talent_keywords": [
+            "변화와 혁신",
+            "과감한 도전",
+            "딥체인지(Deep Change)"
+        ],
+        "organizational_culture": "첨단소재 중심의 체질 개선을 추진하는 도전적 분위기, 정읍·수원 등 거점 중심의 현장 중심 문화",
+        "employee_review_summary": "배터리 및 반도체 소재 영역 확장에 따른 성장 가치 우수. 고졸 기술 인재에 대한 명확한 직무 교육 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK이노베이션 계열 (정유/석유화학 플랜트)",
+        "company_size": "대기업",
+        "main_business_products": "휘발유/경유/등유, 석유화학 기초유분(에틸렌, 파라자일렌 등), 윤활유",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "가스기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "플랜트 계장 및 공정 흐름 해독"
+        ],
+        "core_talent_keywords": [
+            "패기",
+            "안전보건(SHE)",
+            "SUPEX",
+            "소통과 협력"
+        ],
+        "organizational_culture": "울산/인천 대규모 컴플렉스 기반의 최우선 안전보건 문화, 교대근무 기반의 탄탄한 선후배 상호 지원",
+        "employee_review_summary": "업계 최고 수준의 초봉과 고용 안정성(정년 보장 기조). 정유/화학 공정 특성상 철저한 안전 수칙 준수가 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,300만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,000만 원 이상 (성과급 및 오버타임 수당 포함 시)"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK스페셜티 (반도체/디스플레이 특수가스)",
+        "company_size": "대기업",
+        "main_business_products": "삼불화질소(NF3), 육불화휨(WF6) 등 반도체 공정용 고순도 특수가스",
+        "preferred_majors": [
+            "화학공업과",
+            "가스과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "고압가스 취급 및 안전 계측 역량"
+        ],
+        "core_talent_keywords": [
+            "안전 우선",
+            "전문성",
+            "패기",
+            "고객 신뢰"
+        ],
+        "organizational_culture": "영주 사업장 중심, 가스 안전에 직결된 엄격한 작업 절차 이행 및 독보적 가스 기술력 강조",
+        "employee_review_summary": "특수가스 시장 점유율 1위로 사업 안정성이 매우 뛰어남. 사내 식당, 주거 지원 등 지방 근무 복지가 알참.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK텔레콤 / SK브로드밴드 / SK오앤에스 (통신 네트워크 인프라)",
+        "company_size": "대기업",
+        "main_business_products": "5G/6G 이동통신, 초고속 인터넷, 데이터센터(IDC) 네트워크 인프라 구축 및 유지보수",
+        "preferred_majors": [
+            "통신과",
+            "전자과",
+            "전기과",
+            "소프트웨어과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "무선설비기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "네트워크 광케이블 접속 및 계측 장비 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "AI 컴퍼니 혁신",
+            "고객 가치",
+            "도전",
+            "협력"
+        ],
+        "organizational_culture": "통신 네트워크 무장애 운용을 목표로 하는 실시간 모니터링 및 현장 대처 중심 문화",
+        "employee_review_summary": "국내 1위 통신 사업자로서의 신뢰성과 높은 고용 안정성. 기상 악화 시 현장 긴급 출동에 따른 상시 대응력 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK에코플랜트 (건설 및 친환경 플랜트)",
+        "company_size": "대기업",
+        "main_business_products": "반도체/배터리 하이테크 플랜트 시공, 수처리/폐기물 처리 친환경 솔루션",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "환경과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "토목기능사",
+            "배관기능사",
+            "CAD 도면 해독 및 현장 안전 관리"
+        ],
+        "core_talent_keywords": [
+            "환경가치 창출",
+            "안전",
+            "무재해",
+            "실행력"
+        ],
+        "organizational_culture": "기존 건설업에서 친환경 솔루션 기업으로 전환, 현장 안전보건(SHE) 기준 최우선 준수",
+        "employee_review_summary": "하이테크 현장(평택, 용인 등) 순환 근무 시 체재비 및 현장 수당 지급. 현장 안전 관리에 대한 철저함이 강조됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK바이오사이언스 (바이오 및 백신 제조)",
+        "company_size": "대기업",
+        "main_business_products": "백신 위탁생산(CMO) 및 자사 백신(독감, 코로나19 등) 제조",
+        "preferred_majors": [
+            "바이오/생명공학과",
+            "식품가공과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "GMP(의약품 제조품질관리기준) 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "인류 건강 기여",
+            "글로벌 백신 허브",
+            "최고 품질",
+            "안전"
+        ],
+        "organizational_culture": "안동 L하우스 등 첨단 바이오 공장 기반의 무균 상태 유지 및 정밀 공정 표준지침 이행",
+        "employee_review_summary": "송도/안동 거점의 쾌적한 클린룸 시설 보유. 바이오 산업 성장세에 따른 자부심 및 사내 복지 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK가스 및 SK E&S (가스 유통 및 발전 인프라)",
+        "company_size": "대기업",
+        "main_business_products": "LPG/LNG 수입·유통, 집단에너지, 민간 LNG 발전소 운용",
+        "preferred_majors": [
+            "가스과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "보일러기능사"
+        ],
+        "core_talent_keywords": [
+            "에너지 전환",
+            "친환경 리더십",
+            "안전",
+            "고객 가치"
+        ],
+        "organizational_culture": "울산/인천/광양 터미널 및 발전소 기반의 철저한 안전 관리 및 인프라 안정화 기조",
+        "employee_review_summary": "높은 매출 대비 효율적인 인원 운용으로 1인당 생산성과 복지 수준이 매우 우수함. 정년 안정성 상위권.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,000만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK스피드메이트 / SK렌터카 (모빌리티 및 차량 정비)",
+        "company_size": "대기업",
+        "main_business_products": "자동차 경정비, 수입차 정비, 타이어/부품 유통, 렌터카 차량 관리",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "자동차차체수리기능사",
+            "전기기능사",
+            "운전면허증",
+            "친환경차(EV) 진단 지식"
+        ],
+        "core_talent_keywords": [
+            "Customer First",
+            "기술 혁신",
+            "신뢰",
+            "도덕성"
+        ],
+        "organizational_culture": "전국 정비 거점 중심의 고객 응대 및 정비 기술 서비스 현장 문화",
+        "employee_review_summary": "전문 정비 엔지니어로서의 기술 습득 및 체계적인 정비 교육 시스템 제공. 공임 및 성과 수당 제도운용.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,500만 원 수준"
+        }
+    },
+    {
+        "company": "SK",
+        "sector": "SK 계열사 IT 인프라 운용 및 사무지원",
+        "company_size": "대기업",
+        "main_business_products": "데이터센터 현장 관리, 사내 IT 시스템 인프라 운용, 사업장 시설 보안 및 데이터 처리 지원",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "경영정보과",
+            "금융정보과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "전기기능사"
+        ],
+        "core_talent_keywords": [
+            "IT 혁신",
+            "정직",
+            "정확성",
+            "서비스 마인드"
+        ],
+        "organizational_culture": "데이터센터 및 본사/지사 오피스 중심의 정밀 데이터 모니터링 및 행정 지원 업무 수행",
+        "employee_review_summary": "쾌적한 사무/전산실 환경 및 안정적인 업무 스케줄. 정확한 데이터 관리 및 커뮤니케이션 능력 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대자동차 (완성차 제조 및 생산기술)",
+        "company_size": "대기업",
+        "main_business_products": "승용차, SUV, 제네시스, 친환경차(EV, FCEV) 완성차 제조 및 생산 라인 운용",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "금형과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반/밀링기능사",
+            "차량 조립 및 로봇 공정 제어 이해"
+        ],
+        "core_talent_keywords": [
+            "고객 최우선",
+            "도전적 실행",
+            "소통과 협력",
+            "인재 존중",
+            "글로벌 지향"
+        ],
+        "organizational_culture": "울산·아산·전주 공장 중심의 주간연속 2교대 체제, 노사합의 기반의 고용 안정성과 현장 기술 자부심이 강한 문화",
+        "employee_review_summary": "업계 최고 수준의 연봉 및 신차 할인 혜택 보유. 체계적인 생산 라인 적응과 규칙적인 반복 작업 숙련도가 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,500만 원 이상 (성과급, 교대수당, 성과 적립금 포함 시)"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대자동차 (R&D 기술 및 남양/의왕 연구소 시험 지원)",
+        "company_size": "대기업",
+        "main_business_products": "신차 시험 차량 제작, 파워트레인/EV 내구 시험, 차량 평가 및 R&D 기술 지원",
+        "preferred_majors": [
+            "자동차과",
+            "기계과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "소프트웨어과"
+        ],
+        "required_competencies_certifications": [
+            "자동차정비기능사",
+            "전자기기기능사",
+            "정보처리기능사",
+            "전기기능사",
+            "실차 데이터 측정 및 센서 기초 활용 역량"
+        ],
+        "core_talent_keywords": [
+            "창의적 사고",
+            "기술 집착",
+            "품질 우선",
+            "도전과 융합"
+        ],
+        "organizational_culture": "남양연구소·의왕연구소 중심의 연구 개발 지원 문화, 최첨단 시제차 및 데이터 계측 장비를 다루는 기술 수평 문화",
+        "employee_review_summary": "연구원들과의 소통 기회가 많고 고졸 기술 인재의 신차 시험 역량을 인정해 줌. 시험 차량 문제점 분석 시 꼼꼼함 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "기아 (완성차 제조 및 생산 설비 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "EV시리즈(EV3/EV6/EV9), SUV(스포티지, 쏘렌토), PBV(목적 기반 모빌리티) 완성차",
+        "preferred_majors": [
+            "자동차과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "자동차정비기능사",
+            "생산자동화기능사",
+            "자동화 로봇 제어 자격"
+        ],
+        "core_talent_keywords": [
+            "도전",
+            "창의",
+            "열정",
+            "영감(Inspiration)",
+            "협력"
+        ],
+        "organizational_culture": "화성 AutoLand, 광명, 광주 중심의 높은 자동화 라인 운용, 주간연속 2교대 기반의 효율적인 근무 시스템",
+        "employee_review_summary": "현대차와 동일한 수준의 최상위 처우와 차량 할인 복지 제공. 자동화 공정의 설비 비가동 시간을 줄이는 메인테넌스 능력이 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,200만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대모비스 (자동차 핵심 모듈 및 전장부품 제조)",
+        "company_size": "대기업",
+        "main_business_products": "섀시/운전석/프론트 모듈, 배터리 시스템(BSA), 수소연료전지 스택, 제동/조향/현가 전장부품",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "SMT/지그 점검 및 전장 검사 장비 활용 능력"
+        ],
+        "core_talent_keywords": [
+            "고객 최우선",
+            "자율적 도전",
+            "협업",
+            "글로벌 품질"
+        ],
+        "organizational_culture": "진천, 충주, 창원 등 전국 생산 거점 중심의 스마트팩토리 문화, 전장 제품 고품질 관리 강조",
+        "employee_review_summary": "모빌리티 부품 선도 기업으로서 안정적 복지 및 교육 시스템 보유. 전자 회로 및 정밀 자동화 설비 운용 역량이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,200만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대제철 (자동차용 강판, 봉형강, 제철 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "자동차용 초고장력 강판, 열연/냉연 판재, 형강, 철도용 레일, 특수강",
+        "preferred_majors": [
+            "재료공정과",
+            "금속과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "전기기능사",
+            "제선/제강기능사",
+            "위험물기능사",
+            "설비보전기능사"
+        ],
+        "core_talent_keywords": [
+            "지속가능성",
+            "도전",
+            "안전보건",
+            "신뢰"
+        ],
+        "organizational_culture": "당진제철소, 인천, 포항 중심의 4조 3교대 현장 기술 전문 문화, 철저한 안전 작업 수칙 준수",
+        "employee_review_summary": "그룹 내 대표적인 장수 고용 사업장으로 높은 급여 수준과 고용 안정성 자랑. 중공업 사업장 특성상 안전의식 우선.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대위아 (자동차 파워트레인, 공작기계, 방산 설비)",
+        "company_size": "대기업",
+        "main_business_products": "엔진, 4WD 시스템, 열관리 모듈, 공작기계(CNC 선반/밀링), 화포/방산 부품",
+        "preferred_majors": [
+            "기계과",
+            "금형과",
+            "메카트로닉스과",
+            "전기과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "정밀가공 도면 해독 역량"
+        ],
+        "core_talent_keywords": [
+            "기술 가치",
+            "도전",
+            "고객 만족",
+            "소통"
+        ],
+        "organizational_culture": "창원, 광주 사업장 중심의 정밀 가공 및 공작기계 베이스 현장 기술 인재 중시 분위기",
+        "employee_review_summary": "기계/금속 계열 전공 마이스터고 학생들의 선호도가 매우 높음. 정밀 가공 치수 제어와 도면 해독 능력이 핵심 실무.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대트랜시스 (자동차 변속기, 휠드라이브, 시트 시스템)",
+        "company_size": "대기업",
+        "main_business_products": "자동/수동/DCT/EV용 변속기, 감속기, 제네시스/승용 프리미엄 자동차 시트",
+        "preferred_majors": [
+            "기계과",
+            "자동차과",
+            "메카트로닉스과",
+            "전기과",
+            "재료/섬유과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "정밀 조립 검사 역량"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "도전",
+            "열정",
+            "소통"
+        ],
+        "organizational_culture": "서산, 동탄, 화성 등 파워트레인 및 시트 전문 생산 라인의 높은 품질 관리 기조",
+        "employee_review_summary": "친환경차 감속기 및 고급 시트 라인 확장에 따른 안정적인 근로 환경. 정밀 조립 및 공정 테스터 능력 활용도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,700만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대로템 (K2 전차 방산, KTX/전동차 철도, 스마트 팩토리 설비)",
+        "company_size": "대기업",
+        "main_business_products": "K2 흑표 전차, 차륜형장갑차, KTX-이음, 지하철 전동차, 프레스/물류 설비",
+        "preferred_majors": [
+            "조선/철도과",
+            "기계과",
+            "용접과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "용접기능사",
+            "특수용접기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "제어 배선 및 도면 해독 자격"
+        ],
+        "core_talent_keywords": [
+            "국가산업 기여",
+            "기술 선도",
+            "고객 신뢰",
+            "안전"
+        ],
+        "organizational_culture": "창원 공장 중심의 방산·철도 대형 중공업 현장, 숙련 기술자의 노하우 전수 및 철저한 품질 검사 문화",
+        "employee_review_summary": "방산 수출 및 KTX 주문 확대에 따른 안정적인 성과. 대형 구조물 조립/용접 및 전장 배선 기술자 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,900만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대글로비스 (완성차/부품 물류 인프라, CKD 유통, 자동화 창고)",
+        "company_size": "대기업",
+        "main_business_products": "완성차 해상/육상 수송, CKD(반제품) 포장/유통, 스마트 물류센터 운용",
+        "preferred_majors": [
+            "물류과",
+            "기계과",
+            "전기과",
+            "정보처리과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "물류관리사 기초",
+            "지게차운전기능사",
+            "전기기능사",
+            "컴퓨터활용능력",
+            "WMS(창고관리시스템) 이해"
+        ],
+        "core_talent_keywords": [
+            "글로벌 물류 혁신",
+            "고객 최우선",
+            "도전을 통한 성공",
+            "협력"
+        ],
+        "organizational_culture": "울산, 평택, 아산 등 항만 및 완성차 출하장/물류 센터 기반의 신속하고 안전한 물류 프로세스 제어",
+        "employee_review_summary": "그룹 핵심 물류 기업으로서 높은 직무 안정성. 물류 자동화 설비 점검 및 입출고 데이터 관리 직무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대건설 / 현대엔지니어링 (하이테크 플랜트, 건축 및 전기/설비 시공)",
+        "company_size": "대기업",
+        "main_business_products": "현대차그룹 신공장(전기차 전용 공장 등) 및 하이테크 플랜트, 건축, 전기/소방 인프라",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "건설안전기능사",
+            "CAD 도면 작성 및 현장 관리 역량"
+        ],
+        "core_talent_keywords": [
+            "도전과 창의",
+            "안전 최우선",
+            "글로벌 리더십",
+            "신뢰"
+        ],
+        "organizational_culture": "글로벌 건설 현장 및 국내 대형 하이테크 현장 중심, 안전보건 관리 및 현장 책임감 강조",
+        "employee_review_summary": "현장 수당 및 숙식 지원 등 실질 수령액이 높음. 전국 현장 적응력 및 안전 관리 능력이 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대케피코 (자동차 제어기, 센서, 액추에이터, EV 제어 시스템)",
+        "company_size": "대기업",
+        "main_business_products": "파워트레인 제어기(ECU), 친환경차 제어기(VCU), 각종 차량용 센서 및 액추에이터",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "정보통신과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "SMT 공정 및 전자 회로 테스트 능력"
+        ],
+        "core_talent_keywords": [
+            "제어 기술 선도",
+            "최고의 품질",
+            "열정",
+            "소통"
+        ],
+        "organizational_culture": "군포, 진천 등 전자제어 부품 특화 사업장의 첨단 SMT 및 정밀 검사 중심의 클린 근무 환경",
+        "employee_review_summary": "차량 전자화 및 소프트웨어 중심 차량(SDV) 전환의 핵심 계열사. 정밀 전자 부품 생산 관리에 최적화됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,100만 원 수준"
+        }
+    },
+    {
+        "company": "현대",
+        "sector": "현대오토에버 (그룹 스마트팩토리 IT 인프라, 설비 관제, HW/SW 현장 지원)",
+        "company_size": "대기업",
+        "main_business_products": "스마트팩토리 MES/ERP 시스템 운용, 네트워크 인프라, 차량 SW 플랫폼, 현장 ICT 단말 모니터링",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "컴퓨터과",
+            "정보통신과",
+            "전기/전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "컴퓨터활용능력 1/2급",
+            "네트워크 기초 자격",
+            "Linux/DB 기초 역량"
+        ],
+        "core_talent_keywords": [
+            "IT 혁신",
+            "고객 가치",
+            "전문성",
+            "협업"
+        ],
+        "organizational_culture": "그룹 공장 및 연구소 데이터센터 중심의 스마트한 ICT 제어 관리 환경, 데이터 정확성 강조",
+        "employee_review_summary": "현대차그룹 IT 총괄 계열사로서 쾌적한 오피스 및 데이터센터 근무 여건. 생산 라인 IT 인프라 점검 실무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG전자 (프리미엄 가전 제조 및 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "세탁기, 냉장고, 에어컨, 스타일러, 청소기 등 프리미엄 H&A 생활가전",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "전자기기기능사",
+            "자동화 생산라인 메인테넌스 및 PLC 제어 이해"
+        ],
+        "core_talent_keywords": [
+            "고객을 위한 가치창출",
+            "인간존중의 경영",
+            "정도경영",
+            "일등 LG"
+        ],
+        "organizational_culture": "창원 스마트파크 등 지능형 자율공장 중심의 기술 밀착 문화, 완벽 품질 기준 이행",
+        "employee_review_summary": "업계 최상위권 가전 할인 및 복리후생 보유. 스마트팩토리 도입에 따른 자동화 설비 예방 보전 능력이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,200만 원 수준 (성과급 및 교대수당 포함 시)"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG전자 VS사업본부 (차량용 전장부품 및 모빌리티 소재)",
+        "company_size": "대기업",
+        "main_business_products": "텔레매틱스, AVNT(인포테인먼트), 차량용 램프, EV 파워트레인 부품",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "자동차과",
+            "메카트로닉스과",
+            "통신과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "자동차정비기능사",
+            "정보통신기능사",
+            "SMT 공정 및 차량용 전자회로 검사 능력"
+        ],
+        "core_talent_keywords": [
+            "고객가치",
+            "혁신",
+            "자율과 책임",
+            "일등 도전"
+        ],
+        "organizational_culture": "인천·평택 사업장 중심의 자동차 품질 표준(IATF 16949) 기반 정밀 제조 문화",
+        "employee_review_summary": "전기차 및 자율주행 시장 확대에 따른 높은 사업 비전. 전장 품질 검사 및 정밀 부품 라인 관리 역량이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG전자 (R&D 연구개발 기술 및 신제품 신뢰성 시험 지원)",
+        "company_size": "대기업",
+        "main_business_products": "신제품 시제품 제작, 가전/전장 내구성 및 성능 신뢰성 시험, 계측 데이터 관리",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "소프트웨어과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "컴퓨터응용선반/밀링기능사",
+            "계측기 운용 및 시험 데이터 분석 능력"
+        ],
+        "core_talent_keywords": [
+            "창의",
+            "도전",
+            "완벽주의 품질",
+            "소통"
+        ],
+        "organizational_culture": "서초/가산/창원 연구소 중심의 연구개발 지원 문화, 연구원들과의 수평적 협업 기조",
+        "employee_review_summary": "연구소 특유의 쾌적한 근무 환경. 신제품 데이터 계측 시 꼼꼼함과 오차 없는 정밀 작업 능력이 요구됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG에너지솔루션 (2차전지 배터리 셀 및 모듈/팩 제조)",
+        "company_size": "대기업",
+        "main_business_products": "전기차(EV)용 리튬이온 배터리 셀·모듈·팩, ESS(에너지저장장치)",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "전극/조립/화성 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "도전",
+            "집념",
+            "고객 중심",
+            "안전 최우선"
+        ],
+        "organizational_culture": "오창 에너지원 중심의 최첨단 클린룸 및 안전보건(SHE) 최우선 실행 문화",
+        "employee_review_summary": "글로벌 배터리 시장을 선도하는 자부심과 우수한 보상 체계. 화학물질 취급 안전 수칙 준수와 수율 관리 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,800만 원 수준 (성과급 및 교대수당 포함 시)"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG디스플레이 (OLED 패널 제조 및 설비 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "TV용 대형 OLED, 모바일/차량용 중소형 OLED 및 IT용 패널",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "진공 설비 및 광학 검사 장비 관리 자격"
+        ],
+        "core_talent_keywords": [
+            "열정",
+            "전문성",
+            "팀워크",
+            "일등 도전"
+        ],
+        "organizational_culture": "파주, 구미 사업장 중심의 4조 3교대 현장 밀착 문화, 클린룸 기숙 수율 관리 정밀도 강조",
+        "employee_review_summary": "사내 기숙사 및 체육·복지 시설 만족도 높음. 첨단 OLED 진공/노광 설비 유지보수 역량이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,400만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG화학 (석유화학, 양극재/배터리 소재, 첨단소재 플랜트)",
+        "company_size": "대기업",
+        "main_business_products": "에틸렌, ABS, EP, 2차전지 양극재, 엔지니어링 플라스틱, 수처리 멤브레인",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "대형 플랜트 공정 도면 해독"
+        ],
+        "core_talent_keywords": [
+            "안전보건(SHE)",
+            "정도경영",
+            "고객가치 창출",
+            "지속가능성"
+        ],
+        "organizational_culture": "여수, 대산, 청주, 익산 등 대규모 화학·소재 플랜트 기반의 절대 안전 최우선 문화",
+        "employee_review_summary": "업계 최고 수준의 처우와 강력한 고용 안정성(정년 안정성 높음). 화학 공정 반응 제어 및 위험물 안전 관리 능력 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,000만 원 이상 (성과급 및 야간 교대수당 포함 시)"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG이노텍 (카메라모듈 및 반도체 기판 소재 제조)",
+        "company_size": "대기업",
+        "main_business_products": "모바일/차량용 카메라모듈, 3D 센싱모듈, 반도체 기판(FC-BGA), 전장 부품",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "신소재과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "화학분석기능사",
+            "설비보전기능사",
+            "SMT/초정밀 가공 설비 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "일등 품질",
+            "고객 감동",
+            "변화와 혁신",
+            "실행력"
+        ],
+        "organizational_culture": "구미, 광주, 파주 사업장 중심의 글로벌 IT 고객사 기준에 맞춘 극정밀 클린룸 제조 문화",
+        "employee_review_summary": "글로벌 모바일 부품 시장 내 높은 기술력 보유. 미세 패턴 가공 및 정밀 카메라 광학 테스트 기술 습득 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG유플러스 / LG헬로비전 (통신 네트워크 인프라 및 IDC 관제)",
+        "company_size": "대기업",
+        "main_business_products": "5G/6G 이동통신, 초고속 인터넷, 데이터센터(IDC) 인프라, IPTV 네트워크",
+        "preferred_majors": [
+            "통신과",
+            "전자과",
+            "전기과",
+            "소프트웨어과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "무선설비기능사",
+            "전기기능사",
+            "정보처리기능사",
+            "광케이블 접속 및 네트워크 계측 장비 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "고객일상의 즐거운 변화",
+            "도전에 찬 열정",
+            "협업",
+            "정직"
+        ],
+        "organizational_culture": "전국 주요 거점 및 데이터센터의 24시간 무장애 통신망 운용 및 실시간 현장 장애 대응 문화",
+        "employee_review_summary": "통신 3사 계열의 안정적 사업 기반과 유연한 조직 문화. 네트워크 장비 점검 및 현장 긴급 복구 역량 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG CNS (스마트팩토리 IT, MES 및 데이터센터 시스템 관제)",
+        "company_size": "대기업",
+        "main_business_products": "스마트팩토리 공장자동화 시스템(MES), IT 데이터센터 인프라 운용, 물류 자동화 SW",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "컴퓨터과",
+            "전자과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "컴퓨터활용능력 1/2급",
+            "전기기능사",
+            "Linux/네트워크 기초 역량"
+        ],
+        "core_talent_keywords": [
+            "기술 전문성",
+            "고객 성공",
+            "정도경영",
+            "융합"
+        ],
+        "organizational_culture": "그룹 주요 공장 DX(디지털 전환) 지원 현장 중심, 정확한 데이터 관리 및 IT 트러블슈팅 강조",
+        "employee_review_summary": "LG그룹 IT 전문기업으로서 체계적인 직무 교육 제공. 공장 스마트팩토리 제어 단말 및 데이터 관제 실무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG생활건강 (화장품, 생활용품, 음료 제조 및 품질관리)",
+        "company_size": "대기업",
+        "main_business_products": "럭셔리 화장품(후, 숨 등), 치약/세제 등 생활용품, 코카콜라/음료 제조",
+        "preferred_majors": [
+            "화학공업과",
+            "식품가공과",
+            "기계과",
+            "전기과",
+            "바이오과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "식품가공기능사",
+            "자동 충진/포장 라인 조작 역량"
+        ],
+        "core_talent_keywords": [
+            "아름다움과 건강",
+            "창의",
+            "고객 감동",
+            "원칙 준수"
+        ],
+        "organizational_culture": "청주, 여주, 천안, 음성 공장 중심의 엄격한 위생·품질 관리 표준 체계 준수 문화",
+        "employee_review_summary": "탄탄한 소비재 포트폴리오를 기반으로 사업 안정성이 뛰어남. 정밀 화학 배합 및 충진/포장 설비 예방 보전 담당.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG화학 생명과학사업본부 (의약품 및 바이오 플랜트)",
+        "company_size": "대기업",
+        "main_business_products": "당뇨병 치료제, 성장호르몬, 백신, 미용필러(이브아르) 등 의약 바이오 제품",
+        "preferred_majors": [
+            "바이오/생명공학과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "GMP(의약품 제조품질관리기준) 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "생명 존중",
+            "인류 건강",
+            "품질 최우선",
+            "안전"
+        ],
+        "organizational_culture": "오송, 익산 공장 중심의 무균 상태 유지 및 Strict GMP 가이드라인 철저 준수 문화",
+        "employee_review_summary": "바이오 헬스케어 분야의 높은 미래 비전. 쾌적한 작업 환경 및 정밀 오염 제어 수칙 이행력 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "LG",
+        "sector": "LG 계열 생산기술 / 로봇 무인 자동화 설비 메인테넌스",
+        "company_size": "대기업",
+        "main_business_products": "스마트 팩토리 무인 이송 로봇(AGV/AMR), 고속 픽앤플레이스 설비, 비전 검사 시스템",
+        "preferred_majors": [
+            "메카트로닉스과",
+            "로봇과",
+            "전기과",
+            "전자과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "생산자동화기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "PLC 프로그램 해독 및 로봇 캘리브레이션 역량"
+        ],
+        "core_talent_keywords": [
+            "최고 기술력",
+            "융합",
+            "끈기",
+            "실행"
+        ],
+        "organizational_culture": "그룹 주요 생산 거점의 무인화·자동화 라인 구축 및 로봇 설비 안정화 기술 중심 문화",
+        "employee_review_summary": "스마트팩토리 및 최신 로봇 제어 기술을 직접 다루는 전문성 확보. 센서/아머 로봇 트러블슈팅 능력 활용도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코 (철강 제조, 제선·제강·압연 생산 및 공정 운전)",
+        "company_size": "대기업",
+        "main_business_products": "열연강판, 냉연강판, 후판, 선재, 스테인리스스탄, 자동차용 초고장력 강판(Giga Steel)",
+        "preferred_majors": [
+            "금속과",
+            "재료공정과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "제선기능사",
+            "제강기능사",
+            "압연기능사",
+            "금속재료기능사",
+            "위험물기능사",
+            "고온/고압 철강 공정 이해 및 4조 2교대 적응력"
+        ],
+        "core_talent_keywords": [
+            "실천",
+            "배려",
+            "창의",
+            "기업시민(With POSCO)",
+            "안전 최우선"
+        ],
+        "organizational_culture": "포항 및 광양제철소 중심의 4조 2교대 근무 체제, '안전보건(Safety First)'을 철칙으로 하는 현장 상호 존중 문화",
+        "employee_review_summary": "국내 최고 수준의 고용 안정성과 고졸 초임 연봉 및 성과급 지급. 단체협약 기반의 탄탄한 복지(주거 지원, 의료비, 자녀 학자금) 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,500만 원 이상 (성과급, 교대수당, 야간수당 포함 시)"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코 (제철소 기계 및 전기 설비 정비·예방 보전)",
+        "company_size": "대기업",
+        "main_business_products": "제철 연속 공정 설비, 연속주조/압연 라인, 고압 전기 변전 및 자동화 메인테넌스",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "기계과",
+            "메카트로닉스과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "공유압기능사",
+            "유압/전기회로 도면 해독 및 PLC 제어 역량"
+        ],
+        "core_talent_keywords": [
+            "기술 전문성",
+            "집념",
+            "실천",
+            "무재해 현장"
+        ],
+        "organizational_culture": "대형 제철 설비의 무장애 가동을 목표로 하는 설비 기술 중심 분위기, 베테랑 선후배 간 1:1 기술 전수",
+        "employee_review_summary": "설비 비가동 시간을 줄이기 위한 예방 점검 기술 습득 우수. 정밀 점검 역량과 설비 이슈 트러블슈팅 능력이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,400만 원 ~ 7,000만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코퓨처엠 (2차전지 양극재·음극재 소재 제조 및 설비)",
+        "company_size": "대기업",
+        "main_business_products": "전기차용 NCM/NCMA 양극재, 인조흑연/천연흑연 음극재, 내화물",
+        "preferred_majors": [
+            "화학공업과",
+            "신소재과",
+            "전기과",
+            "기계과",
+            "재료공정과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "분체 가공 및 소성/합성 화학 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "도전과 혁신",
+            "친환경 리더십",
+            "안전",
+            "고객 신뢰"
+        ],
+        "organizational_culture": "포항, 광양, 세종 사업장 중심의 배터리 소재 급성장에 따른 역동적인 사업 환경 및 엄격한 품질·안전 관리",
+        "employee_review_summary": "포스코그룹 내 핵심 미래성장 동력으로서 사업 가치가 높음. 첨단 소재 공정 수율 관리와 안전 규정 이행력이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,500만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코DX (스마트팩토리 제어, PLC, EIC 및 IT 인프라)",
+        "company_size": "대기업",
+        "main_business_products": "제철 및 공장 스마트팩토리 제어(PLC, EIC), Industrial AI 솔루션, 산업용 네트워크",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "소프트웨어과",
+            "정보통신과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "정보처리기능사",
+            "생산자동화기능사",
+            "정보통신기능사",
+            "PLC 프로그래밍 및 센서 데이터 관제 능력"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "기술 집혼",
+            "상생",
+            "고객 가치"
+        ],
+        "organizational_culture": "포항·광양 현장 관제실 및 판교 스마트기술 오피스 기반, 엔지니어링 및 IT 융합 기술 중심 문화",
+        "employee_review_summary": "그룹 IT/OT 제어를 총괄하는 기술 계열사로 쾌적한 근무 여건과 정교한 현장 자동화 시스템 운용 교육 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코인터내셔널 (구동모터코아 및 친환경 모빌리티 부품 제조)",
+        "company_size": "대기업",
+        "main_business_products": "친환경 전기차/하이브리드용 구동모터코아, 친환경 에너지 설비 부품",
+        "preferred_majors": [
+            "기계과",
+            "금형과",
+            "메카트로닉스과",
+            "전기과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "프레스금형기능사",
+            "전기기능사",
+            "초적층 정밀 금형 기술 이해"
+        ],
+        "core_talent_keywords": [
+            "글로벌 도전",
+            "기술 혁신",
+            "소통",
+            "동반성장"
+        ],
+        "organizational_culture": "포항, 천안, 인천 사업장 중심의 초정밀 모터코아 가공 및 친환경차 시장 확장 대응 문화",
+        "employee_review_summary": "글로벌 전기차 시장 확대에 따른 구동모터코아 부문의 높은 성장성. 정밀 금형 적층 및 품질 테스터 역량 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코스틸리온 (표면처리 강판 및 컬러강판 제조)",
+        "company_size": "대기업",
+        "main_business_products": "친환경 컬러강판(PrinTech), 알루미늄 도금강판, 건자재 및 가전용 고급 표면처리 강판",
+        "preferred_majors": [
+            "재료공정과",
+            "금속과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "표면처리기능사",
+            "위험물기능사",
+            "전기기능사",
+            "도금 및 코팅 연속 공정 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "디자인/기술 융합",
+            "품질 일등",
+            "안전",
+            "협력"
+        ],
+        "organizational_culture": "포항 사업장 중심의 표면처리 도금·도장 노하우 기반 현장 기술 문화, 안전 준수 강조",
+        "employee_review_summary": "포스코 자회사로서 처우 및 고용 안정성이 뛰어남. 강판 표면 도장 및 도금 화학 반응 조절 기술 습득 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코 정비 전문 자회사 (포스코PS테크 / 포스코PR테크 / 포스코GSR 등)",
+        "company_size": "대기업 계열",
+        "main_business_products": "제철소 압연/선강/제강 기계 및 전기 전문 정비, 대형 제철 설비 오버홀(Overhaul)",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "용접과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "설비보전기능사",
+            "전기기능사",
+            "특수용접기능사",
+            "기계정비기능사",
+            "분해/조립 및 정밀 축심 맞춤 역량"
+        ],
+        "core_talent_keywords": [
+            "정비 전문성",
+            "안전 최우선",
+            "상호 신뢰",
+            "현장 중심"
+        ],
+        "organizational_culture": "포항/광양제철소 내 정비 전문화 계열사로서 제철 설비의 안정적 가동을 지탱하는 실무 밀착 문화",
+        "employee_review_summary": "포스코 정비 자회사 일원화에 따른 향상된 처우와 정년 안정성. 현장 맞춤형 기계/전기 기술 전문가로 성장 가능.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코이앤씨 (플랜트 건설, 전기/설비 시공 및 현장 안전)",
+        "company_size": "대기업",
+        "main_business_products": "제철/에너지/배터리 플랜트 시공, 대형 건축, 전기/계장 토탈 인프라 구축",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "토목기능사",
+            "배관기능사",
+            "CAD 도면 해독 및 현장 작업 안전 관제"
+        ],
+        "core_talent_keywords": [
+            "스마트 건설",
+            "안전 무재해",
+            "도전",
+            "소통"
+        ],
+        "organizational_culture": "전국 플랜트 및 대형 현장 중심의 작업 절차 및 안전보건(SHE) 최우선 이행 문화",
+        "employee_review_summary": "현장 근무 시 숙식 제공 및 현장 수당 지급. 하이테크 플랜트 시공 및 전기 설비 시공 기술 습득 기회 양호.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,400만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코플로우 (철강·원자재 수송, 물류 인프라 및 창고 관리)",
+        "company_size": "대기업",
+        "main_business_products": "포스코그룹 통합 물류, 철강재/원자재 수송, 항만 입출고 및 자동화 물류센터 운용",
+        "preferred_majors": [
+            "물류과",
+            "기계과",
+            "전기과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "지게차운전기능사",
+            "전기기능사",
+            "컴퓨터활용능력 1/2급",
+            "WMS(창고관리시스템) 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "물류 혁신",
+            "안전 최우선",
+            "고객 만족",
+            "상생"
+        ],
+        "organizational_culture": "포항, 광양, 평택 등 주요 항만 및 야드 기반의 효율적인 제품 상하차 및 데이터 관제 문화",
+        "employee_review_summary": "그룹 통합 물류 전문기업으로 체계적인 물류 가시성 관리. 현장 중장비 운용 및 입출고 검수 정확도 요구.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "포스코",
+        "sector": "포스코엠텍 (철강 부원료, 알루미늄 탈산제 및 철강재 자동 포장)",
+        "company_size": "대기업",
+        "main_business_products": "제강용 알루미늄 탈산제, 페로망간(FeMn) 부원료, 제철 제품 자동 포장 설비 운용",
+        "preferred_majors": [
+            "금속과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "지게차운전기능사"
+        ],
+        "core_talent_keywords": [
+            "기본 준수",
+            "안전",
+            "품질 신뢰",
+            "협력"
+        ],
+        "organizational_culture": "포항, 광양 제철소 내 포장 및 부원료 라인 중심의 철저한 표준 작업 이행 분위기",
+        "employee_review_summary": "안정적인 사업 포트폴리오를 기반으로 교대 근무 및 포장 자동화 설비 예방 보전 직무 수행.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,100만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화에어로스페이스 (항공우주 및 정밀 방산 무기 체계)",
+        "company_size": "대기업",
+        "main_business_products": "K9 자주포, 레드백 장갑차, 천무 다련장, 누리호 발사체/항공기 엔진 및 정밀 조립",
+        "preferred_majors": [
+            "기계과",
+            "항공과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "항공정비기능사",
+            "정밀 조립 및 도면 해독 역량"
+        ],
+        "core_talent_keywords": [
+            "도전(Challenge)",
+            "헌신(Dedication)",
+            "정도(Integrity)",
+            "한화신용",
+            "안전보건"
+        ],
+        "organizational_culture": "창원, 판교, 아산 사업장 중심의 정밀 기술 우대 문화, 국가 방위산업에 대한 높은 자부심과 안전 절차 준수 강조",
+        "employee_review_summary": "방산 수출 호조에 따른 성과급 및 처우 상승세. 항공/방산 정밀 부품 가공 및 조립 기술자로서의 성장이 유망함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,800만 원 수준 (성과급 및 잔업 수당 포함 시)"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화오션 (조선, 해양 플랜트 및 방산 함정 건조)",
+        "company_size": "대기업",
+        "main_business_products": "LNG 운반선, 잠수함, 호위함, 해양 플랜트 구조물, 친환경 선박",
+        "preferred_majors": [
+            "조선과",
+            "기계과",
+            "용접과",
+            "전기과",
+            "배관과"
+        ],
+        "required_competencies_certifications": [
+            "특수용접기능사",
+            "용접기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "대형 구조물 수평 맞춤 및 선체 배관 이해"
+        ],
+        "core_talent_keywords": [
+            "도전적 실행",
+            "안전 최우선",
+            "협력",
+            "품질 신뢰"
+        ],
+        "organizational_culture": "거제 옥포조선소 중심의 현장 기술 인재 중시 분위기, 한화그룹 편입 이후 작업 환경 개선 및 안전 강화 추진",
+        "employee_review_summary": "조선업 수주 회복에 따른 일감 풍부 및 성과 수당 지급. 대형 구조물 용접 및 특수 전장 배선 기술자 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,200만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화솔루션 케미칼부문 (석유화학 및 기초 소재 플랜트)",
+        "company_size": "대기업",
+        "main_business_products": "가성소다, PVC, CA, PO(폴리올레핀), 헬스케어 소재",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "화학 반응기 및 공정 도면 해독"
+        ],
+        "core_talent_keywords": [
+            "정도경영",
+            "지속가능성",
+            "안전보건(SHE)",
+            "최고 지향"
+        ],
+        "organizational_culture": "여수, 울산 석유화학 단지 중심의 철저한 안전보건(SHE) 규칙 준수 및 교대근무 기반 선후배 동료애 문화",
+        "employee_review_summary": "업계 최고 수준의 복리후생과 높은 고용 안정성(정년 보장 기조). 화학물질 안전 취급 및 공정 반응 제어가 핵심.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화솔루션 큐셀부문 (태양광 셀/모듈 및 재생에너지 설비)",
+        "company_size": "대기업",
+        "main_business_products": "고효율 태양광 셀(Cell), 모듈(Module), ESS 및 에너지 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "메카트로닉스과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "화학분석기능사",
+            "설비보전기능사",
+            "자동화 모듈 생산라인 예방 점검 능력"
+        ],
+        "core_talent_keywords": [
+            "친환경 혁신",
+            "글로벌 리더십",
+            "도전",
+            "실행력"
+        ],
+        "organizational_culture": "음성, 진천 공장 중심의 첨단 친환경 모듈 클린룸 제조 환경 및 스마트팩토리 자동화 라인 운용",
+        "employee_review_summary": "글로벌 재생에너지 분야 선도기업으로서 쾌적한 작업 여건 제공. 자동화 라인 정밀 점검 및 수율 제어 역량이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화시스템 (방산 전자, 레이다 및 ICT 센서 시스템)",
+        "company_size": "대기업",
+        "main_business_products": "AESA 레이다, C4I 체계, 위성 통신, 광학 센서, 방산 SW 및 Enterprise ICT",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "통신과",
+            "소프트웨어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "정보통신기능사",
+            "정보처리기능사",
+            "전자 회로 테스트 및 SMT 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "기술 융합",
+            "고객 가치",
+            "정직",
+            "원팀 정신"
+        ],
+        "organizational_culture": "용인, 구미, 구의 사업장 중심의 정밀 방산 전자 회로 제조 및 소프트웨어/ICT 관제 수평 문화",
+        "employee_review_summary": "방산 전자 최첨단 분야를 다루는 자부심과 쾌적한 오피스/클린룸 근무 여건. 정밀 측정 및 장비 검사 역량 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화모멘텀 (2차전지 및 반도체 공정 자동화 장비 제조)",
+        "company_size": "대기업",
+        "main_business_products": "2차전지 전극/조립/화성 공정 설비, 반도체 웨이퍼 이송 장비, 무인 자동화 설비",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과",
+            "전기과",
+            "전자과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "생산자동화기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "컴퓨터응용선반/밀링기능사",
+            "PLC program 해독 및 지그 조립 자격"
+        ],
+        "core_talent_keywords": [
+            "장비 기술력",
+            "도전",
+            "고객 신뢰",
+            "협업"
+        ],
+        "organizational_culture": "아산, 창원 사업장 중심의 자동화 장비 설계 지원 및 시운전/메인테넌스 기술 중심 조직",
+        "employee_review_summary": "배터리 및 반도체 산업용 자동화 장비 전문기업으로 기술 확장성이 높음. PLC 제어 및 장비 셋업 기술 습득 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,400만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "㈜한화 글로벌부문 (산업용 화약 및 특수 케미칼 제조)",
+        "company_size": "대기업",
+        "main_business_products": "산업용 화약, 발파 마이닝 솔루션, 질산, 질산암모늄, 특수 케미칼",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "안전공학과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "화약류제조기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "엄격한 물질 취급 안전 수칙 이행"
+        ],
+        "core_talent_keywords": [
+            "신용과 의리",
+            "안전 절대 우선",
+            "정직",
+            "실행력"
+        ],
+        "organizational_culture": "보은, 온산 사업장 중심의 한화그룹 모태 사업장으로서 원칙 준수 및 안전 관리를 최우선으로 하는 전통문화",
+        "employee_review_summary": "한화그룹의 뿌리 기업으로 고용 안정성이 매우 높음. 위험물 및 화약류 취급에 대한 안전 표준 준수가 필수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화엔진 (선박용 대형 디젤 엔진 및 발전 설비 제조)",
+        "company_size": "대기업",
+        "main_business_products": "선박용 대형 저속/중속 디젤 엔진, 친환경 이중연료(DF) 엔진, 엔진 부품",
+        "preferred_majors": [
+            "기계과",
+            "자동차과",
+            "전기과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "특수용접기능사",
+            "대형 엔진 가공 및 성능 시운전 역량"
+        ],
+        "core_talent_keywords": [
+            "기술 최고주의",
+            "도전",
+            "품질 엄수",
+            "안전"
+        ],
+        "organizational_culture": "창원 공장 중심의 대형 기계 가공 및 동력 장치 조립 현장, 숙련 엔지니어 노하우 중심 문화",
+        "employee_review_summary": "한화그룹 인수 후 조선/해양 밸류체인 시너지로 안정적 물량 확보. 정밀 가공 및 엔진 조립 숙련도 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,700만 원 수준"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "㈜한화 건설부문 (플랜트 시공, 건축 및 전기/설비 현장)",
+        "company_size": "대기업",
+        "main_business_products": "대형 복합개발, 친환경 플랜트, 풍력 발전 인프라 시공, 전기/소방 설비",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "CAD 도면 해독 및 현장 안전 관제"
+        ],
+        "core_talent_keywords": [
+            "도전과 창의",
+            "안전 무재해",
+            "고객 신뢰",
+            "소통"
+        ],
+        "organizational_culture": "전국 대형 현장 중심의 작업 안전 및 공정 기한 준수를 강조하는 현장 실행력 중심 문화",
+        "employee_review_summary": "현장 근무 시 수당 및 숙식 제공으로 실수령액 우수. 건설/플랜트 현장 적응력과 안전 규정 이행 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "한화",
+        "sector": "한화그룹 금융/서비스 계열 사무 지원 및 IT 인프라",
+        "company_size": "대기업",
+        "main_business_products": "한화생명, 한화손해보험, 한화투자증권, 한화호텔앤드리조트 사무 지원 및 IT 관제",
+        "preferred_majors": [
+            "경영정보과",
+            "소프트웨어과",
+            "정보처리과",
+            "금융정보과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "OA 패키지 활용 및 정확한 문서 처리 능력"
+        ],
+        "core_talent_keywords": [
+            "정직과 신뢰",
+            "고객 가치",
+            "성실성",
+            "서비스 마인드"
+        ],
+        "organizational_culture": "본사 및 전국 거점 오피스 중심의 정돈되고 쾌적한 사무 환경, 정확성 및 소통 매너 중시",
+        "employee_review_summary": "고졸 특별 채용을 통한 사무직/IT 지원 입사 통로 보유. 정시 퇴근 및 쾌적한 근무 여건 만족도 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,500만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS전선 (초고압 전선, 해저케이블 제조 및 설비 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "초고압 케이블, 해저 케이블, 광통신 케이블, 산업용 신소재 전선",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "기계과",
+            "메카트로닉스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "위험물기능사",
+            "고압 전선 피복 및 연선 공정 이해"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "밝은 철학",
+            "전문성",
+            "도전",
+            "성과창출"
+        ],
+        "organizational_culture": "동해, 구미, 안양 사업장 중심의 글로벌 전선 제조 기술 문화, 안전 작업 수칙 및 품질관리 강조",
+        "employee_review_summary": "해저 케이블 및 국가 전력망 수요 확대로 높은 사업 성장성 보유. 기숙사 및 사내 복리후생 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,300만 원 수준 (교대수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS ELECTRIC (전력기기, 스마트배전반 및 PLC/자동화 설비)",
+        "company_size": "대기업",
+        "main_business_products": "변압기, 차단기, 스마트 배전반, PLC, 인버터, 스마트 전력 제어 시스템",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "기계과",
+            "로봇과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "생산자동화기능사",
+            "설비보전기능사",
+            "전력 도면 해독 및 PLC 제어 역량"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "열정",
+            "몰입",
+            "고객 우선",
+            "기술 리더십"
+        ],
+        "organizational_culture": "청주, 천안, 부산 사업장 중심의 전력 및 자동화 분야 독보적 기술력 체계, 안전 및 품질 제로 결함 추구",
+        "employee_review_summary": "전력 인프라 및 AI 데이터센터 수요 확대에 따른 실적 상승세. 고졸 기술 인재에 대한 직무 육성 만족도 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,800만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS MnM (동제련, 귀금속 및 이차전지 양극재 원소재 정련)",
+        "company_size": "대기업",
+        "main_business_products": "전기동, 황산, 귀금속(금, 은, 백금), 황산니켈, 황산코발트(이차전지 소재)",
+        "preferred_majors": [
+            "금속과",
+            "재료공정과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "제련/정련 화학 반응 이해"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "안전 최우선",
+            "친환경 소재 혁신",
+            "전문가"
+        ],
+        "organizational_culture": "울산 온산 국가산업단지 중심의 4조 3교대 현장 기술 문화, 안전보건 및 환경 관리 최우선 준수",
+        "employee_review_summary": "국내 유일 대규모 동제련 기업으로 연봉과 복리후생이 그룹 내 최상위권. 장기 근속자가 많고 고용 안정성 매우 뛰어남.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,500만 원 ~ 7,200만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS엠트론 (트랙터, 사출성형기 및 정밀 산업기계)",
+        "company_size": "대기업",
+        "main_business_products": "농업용 트랙터, 플라스틱 사출성형기, 궤도 부품, 정밀 기계 부품",
+        "preferred_majors": [
+            "기계과",
+            "자동차과",
+            "메카트로닉스과",
+            "전기과",
+            "금형과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "유압/기계 조립 및 정밀 도면 해독"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "고객 가치",
+            "기술 혁신",
+            "도전"
+        ],
+        "organizational_culture": "전주, 안양 사업장 중심의 정밀 기계 및 조립 가공 베이스 현장 문화, 품질 자부심 강함",
+        "employee_review_summary": "해외 농기계 및 산업기계 수출 호조 및 체계적 기계 기술 교육. 기계 및 자동차 전공 고졸 인재들의 적응도가 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "E1 (LPG 수입/유통, 가스 기지 및 에너지 플랜트 운용)",
+        "company_size": "대기업",
+        "main_business_products": "LPG(프로판, 부탄) 수입 및 공급, 수소/LPG 복합 충전소, 기지 설비",
+        "preferred_majors": [
+            "가스과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "고압가스 안전관리 역량"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "무재해 안전",
+            "친환경 에너지",
+            "신뢰"
+        ],
+        "organizational_culture": "여수, 인천 기지 중심의 Absolute Safety(절대 안전) 철학 및 소수 정예 고효율 현장 운영",
+        "employee_review_summary": "1인당 높은 매출액 기반 최상위 수준의 처우와 정년 보장 기조. 고압가스 취급 안전 수칙 이행이 필수적임.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,500만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS e-Mobility Solutions / LS EV Korea (전기차용 EV Relay 및 전장 부품)",
+        "company_size": "대기업 계열",
+        "main_business_products": "EV Relay(고전압 차단기), BDU(배터리 분배 장치), 전기차용 하네스 부품",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "자동차과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "설비보전기능사",
+            "SMT 공정 및 고전압 회로 검사 능력"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "친환경 모빌리티",
+            "기술 우위",
+            "실행"
+        ],
+        "organizational_culture": "청주, 군포 사업장 중심의 전장 특화 클린 제조 라인 및 스마트 팩토리 운용",
+        "employee_review_summary": "전기차 산업 성장과 함께 주목받는 성장형 계열사. 정밀 전자 부품 제어 및 회로 점검 역량 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS Metal (동관, 스테인리스 대형 배관 소재 제조 및 보전)",
+        "company_size": "대기업 계열",
+        "main_business_products": "건축/산업용 동관, LNG선 및 해양용 스테인리스 대형 용접강관",
+        "preferred_majors": [
+            "금속과",
+            "기계과",
+            "용접과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "특수용접기능사",
+            "용접기능사",
+            "전기기능사",
+            "설비보전기능사"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "품질 정직",
+            "안전",
+            "도전"
+        ],
+        "organizational_culture": "장항, 부산 사업장 중심의 소재 가공 및 대형 배관 인프라 현장 기술 중심 조직",
+        "employee_review_summary": "조선 및 플랜트용 소재 공급으로 안정적 사업 유지. 정밀 성형 및 용접/품질검사 실무 능력 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "LS",
+        "sector": "LS ITC (그룹 스마트팩토리 IT 인프라, MES 및 현장 시스템 관제)",
+        "company_size": "대기업 계열",
+        "main_business_products": "스마트팩토리 공장자동화 시스템(MES), IT 데이터센터 관제, 산업용 네트워크 인프라",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "컴퓨터과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "컴퓨터활용능력 1/2급",
+            "전기기능사",
+            "네트워크/DB 기초 지식"
+        ],
+        "core_talent_keywords": [
+            "LSpartnership",
+            "IT 혁신",
+            "고객 성공",
+            "협력"
+        ],
+        "organizational_culture": "안양 본사 및 주요 사업장 전산실 중심의 ICT 제어 및 데이터 모니터링 환경",
+        "employee_review_summary": "그룹 공장 자동화 및 데이터 관제를 총괄. 쾌적한 오피스/서버실 근무 여건과 높은 기술 성장성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산에너빌리티 (원자력·가스타빈·수소·해상풍력 발전 설비 제조 및 가공/용접)",
+        "company_size": "대기업",
+        "main_business_products": "원자력 주기기(원자로/증기발생기), 대형 가스타빈, 수소/해상풍력 발전 설비, 해수담수화 플랜트, 대형 주단조품",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "용접과",
+            "금속/재료과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "용접기능사",
+            "특수용접기능사",
+            "전기기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "설비보전기능사",
+            "대형 기계 가공 및 도면 해독 역량"
+        ],
+        "core_talent_keywords": [
+            "2G(Growth of People, Growth of Business)",
+            "기술 자부심",
+            "안전 최우선",
+            "긍정적 사고",
+            "고객 가치"
+        ],
+        "organizational_culture": "창원 사업장 중심의 기술명장 및 마이스터 기반 1:1 도제식 기술 전수 문화, 철저한 작업 안전보건 표준 엄수",
+        "employee_review_summary": "마이스터고 맞춤형 채용(두산반 등) 연계 전통이 깊으며, 대졸에 준하는 높은 보상 수준 및 창원 거점 중심의 뛰어난 고용 안정성 자랑.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,100만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 7,000만 원 수준 (교대수당, 상여, 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산퓨얼셀 (발전용 수소 연료전지 제조, 스택 조립 및 설비 유지보수)",
+        "company_size": "대기업",
+        "main_business_products": "발전용 수소 연료전지(PAFC, SOFC) 시스템, 수소 파워팩, 에너지 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "화학분석기능사",
+            "설비보전기능사",
+            "위험물기능사",
+            "연료전지 스택 정밀 조립 및 전기 회로 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "친환경 수소 혁신",
+            "안전보건",
+            "도전을 통한 성장",
+            "융합"
+        ],
+        "organizational_culture": "익산 공장 중심의 최첨단 수소 신에너지 클린 생산 라인, 정밀한 품질 검사 및 안전 수칙 이행 강조",
+        "employee_review_summary": "수소 생태계 핵심 기업으로서 높은 미래 성장성 보유. 정밀 전자 배선 및 친환경 화학 설비 운용 역량 습득 기회가 우수함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산밥캣 (소형 건설장비, 지게차 및 농업/조경용 장비 조립·메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "소형 로더(Skid-Steer Loader), 미니 굴착기, 지게차, 농업/조경용 장비(GME)",
+        "preferred_majors": [
+            "기계과",
+            "자동차과",
+            "전기과",
+            "메카트로닉스과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "기계정비기능사",
+            "전기기능사",
+            "건설기계정비기능사",
+            "지게차운전기능사"
+        ],
+        "core_talent_keywords": [
+            "글로벌 경쟁력",
+            "현장 혁신",
+            "안전 최우선",
+            "열정",
+            "협력"
+        ],
+        "organizational_culture": "인천 및 지게차/건설장비 생산 라인 중심의 완성 기계 조립·테스트 및 품질 관리 실무 현장 중심 분위기",
+        "employee_review_summary": "글로벌 소형 건설장비 시장 점유율 1위 기업으로 견고한 실적과 안정적인 근무 환경 제공. 유압 및 대형 조립 기술 습득 용이.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산테스나 (시스템 반도체 후공정 테스트 및 크린룸 설비 보전)",
+        "company_size": "대기업 계열",
+        "main_business_products": "SoC, CIS, MCU, 스마트폰 AP 등 시스템 반도체 웨이퍼 및 패키지 테스트 서비스",
+        "preferred_majors": [
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "반도체과",
+            "정보통신과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "반도체 프로브 카드(Probe Card) 유지보수 및 크린룸 오퍼레이팅 능력"
+        ],
+        "core_talent_keywords": [
+            "초정밀 품질",
+            "기술 전문성",
+            "몰입",
+            "고객 신뢰"
+        ],
+        "organizational_culture": "안성, 평택, 화성 사업장 중심의 최첨단 반도체 크린룸 환경 및 24시간 장비 가동 예방 보전 중심 문화",
+        "employee_review_summary": "국내 1위 반도체 테스트 계열사로서 쾌적한 작업 환경 제공. 웨이퍼 테스트 장비 제어 및 정밀 회로 점검 역량이 우대됨.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,100만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산로보틱스 (산업용·서비스용 협동로봇 조립, 모듈 가공 및 캘리브레이션)",
+        "company_size": "대기업 계열",
+        "main_business_products": "협동로봇(M/A/H/E 시리즈), 로봇 파워트레인, 관절 모듈, 로봇 제어 솔루션",
+        "preferred_majors": [
+            "로봇과",
+            "메카트로닉스과",
+            "전기과",
+            "전자과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "생산자동화기능사",
+            "전자기기기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "로봇 캘리브레이션 및 하네스 배선 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "혁신 도전",
+            "로봇 기술 리더십",
+            "융합",
+            "유연한 소통"
+        ],
+        "organizational_culture": "수원 공장 중심의 첨단 로봇 조립 및 솔루션 테스트 라인, 젊고 트렌디한 엔지니어링 소통 문화",
+        "employee_review_summary": "글로벌 협동로봇 시장 확대에 따른 높은 사업 미래가치. 정밀 로봇 관절 모듈 조립 및 제어반 배선 테스터로서의 성장성 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "㈜두산 전자BG (동박적층판(CCL) 및 첨단 전자/반도체 기판 소재 제조)",
+        "company_size": "대기업",
+        "main_business_products": "동박적층판(CCL), 반도체 패키지용 소재, 5G 통신 기판용 소재, PFC(Flat Cable)",
+        "preferred_majors": [
+            "화학공업과",
+            "신소재과",
+            "전자과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "전자기기기능사",
+            "정밀 코팅 및 라미네이팅 설비 운용 능력"
+        ],
+        "core_talent_keywords": [
+            "소재 혁신",
+            "최고 품질",
+            "안전보건",
+            "책임감"
+        ],
+        "organizational_culture": "익산, 증평, 용인 사업장 중심의 정밀 도포 및 열처리 설비 기술 중심, 미세 불량 관리 철저",
+        "employee_review_summary": "글로벌 IT/반도체 기판 소재 분야의 알짜 사업군. 화학 반응 제어 및 자동화 코팅 라인 보전 역량 필요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산모트롤 (건설기계 및 방산용 유압 기기 정밀 가공 및 조립)",
+        "company_size": "대기업 계열",
+        "main_business_products": "건설기계용 유압 펌프, 주행/선회 모터, 방산용 유압/전동 구동 장치 및 부품",
+        "preferred_majors": [
+            "기계과",
+            "금형과",
+            "메카트로닉스과",
+            "전기과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "공유압기능사",
+            "정밀 유압 치수 가공 역량"
+        ],
+        "core_talent_keywords": [
+            "정밀 가공",
+            "기술 혼",
+            "품질 절대주의",
+            "소통"
+        ],
+        "organizational_culture": "창원 공장 중심의 초정밀 유압 기계 가공 및 유압 테스트 실무 기술 강조 현장 분위기",
+        "employee_review_summary": "유압 전문 기술력 기반의 장기 근속 여건 우수. 정밀 가공 치수 측정 및 유압 모터 테스트 실무 습득 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "두산",
+        "sector": "두산 로지스틱스 솔루션 (스마트 물류 자동화 설비 셋업 및 정비)",
+        "company_size": "대기업 계열",
+        "main_business_products": "자동창고(AS/RS), 무인이송차(AGV/AMR), 물류 센터 자동 분류/제어 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "메카트로닉스과",
+            "로봇과",
+            "기계과",
+            "정보통신과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "생산자동화기능사",
+            "설비보전기능사",
+            "정보처리기능사",
+            "지게차운전기능사",
+            "컨베이어/AMR 제어반 유지보수 능력"
+        ],
+        "core_talent_keywords": [
+            "스마트 물류",
+            "기술 집행",
+            "고객 가치",
+            "안전"
+        ],
+        "organizational_culture": "전국 주요 스마트 물류 센터 현장 기반의 유연한 설치·시운전 및 예방 점검 기술 중심 조직",
+        "employee_review_summary": "물류 자동화 시장 성장에 따른 시운전 및 트러블슈팅 전문가 성장 가능성 제공. 현장 응구 복구 역량 중요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데케미칼 (석유화학, 기초소재 및 첨단소재 플랜트 운전·보전)",
+        "company_size": "대기업",
+        "main_business_products": "에틸렌, 프로필렌, ABS, PC(폴리카보네이트), 고기능성 첨단 소재, 수소/단백질 신소재",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "대형 화학 플랜트 DCS 공정제어 및 도면 해독"
+        ],
+        "core_talent_keywords": [
+            "오늘을 새롭게 내일을 이롭게",
+            "안전보건(SHE) 최우선",
+            "정도경영",
+            "도전"
+        ],
+        "organizational_culture": "여수, 대산, 울산 등 대형 석유화학 단지 중심의 철저한 안전 작업 준수 및 4조 3교대 현장 밀착 문화",
+        "employee_review_summary": "그룹 내 상위권 처우와 탄탄한 복리후생. 교대근무에 따른 높은 수당 및 대형 플랜트 화학 반응 제어 기술 습득 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,600만 원 수준 (교대수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데칠성음료 (음료 및 주류 제조, 충진·포장 자동화 라인 보전)",
+        "company_size": "대기업",
+        "main_business_products": "칠성사이다, 펩시, 칠성주류(처음처럼, 클라우드, 여울), 생수 및 기능성 음료",
+        "preferred_majors": [
+            "전기과",
+            "기계과",
+            "식품가공과",
+            "메카트로닉스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "식품가공기능사",
+            "화학분석기능사",
+            "고속 충진(Bottling) 및 포장 설비 예방 정비"
+        ],
+        "core_talent_keywords": [
+            "고객 중심",
+            "품질 신뢰",
+            "현장 실행력",
+            "협력"
+        ],
+        "organizational_culture": "안성, 대전, 충주, 강릉 등 전국 주요 공장 중심의 위생 및 HACCP 표준 철저 준수 현장 분위기",
+        "employee_review_summary": "탄탄한 음료·주류 내수 시장 기반의 높은 고용 안정성. 자동화 라인 트러블슈팅 및 위생 관리 역량이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데웰푸드 (제과, 제빵, 육가공, 빙과 제조 및 설비 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "빼빼로, 자일리톨, 설레임, 의성마늘햄, 파스퇴르 우유, 제과/육가공 제품",
+        "preferred_majors": [
+            "식품가공과",
+            "기계과",
+            "전기과",
+            "메카트로닉스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "식품가공기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "위험물기능사",
+            "자동 포장 및 성형 라인 조작 역량"
+        ],
+        "core_talent_keywords": [
+            "건강과 행복",
+            "품질 경쟁력",
+            "기본 준수",
+            "소통"
+        ],
+        "organizational_culture": "영등포, 김천, 양산, 횡성 공장 중심의 식품 안전·위생 기준 중심 현장 문화",
+        "employee_review_summary": "통합 롯데웰푸드 출범 후 생산 시스템 효율화 진행 중. 식품 제조 라인 자동화 장비 및 냉동/성형 설비 보전 직무 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데에너지머티리얼즈 (2차전지 핵심소재 동박(Elecfoil) 제조)",
+        "company_size": "대기업",
+        "main_business_products": "2차전지용 초극박 Elecfoil(동박), 음극 집전체 소재, 차세대 전고체 소재",
+        "preferred_majors": [
+            "금속과",
+            "재료공정과",
+            "화학공업과",
+            "전기과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "전해도금 및 슬리팅 정밀 제어"
+        ],
+        "core_talent_keywords": [
+            "기술 초격차",
+            "도전",
+            "친환경 리더십",
+            "열정"
+        ],
+        "organizational_culture": "익산 공장 중심의 첨단 동박 제조 클린룸 환경, 마이크로 단위 정밀 두께 제어 및 수율 관리 강조",
+        "employee_review_summary": "롯데그룹 편입 후 배터리 소재 핵심 기업으로 육성 중. 초극박 도금 및 정밀 공정 메인테넌스 기술자 성장 가능성 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데이노베이트 (구 롯데정보통신 - IT 데이터센터 및 스마트팩토리 관제)",
+        "company_size": "대기업",
+        "main_business_products": "그룹 데이터센터 관제, 스마트팩토리 공장자동화(MES), 산업용 IT/OT 통신 인프라",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "통신과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "전기기능사",
+            "컴퓨터활용능력 1/2급",
+            "서버/네트워크 및 모니터링 시스템 운용"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "전문성",
+            "고객 가치",
+            "상생"
+        ],
+        "organizational_culture": "가산, 용인 데이터센터 및 주요 계열사 IT 관제센터 중심의 수평적이고 정돈된 오피스 환경",
+        "employee_review_summary": "그룹 디지털 전환(DX) 핵심 주도 계열사. IT 네트워크 및 데이터센터 현장 관제 직무 중심의 쾌적한 근무 여건.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데글로벌로지스 (스마트 물류센터 자동화 설비 및 물류 관제)",
+        "company_size": "대기업",
+        "main_business_products": "진천 메가허브 물류센터 운용, 컨베이어/소터 자동화 설비, 택배 및 SCM 물류 솔루션",
+        "preferred_majors": [
+            "물류과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "지게차운전기능사",
+            "정보처리기능사",
+            "WMS 및 자동 분류기(Sorter) 유지보수"
+        ],
+        "core_talent_keywords": [
+            "물류 혁신",
+            "안전 우선",
+            "속도와 정확성",
+            "협력"
+        ],
+        "organizational_culture": "진천, 동탄, 평택 등 스마트 메가허브 물류센터 현장 기반의 24시간 실시간 물류 관제 및 정비 체계",
+        "employee_review_summary": "국내 초대형 메가허브 풀필먼트 센터 보유. 물류 자동화 컨베이어, AGV, 센서 정비 엔지니어 기술 습득 기회 확보.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데건설 (플랜트, 건축 현장 전기/설비 시공 및 안전관리)",
+        "company_size": "대기업",
+        "main_business_products": "석유화학 플랜트 시공, 대형 주거/상업시설(롯데캐슬 등) 건축, 전기·기계 설비 현장",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "배관기능사",
+            "CAD 도면 해독 및 현장 작업 안전 관제"
+        ],
+        "core_talent_keywords": [
+            "품질 제로 결함",
+            "안전 무재해",
+            "도전",
+            "소통"
+        ],
+        "organizational_culture": "전국 건설 및 플랜트 현장 중심의 철저한 안전보건 표준과 현장 시공 매뉴얼 엄수 문화",
+        "employee_review_summary": "현장 근무 시 숙식 및 현장 가산 수당 지급으로 실수령액 우수. 건설/플랜트 현장 전기 및 배관 시공 실무 체득.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "롯데",
+        "sector": "롯데쇼핑 / 롯데GRS (대형 유통 시설 및 외식 사업장 전기·기계 시설관리)",
+        "company_size": "대기업",
+        "main_business_products": "롯데백화점, 롯데마트, 롯데월드타워, 롯데리아/엔제리너스 사업장 시설 및 빌딩 관리",
+        "preferred_majors": [
+            "전기과",
+            "기계과",
+            "설비과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "공조냉동기계기능사",
+            "가스기능사",
+            "빌딩 자동제어 및 냉난방 설비 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "고객 안정",
+            "시설 안전",
+            "친절 매너",
+            "책임감"
+        ],
+        "organizational_culture": "전국 주요 백화점, 마트, 복합쇼핑몰 내 방재실/설비실 중심의 시설 안전 점검 및 원활한 영업 지원 문화",
+        "employee_review_summary": "안정적인 대형 빌딩 및 유통 시설 내 상주 근무. 공조, 수변전, 소방 설비 점검 위주의 쾌적한 관리 업무.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,400만 원 수준"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS칼텍스 (정유, 석유화학, 윤활유 생산 공정 운전 및 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "휘발유, 경유, 항공유, 석유화학 기초유분(PX, 벤젠), 윤활유, 수소/바이오 연료",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "계측제어과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "DCS 공정 모니터링 및 4조 2교대 적응력"
+        ],
+        "core_talent_keywords": [
+            "GSC Way",
+            "조화와 역동성",
+            "안전보건(SHE) 최우선",
+            "유연성과 민첩성"
+        ],
+        "organizational_culture": "여수 정유/석유화학 단지 중심의 업계 최고 수준 안전보건 철학, 4조 2교대 기반의 상호 존중과 단합 중심 문화",
+        "employee_review_summary": "정유업계 최고 수준의 초임 및 성과급 지급, 정년 보장 기조와 주거 지원·의료비 등 압도적인 복리후생 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,900만 원 ~ 4,300만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,800만 원 ~ 7,800만 원 이상 (교대수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS EPS (LNG 복합화력, 바이오매스 민간 발전 설비 운전 및 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "LNG 복합화력 전력, 바이오매스 전력, 재생에너지, 전력 거래",
+        "preferred_majors": [
+            "전기과",
+            "기계과",
+            "전자과",
+            "가스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "가스기능사",
+            "위험물기능사",
+            "고압 발전 터빈 및 수변전 설비 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "친환경 발전",
+            "최고의 기술력",
+            "무재해 현장",
+            "도전과 창의"
+        ],
+        "organizational_culture": "당진 발전소 중심의 소수 정예 고효율 운영 체계, 안전 관리와 설비 예방 보전을 최우선하는 분위기",
+        "employee_review_summary": "민간 발전사 중 최고 수준의 복리후생과 높은 평균 연봉. 발전 설비 제어 및 계장/전기 정비 기술 습득 유망.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,800만 원 ~ 4,200만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,200만 원 ~ 6,800만 원 수준"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS건설 (플랜트, 건축, 토목 현장 전기·설비 시공 및 안전관리)",
+        "company_size": "대기업",
+        "main_business_products": "석유화학/에너지 플랜트 시공, 대형 주거 브랜드(자이), 인프라 건설, 전기/기계 설비 시공",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "CAD 도면 해독 및 현장 작업 안전 관제"
+        ],
+        "core_talent_keywords": [
+            "자이(Xi) 브랜드 신뢰",
+            "안전 무재해",
+            "변화와 혁신",
+            "소통"
+        ],
+        "organizational_culture": "전국 플랜트 및 건설 현장 중심의 철저한 안전보건(CSSO) 지침 준수 및 시공 매뉴얼 이행 분위기",
+        "employee_review_summary": "현장 근무 시 숙식 제공 및 현장 수당 지급으로 실수령액 우수. 대형 건설 현장 전장 및 배관 관제 실무 경험 확보.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,400만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS엔텍 (해상풍력 하부구조물 및 대형 화학 플랜트 기기 용접·가공)",
+        "company_size": "대기업 계열",
+        "main_business_products": "해상풍력 하부구조물(모노파일), 석유화학 대형 반응기, 압력용기, 열교환기",
+        "preferred_majors": [
+            "용접과",
+            "기계과",
+            "금속과",
+            "재료공정과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "특수용접기능사",
+            "용접기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "금속재료기능사",
+            "대형 용접 품질 검사 역량"
+        ],
+        "core_talent_keywords": [
+            "친환경 해상풍력",
+            "품질 완벽주의",
+            "기술 전문성",
+            "안전"
+        ],
+        "organizational_culture": "울산 사업장 중심의 초대형 모노파일 및 용기 제작 노하우 베이스, 기술 숙련도 중심의 현장 문화",
+        "employee_review_summary": "해상풍력 사업 전환을 통한 높은 미래 성장 가능성. 대형 강구조물 자동 용접 및 비파괴 검사 기술자 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS네트웍스 (GS리테일 스마트 물류센터 자동화 설비 보전 및 물류 관제)",
+        "company_size": "대기업 계열",
+        "main_business_products": "GS25 및 GS더프레시 전국 물류망 운영, 자동 분류기(Sorter), Cold Chain 물류 설비, WMS",
+        "preferred_majors": [
+            "물류과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "지게차운전기능사",
+            "정보처리기능사",
+            "자동화 물류 컨베이어 및 냉동/냉장 설비 유지보수"
+        ],
+        "core_talent_keywords": [
+            "물류 정시성",
+            "안전 최우선",
+            "고객 만족",
+            "현장 실행"
+        ],
+        "organizational_culture": "전국 거점 물류센터 중심의 24시간 끊임없는 물류 관제 및 예방 정비 시스템 운용",
+        "employee_review_summary": "GS리테일 유통 망과 연계된 안정적인 물류 물량 보유. 물류 센터 자동화 기기 및 센서 트러블슈팅 능력 요구.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "GS",
+        "sector": "GS파워 (집단에너지·열병합발전소 전기/기계 설비 운용 및 보전)",
+        "company_size": "대기업 계열",
+        "main_business_products": "집단에너지(지역난방/냉방), 열병합발전 전력, 친환경 에너지 솔루션",
+        "preferred_majors": [
+            "전기과",
+            "기계과",
+            "가스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "가스기능사",
+            "공조냉동기계기능사",
+            "열병합 배관 및 열교환기 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "깨끗한 에너지",
+            "안전 절대주의",
+            "기술 최고",
+            "상생"
+        ],
+        "organizational_culture": "안양, 부천 사업장 중심의 수도권 핵심 집단에너지 공급 기지, 정돈되고 안정적인 기지 점검 분위기",
+        "employee_review_summary": "수도권 지역난방 독점적 지위 기반의 매우 높은 고용 안정성 및 정년 보장 기조. 교대 근무 및 시설 점검 유망.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,000만 원 수준"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "효성중공업 (초고압 변압기·차단기 제조, 중전기 가공/용접 및 전력 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "초고압 변압기, 차단기, ESS(에너지저장장치), STATCOM, 전동기, 감속기, 수소충진소 인프라",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "기계과",
+            "용접과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "특수용접기능사",
+            "용접기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "초고압 절연 구조 이해 및 수전반 배선 역량"
+        ],
+        "core_talent_keywords": [
+            "최고의 기술",
+            "최고 품질",
+            "고객 신뢰",
+            "안전 최우선",
+            "효성인상"
+        ],
+        "organizational_culture": "창원, 안양 사업장 중심의 중전기 및 변압기 정밀 제조 기술 도제식 전수 문화, 완벽 품질 철학 강조",
+        "employee_review_summary": "글로벌 전력 인프라 교체 주기 도래로 인한 실적 성장세. 대형 변압기 정밀 권선 및 특수 용접 숙련 기술자 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,700만 원 수준 (성과급 및 잔업 수당 포함 시)"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "효성티앤씨 (세계 1위 스판덱스 및 나일론/폴리에스터 화학섬유 중합·방사)",
+        "company_size": "대기업",
+        "main_business_products": "스판덱스(크레오라), 나일론/폴리에스터 원사, 리사이클 섬유(리젠), 친환경 고분자 소재",
+        "preferred_majors": [
+            "화학공업과",
+            "섬유과",
+            "기계과",
+            "전기과",
+            "신소재과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "연속 중합 및 방사 고속 노즐 점검 능력"
+        ],
+        "core_talent_keywords": [
+            "글로벌 1위 자부심",
+            "혁신과 도전",
+            "안전보건(SHE)",
+            "고객 만족"
+        ],
+        "organizational_culture": "구미, 울산 사업장 중심의 4조 3교대 현장 밀착 운용, 24시간 끊임없는 유기화학 반응 및 방사 설비 관제 문화",
+        "employee_review_summary": "세계 시장 점유율 1위 스판덱스 브랜드를 보유한 기술력. 섬유 중합 공정 컨트롤 및 방사 유닛 메인테넌스 기술 습득 기회 확보.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,800만 원 수준"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "효성화학 (PP, NF3 특수가스 및 석유화학 플랜트 공정 운전·보전)",
+        "company_size": "대기업",
+        "main_business_products": "PP(폴리프로필렌), DH, TPA, NF3(반도체/디스플레이 세정용 특수가스), TAC 필름",
+        "preferred_majors": [
+            "화학공업과",
+            "가스과",
+            "전기과",
+            "기계과",
+            "계측제어과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "고압가스 및 화학 반응기 안전 관리 자격"
+        ],
+        "core_talent_keywords": [
+            "안전 최우선",
+            "기술 전문성",
+            "정직",
+            "지속가능성"
+        ],
+        "organizational_culture": "울산 용연, 청주 사업장 중심의 엄격한 화학물질 취급 기준 및 고압가스 무재해 현장 수칙 이행 문화",
+        "employee_review_summary": "화학 플랜트 DCS 제어 및 위험물 안전 관리 직무 수행. 교대 근무에 따른 야간/시간외 수당 및 탄탄한 고용 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,200만 원 수준"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "HS효성첨단소재 (타이어코드, 탄소섬유, 아라미드 최첨단 신소재 제조)",
+        "company_size": "대기업",
+        "main_business_products": "PET/NY/강선 타이어코드, 탄소섬유(탄섬), 아라미드(알케스타), 에어백용 원단, 카매트",
+        "preferred_majors": [
+            "신소재과",
+            "화학공업과",
+            "기계과",
+            "전기과",
+            "섬유과"
+        ],
+        "required_competencies_certifications": [
+            "위험물기능사",
+            "화학분석기능사",
+            "금속재료기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "초고성능 복합소재 소성 및 품질 검사 역량"
+        ],
+        "core_talent_keywords": [
+            "첨단 소재 리더십",
+            "최고 품질",
+            "집념",
+            "안전"
+        ],
+        "organizational_culture": "전주, 울산, 언양 공장 중심의 탄소섬유/아라미드 초격차 기술 제조 환경 및 정밀 모니터링 문화",
+        "employee_review_summary": "우주항공·수소용기용 탄소섬유 및 고성능 타이어코드 분야 경쟁력 보유. 미세 불량 제어 및 설비 수율 관리 우수.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "효성굿스프링스 (산업용·발전용 대형 펌프 제조, 정밀 가공 및 시험 운용)",
+        "company_size": "대기업 계열",
+        "main_business_products": "원자력/화력 발전소용 대형 펌프, 석유화학 플랜트용 펌프, 해수담수화 펌프, 건물용 소방 펌프",
+        "preferred_majors": [
+            "기계과",
+            "금형과",
+            "메카트로닉스과",
+            "전기과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "대형 회전기계 균형(Balancing) 및 유압 정밀 가공 역량"
+        ],
+        "core_talent_keywords": [
+            "펌프 기술 전문성",
+            "품질 완벽주의",
+            "실행력",
+            "소통"
+        ],
+        "organizational_culture": "창원 공장 중심의 국내 1위 대형 산업용 펌프 제작 가공 및 시운전/성능 테스트 중심 실무 현장",
+        "employee_review_summary": "산업용 특수 펌프 분야 독보적 기술력 확보 가능. 회전기계 정밀 가공 및 시험 점검 엔지니어로서 성장성 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "효성",
+        "sector": "효성ITX (IT 인프라 관제, 스마트팩토리 솔루션 및 데이터/사무 지원)",
+        "company_size": "대기업 계열",
+        "main_business_products": "클라우드 IT 인프라 구축, 컨택센터 솔루션, 스마트팩토리 IoT 관제, DX 데이터 관리",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "경영정보과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보통신기능사",
+            "서버/네트워크 및 OA 패키지 우수한 활용 능력"
+        ],
+        "core_talent_keywords": [
+            "고객 만족",
+            "디지털 혁신",
+            "신뢰",
+            "원팀 정신"
+        ],
+        "organizational_culture": "서울 본사 및 전국 주요 거점 센터 중심의 정돈되고 유연한 오피스/서버 관제실 환경",
+        "employee_review_summary": "효성그룹 IT/비즈니스 솔루션 담당 계열사. 정시 퇴근 중심의 안정적 근무 여건과 쾌적한 작업 오피스 만족도 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,200만 원 ~ 3,500만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,800만 원 ~ 4,400만 원 수준"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ제일제당 식품부문 (식품 제조, HMR/가공식품 생산 및 고속 포장 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "햇반, 비비고 만두, 스팸, 가공식품, 냉동/냉장식품, 양념/소류",
+        "preferred_majors": [
+            "식품가공과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "식품가공기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "위험물기능사",
+            "HACCP 위생 표준 준수 및 충진/포장 자동화 라인 보전 역량"
+        ],
+        "core_talent_keywords": [
+            "ONLYONE(최초·최고·차별화)",
+            "식문화 글로벌화",
+            "정직과 열정",
+            "안전 최우선"
+        ],
+        "organizational_culture": "진천 블라썸파크, 진천/진천2공장, 양산, 부산, 진천 스마트팩토리 중심의 철저한 위생 및 품질 관리 중심 분위기",
+        "employee_review_summary": "국내 K-푸드 대표기업으로서의 자부심과 우수한 사내 복지(씨제이님 호칭 문화, 계열사 할인 혜택). 교대 근무 수당 지급으로 안정적 연봉 형성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준 (교대수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ제일제당 BIO사업부문 (친환경 미생물 발효, 사료용 아라미드/아미노산 공정 및 설비)",
+        "company_size": "대기업",
+        "main_business_products": "라이신, 트레오닌, 핵산, 친환경 플라스틱(PHA), 그린 바이오 소재",
+        "preferred_majors": [
+            "화학공업과",
+            "신소재과",
+            "전기과",
+            "기계과",
+            "계측제어과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "가스기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "대형 미생물 발효조 및 추출/정제 화학 공정 관리 능력"
+        ],
+        "core_talent_keywords": [
+            "ONLYONE 기술력",
+            "친환경 바이오",
+            "도전 정신",
+            "지속가능성"
+        ],
+        "organizational_culture": "인천, 군산 사업장 중심의 정밀 바이오 화학 반응기 모니터링 및 안전 표준(SHE) 철저 준수 현장 문화",
+        "employee_review_summary": "글로벌 바이오 기술력 기반의 견고한 입지. 대형 발화/정제 공정 컨트롤러 및 설비 트러블슈팅 기술 습득에 유리함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,000만 원 수준"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ대한통운 물류부문 (스마트 메가허브 물류 센터, 자동 분류기(Sorter) 및 컨베이어 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "곤지암 메가허브 터미널 운영, 전국 택배/풀필먼트, 휠소터 및 자동화 물류 시스템",
+        "preferred_majors": [
+            "물류과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "지게차운전기능사",
+            "정보처리기능사",
+            "자동화 휠소터 및 센서 관제 역량"
+        ],
+        "core_talent_keywords": [
+            "물류 혁신",
+            "고객 신뢰",
+            "무재해 현장",
+            "실행력"
+        ],
+        "organizational_culture": "곤지암 메가허브 및 전국 주요 스마트 물류 센터 기반의 24시간 중단 없는 물류 시스템 운영 및 예방 보전 문화",
+        "employee_review_summary": "국내 1위 종합물류기업으로서 첨단 자동화 물류 설비 인프라 경험 우수. 설비 비가동 방지를 위한 예방 정비 중요.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ올리브네트웍스 (그룹 IT 데이터센터 관제, 네트워크 인프라 및 스마트팩토리 MES/OT)",
+        "company_size": "대기업",
+        "main_business_products": "그룹 통합 IT 데이터센터 관제, 스마트팩토리 공장자동화 시스템(MES), 산업용 네트워크",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "통신과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "전기기능사",
+            "컴퓨터활용능력 1/2급",
+            "서버/네트워크 트래픽 모니터링 및 DB 기초 능력"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "ONLYONE DX",
+            "고객 가치",
+            "협력"
+        ],
+        "organizational_culture": "송도 데이터센터 및 본사 오피스 중심의 수평적이고 쾌적한 전산 오피스/서버 관제실 근무 분위기",
+        "employee_review_summary": "CJ그룹 IT 전담 계열사로서 '님' 호칭 문화 등 수평적 직장 분위기 우수. 데이터센터 및 IT 모니터링 직무의 근무 환경 만족도 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ푸드빌 (베이커리/외식 센트럴키친 대량 생산 및 성형/성상 설비 메인테넌스)",
+        "company_size": "대기업",
+        "main_business_products": "뚜레쥬르 완제품/반제품 빵, 빕스/외식 RMR 밀키트, 센트럴키친 제조",
+        "preferred_majors": [
+            "식품가공과",
+            "기계과",
+            "전기과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "식품가공기능사",
+            "제빵기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "대형 오븐 및 자동 냉동/발효 라인 제어 역량"
+        ],
+        "core_talent_keywords": [
+            "식문화 선도",
+            "품질 엄수",
+            "고객 기쁨",
+            "열정"
+        ],
+        "organizational_culture": "음성 센트럴키친 공장 중심의 HACCP 식품 안전 철칙 이행 및 쾌적한 위생 공장 체계",
+        "employee_review_summary": "뚜레쥬르 글로벌 확장 및 K-베이커리 성장에 따른 안정적 유통망 보유. 베이커리 자동화 성형 라인 수율 관리 우대.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ대한통운 건설부문 (플랜트, 리조트 및 건축 현장 전기/설비 시공·안전)",
+        "company_size": "대기업",
+        "main_business_products": "식품/물류 플랜트 시공, 대형 건축물, 리조트, 전기/기계 설비 시공",
+        "preferred_majors": [
+            "건축과",
+            "토목과",
+            "전기과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "CAD 도면 해독 및 현장 안전 관제"
+        ],
+        "core_talent_keywords": [
+            "안전 무재해",
+            "스마트 시공",
+            "품질 가치",
+            "소통"
+        ],
+        "organizational_culture": "전국 플랜트 및 건축 현장 중심의 작업 시공 가이드라인 준수 및 안전 작업 철칙 이행 문화",
+        "employee_review_summary": "현장 근무 시 숙식 제공 및 현장 가산 수당 지급으로 실 수령액 양호. 대형 물류/식품 플랜트 전장 시공 경험 확보.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준 (현장 수당 포함 시)"
+        }
+    },
+    {
+        "company": "CJ",
+        "sector": "CJ씨푸드 (수산가공식품, 어묵/김/유부 제조 공정 및 포장 라인 보전)",
+        "company_size": "대기업 계열",
+        "main_business_products": "삼호어묵, CJ 김, 유부, 수산 가공 식품",
+        "preferred_majors": [
+            "식품가공과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "식품가공기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "위험물기능사",
+            "자동 포장기 및 성형기 예방 정비"
+        ],
+        "core_talent_keywords": [
+            "신선 안전",
+            "품질 보증",
+            "기본 준수",
+            "협력"
+        ],
+        "organizational_culture": "성남, 진천 수산가공 공장 중심의 신선도 관리 및 식품 안전 표준 이행 현장",
+        "employee_review_summary": "CJ제일제당 유통망 기반의 안정적 생산 체계. 식품 제조 위생 및 수산가공 공정 트러블슈팅 능력 요구.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "DB",
+        "sector": "DB하이텍 (시스템 반도체 파운드리 팹 생산 Operator 및 장비 설비 보전)",
+        "company_size": "대기업",
+        "main_business_products": "8인치 웨이퍼 시스템 반도체(PMIC, CIS, Display Driver IC, BCDMOS) 파운드리 제조",
+        "preferred_majors": [
+            "반도체과",
+            "전자과",
+            "전기과",
+            "메카트로닉스과",
+            "기계과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "생산자동화기능사",
+            "크린룸 방진복 착용 및 4조 3교대 근무 적응력"
+        ],
+        "core_talent_keywords": [
+            "창의와 도전정신",
+            "전문성",
+            "신뢰와 화합",
+            "품질 무결점",
+            "안전"
+        ],
+        "organizational_culture": "부천 및 음성(상우) 캠퍼스 중심의 최첨단 반도체 크린룸 공정 운영, 마이스터고 생산직 연계 채용 활성화 및 정밀 품질 검사 철저",
+        "employee_review_summary": "파운드리 반도체 호황 시 성과급 비중이 높으며, 쾌적한 크린룸 환경과 마이스터고 출신 기술 인재 육성 프로그램 운영으로 고용 안정성이 우수함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,800만 원 수준 (4조 3교대 수당, 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "DB",
+        "sector": "DB메탈 (합금철 및 초저탄소 합금철 제조, 전기로 및 금속 설비 운용·정비)",
+        "company_size": "대기업 계열",
+        "main_business_products": "페로망간(FeMn), 실리코망간(SiMn), 초저탄소 합금철(ULC FeMn), 금속 분말 및 중화학 소재",
+        "preferred_majors": [
+            "금속과",
+            "재료공정과",
+            "기계과",
+            "전기과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "기계정비기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "위험물기능사",
+            "전기로 및 용융 금속 취급 안전 수칙 이행"
+        ],
+        "core_talent_keywords": [
+            "창의와 도전",
+            "전문성",
+            "신뢰와 화합",
+            "안전 절대주의",
+            "현장 실천"
+        ],
+        "organizational_culture": "동해 사업장 중심의 국내 1위 합금철 제조 노하우, 전통적 현장 기술 중시 문화 및 무재해 안전 수칙 강조",
+        "employee_review_summary": "철강/금속 소재 원천 기술력 기반의 견고한 고용 안정성. 전기로 및 금속 열처리 설비 메인테넌스 전문가로서의 직무 성장성 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,500만 원 수준"
+        }
+    },
+    {
+        "company": "DB",
+        "sector": "DB Inc. IT부문 (그룹 IT 데이터센터 관제, 스마트팩토리 MES/OT 및 전산 지원)",
+        "company_size": "대기업",
+        "main_business_products": "그룹 통합 IT 서비스, 데이터센터 관제, 스마트팩토리 공장자동화(MES), IT 인프라 운영",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "통신과",
+            "전기과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "정보통신기능사",
+            "전기기능사",
+            "컴퓨터활용능력 1/2급",
+            "서버/네트워크 및 IT 모니터링 시스템 기초 운용"
+        ],
+        "core_talent_keywords": [
+            "창의와 도전",
+            "IT 기술 리더십",
+            "고객 가치",
+            "협력과 화합"
+        ],
+        "organizational_culture": "서울 강남 본사 및 용인 데이터센터 중심의 정돈되고 유연한 IT 관제실/오피스 근무 환경",
+        "employee_review_summary": "DB그룹 전체의 IT 인프라 및 스마트팩토리 관제를 총괄. 쾌적한 오피스 근무 환경과 안정적인 고용 여건 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "DB",
+        "sector": "DB손해보험 / DB생명 / DB금융계열 (금융 사무지원, 보상/심사 지원 및 금융 IT 관제)",
+        "company_size": "대기업",
+        "main_business_products": "손해보험(자동차/장기/인보험), 생명보험, 금융 서비스, 고객 보상/심사 및 금융 데이터 관리",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "소프트웨어과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "전산 세무/회계 및 정확한 문서/데이터 처리 능력"
+        ],
+        "core_talent_keywords": [
+            "신뢰와 화합",
+            "고객 가치",
+            "솔선수범",
+            "자율과 책임",
+            "도덕성"
+        ],
+        "organizational_culture": "서울 본사 및 전국 주요 거점 보상센터/지점 중심의 성실성과 정확성을 중시하는 도덕적·수평적 오피스 문화",
+        "employee_review_summary": "손해보험 업계 최상위권 수익성 기반의 뛰어난 복리후생. 고졸 사무/보상지원 직무 입사 시 정시 퇴근 및 안정적 복지 만족도 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "LIG넥스원",
+        "sector": "정밀유도무기(PGM), 방산전자·레이다, 전술통신(C4I) 및 무기체계 MRO/설비보전",
+        "company_size": "대기업",
+        "main_business_products": "신궁·천궁·현궁·해궁·비궁 등 정밀유도무기, AESA 레이다, 잠수함/함정용 소나(SONAR) 체계, TICN 전술통신체계, 군용 무전기, 무기체계 MRO(창정비)",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "통신과",
+            "항공과",
+            "소프트웨어과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "설비보전기능사",
+            "정보통신기능사",
+            "생산자동화기능사",
+            "도면 해독, 정밀 조립, SMT/납땜, RF/회로 측정 역량"
+        ],
+        "core_talent_keywords": [
+            "개방(OPEN)",
+            "긍정(POSITIVE)",
+            "변화와 혁신",
+            "열정과 집념",
+            "안전 및 보안 준수"
+        ],
+        "organizational_culture": "구미, 용인, 판교 사업장 중심의 초정밀 방산 무기/전자 제조 체계, 완벽한 품질 철학 및 엄격한 국가 보안·작업 안전 준수 문화",
+        "employee_review_summary": "K-방산 수출 호조에 따른 성과급 및 복리후생 상승세. 강력한 고용 안정성과 구미/용인 거점 최고 수준의 고졸 엔지니어 우대 및 처우 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,500만 원 수준 (상여, 교대수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국항공우주산업 (KAI)",
+        "sector": "군용·민항 완제기 제조, 항공 기체 구조물 정밀 가공 및 조립, 우주 발사체/위성 체계종합, 항공 MRO 및 설비 메인테넌스",
+        "company_size": "대기업",
+        "main_business_products": "KF-21(보라매), FA-50, T-50 고등훈련기, 수리온(KUH), LAH(소형무장헬기), 민항기 기체 구조물(B787/A350 날개 등), 누리호 추진제 탱크 및 위성 체계종합",
+        "preferred_majors": [
+            "기계과",
+            "항공과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "용접과",
+            "금속과",
+            "정보통신과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "항공기정비기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "특수용접기능사",
+            "항공 도면 해독, 정밀 치수 가공, 와이어링 배선, 복합소재 결합 및 체계 조립 역량"
+        ],
+        "core_talent_keywords": [
+            "창조(CREATION)",
+            "도전(CHALLENGE)",
+            "협동(COOPERATION)",
+            "기술에 대한 도전과 혁신",
+            "고객에 대한 신뢰와 존중"
+        ],
+        "organizational_culture": "경상남도 사천 본사 및 사업장 중심의 독보적 완제기 체계종합 노하우, 완벽 품질 철학 및 엄격한 항공 품질·작업 안전 수칙 준수 문화",
+        "employee_review_summary": "KF-21 체계 개발 완료 및 본격 양산, FA-50 수출 호조에 따른 독보적인 자부심 보유. 경남 사천 지역 내 최상위 수준의 처우, 우수한 기숙사·복리후생 및 높은 고용 안정성 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,700만 원 ~ 4,000만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 5,000만 원 ~ 6,800만 원 수준 (상여, 교대/특근 수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "대한항공",
+        "sector": "항공기 정비(MRO), 항공우주(무인기·군용기 창정비 및 기체 구조물 제조), 지상 설비 메인테넌스",
+        "company_size": "대기업",
+        "main_business_products": "항공기 정비/개조(MRO), B787/A350 민항기 기체 구조물(복합소재 날개 등), 군용기 창정비, 무인기 체계 개발 및 항공 운송 지상 지원",
+        "preferred_majors": [
+            "항공과",
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "통신과"
+        ],
+        "required_competencies_certifications": [
+            "항공기정비기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "설비보전기능사",
+            "항공 정비 매뉴얼(AMM) 해독, 정밀 조립, 와이어링 배선 및 계측 역량"
+        ],
+        "core_talent_keywords": [
+            "Professional & Responsible(전문성과 책임감)",
+            "Caring & Collaborative(상호존중과 협력)",
+            "Proactive & Challenging(주도적 열정과 도전)",
+            "안전 최우선"
+        ],
+        "organizational_culture": "인천/김포공항 정비 현장 및 부산 항공우주사업본부(테크센터) 중심의 엄격한 항공 안전 감수성, 철저한 작업 매뉴얼 이행 및 전문 정비 기술 문화",
+        "employee_review_summary": "국내 1위 국적 항공사로서 높은 자부심과 임직원 항공권 할인 등 유일무이한 복지 혜택. 부산 테크센터 및 공항 정비 라인에서의 우수한 고용 안정성과 정비 엔지니어 성장성 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,800만 원 ~ 6,400만 원 수준 (상여, 교대/야간 수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "풍산",
+        "sector": "신동사업(동 및 동합금 소재 제조), 방산사업(소형~대형 탄약 및 방산 부품 제조), 생산 설비 보전 및 품질 관리",
+        "company_size": "대기업",
+        "main_business_products": "동 및 동합금 판·대·관·봉·선, 동전용 소포, 소형/중형/대형 탄약, 박격포탄, 함포탄, 유도무기 탄두 및 화약/탄약 부품",
+        "preferred_majors": [
+            "금속과",
+            "재료공정과",
+            "기계과",
+            "화학공업과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "금속재료기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "위험물기능사",
+            "화학분석기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "가스기능사",
+            "압연/단조 공정 도면 해독, 화약 취급 및 무재해 안전 수칙 준수 역량"
+        ],
+        "core_talent_keywords": [
+            "도전(Challenge)",
+            "창의(Create)",
+            "변화(Change)",
+            "확인(Confirm)",
+            "소통(Communicate)"
+        ],
+        "organizational_culture": "울산사업장(신동 소재) 및 경주 안강/부산사업장(방산 탄약) 중심의 엄격한 무재해 안전보건 수칙 준수, 화약류 취급 표준 엄수 및 현장 기술 숙련도 중시 문화",
+        "employee_review_summary": "국내 비철금속 신동 분야 및 방산 탄약 분야의 독점적 시장 지위 기반 높은 고용 안정성과 정년 보장 기조. 방산 수출 호조로 인한 성과급 및 울산/경주 지역 내 우수한 처우 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 6,000만 원 수준 (상여, 교대/야간 수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "SNT모티브",
+        "sector": "자동차용 모터·전장 부품 제조, 방위산업 소구경 화기(소총·기관총) 정밀 가공/조립 및 설비 메인테넌스",
+        "company_size": "중견기업",
+        "main_business_products": "친환경차/내연기관용 모터(구동모터, HSG 등), 파워트레인 부품, 전장부품, 소구경 화기류(K1A, K2C1, K15, K16, STC-16 등 방산 소총/기관총), 현가장치",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "자동차과",
+            "금형과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "자동차정비기능사",
+            "CNC 정밀 치수 가공, 모터 배선/검사, 치공구 활용 및 정밀 화기 조립 역량"
+        ],
+        "core_talent_keywords": [
+            "성실(FAITHFULNESS)",
+            "도전(CHALLENGE)",
+            "행동(ACTION)",
+            "직무 전문가",
+            "능력 중심"
+        ],
+        "organizational_culture": "부산 본사(기장) 중심의 정밀 기계가공 및 무기/모터 제조 독보적 노하우 체계, 철저한 국가 보안 규준 및 작업 안전 수칙 준수 문화",
+        "employee_review_summary": "부산/경남 지역 내 높은 근속연수와 강력한 고용 안정성을 자랑하는 대표 기업. 방산 화기 공급 및 전기차 모터 사업 호조에 따른 안정적인 성과급과 수당 혜택 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,800만 원 수준 (상여, 교대/야간 수당 및 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국전력공사",
+        "sector": "송배전 (전력계통 운영, 송변전·배전 설비 건설 및 예방 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "전력 수송 및 배전망 운영, 송변전/배전 설비 신증설, 전력계통 안정화, 스마트그리드 구축, 전력 설비 고장 긴급 복구",
+        "preferred_majors": [
+            "전기과",
+            "전력전기과",
+            "전기제어과",
+            "메카트로닉스과",
+            "에너지과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "전력 도면 해독, 배전 선로 점검, 활선/휴전 작업 안전 수칙 준수, NCS 직무능력"
+        ],
+        "core_talent_keywords": [
+            "기업가적 인재",
+            "통섭형 인재",
+            "전문가적 인재",
+            "가치창조적 인재",
+            "안전 최우선"
+        ],
+        "organizational_culture": "전국 지역 본부/지사 중심의 철저한 안전 작업 수칙 준수, 교대/당직 및 현장 가공·지중 선로 수리 도제식 기술 전수 문화",
+        "employee_review_summary": "대한민국 대표 공기업으로서 최고 수준의 고용 안정성과 정년 보장, 전국 순환 근무제 운영, 지사별 화목한 현장 분위기 및 우수한 복리후생 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준 (교대/당직 수당, 정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국전력공사",
+        "sector": "통신/ICT (전력 자가통신망 구축, 전력계통 통신 설비 운영 및 보안 관제)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "전력 제어용 자가 통신망(광통신/무선) 구축, 전력계통 통신 장비 운영, 정보보안 및 IT 네트워크 관제",
+        "preferred_majors": [
+            "통신과",
+            "정보통신과",
+            "전자과",
+            "소프트웨어과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "정보통신기능사",
+            "무선설비기능사",
+            "전자기기기능사",
+            "정보처리기능사",
+            "전기기능사",
+            "네트워크 라인 설치, 광케이블 접속 및 신호 측정 역량"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "전문가적 인재",
+            "통섭형 인재",
+            "신뢰와 협력"
+        ],
+        "organizational_culture": "본사 및 각 지역본부 ICT 운영 부서 중심의 유연하고 정돈된 전산/통신실 환경, 안정적인 시스템 운영 중심 문화",
+        "employee_review_summary": "전력 자가망 관리에 따른 전문 ICT 기술 습득 기회 제공. 쾌적한 근무 환경 및 높은 워라밸 만족도.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "한국전력공사",
+        "sector": "토목/건축 (변전소, 전력구, 송전철탑 건설 시공 관리 및 인프라 시설 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "변전소/지중전력구 건설 감독, 송전철탑 기초 토목 공사, 전력 인프라 건축물 유지를 위한 시공 및 시설 유지보수",
+        "preferred_majors": [
+            "토목과",
+            "건축과",
+            "전기과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "측량기능사",
+            "전기기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "CAD 도면 해독 및 토목/건축 현장 감리 지원 능력"
+        ],
+        "core_talent_keywords": [
+            "가치창조적 인재",
+            "안전 최우선",
+            "책임감",
+            "현장 실행력"
+        ],
+        "organizational_culture": "전력 인프라 건설 현장 및 건설지사 중심의 무재해 안전 수칙 준수, 시공 감리 매뉴얼 이행 체계",
+        "employee_review_summary": "국가 핵심 전력 인프라 구조물 현장 관리 경험 확보. 현장 출장 수당 지급 및 탄탄한 고용 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 4,900만 원 수준"
+        }
+    },
+    {
+        "company": "한국전력공사",
+        "sector": "사무 (전기사용 계약, 전기요금 수납·검침 관리, 고객 서비스 및 자재/행정 지원)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "전기사용 신청 접수 및 공급 계약, 전기요금 수납/조정, 고객 창구 응대, 자재 수급 및 경영 행정 지원",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "컴퓨터정보과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "한글/엑셀 실무 문서 작성 및 고객 서비스 마인드"
+        ],
+        "core_talent_keywords": [
+            "기업가적 인재",
+            "고객 가치",
+            "도덕성",
+            "상생 협력"
+        ],
+        "organizational_culture": "전국 지사 고객지원부/행정지원부 중심의 친절하고 체계적인 민원 처리 및 사무 행정 분위기",
+        "employee_review_summary": "내근 중심의 안정적인 근무 여건과 강력한 정년 보장. 고객 응대 및 정확한 데이터 행정 처리 능력이 중요함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국수력원자력",
+        "sector": "발전 - 기계 (원자력·수력·양수 발전소 기계 설비 운용 및 예방 정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "원자력 발전(APR1400 등), 수력 및 양수 발전, 발전용 펌프/터빈/배관 기계 설비 예방 보전 및 4조 2교대 정비",
+        "preferred_majors": [
+            "기계과",
+            "원자력과",
+            "메카트로닉스과",
+            "금속과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "특수용접기능사",
+            "원전 기계 도면 해독, 회전기계 균형 점검 및 교대근무 적응력, NCS 직무능력"
+        ],
+        "core_talent_keywords": [
+            "PRO(전문성)",
+            "RESPECT(존중)",
+            "SAFETY(안전 최우선)",
+            "TRUST(신뢰)",
+            "원전 안전 무결점"
+        ],
+        "organizational_culture": "고리, 한빛, 월성, 한울, 새울 발전소 중심의 철저한 원자력 안전 표준 엄수 및 교대근무 도제식 정비 전수 문화",
+        "employee_review_summary": "공기업 중 최고 수준의 고용 안정성과 뛰어난 연봉 체계. 발전소 교대 근무 수당 포함 시 입사 초기부터 높은 실수령액과 사택 지원 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준 (교대/방사선 수당, 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국수력원자력",
+        "sector": "발전 - 전기 (수전반, 발전기, 변전 및 전력 계통 제어 설비 운용)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "원자력/수력 발전기 전력 변환, 초고압 수전반 및 변전 설비 운영, 비상발전기 점검 및 전력계통 계통 연계",
+        "preferred_majors": [
+            "전기과",
+            "전력전기과",
+            "전기제어과",
+            "메카트로닉스과",
+            "에너지과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "전자기기기능사",
+            "설비보전기능사",
+            "전력 회로 계통도 해독, 차단기/변압기 예방 점검 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "SAFETY(안전)",
+            "PRO(전문성)",
+            "원자력 기술 자부심",
+            "책임감"
+        ],
+        "organizational_culture": "원자력 및 양수발전소 내 전기 정비실 중심의 24시간 중단 없는 전력 공급 및 정밀 전장 설비 관리 분위기",
+        "employee_review_summary": "발전소 전기 계통 관리 전문가로서의 기술 습득 기회 확보. 공기업 최상위권 복리후생 및 사택 제공 만족도가 매우 높음.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국수력원자력",
+        "sector": "발전 - 계측제어 (C&I 장비, 원자로 제어 계측 및 센서 계통 메인테넌스)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "원자로 제어 계통(MMIS), 발전소 자동화 제어 장비, 압력/온도/수위 정밀 센서 교정 및 제어반 유지보수",
+        "preferred_majors": [
+            "전자과",
+            "계측제어과",
+            "메카트로닉스과",
+            "반도체과",
+            "정보통신과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "전기기능사",
+            "생산자동화기능사",
+            "정보통신기능사",
+            "설비보전기능사",
+            "제어 계측 루프 점검 및 초정밀 전자 모듈 트러블슈팅 역량"
+        ],
+        "core_talent_keywords": [
+            "PRO(전문성)",
+            "정밀성",
+            "TRUST(신뢰)",
+            "안전 무결점"
+        ],
+        "organizational_culture": "원전 주제어실(MCR) 연계 계측제어실 중심의 초정밀 오차 불허 현장 체계 및 정돈된 작업 환경",
+        "employee_review_summary": "원자력 핵심 제어 시스템을 취급하는 자부심. 계측 제어 및 정밀 센서 점검에 특화된 기술 전문가로 지속 성장 가능.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,400만 원 수준"
+        }
+    },
+    {
+        "company": "한국수력원자력",
+        "sector": "화학 (원전 수화학 수처리, 방사성 폐기물 관리 및 환경 분석)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "원자로 냉각재 수화학 분석, 복수/보일러 용수 수처리, 방사성 기체/액체 폐기물 처리 및 주변 환경 방사능 측정",
+        "preferred_majors": [
+            "화학공업과",
+            "환경과",
+            "신소재과",
+            "원자력과"
+        ],
+        "required_competencies_certifications": [
+            "화학분석기능사",
+            "위험물기능사",
+            "가스기능사",
+            "환경기능사",
+            "수질/공기 수화학 샘플링 및 정밀 수처리 설비 운용 역량"
+        ],
+        "core_talent_keywords": [
+            "환경 및 안전",
+            "PRO(전문성)",
+            "원칙 준수",
+            "상생"
+        ],
+        "organizational_culture": "발전소 수화학 실험실 및 수처리 설비 현장 중심의 철저한 환경 및 안전 표준 준수 문화",
+        "employee_review_summary": "원전 방사능 및 수질 관리를 담당하는 정밀 분야. 표준 가이드라인에 맞춘 안전한 작업 절차 준수 강조.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한국수력원자력",
+        "sector": "토목/건축 (발전소 내진 구조물, 댐/취수구 구조물 및 인프라 시설 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "원자력/수력 발전소 격납건물 및 토목 구조물 유지보수, 해수 취수구 및 댐 안전 점검, 토목 시공 현장 감독",
+        "preferred_majors": [
+            "토목과",
+            "건축과",
+            "설비과"
+        ],
+        "required_competencies_certifications": [
+            "측량기능사",
+            "건설안전기능사",
+            "건축목공기능사",
+            "토목기능사",
+            "전기기능사",
+            "구조물 안전 점검 및 도면 해독 능력"
+        ],
+        "core_talent_keywords": [
+            "SAFETY(안전)",
+            "RESPECT(존중)",
+            "책임감",
+            "현장 실행력"
+        ],
+        "organizational_culture": "원전 및 양수발전소 내 토목/건축 현장 중심의 무재해 안전 지침 준수 및 구조물 진단 체계",
+        "employee_review_summary": "초대형 국가 보안 시설인 원전 구조물 관리 실무 경험. 탄탄한 복지 및 안정성 기반의 우수한 고용 여건.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "한국철도공사",
+        "sector": "사무영업 (역무, 철도 수송 관제, 여객 응대 및 영업 행정)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "철도 승차권 발급 및 안내, 역무 행정, 차량 입환/수송 작업, 화물 수송 관리, 고객 서비스",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "철도경영과",
+            "물류과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "철도운송산업기사(우대)",
+            "교대근무 적응력, 철도안전법 수칙 준수, NCS 직무능력 및 고객 서비스 역량"
+        ],
+        "core_talent_keywords": [
+            "고객 지향",
+            "전문성",
+            "혁신철도",
+            "안전 최우선",
+            "소통과 협력"
+        ],
+        "organizational_culture": "전국 주요 지역본부 및 철도역 중심의 3조 2교대/4조 2교대 근무 체계, 현장 안전 지침 준수 및 승객 안전 우선 문화",
+        "employee_review_summary": "대한민국 대표 철도 공공기관으로서 정년 보장과 우수한 고용 안정성 자랑. 전국 철도망을 기반으로 한 복리후생 및 임직원 열차 이용 혜택 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준 (교대/야간 수당, 정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국철도공사",
+        "sector": "차량 (KTX·EMU·전동차·기관차 정비 및 차량 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "KTX, ITX, 전동차, 디젤/전기기관차 및 객화차 정비, 대차/제동장치/팬터그래프 점검 및 중정비",
+        "preferred_majors": [
+            "기계과",
+            "철도차량과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "전기기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "철도차량기능사",
+            "차량 회로도 및 유압/공압 제어 계통 해독 능력"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "차량 무결점",
+            "안전 절대주의",
+            "현장 실행력"
+        ],
+        "organizational_culture": "전국 철도차량정비단 및 차량사업소 중심의 철저한 도제식 정비 노하우 전수, 주/야간 교대 기반의 정밀 안전 점검 문화",
+        "employee_review_summary": "고속철도 및 친환경 열차 정비 기술 전문가로서 성장 가능. 정비 현장의 안전 관리 기준이 엄격하며 높은 고용 안정성 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한국철도공사",
+        "sector": "전기통신 (전차선, 철도 신호제어, 전력 설비 및 통신망 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "철도 전차선 설비, 변전소 전력 공급 계통, 철도 신호 보안 장치(ATS/ATP), 열차 무선 통신망 maintenance",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "통신과",
+            "전기제어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "전자기기기능사",
+            "정보통신기능사",
+            "무선설비기능사",
+            "고압 전차선/수전반점검, 신호계측 및 광통신 선로 정비 역량"
+        ],
+        "core_talent_keywords": [
+            "안전보건 최우선",
+            "기술 리더십",
+            "책임감",
+            "원팀 마인드"
+        ],
+        "organizational_culture": "전국 전기/신호/통신 봉사단 및 현장 주사소 중심의 심야 휴전 작업 및 긴급 수리를 대비한 안전 수칙 철저 이행 현장",
+        "employee_review_summary": "철도 운행의 핵심 인프라를 다루는 자부심. 야간/특근 수당 지급에 따른 연봉 보정 및 안정적인 복지 제도 운영.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "한국철도공사",
+        "sector": "토목 (철도 선로 유지보수, 궤도 정밀 점검 및 교량/터널 토목 구조물 보수)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "철도 궤도/레일 유지를 위한 선로 보수, 레일 용접, 교량/터널 토목 시설물 안전 진단 및 보강 시공",
+        "preferred_majors": [
+            "토목과",
+            "철도토목과",
+            "건축과",
+            "측량과"
+        ],
+        "required_competencies_certifications": [
+            "측량기능사",
+            "건설안전기능사",
+            "토목기능사",
+            "전기기능사",
+            "철도 궤도 도면 해독, 선로 기장 점검 및 야간 심야 작업 안전 관리 능"
+        ],
+        "core_talent_keywords": [
+            "현장 실행력",
+            "안전 절대주의",
+            "협력",
+            "끈기"
+        ],
+        "organizational_culture": "전국 시설사업소(시설자) 중심의 중장비 연계 선로 보수 및 야간 차단 작업 현장, 강한 단합력과 무재해 강조 문화",
+        "employee_review_summary": "철도 선로 안전의 최일선을 담당하는 단단한 현장 조직. 야간 차단 작업에 따른 작업 수당 보상 및 견고한 직무 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "한국철도공사",
+        "sector": "건축 (철도 역사 및 역세권 건축물 시설 유지보수, 건축 설비 점검)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "전국 철도 역사 및 업무용 건축물 신·증축 감독, 시설물 보수, 건축 설비(HVAC, 수전 등) 점검",
+        "preferred_majors": [
+            "건축과",
+            "설비과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "건축목공기능사",
+            "건설안전기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "CAD 도면 해독 및 건축 시설물 유지관리 실무 역량"
+        ],
+        "core_talent_keywords": [
+            "고객 편의",
+            "안전 유지",
+            "책임감",
+            "상생"
+        ],
+        "organizational_culture": "지역본부 건축사업소 중심의 철도 역사 시설 관리 및 정기 건축 구조물 점검 체계",
+        "employee_review_summary": "철도 역사 환경 및 인프라 관리 실무 수행. 정시 퇴근 위주의 안정된 근무 여건과 정년 보장 혜택.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "인천국제공항공사",
+        "sector": "기술/시설 (전기·계측제어, 통신·전자, 기계·HVAC, 토목·건축 인프라 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "인천국제공항 여객터미널·활주로 24시간 전력/조명/HVAC 설비 운용, BHS(수하물처리시스템), 공항 통신·네트워크 관제, 공항 시설물 유지보수",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "통신과",
+            "기계과",
+            "메카트로닉스과",
+            "토목과",
+            "건축과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "정보통신기능사",
+            "컴퓨터응용선반기능사",
+            "설비보전기능사",
+            "건축/토목기능사",
+            "NCS 직무능력",
+            "공항 도면 해독 및 24시간 시설 모니터링 역량"
+        ],
+        "core_talent_keywords": [
+            "글로벌 전문성",
+            "도전과 혁신",
+            "고객 가치",
+            "안전 최우선",
+            "소통과 협력"
+        ],
+        "organizational_culture": "인천 영종도 공항 현장 중심의 24시간 교대 근무 체계, 세계 최상위 공항 서비스를 위한 무결점 시설 및 정밀 예방 점검 문화",
+        "employee_review_summary": "국내 공기업 중 최상위권 복리후생과 높은 신입 연봉 수준. 영종도 근무 환경 만족도가 높으며 글로벌 1위 공항 운용에 대한 자부심이 큼.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,800만 원 수준 (교대/특근 수당, 정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "인천국제공항공사",
+        "sector": "안전보안/사무 (공항 보호구역 출입통제·보안관제 및 공항 운영 행정 지원)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "공항 보호구역 경비/출입통제, 항공보안 위기 관리, 공항 운영 지원 행정 및 사무 데이터 관리",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "소프트웨어과",
+            "정보처리과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "교대근무 적응력, 철저한 보안/안전 규칙 준수, 문서 작성 실무 능력"
+        ],
+        "core_talent_keywords": [
+            "안전과 보안",
+            "고객 지향",
+            "책임감",
+            "정직과 신뢰"
+        ],
+        "organizational_culture": "인천공항 현장 및 본사 중심의 철저한 보안 규정 이행, 신속하고 정확한 민원/사무 처리 중심의 문화",
+        "employee_review_summary": "높은 고용 안정성과 수평적인 조직 분위기. 공항 안전관제의 핵심 역할을 담당하며 안정적인 직장 생활 가능.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "한국공항공사",
+        "sector": "기술/시설 (전국 14개 공항 항행안전시설·통신, 전기·냉난방기계 및 장비 정비)",
+        "company_size": "공공기관 (준식음료/시장형 공기업)",
+        "main_business_products": "김포·김해·제주 등 전국 14개 공항 항행안전무선시설(ILS/RADAR) 및 통신 관제 설비 유지보수, 공항 전력/HVAC 및 수하물 장비 보전",
+        "preferred_majors": [
+            "전자과",
+            "통신과",
+            "전기과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전자기기기능사",
+            "정보통신기능사",
+            "무선설비기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "무선 통신 회로 및 공항 기계 설비 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "전문성(Professional)",
+            "도전(Challenge)",
+            "화합(Harmony)",
+            "안전 무결점"
+        ],
+        "organizational_culture": "전국 거점 공항별 사업소 중심의 교대 근무 체계, 항행안전시설 점검을 위한 정밀한 정비 프로세스 및 현장 안전 강조 문화",
+        "employee_review_summary": "전국 각 지역 공항 근무로 거점별 연고지 배치가 가능하며 뛰어난 워라밸과 정년 보장 제공. 항행 장비 정비 기술 전문가로 성장 가능.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "한국공항공사",
+        "sector": "공항보안/행정 (공항 보안지원, 출입통제 및 공항 운영 사무 지원)",
+        "company_size": "공공기관 (준식음료/시장형 공기업)",
+        "main_business_products": "전국 공항 보호구역 경비 및 출입통제, 공항 시설 운용 행정 및 경영지원 사무",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "사무행정 처리 실무 능력 및 승객 응대 모니터링 능력"
+        ],
+        "core_talent_keywords": [
+            "고객 가치",
+            "안전과 보안",
+            "상생 협력",
+            "책임감"
+        ],
+        "organizational_culture": "전국 공항 및 김포 본사 중심의 정돈된 사무 및 관제 환경, 규정 준수와 원칙을 중시하는 안정적인 분위기",
+        "employee_review_summary": "높은 복지 만족도와 안정적인 근무 환경. 연고지 기반의 공항 근무 지원 시 장기 근속에 유리함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "한국도로공사",
+        "sector": "토목 (고속도로 선로·교량·터널 보수 및 토목 구조물 유지관리)",
+        "company_size": "공공기관 (준시조/시장형 공기업)",
+        "main_business_products": "전국 고속도로 건설 시공 관리, 포장 도로 보수, 교량/터널 토목 구조물 안전 진단 및 재해 복구",
+        "preferred_majors": [
+            "토목과",
+            "건축과",
+            "측량과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "측량기능사",
+            "건설안전기능사",
+            "전기기능사",
+            "고속도로 토목 도면 해독, 현장 안전 지칙 준수 및 긴급 복구 역량"
+        ],
+        "core_talent_keywords": [
+            "고객 행복",
+            "안전 도로",
+            "전문성",
+            "현장 실행력",
+            "소통"
+        ],
+        "organizational_culture": "전국 지역본부 및 지사/지점 중심의 고속도로 현장 점검, 무재해 안전 보건 규정 준수 및 현장 밀착형 단합 문화",
+        "employee_review_summary": "대한민국 고속도로망 총괄 공기업으로서 독보적 고용 안정성. 현장 긴급 출동/야간 차단 작업에 따른 수당 보증 및 탄탄한 사택 지원.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한국도로공사",
+        "sector": "전기/기계/설비 (고속도로 조명, 터널 방재, 특고압 수전 및 순찰장비 정비)",
+        "company_size": "공공기관 (준시조/시장형 공기업)",
+        "main_business_products": "고속도로 도로조명(터널등/가로등), 터널 원격통합 방재 설비, 특고압 수변전 시설 관리, 안전순찰 특수 장비 정비",
+        "preferred_majors": [
+            "전기과",
+            "기계과",
+            "메카트로닉스과",
+            "설비과",
+            "자동차과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "자동차정비기능사",
+            "전기 계통 도면 해독, 터널 방재 시스템 제어 및 장비 유지보수"
+        ],
+        "core_talent_keywords": [
+            "안전 최우선",
+            "기술 전문성",
+            "책임감",
+            "신뢰"
+        ],
+        "organizational_culture": "전국 지사 기술팀 및 터널 관리소 중심의 24시간 도로 안전 모니터링 및 예방 보전 중심 분위기",
+        "employee_review_summary": "터널 및 고속도로 전력/기계 설비의 안정적인 유지관리 기술 습득. 상호 존중하는 지사 분위기와 우수한 직무 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,100만 원 수준"
+        }
+    },
+    {
+        "company": "한국도로공사",
+        "sector": "행정/사무 (고속도로 통행료 관리, 휴게소/자산 관리 및 사무 지원)",
+        "company_size": "공공기관 (준시조/시장형 공기업)",
+        "main_business_products": "고속도로 통행료 수납 및 정책 관리, 휴게소 운영 관리, 용지 보상, 공사 행정 및 고객 서비스 지원",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "정확한 문서 관리, 회계 처리 및 고객 서비스 마인드"
+        ],
+        "core_talent_keywords": [
+            "고객 가치",
+            "정직과 도덕성",
+            "혁신",
+            "상생"
+        ],
+        "organizational_culture": "본사(김천) 및 전국 지역본부/지사 중심의 체계적인 행정 처리 및 안정된 내근 오피스 문화",
+        "employee_review_summary": "정시 퇴근 보장과 매우 높은 고용 안정성. 김천 본사 및 전국 지사 기반의 균형 잡힌 워라밸 자랑.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국전기안전공사",
+        "sector": "전기안전 진단·점검 및 전력 설비 검사",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "일반용·자가용·사업용 전기설비 정기/설치 검사, 전기재해 예방 조사 및 기술 지원",
+        "preferred_majors": [
+            "전기과",
+            "전기제어과",
+            "전자과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "전자기기기능사",
+            "전기 설비 계통 도면 해독 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "국민안전",
+            "전문성",
+            "도전과 열정",
+            "신뢰"
+        ],
+        "organizational_culture": "전국 본사 및 지역본부/지사 중심의 철저한 전기 안전 법령 준수 및 현장 중심 업무 문화",
+        "employee_review_summary": "전기 안전 공공기관으로서 정년 보장 및 안정적 고용 환경 제공. 전국 순환 근무를 통한 현장 경력 축적.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "한국전기안전공사",
+        "sector": "행정 및 사무 지원",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "일반 행정 지원, 경영·회계·사무 관리 및 문서 통제",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "사무 행정 문서 작성 역량"
+        ],
+        "core_talent_keywords": [
+            "국민안전",
+            "도덕성",
+            "상생 협력",
+            "책임감"
+        ],
+        "organizational_culture": "지사 및 본부 내 오피스 중심의 체계적인 행정 처리와 원칙 준수 문화",
+        "employee_review_summary": "내근 위주의 정시 퇴근 및 우수한 워라밸 보장.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 3,900만 원 ~ 4,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국가스안전공사",
+        "sector": "검사/점검 (고압가스 및 도시가스 시설 검사)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "고압가스 허가시설 검사, 도시가스 공급시설 검사, 가스용품 및 제품 검사",
+        "preferred_majors": [
+            "기계과",
+            "화학공업과",
+            "가스과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "설비보전기능사",
+            "고압가스 안전관리 기준 숙지 및 정밀 검사 역량"
+        ],
+        "core_talent_keywords": [
+            "안전최우선",
+            "전문기술",
+            "신뢰성",
+            "책임감"
+        ],
+        "organizational_culture": "가스 안전 법규 준수 및 현장 중심의 철저한 검사 프로세스 운영",
+        "employee_review_summary": "국내 유일 가스안전 전문 공공기관으로서 전문 기술 습득 유리 및 높은 고용 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한국가스안전공사",
+        "sector": "안전진단/평가 및 안전관리원",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "사업장 안전관리 수행, 화학공정 설비 점검 및 안전진단 평가",
+        "preferred_majors": [
+            "화학공업과",
+            "기계과",
+            "안전관리과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "산업안전 관련 기능사",
+            "공정 설비 위험 요인 분석 역량"
+        ],
+        "core_talent_keywords": [
+            "안전최우선",
+            "전문성",
+            "현장 실행력"
+        ],
+        "organizational_culture": "사고 예방을 위한 엄격한 현장 안전 진단 및 평가 체계",
+        "employee_review_summary": "전문 진단 인력으로서의 역량을 키우기 좋으며 복리후생이 우수함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준"
+        }
+    },
+    {
+        "company": "한국남동발전",
+        "sector": "발전 기술 - 기계 (화력 및 신재생에너지 기계 설비 운용·정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "영흥·삼천포 등 화력발전 및 신재생에너지 발전용 터빈/펌프 등 기계 설비 예방 정비",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과",
+            "금속과",
+            "용접과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "발전 설비 도면 해독 및 교대근무 적응력"
+        ],
+        "core_talent_keywords": [
+            "깨끗한 에너지",
+            "신뢰받는 기업",
+            "도전적 혁신",
+            "현장 안전"
+        ],
+        "organizational_culture": "4조 2교대 근무 체계 및 철저한 발전 설비 무결점 정비 문화",
+        "employee_review_summary": "시장형 공기업 특유의 높은 급여 수준과 사택 지원 등 우수한 복지 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국남동발전",
+        "sector": "발전 기술 - 전기 (발전소 전력 계통 운영 및 전기 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전기 전력 변환, 수전반 및 변전 설비 운영, 전기 계통 유지보수",
+        "preferred_majors": [
+            "전기과",
+            "전기제어과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "설비보전기능사",
+            "전력 회로 계통도 해독 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "전문 역량",
+            "안전 최우선",
+            "책임감"
+        ],
+        "organizational_culture": "발전소 전기실 중심의 안정적인 전력 공급 및 정밀 전장 설비 관리 분위기",
+        "employee_review_summary": "발전 전기 엔지니어로서 전문성 확보 및 높은 급여 만족도.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국남동발전",
+        "sector": "기술 지원 - 토목/건축 및 환경·화학",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전소 내 건축물 및 토목 구조물 유지보수, 환경 수처리 및 화학 분석",
+        "preferred_majors": [
+            "토목과",
+            "건축과",
+            "화학공업과",
+            "환경과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "건설안전기능사",
+            "화학분석기능사",
+            "위험물기능사",
+            "구조물 안전 진단 및 환경 수화학 분석 역량"
+        ],
+        "core_talent_keywords": [
+            "친환경",
+            "안전",
+            "전문성"
+        ],
+        "organizational_culture": "발전소 인프라 유지 및 환경 기준 준수를 위한 엄격한 현장 관리",
+        "employee_review_summary": "안정적인 공기업 인프라 관리 직무 수행 및 양호한 복지 여건.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,200만 원 수준"
+        }
+    },
+    {
+        "company": "한국중부발전",
+        "sector": "발전 기술 - 기계 (화력 및 신재생에너지 기계 설비 운용·정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "보령·신보령 등 화력발전소 및 신재생에너지 발전용 터빈, 펌프, 배관 등 기계 설비 예방 보전",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과",
+            "자동차과",
+            "조선과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "발전 기계 도면 해독 및 교대근무 적응력"
+        ],
+        "core_talent_keywords": [
+            "최고의 에너지",
+            "소통과 신뢰",
+            "도전적 혁신",
+            "현장 안전"
+        ],
+        "organizational_culture": "4조 2교대 근무 체계 및 엄격한 발전 설비 무결점 정비 문화",
+        "employee_review_summary": "시장형 공기업으로서 우수한 복리후생 및 사택 제공, 발전 엔지니어로서 안정적인 커리어 형성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국중부발전",
+        "sector": "발전 기술 - 전기 (발전소 전력 계통 운영 및 전기 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전기 전력 변환, 수전반 및 변전 설비 운영, 전기 계통 유지보수",
+        "preferred_majors": [
+            "전기과",
+            "전기제어과",
+            "메카트로닉스과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "설비보전기능사",
+            "전력 회로 계통도 해독 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "전문 역량",
+            "안전 최우선",
+            "책임감"
+        ],
+        "organizational_culture": "발전소 전기실 중심의 안정적인 전력 공급 및 정밀 전장 설비 관리 분위기",
+        "employee_review_summary": "전기 엔지니어로서 전문성 확보 및 높은 급여 만족도.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국서부발전",
+        "sector": "발전 기술 - 기계 (태안 등 발전소 기계 설비 정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "화력발전소 및 복합화력 터빈, 보조기기 점검 및 기계 설비 유지보수",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "기계 도면 해독 및 트러블슈팅 역량"
+        ],
+        "core_talent_keywords": [
+            "신뢰",
+            "도전",
+            "창의",
+            "안전"
+        ],
+        "organizational_culture": "태안 본사 및 사업소 중심의 무재해 안전 규정 준수 및 현장 기술 중심 문화",
+        "employee_review_summary": "체계적인 설비 관리 시스템과 공기업 특유의 안정된 근무 여건.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국서부발전",
+        "sector": "발전 기술 - 전기 및 ICT (전력 계통 제어 및 IT 인프라 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전소 전기 변환 설비 운영, 발전 제어 시스템 및 ICT 인프라 보안 관리",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "정보통신과",
+            "소프트웨어과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "정보통신기능사",
+            "정보처리기능사",
+            "전기 회로 점검 및 IT 시스템 모니터링 능력"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "전문성",
+            "안전 최우선"
+        ],
+        "organizational_culture": "스마트 발전소 운영 환경 조성 및 철저한 보안/안전 수칙 이행",
+        "employee_review_summary": "전기 및 ICT 융합 기술을 다루며 우수한 복리후생 혜택 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국남부발전",
+        "sector": "발전 기술 - 기계 (화력 및 신재생에너지 기계공정 운영·설비 정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "부산, 하동, 삼척 등 발전소 기계공정 관리 및 화력발전 설비 설계/운영 지원",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "화력발전 기계 설비 도면 해독 및 정밀 정비 역량"
+        ],
+        "core_talent_keywords": [
+            "창의적 전문인",
+            "주도적 도전인",
+            "신뢰받는 윤리인",
+            "현장 안전"
+        ],
+        "organizational_culture": "전국 거점 발전소 현장 중심의 철저한 안전 관리 및 도제식 정비 노하우 전수",
+        "employee_review_summary": "발전 공기업 중 근무 환경과 사내 복지가 우수하며 정년 보장 기조가 확실함.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국남부발전",
+        "sector": "발전 기술 - 전기/전자 및 화학 (발전 설비 전장 및 수화학 공정)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전소 전기 제어 설비, 전자/계측 장비 유지보수 및 수화학 공정 관리",
+        "preferred_majors": [
+            "전기과",
+            "전자과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전자기기기능사",
+            "화학분석기능사",
+            "위험물기능사",
+            "전기 계통 점검 및 수화학 샘플링 분석 역량"
+        ],
+        "core_talent_keywords": [
+            "전문 역량",
+            "안전 최우선",
+            "상생 협력"
+        ],
+        "organizational_culture": "발전소 전기/화학실 중심의 원칙 준수 및 안전 중심 작업 환경",
+        "employee_review_summary": "전문 기술 엔지니어로서 성장할 수 있는 탄탄한 교육 제도와 복지 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국동서발전",
+        "sector": "발전운영관리 - 기계 (당진, 울산 등 발전소 기계 설비 운용 및 예방 정비)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "화력발전 및 신재생에너지 발전 설비 운용, 보일러/터빈/회전기계 기계 부품 예방 정비",
+        "preferred_majors": [
+            "기계과",
+            "메카트로닉스과",
+            "자동차과",
+            "조선과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "발전 설비 기계 도면 해독 및 교대근무 적응력"
+        ],
+        "core_talent_keywords": [
+            "안전최우선",
+            "전문성",
+            "소통과 협력",
+            "도전적 혁신"
+        ],
+        "organizational_culture": "당진, 울산 등 사업소 중심의 4조 2교대 근무 체계, 무결점 발전 설비 정비를 위한 철저한 안전 보건 수칙 준수 문화",
+        "employee_review_summary": "시장형 공기업 중 높은 수준의 급여 및 복리후생, 사택 지원 제공. 발전 엔지니어로서의 강력한 기술 역량 축적 가능.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준 (교대 수당, 정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국동서발전",
+        "sector": "발전운영관리 - 전기 (발전소 전력 계통 및 변전/전장 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전소 전력 변환 계통 운영, 수전반, 변압기 및 전기 제어 장비 유지보수",
+        "preferred_majors": [
+            "전기과",
+            "전기제어과",
+            "메카트로닉스과",
+            "전자과"
+        ],
+        "required_competencies_certifications": [
+            "전기기능사",
+            "전기공사기능사",
+            "설비보전기능사",
+            "전기 회로 계통도 해독 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "전문 역량",
+            "안전 최우선",
+            "신뢰"
+        ],
+        "organizational_culture": "발전소 전기실 중심의 안정적인 전력 공급 수행 및 정밀 전장 설비 관리 분위기",
+        "employee_review_summary": "전기 엔지니어로서 전문성 확보가 용이하며 우수한 사내 복지 혜택 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,600만 원 수준"
+        }
+    },
+    {
+        "company": "한국동서발전",
+        "sector": "건설공사관리 - 토목/건축 및 경영관리(행정사무)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "발전 인프라 토목·건축 구조물 시공 감리 및 유지보수, 경영 행정 지원",
+        "preferred_majors": [
+            "토목과",
+            "건축과",
+            "경영정보과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "건축목공기능사",
+            "건설안전기능사",
+            "컴퓨터활용능력 1/2급",
+            "CAD 도면 해독 및 행정 문서 처리 역량"
+        ],
+        "core_talent_keywords": [
+            "도덕성",
+            "책임감",
+            "상생 협력"
+        ],
+        "organizational_culture": "현장 시공 관리 및 본사/지사 사무 지원 중심의 원칙 준수 및 체계적인 업무 환경",
+        "employee_review_summary": "안정적인 근무 여건과 정년 보장, 철저한 안전 관리 기준 적용.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 5,000만 원 수준"
+        }
+    },
+    {
+        "company": "한국지역난방공사",
+        "sector": "기술직 - 기계·전기·전자 (열공급 시설 및 집단에너지 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "지역난방 및 지역냉방 공급, 열수송관, 보일러, 발전용 기계·전기·전자 설비 유지보수 및 제어",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "에너지관리과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "에너지관리기능사",
+            "위험물기능사",
+            "열 설비 배관 도면 해독 및 제어 계기 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "안전과 상생",
+            "전문성",
+            "도전정신",
+            "고객가치"
+        ],
+        "organizational_culture": "전국 지사 및 열공급 현장 중심의 친환경 에너지 공급, 철저한 안전 보건 규정 이행 문화",
+        "employee_review_summary": "도심지 인근 근무지가 많아 거주 환경 만족도가 높고 공기업 최고 수준의 복지와 고용 안정성 자랑.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,400만 원 수준 (상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국가스공사",
+        "sector": "설비운영/건설 - 기계·전기·화학 (천연가스 공급망 및 LNG 기지 설비 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "천연가스(LNG) 도입 및 전국 공급 배관망, 평택·인천 등 LNG 인수기지 저장탱크/기화기/압축기 설비 운영 및 정비",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "화학공업과",
+            "가스과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "가스기능사",
+            "위험물기능사",
+            "기계정비기능사",
+            "전기기능사",
+            "설비보전기능사",
+            "고압 가스 배관 도면 해독 및 안전 수칙 엄수 역량"
+        ],
+        "core_talent_keywords": [
+            "글로벌 에너지 리더",
+            "안전 최우선",
+            "전문성",
+            "정도경영"
+        ],
+        "organizational_culture": "대구 본사 및 전국 LNG 생산기지/배관 관리소 중심의 국가 에너지 안보를 위한 철저한 가스 안전 관리 및 원칙 준수 문화",
+        "employee_review_summary": "국가 핵심 에너지 인프라를 다루는 자부심과 탄탄한 복리후생, 우수한 급여 체계 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,600만 원 ~ 5,700만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국가스공사",
+        "sector": "경영관리/행정사무 (천연가스 공급 사업 행정 및 자재 관리 지원)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "천연가스 수급 관리 행정, 경영 지원, 회계 및 자재 창고 관리",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "물류과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "사무 행정 문서 작성 및 데이터 관리 능력"
+        ],
+        "core_talent_keywords": [
+            "정도경영",
+            "소통과 협력",
+            "책임감"
+        ],
+        "organizational_culture": "대구 본사 및 각 지역 기지 오피스 중심의 체계적이고 수평적인 사무 행정 처리 체계",
+        "employee_review_summary": "정시 퇴근 보장 및 안정적인 사무 환경 제공, 공기업 특유의 안정성.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "한국수자원공사",
+        "sector": "기술직 - 토목·전기·기계·전자통신·환경·건축 (수자원 인프라 시설 관리 및 보전)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "다목적댐, 광역상수도, 지방상수도 및 하수도 시설 건설 및 운영, 수자원 종합 관리, 신재생에너지(수력·태양광) 설비 유지보수",
+        "preferred_majors": [
+            "토목과",
+            "전기과",
+            "기계과",
+            "전자과",
+            "통신과",
+            "환경과",
+            "건축과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "전기기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "전자기기기능사",
+            "정보통신기능사",
+            "환경기능사",
+            "수자원 인프라 도면 해독, 현장 계측 및 안전 수칙 준수"
+        ],
+        "core_talent_keywords": [
+            "국민을 위한 물",
+            "안전 최우선",
+            "전문성",
+            "소통과 협력",
+            "도전적 혁신"
+        ],
+        "organizational_culture": "대전 본사 및 전국 4대 유역본부·수도지사 중심의 철저한 안전 관리 표준 이행, 현장 중심의 정밀 설비 예방 점검 문화",
+        "employee_review_summary": "대한민국 물 복지를 책임지는 대표 공기업으로서 최고 수준의 복지와 안정적인 고용 환경 제공. 체계적인 직무 교육과 사택 지원 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,600만 원 ~ 3,900만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,500만 원 ~ 5,700만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국수자원공사",
+        "sector": "사무직 - 행정 (수자원 사업 행정 및 경영지원 사무)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "수자원 사업 기획 행정, 회계, 계약, 고객 서비스 지원 및 데이터 경영 행정 관리",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "오피스 실무 문서 작성 및 정확한 회계 처리 능력"
+        ],
+        "core_talent_keywords": [
+            "정도경영",
+            "상생 협력",
+            "책임감",
+            "고객 가치"
+        ],
+        "organizational_culture": "본사 및 각 지역 지사 오피스 중심의 수평적이고 체계적인 사무 처리 및 데이터 행정 시스템",
+        "employee_review_summary": "정시 퇴근이 보장되는 우수한 워라밸과 안정적인 오피스 근무 환경 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    },
+    {
+        "company": "한국농어촌공사",
+        "sector": "기술직 - 토목·전기·기계·건축·조경 (농업생산기반 및 수리시설물 유지관리)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "저수지·양배수장·방조제 등 농업기반시설 건설 및 유지관리, 농지 은행 사업, 농어촌 지역 개발 및 수질 환경 개선",
+        "preferred_majors": [
+            "토목과",
+            "전기과",
+            "기계과",
+            "건축과",
+            "조경과",
+            "환경과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "측량기능사",
+            "전기기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "조경기능사",
+            "농업 토목 도면 해독, 수리시설물 안전 점검 및 현장 시공 관리 역량"
+        ],
+        "core_talent_keywords": [
+            "고객중심",
+            "전문역량",
+            "현장안전",
+            "정도경영",
+            "상생협력"
+        ],
+        "organizational_culture": "나주 본사 및 전국 지역본부·지사 중심의 농어촌 현장 밀착형 업무 수행, 철저한 안전 관리 수칙 준수 문화",
+        "employee_review_summary": "전국 각 지역본부 및 지사로 연고지 근무 배치가 유리하며, 강력한 고용 안정성과 우수한 복지 혜택 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 5,100만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "국가철도공단",
+        "sector": "기술직 - 토목·전기(전철전력)·기계 (철도 인프라 건설 및 시설 관리)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "고속철도 및 일반철도 건설 사업, 철도 선로·전철전력·신호제어 및 철도 자산 효율적 관리·유지보수",
+        "preferred_majors": [
+            "토목과",
+            "철도토목과",
+            "전기과",
+            "전기제어과",
+            "기계과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "토목기능사",
+            "측량기능사",
+            "전기기능사",
+            "전기공사기능사",
+            "기계정비기능사",
+            "설비보전기능사",
+            "철도 인프라 도면 해독, 철도 안전 규정 준수 및 현장 시설 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "철도안전",
+            "기술전문성",
+            "창의혁신",
+            "상생소통"
+        ],
+        "organizational_culture": "대전 본사 및 전국 철도 건설 현장/지역본부 중심의 엄격한 철도 안전 보건 수칙 준수 및 고도의 현장 책임 의식",
+        "employee_review_summary": "국가 핵심 철도망 구축을 담당하는 기관으로서 자부심이 크며, 탄탄한 고용 안정성과 체계적인 사내 복지 운영.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,300만 원 ~ 5,300만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "국가철도공단",
+        "sector": "사무직 - IT 및 행정지원 (철도 정보시스템 관리 및 일반 행정)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "철도 자산 관리 정보시스템 운영, IT 네트워크 보안 관리, 경영 지원 및 행정 사무",
+        "preferred_majors": [
+            "소프트웨어과",
+            "정보처리과",
+            "경영정보과",
+            "상업계열 학과"
+        ],
+        "required_competencies_certifications": [
+            "정보처리기능사",
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "네트워크 유지보수 및 오피스 문서 행정 처리 능력"
+        ],
+        "core_talent_keywords": [
+            "디지털 혁신",
+            "신뢰와 책임",
+            "소통"
+        ],
+        "organizational_culture": "대전 본사 중심의 정돈된 IT/행정 인프라 운영, 원칙과 규정을 준수하는 오피스 문화",
+        "employee_review_summary": "정시 퇴근 위주의 우수한 워라밸과 안정적인 공공기관 근무 여건 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "한국조폐공사",
+        "sector": "기술직 - 기계·전자기술 및 화공기술 (화폐·특수제품 제조 및 설비 보전)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "화폐 및 주화 제조, 여권·주민등록증 등 신분증 제조, 우표·상품권 등 보안 인쇄, ID 카드 및 압인제품 생산, 잉크 제조 및 화공 공정 관리",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "전자과",
+            "메카트로닉스과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터응용선반기능사",
+            "컴퓨터응용밀링기능사",
+            "기계정비기능사",
+            "전기기능사",
+            "전자기기기능사",
+            "위험물기능사",
+            "화학분석기능사",
+            "보안 인쇄 설비 및 기계·화공 공정 도면 해독, 품질 유지 역량"
+        ],
+        "core_talent_keywords": [
+            "최고의 신뢰",
+            "책임감",
+            "전문성",
+            "창의적 도전"
+        ],
+        "organizational_culture": "대전 본사 및 경산·부여 사업장 중심의 국가 보안 시설로서 철저한 보안 규정 및 엄격한 품질 관리 표준 준수 문화",
+        "employee_review_summary": "국가 화폐 및 신분증을 제조하는 독보적 공공기관으로 강력한 고용 안정성과 우수한 근무 환경 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,300만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국환경공단",
+        "sector": "기술직 및 사업관리 - 환경·기계·전기·토목 (환경 오염 방지 및 자원순환 인프라 관리)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "폐기물 처분 및 재활용 시설 설치·지원, 상하수도 환경 시설 설치 관리, 대기 및 수질 환경 오염 측정·진단, 온실가스 감축 사업 지원",
+        "preferred_majors": [
+            "환경과",
+            "화학공업과",
+            "토목과",
+            "기계과",
+            "전기과"
+        ],
+        "required_competencies_certifications": [
+            "환경기능사",
+            "수질/대기 관련 기능사",
+            "위험물기능사",
+            "토목기능사",
+            "전기기능사",
+            "환경 설비 도면 해독, 오염 물질 측정 및 시설 안전 점검 역량"
+        ],
+        "core_talent_keywords": [
+            "환경 가치 창출",
+            "국민 신뢰",
+            "전문성",
+            "소통과 협력"
+        ],
+        "organizational_culture": "인천 본사 및 전국 지역본부·지사 중심의 친환경 가치 실현, 철저한 환경 법규 준수 및 현장 중심 공공 서비스 문화",
+        "employee_review_summary": "환경부 산하 대표 준정부기관으로 공익적인 보람과 함께 탄탄한 복리후생 및 워라밸 보장.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,400만 원 ~ 3,700만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,100만 원 ~ 5,100만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국광해광업공단",
+        "sector": "기술직 및 전문직 - 지질·자원·환경·토목 (광해 방지 및 광물 자원 개발 지원)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "광산 지역 환경 오염 복구 및 광해 방지 사업(토양·수질 정화), 광물 자원 탐사 및 개발 지원, 비축 광물 관리 및 안전 점검",
+        "preferred_majors": [
+            "자원공학과",
+            "지질과",
+            "환경과",
+            "토목과",
+            "화학공업과"
+        ],
+        "required_competencies_certifications": [
+            "환경기능사",
+            "토목기능사",
+            "측량기능사",
+            "화학분석기능사",
+            "광산 지질·환경 조사 도면 해독 및 현장 안전 진단 역량"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "안전과 상생",
+            "정도경영",
+            "혁신"
+        ],
+        "organizational_culture": "원주 본사 및 각 지역 지사 중심의 광산 현장 안전 관리, 환경 복구 사업 수행을 위한 책임감 있는 조직 문화",
+        "employee_review_summary": "국내 유일의 광해·광업 전문 공공기관으로서 전문 기술 직무 수행 기회 제공 및 안정적인 근무 여건.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,200만 원 ~ 5,200만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국석유공사",
+        "sector": "기술직 - 기계·전기 (석유비축시설 설비 운용 및 유지보수)",
+        "company_size": "공공기관 (시장형 공기업)",
+        "main_business_products": "석유비축기지 운영, 지하 비축시설 기계/전기 설비 예방 보전, 송유관 및 펌프 시스템 관리",
+        "preferred_majors": [
+            "기계과",
+            "전기과",
+            "메카트로닉스과"
+        ],
+        "required_competencies_certifications": [
+            "기계정비기능사",
+            "설비보전기능사",
+            "전기기능사",
+            "전기공사기능사",
+            "기계 및 전기 도면 해독, 회전기계 점검 및 현장 안전 수칙 준수 능력"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "안전 최우선",
+            "정도경영",
+            "소통과 협력"
+        ],
+        "organizational_culture": "울산 본사 및 전국 비축기지 중심의 국가 에너지 안보 수호 사명감, 철저한 안전 관리 및 도제식 기술 전수 문화",
+        "employee_review_summary": "국가 핵심 에너지 인프라를 다루는 공기업으로 안정적인 고용 환경과 체계적인 사내 복지, 사택 제공 혜택 보유.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,500만 원 ~ 3,800만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,400만 원 ~ 5,500만 원 수준 (정기 상여 및 경영평가 성과급 포함 시)"
+        }
+    },
+    {
+        "company": "한국산업단지공단",
+        "sector": "사무행정 및 기업성장 지원 (일반행정 및 단지운영 지원)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "산업단지 기획 및 고도화 사업, 입주 기업 지원 행정, 스마트그린산단 조성 지원",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "정확한 사무 행정 문서 작성 및 데이터 처리 역량"
+        ],
+        "core_talent_keywords": [
+            "가치창조",
+            "소통협력",
+            "현장중심",
+            "공정성"
+        ],
+        "organizational_culture": "대구 본사 및 전국 지역본부/지사 중심의 산단 입주 기업 지원, 체계적이고 수평적인 오피스 행정 문화",
+        "employee_review_summary": "정시 퇴근 보장 및 안정적인 근무 여건. 지역 산업 발전 지원에 기여하는 보람이 큼.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,700만 원 수준"
+        }
+    },
+    {
+        "company": "한국산업인력공단",
+        "sector": "일반행정 및 사업지원 (국가자격시험·인적자원개발 행정 지원)",
+        "company_size": "공공기관 (준정부기관)",
+        "main_business_products": "국가기술자격 시험 시행 및 관리, 숙련기술 장려 사업, 중소기업 훈련 지원, 해외 취업 지원 행정",
+        "preferred_majors": [
+            "경영정보과",
+            "금융정보과",
+            "상업계열 학과",
+            "정보처리과"
+        ],
+        "required_competencies_certifications": [
+            "컴퓨터활용능력 1/2급",
+            "전산회계기능사",
+            "정보처리기능사",
+            "민원 응대 능력 및 오피스 문서 처리 실무 역량"
+        ],
+        "core_talent_keywords": [
+            "전문성",
+            "고객중심",
+            "공정성",
+            "신뢰"
+        ],
+        "organizational_culture": "울산 본사 및 전국 지사 중심의 대국민 자격검정 및 직업훈련 지원, 체계적이고 공정한 업무 수행 분위기",
+        "employee_review_summary": "국가 인적자원 개발의 중심 기관으로서 안정적인 근무 환경과 우수한 복리후생 제공.",
+        "meister_average_salary": {
+            "starting_salary_base": "약 3,300만 원 ~ 3,600만 원 (기본급 기준)",
+            "annual_salary_with_incentives": "약 4,000만 원 ~ 4,800만 원 수준"
+        }
+    }
+]
