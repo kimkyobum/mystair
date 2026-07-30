@@ -22,6 +22,7 @@ import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 interface MyProfileData {
   name: string;
@@ -74,6 +75,7 @@ const POPULAR_COMPANIES = [
 export default function MyPage() {
   const { user, userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
   const { showAliens, setShowAliens } = useChat();
+  const { language, setLanguage, t } = useLanguage();
 
   const [isFullEditing, setIsFullEditing] = useState(false);
   const [editingField, setEditingField] = useState<'name' | 'school' | 'major' | 'mbti' | 'holland' | null>(null);
@@ -329,8 +331,20 @@ export default function MyPage() {
             MY PAGE
           </span>
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-white/10 pl-4 hidden sm:block">
-            나의 성장의 계단 & 진로 프로필
+            {t('나의 성장의 계단 & 진로 프로필')}
           </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <select 
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as any)}
+            className="bg-transparent text-white border border-white/20 rounded-full px-3 py-1.5 text-sm font-medium outline-none hover:bg-white/5 transition-colors focus:border-teal-400 appearance-none cursor-pointer"
+            style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em', paddingRight: '2rem' }}
+          >
+            <option value="ko" className="bg-gray-900 text-white">한국어</option>
+            <option value="en" className="bg-gray-900 text-white">English</option>
+          </select>
         </div>
       </header>
 
@@ -343,13 +357,13 @@ export default function MyPage() {
           <div className="bg-amber-500/15 border border-amber-500/30 text-amber-200 rounded-2xl p-4 flex items-center justify-between text-sm font-semibold shadow-sm animate-in fade-in duration-200">
             <span className="flex items-center gap-2">
               <Sparkles size={16} className="text-amber-400 animate-pulse" />
-              <span>전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.</span>
+              <span>{t('전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.')}</span>
             </span>
             <button 
               onClick={handleFullSave}
               className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shrink-0"
             >
-              저장 완료
+              {t('저장 완료')}
             </button>
           </div>
         )}

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { hollandQuestions, hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Holland() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(new Array(hollandQuestions.length).fill(null));
@@ -91,18 +93,18 @@ export default function Holland() {
     const secondaryMeta = hollandMeta[result.secondType];
     const combinedJobs = Array.from(new Set([...primaryMeta.jobs, ...secondaryMeta.jobs]));
 
-    let text = `[MyStair Holland 직업적성검사 결과]\n\n`;
-    text += `■ 주요 적성 코드: ${result.topCode}\n`;
-    text += `■ 대표 성향: ${primaryMeta.alias} & ${secondaryMeta.alias}\n\n`;
-    text += `■ 흥미 유형별 적합도:\n`;
+    let text = `[MyStair ${t('Holland 직업적성검사')} ${t('진로 적성 진단 결과')}]\n\n`;
+    text += `■ ${t('주요 적성 코드')}: ${result.topCode}\n`;
+    text += `■ ${t('대표 성향')}: ${t(primaryMeta.alias)} & ${t(secondaryMeta.alias)}\n\n`;
+    text += `■ ${t('흥미 유형별 적합도')}:\n`;
     Object.keys(result.percentages).forEach(type => {
-      text += `- ${hollandMeta[type].name}: ${result.percentages[type]}%\n`;
+      text += `- ${t(hollandMeta[type].name)}: ${result.percentages[type]}%\n`;
     });
-    text += `\n■ 추천 직무 분야:\n`;
-    text += `- ${combinedJobs.join(', ')}\n`;
+    text += `\n■ ${t('추천 직무 분야')}:\n`;
+    text += `- ${combinedJobs.map(j => t(j)).join(', ')}\n`;
 
     navigator.clipboard.writeText(text).then(() => {
-      setToastMsg("검사 결과가 클립보드에 복사되었습니다!");
+      setToastMsg(t("검사 결과가 클립보드에 복사되었습니다!"));
       setTimeout(() => setToastMsg(null), 2500);
     }).catch(err => {
       console.error("복사 실패", err);
@@ -127,7 +129,7 @@ export default function Holland() {
             Holland
           </span>
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-[#334155] pl-4 hidden sm:block">
-            전국 마이스터고 맞춤형 직업적성검사
+            {t('전국 마이스터고 맞춤형 직업적성검사')}
           </span>
         </div>
       </header>
@@ -141,16 +143,16 @@ export default function Holland() {
           
           {screen === 'start' && (
             <div className="text-center py-5">
-              <h1 className="text-[28px] font-extrabold text-[#0F172A] mb-3 leading-tight">Holland<br/>직업적성검사</h1>
-              <p className="text-[#64748B] text-[15px] leading-relaxed mb-8">나의 흥미와 적성 유형(RIASEC)을 분석하여<br/>나에게 꼭 맞는 직업군과 직무를 추천해 드립니다.</p>
+              <h1 className="text-[28px] font-extrabold text-[#0F172A] mb-3 leading-tight">{t('Holland 직업적성검사')}</h1>
+              <p className="text-[#64748B] text-[15px] leading-relaxed mb-8">{t('나의 흥미와 적성 유형(RIASEC)을 분석하여 나에게 꼭 맞는 직업군과 직무를 추천해 드립니다.')}</p>
               
               <div className="flex justify-center gap-3 mb-9 flex-wrap">
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">⏱ 소요시간 약 7분</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">📝 총 60문항</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">🎯 6가지 흥미 유형 진단</div>
+                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('⏱ 소요시간 약 7분')}</div>
+                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('📝 총 60문항')}</div>
+                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('🎯 6가지 흥미 유형 진단')}</div>
               </div>
 
-              <button onClick={startQuiz} className="bg-[#0F172A] text-white border-none py-4 px-10 text-[16px] font-bold rounded-2xl cursor-pointer transition-all duration-200 shadow-[0_4px_12px_rgba(15,23,42,0.15)] w-full max-w-[300px] hover:bg-[#1E293B] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(15,23,42,0.2)]">검사 시작하기</button>
+              <button onClick={startQuiz} className="bg-[#0F172A] text-white border-none py-4 px-10 text-[16px] font-bold rounded-2xl cursor-pointer transition-all duration-200 shadow-[0_4px_12px_rgba(15,23,42,0.15)] w-full max-w-[300px] hover:bg-[#1E293B] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(15,23,42,0.2)]">{t('검사 시작하기')}</button>
             </div>
           )}
 
@@ -158,7 +160,7 @@ export default function Holland() {
             <div>
               <div className="mb-8">
                 <div className="flex justify-between items-center text-[14px] font-bold text-[#0F172A] mb-2.5">
-                  <span>문항 {currentIndex + 1} / {hollandQuestions.length}</span>
+                  <span>{t('문항')} {currentIndex + 1} / {hollandQuestions.length}</span>
                   <span className="text-[#6366F1]">{percent}%</span>
                 </div>
                 <div className="w-full h-2.5 bg-[#F1F5F9] rounded-full overflow-hidden">
@@ -167,16 +169,16 @@ export default function Holland() {
               </div>
 
               <div className="min-h-[110px] flex items-center mb-7">
-                <div className="text-[17px] sm:text-[20px] font-bold text-[#0F172A] leading-relaxed break-keep">{q?.text}</div>
+                <div className="text-[17px] sm:text-[20px] font-bold text-[#0F172A] leading-relaxed break-keep">{q ? t(q.text) : ''}</div>
               </div>
 
               <div className="flex flex-col gap-2.5">
                 {[
-                  { val: 1, label: "1. 전혀 그렇지 않다" },
-                  { val: 2, label: "2. 그렇지 않은 편이다" },
-                  { val: 3, label: "3. 보통이다" },
-                  { val: 4, label: "4. 그런 편이다" },
-                  { val: 5, label: "5. 매우 그렇다" },
+                  { val: 1, label: t("1. 전혀 그렇지 않다") },
+                  { val: 2, label: t("2. 그렇지 않은 편이다") },
+                  { val: 3, label: t("3. 보통이다") },
+                  { val: 4, label: t("4. 그런 편이다") },
+                  { val: 5, label: t("5. 매우 그렇다") },
                 ].map(opt => (
                   <button 
                     key={opt.val}
@@ -197,7 +199,7 @@ export default function Holland() {
                   disabled={currentIndex === 0}
                   className="bg-transparent border border-[#E2E8F0] px-5 py-2.5 rounded-lg text-[#64748B] text-[14px] font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:not-disabled:bg-[#F1F5F9] hover:not-disabled:text-[#0F172A]"
                 >
-                  ← 이전 문항
+                  {t('← 이전 문항')}
                 </button>
               </div>
             </div>
@@ -207,10 +209,10 @@ export default function Holland() {
             <div>
               <div className="text-center pb-6 mb-6 border-b-2 border-dashed border-[#E2E8F0]">
                 <div className="inline-block bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white px-[18px] py-1.5 rounded-full text-[13px] font-bold mb-3">
-                  Holland 진로 진단 결과
+                  {t('Holland 진로 진단 결과')}
                 </div>
-                <h2 className="text-[28px] font-extrabold text-[#0F172A] mb-1.5">유형: {result.topCode}</h2>
-                <p className="text-[15px] text-[#64748B] font-semibold">"{hollandMeta[result.firstType].alias} & {hollandMeta[result.secondType].alias}"</p>
+                <h2 className="text-[28px] font-extrabold text-[#0F172A] mb-1.5">{t('유형')}: {result.topCode}</h2>
+                <p className="text-[15px] text-[#64748B] font-semibold">"{t(hollandMeta[result.firstType].alias)} & {t(hollandMeta[result.secondType].alias)}"</p>
               </div>
 
               <div className="mb-8">
@@ -220,8 +222,8 @@ export default function Holland() {
                   return (
                     <div key={type} className="mb-3.5">
                       <div className="flex justify-between text-[14px] font-bold mb-1.5 text-[#0F172A]">
-                        <span>{meta.name}</span>
-                        <span>{val}% 적합도</span>
+                        <span>{t(meta.name)}</span>
+                        <span>{val}% {t('적합도')}</span>
                       </div>
                       <div className="h-3 bg-[#F1F5F9] rounded-full overflow-hidden">
                         <div className="h-full bg-[#6366F1] rounded-full transition-all duration-700 ease-out" style={{ width: `${val}%` }}></div>
@@ -233,18 +235,18 @@ export default function Holland() {
 
               <div>
                 <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">💡 1순위: {hollandMeta[result.firstType].name}</h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{hollandMeta[result.firstType].desc}</p>
+                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('💡 1순위: ')}{t(hollandMeta[result.firstType].name)}</h3>
+                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{t(hollandMeta[result.firstType].desc)}</p>
                 </div>
                 <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">💡 2순위: {hollandMeta[result.secondType].name}</h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{hollandMeta[result.secondType].desc}</p>
+                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('💡 2순위: ')}{t(hollandMeta[result.secondType].name)}</h3>
+                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{t(hollandMeta[result.secondType].desc)}</p>
                 </div>
                 <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">🎯 추천 맞춤 직무</h3>
+                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('🎯 추천 맞춤 직무')}</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {Array.from(new Set([...hollandMeta[result.firstType].jobs, ...hollandMeta[result.secondType].jobs])).map((job: string) => (
-                      <span key={job} className="bg-white border border-[#E2E8F0] text-[#0F172A] px-3 py-1.5 rounded-lg text-[13px] font-semibold">{job}</span>
+                      <span key={job} className="bg-white border border-[#E2E8F0] text-[#0F172A] px-3 py-1.5 rounded-lg text-[13px] font-semibold">{t(job)}</span>
                     ))}
                   </div>
                 </div>
@@ -252,16 +254,16 @@ export default function Holland() {
 
               <div className="flex flex-col gap-3 mt-8">
                 <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
-                  <span>👤 마이페이지로 이동하여 결과 확인하기</span>
+                  <span>{t('👤 마이페이지로 이동하여 결과 확인하기')}</span>
                 </Link>
                 <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
-                  📋 검사 결과 복사하기
+                  {t('📋 검사 결과 복사하기')}
                 </button>
                 <button onClick={restartQuiz} className="w-full bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] p-3.5 rounded-xl text-[14px] font-bold cursor-pointer transition-colors hover:bg-[#E2E8F0]">
-                  🔄 다시 검사하기
+                  {t('🔄 다시 검사하기')}
                 </button>
                 <Link to="/" className="w-full bg-[#0F172A] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(15,23,42,0.2)] transition-all hover:bg-[#1E293B] hover:-translate-y-0.5 text-center flex items-center justify-center">
-                  🏠 메인으로 돌아가기
+                  {t('🏠 메인으로 돌아가기')}
                 </Link>
               </div>
             </div>
@@ -278,3 +280,4 @@ export default function Holland() {
     </div>
   );
 }
+

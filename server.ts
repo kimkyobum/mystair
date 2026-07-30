@@ -30,7 +30,10 @@ try {
 
 function cleanCitations(obj: any): any {
   if (typeof obj === 'string') {
-    return obj.replace(/\[cite:\s*[^\]]+\]/g, '').trim();
+    return obj
+      .replace(/\[cite[\s\S]*?\]/gi, '')
+      .replace(/\[[^\]]*cite[^\]]*\]/gi, '')
+      .trim();
   }
   if (Array.isArray(obj)) {
     return obj.map(cleanCitations);

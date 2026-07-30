@@ -1,6 +1,9 @@
 import { motion } from 'motion/react';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function TopBanner() {
+  const { t } = useLanguage();
+
   const phrases = [
     "빛나는 기술인으로 성장하는 여정, MyStair가 당신의 든든한 날개가 되어줄게요",
     "마이스터고 학생들을 위한 맞춤형 진로 로드맵",
@@ -23,7 +26,7 @@ export default function TopBanner() {
         <div className="flex items-center pr-12">
           {phrases.map((item, index) => (
             <div key={`first-${index}`} className="flex items-center">
-              <span className="tracking-wide hover:text-white transition-colors cursor-default">{item}</span>
+              <span className="tracking-wide hover:text-white transition-colors cursor-default">{t(item)}</span>
               {/* 이모지 대신 우주/별빛 컨셉에 맞는 빛나는 점(Dot)을 구분자로 사용 */}
               <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
             </div>
@@ -32,7 +35,7 @@ export default function TopBanner() {
         <div className="flex items-center pr-12">
           {phrases.map((item, index) => (
             <div key={`second-${index}`} className="flex items-center">
-              <span className="tracking-wide hover:text-white transition-colors cursor-default">{item}</span>
+              <span className="tracking-wide hover:text-white transition-colors cursor-default">{t(item)}</span>
               <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
             </div>
           ))}

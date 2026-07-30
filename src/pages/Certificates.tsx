@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Certificates() {
+  const { t } = useLanguage();
   const [licensesData, setLicensesData] = useState<any[]>([]);
   const [currentCategory, setCurrentCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,10 +72,10 @@ export default function Certificates() {
           MyStair
         </Link>
         <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] ml-3">
-          자격증 NAVI
+          {t('자격증 NAVI')}
         </span>
         <span className="text-[#94A3B8] text-[14px] font-medium border-l border-slate-800 pl-4 ml-4 hidden sm:block">
-          우리가 원하는 자격증을 한눈에!
+          {t('우리가 원하는 자격증을 한눈에!')}
         </span>
       </header>
 
@@ -83,15 +85,15 @@ export default function Certificates() {
 
       <div className="max-w-[1200px] mx-auto px-5 pt-9 pb-15">
         <div className="text-center mb-8 mt-5">
-          <h1 className="text-[28px] font-extrabold text-white mb-2.5">마이스터고 자격증 정밀 검색</h1>
-          <p className="text-[15px] text-slate-400 mb-6">자격증명, 전공 분야, 가산점 적용 기업(삼성, 한전, 코레일 등)을 입력해보세요.</p>
+          <h1 className="text-[28px] font-extrabold text-white mb-2.5">{t('마이스터고 자격증 정밀 검색')}</h1>
+          <p className="text-[15px] text-slate-400 mb-6">{t('자격증명, 전공 분야, 가산점 적용 기업(삼성, 한전, 코레일 등)을 입력해보세요.')}</p>
           
           <div className="max-w-[640px] mx-auto mb-5 relative">
             <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[18px] text-slate-500">🔍</span>
             <input 
               type="text" 
               className="w-full h-14 pl-[52px] pr-5 text-[16px] font-semibold border border-slate-200/80 rounded-2xl outline-none bg-white/95 text-slate-900 placeholder-slate-400 shadow-md transition-all focus:border-[#6366F1] focus:shadow-[0_0_20px_rgba(99,102,241,0.15)]" 
-              placeholder="자격증명, 우대기업, 카테고리 검색..." 
+              placeholder={t('자격증명, 우대기업, 카테고리 검색...')} 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -104,7 +106,7 @@ export default function Certificates() {
                 onClick={() => setCurrentCategory(cat)}
                 className={`px-[16px] py-2 rounded-full text-[13px] font-semibold border transition-all cursor-pointer shadow-sm ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-white hover:text-indigo-600 hover:border-indigo-300'}`}
               >
-                {cat === 'ALL' ? '전체보기' : cat}
+                {cat === 'ALL' ? t('전체보기') : t(cat)}
               </button>
             ))}
           </div>
@@ -115,15 +117,15 @@ export default function Certificates() {
             <div className="col-span-full text-center py-15 text-slate-500 font-medium">
               <div className="inline-block w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
               <br />
-              자격증 데이터를 불러오는 중입니다...
+              {t('자격증 데이터를 불러오는 중입니다...')}
             </div>
           ) : loadingError ? (
             <div className="col-span-full text-center py-15 text-slate-500">
-              ⚠️ 'Data/certificates.json' 데이터를 불러올 수 없습니다.
+              {t("⚠️ 'Data/certificates.json' 데이터를 불러올 수 없습니다.")}
             </div>
           ) : filteredLicenses.length === 0 ? (
             <div className="col-span-full text-center py-15 text-slate-500">
-              🔍 검색 조건과 일치하는 자격증이 없습니다.
+              {t('🔍 검색 조건과 일치하는 자격증이 없습니다.')}
             </div>
           ) : (
             filteredLicenses.map(item => (
@@ -134,31 +136,31 @@ export default function Certificates() {
               >
                 <div>
                   <div className="flex justify-between items-center mb-2.5">
-                    <span className="text-[12px] font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600">{item.category}</span>
-                    <span className="text-[12px] text-[#F59E0B] font-bold">{item.difficulty}</span>
+                    <span className="text-[12px] font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600">{t(item.category)}</span>
+                    <span className="text-[12px] text-[#F59E0B] font-bold">{t(item.difficulty)}</span>
                   </div>
-                  <div className="text-[20px] font-extrabold text-slate-900 mb-2">{item.name}</div>
-                  <div className="text-[14px] text-slate-600 leading-relaxed mb-4 line-clamp-2">{item.description}</div>
+                  <div className="text-[20px] font-extrabold text-slate-900 mb-2">{t(item.name)}</div>
+                  <div className="text-[14px] text-slate-600 leading-relaxed mb-4 line-clamp-2">{t(item.description)}</div>
                   
                   <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 grid grid-cols-2 gap-2 mb-4">
                     <div>
-                      <div className="text-[11px] text-slate-500 mb-0.5">평균 합격률</div>
-                      <div className="text-[13px] text-slate-800 font-bold truncate">{item.pass_rate}</div>
+                      <div className="text-[11px] text-slate-500 mb-0.5">{t('평균 합격률')}</div>
+                      <div className="text-[13px] text-slate-800 font-bold truncate">{t(item.pass_rate)}</div>
                     </div>
                     <div>
-                      <div className="text-[11px] text-slate-500 mb-0.5">실기 응시료</div>
-                      <div className="text-[13px] text-slate-800 font-bold truncate">{item.practical_exam_fee}</div>
+                      <div className="text-[11px] text-slate-500 mb-0.5">{t('실기 응시료')}</div>
+                      <div className="text-[13px] text-slate-800 font-bold truncate">{t(item.practical_exam_fee)}</div>
                     </div>
                   </div>
 
                   <div className="mb-4">
                     {(item.advantage_companies || []).slice(0, 3).map((c: string) => (
-                      <span key={c} className="bg-slate-100 text-slate-700 border border-slate-200/50 text-[11px] font-semibold px-2 py-1 rounded-md mr-1 mb-1 inline-block">{c}</span>
+                      <span key={c} className="bg-slate-100 text-slate-700 border border-slate-200/50 text-[11px] font-semibold px-2 py-1 rounded-md mr-1 mb-1 inline-block">{t(c)}</span>
                     ))}
                   </div>
                 </div>
                 <button className="w-full bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white border-none py-3 rounded-xl text-[14px] font-bold cursor-pointer transition-colors duration-200">
-                  자세히 보기 & 접수하기 ➔
+                  {t('자세히 보기 & 접수하기 ➔')}
                 </button>
               </div>
             ))
@@ -172,51 +174,51 @@ export default function Certificates() {
             <button className="absolute top-6 right-6 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 border-none w-9 h-9 rounded-full text-[18px] font-bold text-slate-500 cursor-pointer flex items-center justify-center transition-colors" onClick={() => setSelectedModalItem(null)}>✕</button>
             
             <span className="inline-block bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white px-3 py-1 rounded-xl text-[12px] font-bold mb-3">
-              {selectedModalItem.qualification_type}
+              {t(selectedModalItem.qualification_type)}
             </span>
-            <h2 className="text-[26px] font-extrabold text-slate-900 mb-4">{selectedModalItem.name}</h2>
+            <h2 className="text-[26px] font-extrabold text-slate-900 mb-4">{t(selectedModalItem.name)}</h2>
 
             <div className="flex flex-col gap-4">
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">📝 자격증 개요</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.description}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📝 자격증 개요')}</div>
+                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.description)}</div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">📋 응시 자격 조건</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.eligibility}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📋 응시 자격 조건')}</div>
+                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.eligibility)}</div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">⭐ 난이도</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.difficulty}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('⭐ 난이도')}</div>
+                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.difficulty)}</div>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">📊 평균 합격률</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.pass_rate}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📊 평균 합격률')}</div>
+                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.pass_rate)}</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">💰 필기 응시료</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.written_exam_fee}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('💰 필기 응시료')}</div>
+                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.written_exam_fee)}</div>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">🛠️ 실기 응시료</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{selectedModalItem.practical_exam_fee}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🛠️ 실기 응시료')}</div>
+                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.practical_exam_fee)}</div>
                 </div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">🏢 우대 및 가산점 반영 기업</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.advantage_companies || []).join(', ')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🏢 우대 및 가산점 반영 기업')}</div>
+                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.advantage_companies || []).map((c: string) => t(c)).join(', ')}</div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">🔗 연계 / 관련 자격증</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.related_certificates || []).join(', ')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🔗 연계 / 관련 자격증')}</div>
+                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.related_certificates || []).map((c: string) => t(c)).join(', ')}</div>
               </div>
             </div>
 
             <a href={selectedModalItem.application_site} target="_blank" rel="noreferrer" className="block w-full bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-center py-4 rounded-[14px] text-[16px] font-bold no-underline mt-6 hover:opacity-90">
-              👉 공식 접수 사이트 바로가기
+              {t('👉 공식 접수 사이트 바로가기')}
             </a>
           </div>
         </div>
@@ -224,3 +226,4 @@ export default function Certificates() {
     </div>
   );
 }
+

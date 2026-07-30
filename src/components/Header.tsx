@@ -1,7 +1,10 @@
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Header() {
+  const { t } = useLanguage();
+
   const navItems = [
     { name: '성장다이어리', path: '/diary' },
     { name: '자격증 가이드', path: '/certificates' },
@@ -25,7 +28,7 @@ export default function Header() {
       <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
         {navItems.map(item => (
           <Link key={item.name} to={item.path} className="text-white/80 hover:text-white transition-colors text-[15px] font-medium whitespace-nowrap">
-            {item.name}
+            {t(item.name)}
           </Link>
         ))}
       </nav>

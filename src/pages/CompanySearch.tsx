@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Building2, User, Brain, Briefcase, Award, GraduationCap, ChevronRight, Sparkles, Building, CheckCircle2, X, Banknote, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function CompanySearch() {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [largeCompanies, setLargeCompanies] = useState<any[]>([]);
   const [publicCompanies, setPublicCompanies] = useState<any[]>([]);
   const [otherLargeCompanies, setOtherLargeCompanies] = useState<any[]>([]);
@@ -46,24 +48,40 @@ export default function CompanySearch() {
     fetchRecommendations();
   }, [userProfile]);
 
+  const cleanText = (val: any): string => {
+    if (!val) return '';
+    if (typeof val !== 'string') return String(val);
+    return val
+      .replace(/\[cite[\s\S]*?\]/gi, '')
+      .replace(/\[[^\]]*cite[^\]]*\]/gi, '')
+      .trim();
+  };
+
+  const getCompanyTypeBadge = (company: any) => {
+    if (company.isPublic || (company.company_size && (company.company_size.includes('공기업') || company.company_size.includes('공공기관')))) {
+      return '공기업';
+    }
+    return '대기업';
+  };
+
   const hasProfileData = userProfile?.major || userProfile?.mbti || userProfile?.hollandCode;
 
   const CompanyModal = ({ company, onClose }: { company: any, onClose: () => void }) => {
     const [activeTab, setActiveTab] = useState<'business' | 'culture' | 'talent' | 'majors_certs' | 'salary_welfare' | 'work_recruitment' | 'career' | 'reason' | null>(null);
 
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+      <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6">
         {/* Backdrop */}
         <div 
-          className="absolute inset-0 bg-[#0F172A]/80 backdrop-blur-md"
+          className="absolute inset-0 bg-[#0F172A]/85 backdrop-blur-md"
           onClick={onClose}
         />
         
         {/* Modal Content */}
-        <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto no-scrollbar bg-[#111827] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl flex flex-col">
+        <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto no-scrollbar bg-[#111827] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl flex flex-col z-10">
           <button 
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-white/50 hover:bg-white/10 hover:text-white transition-colors z-10"
+            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-white/50 hover:bg-white/10 hover:text-white transition-colors z-10 cursor-pointer"
           >
             <X size={24} />
           </button>
@@ -71,12 +89,16 @@ export default function CompanySearch() {
           <div className="flex flex-col md:flex-row items-start justify-between mb-6 pb-6 border-b border-white/10 gap-6 pr-12">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-[13px] font-semibold rounded-lg border border-indigo-500/35">
-                  {company.company_size}
+                <span className={`px-3 py-1 text-[13px] font-semibold rounded-lg border ${
+                  getCompanyTypeBadge(company) === '공기업' 
+                    ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' 
+                    : 'bg-indigo-500/20 text-indigo-300 border-indigo-500/35'
+                }`}>
+                  {t(getCompanyTypeBadge(company))}
                 </span>
-                <span className="text-white/50 text-[13px] font-medium tracking-wide">{company.sector}</span>
+                <span className="text-white/50 text-[13px] font-medium tracking-wide">{cleanText(company.sector)}</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{company.company}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{cleanText(company.company)}</h2>
             </div>
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0">
               <Building2 size={28} />
@@ -438,18 +460,18 @@ export default function CompanySearch() {
           <div className="flex-1 overflow-y-auto no-scrollbar space-y-3 pr-1">
             {filtered.length === 0 ? (
               <div className="py-12 text-center text-white/40 text-sm">
-                검색 조건에 일치하는 기업이 없습니다.
+                {t('검색 조건에 일치하는 기업이 없습니다.')}
               </div>
             ) : (
               filtered.map((company, idx) => (
                 <button
                   key={`other-${idx}-${company.company}`}
                   onClick={() => setSelectedCompany(company)}
-                  className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-left group"
+                  className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     <div className={`w-7 h-7 rounded-full font-bold flex items-center justify-center text-xs shrink-0 ${
-                      company.isPublic 
+                      getCompanyTypeBadge(company) === '공기업' 
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white' 
                         : 'bg-blue-500/10 text-blue-400 border border-blue-500/20 group-hover:bg-blue-500 group-hover:text-white'
                     }`}>
@@ -458,19 +480,19 @@ export default function CompanySearch() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base text-white group-hover:text-indigo-300 transition-colors">
-                          {company.company}
+                          {cleanText(company.company)}
                         </span>
                         <span className={`px-2 py-0.5 text-[11px] font-medium rounded border shrink-0 ${
-                          company.isPublic
+                          getCompanyTypeBadge(company) === '공기업'
                             ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
                             : 'bg-blue-500/15 text-blue-300 border-blue-500/30'
                         }`}>
-                          {company.company_size || (company.isPublic ? '공기업' : '대기업')}
+                          {t(getCompanyTypeBadge(company))}
                         </span>
                       </div>
                       {company.sector && (
                         <p className="text-white/50 text-xs mt-0.5 truncate max-w-lg">
-                          {company.sector}
+                          {cleanText(company.sector)}
                         </p>
                       )}
                     </div>
@@ -557,15 +579,15 @@ export default function CompanySearch() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-lg text-white group-hover:text-indigo-300 transition-colors">
-                            {company.company}
+                            {cleanText(company.company)}
                           </span>
                           <span className="px-2.5 py-0.5 bg-blue-500/15 text-blue-300 text-xs font-medium rounded-md border border-blue-500/30 shrink-0">
-                            {company.company_size}
+                            {t('대기업')}
                           </span>
                         </div>
                         {company.sector && (
                           <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
-                            {company.sector}
+                            {cleanText(company.sector)}
                           </p>
                         )}
                       </div>
@@ -582,8 +604,8 @@ export default function CompanySearch() {
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30 mb-4">
                   <Building size={24} />
                 </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">추천 공기업 TOP 10</h2>
-                <p className="text-white/50 text-sm">내 성향과 전공에 맞춘 가장 적합한 공기업/공공기관 리스트입니다.</p>
+                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">{t('추천 공기업 TOP 10')}</h2>
+                <p className="text-white/50 text-sm">{t('내 성향과 전공에 맞춘 가장 적합한 공기업/공공기관 리스트입니다.')}</p>
               </div>
               
               <div className="flex flex-col gap-4">
@@ -591,7 +613,7 @@ export default function CompanySearch() {
                   <button 
                     key={`public-${index}`}
                     onClick={() => setSelectedCompany(company)}
-                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group"
+                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group cursor-pointer"
                   >
                     <div className="flex items-center gap-5 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 font-bold flex items-center justify-center text-sm border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
@@ -600,15 +622,15 @@ export default function CompanySearch() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-lg text-white group-hover:text-emerald-300 transition-colors">
-                            {company.company}
+                            {cleanText(company.company)}
                           </span>
                           <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-300 text-xs font-medium rounded-md border border-emerald-500/30 shrink-0">
-                            {company.company_size}
+                            {t('공기업')}
                           </span>
                         </div>
                         {company.sector && (
                           <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
-                            {company.sector}
+                            {cleanText(company.sector)}
                           </p>
                         )}
                       </div>
@@ -621,15 +643,15 @@ export default function CompanySearch() {
           </div>
         )}
       </div>
-      
-      {/* Selected Company Modal */}
-      {selectedCompany && (
-        <CompanyModal company={selectedCompany} onClose={() => setSelectedCompany(null)} />
-      )}
 
       {/* Other Companies Modal */}
       {showOtherModal && (
         <OtherCompaniesModal onClose={() => setShowOtherModal(false)} />
+      )}
+
+      {/* Selected Company Modal */}
+      {selectedCompany && (
+        <CompanyModal company={selectedCompany} onClose={() => setSelectedCompany(null)} />
       )}
       
       {/* Hide scrollbar globally for this layout */}

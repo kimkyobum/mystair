@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
+import { useLanguage } from '../friend_site/LanguageContext';
 import ReactMarkdown from 'react-markdown';
 
 const getLocalDateString = (d: Date = new Date()) => {
@@ -64,6 +65,7 @@ const SAMPLE_EXAM_SCHEDULE: ExamSchedule = {
 
 export default function Diary() {
   const { fetchDiaries, saveDiary, deleteDiary, user } = useAuth();
+  const { t } = useLanguage();
 
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -174,11 +176,11 @@ JSON 구조 규격:
           // We keep summaryText as fallback raw display
         }
       } else {
-        setSummaryText('서버에서 요약을 생성하지 못했습니다.');
+        setSummaryText(t('서버에서 요약을 생성하지 못했습니다.'));
       }
     } catch (e) {
       console.error(e);
-      setSummaryText('요약 중 오류가 발생했습니다.');
+      setSummaryText(t('요약 중 오류가 발생했습니다.'));
     } finally {
       setSummaryLoading(false);
     }
@@ -222,8 +224,8 @@ JSON 구조 규격:
             setDiaries([{
               id: 'sample-1',
               userId: 'local',
-              title: '정보처리기능사 실기 공부 3일차',
-              content: '오늘 알고리즘 문제 5개를 풀었다. 정렬 알고리즘 개념이 이제서야 완전히 이해되었다! 내일은 데이터베이스 SQL 기출문제를 집중 정리해야겠다.',
+              title: t('정보처리기능사 실기 공부 3일차'),
+              content: t('오늘 알고리즘 문제 5개를 풀었다. 정렬 알고리즘 개념이 이제서야 완전히 이해되었다! 내일은 데이터베이스 SQL 기출문제를 집중 정리해야겠다.'),
               date: getLocalDateString(),
               mood: '🔥',
               tags: ['정보처리기능사', '알고리즘', '목표달성']
@@ -267,7 +269,7 @@ JSON 구조 규격:
     const uid = user?.uid || 'local-user';
     localStorage.setItem(`mystair_exam_schedule_${uid}`, JSON.stringify(examSchedule));
     setShowExamSettings(false);
-    showToast('시험 일정이 성공적으로 저장되었습니다!');
+    showToast(t('시험 일정이 성공적으로 저장되었습니다!'));
   };
 
   const handleAddTag = () => {
@@ -305,7 +307,7 @@ JSON 구조 규격:
   const handleSubmitDiary = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
-      showToast('제목과 내용을 입력해주세요.');
+      showToast(t('제목과 내용을 입력해주세요.'));
       return;
     }
 
@@ -317,27 +319,27 @@ JSON 구조 규격:
         mood,
         tags
       });
-      showToast('성장 다이어리가 성공적으로 저장되었습니다!');
+      showToast(t('성장 다이어리가 성공적으로 저장되었습니다!'));
       setShowFormModal(false);
       loadDiaryList();
     } catch (err) {
       console.error(err);
-      showToast('저장 중 오류가 발생했습니다.');
+      showToast(t('저장 중 오류가 발생했습니다.'));
     }
   };
 
   const handleDelete = async (id?: string) => {
     if (!id) return;
-    if (!confirm('이 다이어리 기록을 삭제하시겠습니까?')) return;
+    if (!confirm(t('이 다이어리 기록을 삭제하시겠습니까?'))) return;
 
     try {
       await deleteDiary(id);
-      showToast('다이어리 기록이 삭제되었습니다.');
+      showToast(t('다이어리 기록이 삭제되었습니다.'));
       setShowFormModal(false);
       loadDiaryList();
     } catch (err) {
       console.error(err);
-      showToast('삭제 중 오류가 발생했습니다.');
+      showToast(t('삭제 중 오류가 발생했습니다.'));
     }
   };
 
@@ -413,7 +415,7 @@ JSON 구조 규격:
             <ArrowLeft size={20} />
           </Link>
           <BookOpen size={24} className="text-indigo-400" />
-          <h1 className="text-xl font-black tracking-tight text-white">성장 다이어리</h1>
+          <h1 className="text-xl font-black tracking-tight text-white">{t('성장 다이어리')}</h1>
         </div>
 
         {/* View Mode Toggle */}
@@ -423,7 +425,7 @@ JSON 구조 규격:
             className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
           >
             <Settings size={15} />
-            <span className="hidden sm:inline">시험 일정 설정</span>
+            <span className="hidden sm:inline">{t('시험 일정 설정')}</span>
           </button>
 
           <div className="bg-slate-800 p-1 rounded-2xl border border-slate-700 flex items-center gap-1">
@@ -434,14 +436,14 @@ JSON 구조 규격:
               }`}
             >
               <CalendarIcon size={14} />
-              <span>달력 보기</span>
+              <span>{t('달력 보기')}</span>
             </button>
             <button
               onClick={() => handleSummarizeDiaries()}
               className="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer text-slate-400 hover:text-white hover:bg-slate-700"
             >
               <Sparkles size={14} className="text-amber-400" />
-              <span>자소서 요약</span>
+              <span>{t('자소서 요약')}</span>
             </button>
           </div>
         </div>
@@ -456,7 +458,7 @@ JSON 구조 규격:
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-base font-bold text-amber-300 flex items-center gap-2">
                 <GraduationCap size={20} className="text-amber-400" />
-                <span>1·2학기 중간 / 기말고사 시험 일정 설정</span>
+                <span>{t('1·2학기 중간 / 기말고사 시험 일정 설정')}</span>
               </h3>
               <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-white">
                 <X size={18} />
@@ -464,14 +466,14 @@ JSON 구조 규격:
             </div>
 
             <p className="text-xs text-slate-300">
-              시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.
+              {t('시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.')}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* 1학기 중간고사 */}
               <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
                 <label className="text-xs font-extrabold text-amber-400 flex items-center gap-1">
-                  <span>📝 1학기 중간고사</span>
+                  <span>📝 {t('1학기 중간고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
                   <input
@@ -499,7 +501,7 @@ JSON 구조 규격:
               {/* 1학기 기말고사 */}
               <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
                 <label className="text-xs font-extrabold text-rose-400 flex items-center gap-1">
-                  <span>💯 1학기 기말고사</span>
+                  <span>💯 {t('1학기 기말고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
                   <input
@@ -527,7 +529,7 @@ JSON 구조 규격:
               {/* 2학기 중간고사 */}
               <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
                 <label className="text-xs font-extrabold text-indigo-400 flex items-center gap-1">
-                  <span>📝 2학기 중간고사</span>
+                  <span>📝 {t('2학기 중간고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
                   <input
@@ -555,7 +557,7 @@ JSON 구조 규격:
               {/* 2학기 기말고사 */}
               <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
                 <label className="text-xs font-extrabold text-purple-400 flex items-center gap-1">
-                  <span>🎓 2학기 기말고사</span>
+                  <span>🎓 {t('2학기 기말고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
                   <input
@@ -586,28 +588,28 @@ JSON 구조 규격:
                 type="button"
                 onClick={() => {
                   setExamSchedule(DEFAULT_EXAM_SCHEDULE);
-                  showToast('모든 일정을 비웠습니다.');
+                  showToast(t('모든 일정을 비웠습니다.'));
                 }}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
               >
-                일정 모두 비우기
+                {t('일정 모두 비우기')}
               </button>
               <button
                 type="button"
                 onClick={() => {
                   setExamSchedule(SAMPLE_EXAM_SCHEDULE);
-                  showToast('샘플 시험 일정이 적용되었습니다.');
+                  showToast(t('샘플 시험 일정이 적용되었습니다.'));
                 }}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
               >
-                샘플 일정 채우기
+                {t('샘플 일정 채우기')}
               </button>
               <button
                 type="submit"
                 className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md"
               >
                 <Check size={16} />
-                <span>시험 일정 저장</span>
+                <span>{t('시험 일정 저장')}</span>
               </button>
             </div>
           </form>
@@ -648,7 +650,7 @@ JSON 구조 규격:
                   className="ml-2 px-4 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all"
                 >
                   <Plus size={15} />
-                  <span>일기 쓰기</span>
+                  <span>{t('일기 쓰기')}</span>
                 </button>
               </div>
             </div>
@@ -765,7 +767,7 @@ JSON 구조 규격:
                       {exam && (
                         <div className={`p-1 rounded-lg border text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-xs animate-pulse ${examBadgeClass}`}>
                           <span>📝</span>
-                          <span className="truncate">{exam.name}</span>
+                          <span className="truncate">{t(exam.name)}</span>
                         </div>
                       )}
 
@@ -773,7 +775,7 @@ JSON 구조 규격:
                       {diaryEntry && (
                         <div className="bg-indigo-500/10 border border-indigo-500/25 p-1 sm:p-1.5 rounded-lg flex items-center gap-1 text-[11px] font-bold text-indigo-200 truncate shadow-xs">
                           <span className="text-sm shrink-0">{diaryEntry.mood || '🔥'}</span>
-                          <span className="truncate">{diaryEntry.title}</span>
+                          <span className="truncate">{t(diaryEntry.title)}</span>
                         </div>
                       )}
                     </div>
@@ -781,7 +783,7 @@ JSON 구조 규격:
                     {/* Hover add prompt if empty */}
                     {!diaryEntry && !exam && (
                       <div className="opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-indigo-400 text-center">
-                        + 일기 쓰기
+                        + {t('일기 쓰기')}
                       </div>
                     )}
                   </div>
@@ -798,7 +800,7 @@ JSON 구조 규격:
             <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4 flex-none">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <Sparkles size={20} className="text-amber-400 animate-pulse" />
-                <span>AI 자소서 경험 요약 (STAR 공법 분석)</span>
+                <span>{t('AI 자소서 경험 요약 (STAR 공법 분석)')}</span>
               </h3>
               <button onClick={() => setShowSummaryModal(false)} className="text-slate-400 hover:text-white p-1">
                 <X size={20} />
@@ -809,8 +811,8 @@ JSON 구조 규격:
               {summaryLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                   <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
-                  <p className="text-sm font-bold text-slate-400">다이어리 기록을 분석하여 자소서 소재를 추출하고 있습니다...</p>
-                  <p className="text-xs text-slate-500">각 경험을 탭과 타임라인 날짜별 STAR 공법으로 완벽히 분류 중입니다.</p>
+                  <p className="text-sm font-bold text-slate-400">{t('다이어리 기록을 분석하여 자소서 소재를 추출하고 있습니다...')}</p>
+                  <p className="text-xs text-slate-500">{t('각 경험을 탭과 타임라인 날짜별 STAR 공법으로 완벽히 분류 중입니다.')}</p>
                 </div>
               ) : summaryData ? (
                 <div className="space-y-4">
@@ -825,7 +827,7 @@ JSON 구조 규격:
                       }`}
                     >
                       <span className="text-base mb-1">🏆</span>
-                      <span className="text-xs font-bold">자격증 노력</span>
+                      <span className="text-xs font-bold">{t('자격증 노력')}</span>
                     </button>
                     <button
                       onClick={() => setActiveSummaryTab('activities')}
@@ -836,7 +838,7 @@ JSON 구조 규격:
                       }`}
                     >
                       <span className="text-base mb-1">👥</span>
-                      <span className="text-xs font-bold">대내외 활동</span>
+                      <span className="text-xs font-bold">{t('대내외 활동')}</span>
                     </button>
                     <button
                       onClick={() => setActiveSummaryTab('awards')}
@@ -847,7 +849,7 @@ JSON 구조 규격:
                       }`}
                     >
                       <span className="text-base mb-1">🥇</span>
-                      <span className="text-xs font-bold">수상 및 성과</span>
+                      <span className="text-xs font-bold">{t('수상 및 성과')}</span>
                     </button>
                     <button
                       onClick={() => setActiveSummaryTab('others')}
@@ -858,7 +860,7 @@ JSON 구조 규격:
                       }`}
                     >
                       <span className="text-base mb-1">💡</span>
-                      <span className="text-xs font-bold">기타 성장경험</span>
+                      <span className="text-xs font-bold">{t('기타 성장경험')}</span>
                     </button>
                   </div>
 
@@ -867,9 +869,9 @@ JSON 구조 규격:
                     {(!summaryData[activeSummaryTab] || summaryData[activeSummaryTab].length === 0) ? (
                       <div className="flex flex-col items-center justify-center py-16 text-center space-y-3 bg-slate-800/20 rounded-2xl border border-slate-800 p-6">
                         <span className="text-3xl">📭</span>
-                        <h4 className="text-sm font-bold text-slate-300">추출된 경험이 아직 없습니다</h4>
+                        <h4 className="text-sm font-bold text-slate-300">{t('추출된 경험이 아직 없습니다')}</h4>
                         <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
-                          해당 카테고리(자격증, 대내외활동 등) 관련 키워드가 다이어리나 프로필에 충분하지 않은 것 같아요. 일기에 관련 내용(시험, 실습, 성과, 대회 등)을 더 자세히 기록하면 AI가 정확히 분류해서 보여줍니다!
+                          {t('해당 카테고리(자격증, 대내외활동 등) 관련 키워드가 다이어리나 프로필에 충분하지 않은 것 같아요. 일기에 관련 내용(시험, 실습, 성과, 대회 등)을 더 자세히 기록하면 AI가 정확히 분류해서 보여줍니다!')}
                         </p>
                       </div>
                     ) : (
@@ -878,11 +880,11 @@ JSON 구조 규격:
                           {/* Card Header (Date & Title) */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
                             <h4 className="text-base font-extrabold text-white leading-snug flex items-center gap-2">
-                              <span className="text-indigo-400 text-lg">✦</span> {item.title}
+                              <span className="text-indigo-400 text-lg">✦</span> {t(item.title)}
                             </h4>
                             <div className="bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-extrabold px-3 py-1 rounded-full shrink-0 flex items-center gap-1 w-fit">
                               <CalendarIcon size={12} />
-                              <span>{item.date || '날짜 미지정'}</span>
+                              <span>{item.date || t('날짜 미지정')}</span>
                             </div>
                           </div>
 
@@ -892,8 +894,8 @@ JSON 구조 규격:
                             <div className="flex items-start gap-3">
                               <span className="bg-amber-500/10 text-amber-400 text-xs font-black px-2 py-1 rounded-lg border border-amber-500/25 shrink-0 w-8 text-center" title="Situation">S</span>
                               <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-amber-300/80">Situation (상황 배경)</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{item.situation}</p>
+                                <span className="text-xs font-extrabold text-amber-300/80">Situation ({t('상황 배경')})</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.situation)}</p>
                               </div>
                             </div>
 
@@ -901,8 +903,8 @@ JSON 구조 규격:
                             <div className="flex items-start gap-3">
                               <span className="bg-sky-500/10 text-sky-400 text-xs font-black px-2 py-1 rounded-lg border border-sky-500/25 shrink-0 w-8 text-center" title="Task">T</span>
                               <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-sky-300/80">Task (목표와 과제)</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{item.task}</p>
+                                <span className="text-xs font-extrabold text-sky-300/80">Task ({t('목표와 과제')})</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.task)}</p>
                               </div>
                             </div>
 
@@ -910,8 +912,8 @@ JSON 구조 규격:
                             <div className="flex items-start gap-3">
                               <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded-lg border border-emerald-500/25 shrink-0 w-8 text-center" title="Action">A</span>
                               <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-emerald-300/80">Action (내가 취한 구체적 행동)</span>
-                                <p className="text-sm text-slate-200 leading-relaxed font-bold">{item.action}</p>
+                                <span className="text-xs font-extrabold text-emerald-300/80">Action ({t('내가 취한 구체적 행동')})</span>
+                                <p className="text-sm text-slate-200 leading-relaxed font-bold">{t(item.action)}</p>
                               </div>
                             </div>
 
@@ -919,8 +921,8 @@ JSON 구조 규격:
                             <div className="flex items-start gap-3">
                               <span className="bg-purple-500/10 text-purple-400 text-xs font-black px-2 py-1 rounded-lg border border-purple-500/25 shrink-0 w-8 text-center" title="Result">R</span>
                               <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-purple-300/80">Result (최종 성과 및 내적 성장)</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{item.result}</p>
+                                <span className="text-xs font-extrabold text-purple-300/80">Result ({t('최종 성과 및 내적 성장')})</span>
+                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.result)}</p>
                               </div>
                             </div>
                           </div>
@@ -935,9 +937,9 @@ JSON 구조 규격:
                   <div className="bg-amber-500/10 border border-amber-500/25 rounded-2xl p-4 flex items-start gap-3">
                     <span className="text-xl">⚠️</span>
                     <div>
-                      <h4 className="text-sm font-bold text-amber-300">구조화 탭 로딩 실패</h4>
+                      <h4 className="text-sm font-bold text-amber-300">{t('구조화 탭 로딩 실패')}</h4>
                       <p className="text-xs text-slate-400 leading-relaxed">
-                        AI 요약 데이터가 JSON 규격에 맞지 않아 일반 텍스트 형태로 출력합니다. 아래 분석글을 참고해 주세요.
+                        {t('AI 요약 데이터가 JSON 규격에 맞지 않아 일반 텍스트 형태로 출력합니다. 아래 분석글을 참고해 주세요.')}
                       </p>
                     </div>
                   </div>
@@ -961,7 +963,7 @@ JSON 구조 규격:
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <CalendarCheck size={20} className="text-indigo-400" />
-                <span>{selectedDate} 성장 다이어리 {editingId ? '수정' : '작성'}</span>
+                <span>{selectedDate} {t('성장 다이어리')} {editingId ? t('수정') : t('작성')}</span>
               </h3>
               <button 
                 type="button" 
@@ -974,12 +976,12 @@ JSON 구조 규격:
 
             <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400">제목</label>
+                <label className="text-xs font-bold text-slate-400">{t('제목')}</label>
                 <input 
                   type="text" 
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
-                  placeholder="예: 전기기능사 회로 실습 성공 기록"
+                  placeholder={t('예: 전기기능사 회로 실습 성공 기록')}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-white outline-none focus:border-indigo-500"
                   required
                 />
@@ -987,7 +989,7 @@ JSON 구조 규격:
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400">날짜</label>
+                  <label className="text-xs font-bold text-slate-400">{t('날짜')}</label>
                   <input 
                     type="date" 
                     value={selectedDate} 
@@ -997,7 +999,7 @@ JSON 구조 규격:
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400">오늘의 기분</label>
+                  <label className="text-xs font-bold text-slate-400">{t('오늘의 기분')}</label>
                   <div className="flex items-center justify-between bg-slate-800 p-1.5 rounded-xl border border-slate-700 h-[46px]">
                     {MOOD_OPTIONS.map(m => (
                       <button
@@ -1007,7 +1009,7 @@ JSON 구조 규격:
                         className={`flex-1 py-1 rounded-lg text-sm transition-all cursor-pointer flex items-center justify-center ${
                           mood === m.emoji ? 'bg-indigo-600 scale-105 shadow text-base' : 'hover:bg-slate-700/50 text-slate-400'
                         }`}
-                        title={m.label}
+                        title={t(m.label)}
                       >
                         {m.emoji}
                       </button>
@@ -1018,12 +1020,12 @@ JSON 구조 규격:
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-400 font-sans">오늘의 성장 기록 및 일기 내용</label>
+              <label className="text-xs font-bold text-slate-400 font-sans">{t('오늘의 성장 기록 및 일기 내용')}</label>
               <textarea 
                 rows={5}
                 value={content}
                 onChange={e => setContent(e.target.value)}
-                placeholder="오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요..."
+                placeholder={t('오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요...')}
                 className="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 text-sm font-medium text-white outline-none focus:border-indigo-500 leading-relaxed"
                 required
               />
@@ -1037,7 +1039,7 @@ JSON 구조 규격:
                   className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <Trash2 size={14} />
-                  <span>일기 삭제</span>
+                  <span>{t('일기 삭제')}</span>
                 </button>
               ) : <div />}
 
@@ -1047,14 +1049,14 @@ JSON 구조 규격:
                   onClick={() => setShowFormModal(false)}
                   className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer"
                 >
-                  취소
+                  {t('취소')}
                 </button>
                 <button
                   type="submit"
                   className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
                   <Check size={16} />
-                  <span>{editingId ? '수정 완료' : '일기 저장'}</span>
+                  <span>{editingId ? t('수정 완료') : t('일기 저장')}</span>
                 </button>
               </div>
             </div>

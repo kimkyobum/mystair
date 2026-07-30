@@ -14,17 +14,19 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
   const { clearChat, setInitialMessage, setChatActive } = useChat();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const location = useLocation();
   const isDarkTheme = location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/company-search';
 
-  const displayName = userProfile?.name || user?.displayName || '게스트';
+  const displayName = userProfile?.name || user?.displayName || (t('게스트', 'Guest'));
 
   const handleLogout = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -110,7 +112,7 @@ export default function Sidebar() {
                 {item.icon}
               </div>
               <span className={`text-[14px] transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-                {item.name}
+                {t(item.name)}
               </span>
             </Link>
           );
@@ -121,7 +123,7 @@ export default function Sidebar() {
         <div className="flex items-center justify-between whitespace-nowrap">
           <Link 
             to="/mypage" 
-            title="마이페이지로 이동"
+            title={t('마이페이지', 'My Page')}
             className="flex items-center gap-3 cursor-pointer group flex-1 min-w-0"
           >
             {userProfile?.avatarUrl || user?.photoURL ? (
@@ -144,7 +146,7 @@ export default function Sidebar() {
                 {displayName}
               </span>
               <span className={`text-[11px] truncate font-medium ${isDarkTheme ? 'text-indigo-300' : 'text-indigo-600'}`}>
-                마이페이지
+                {t('마이페이지', 'My Page')}
               </span>
             </div>
           </Link>

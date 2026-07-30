@@ -1,12 +1,29 @@
 import fs from 'fs';
 import path from 'path';
 
+function cleanCitations(obj: any): any {
+  if (typeof obj === 'string') {
+    return obj.replace(/\[cite:\s*[^\]]+\]/gi, '').replace(/\[cite[^\]]*\]/gi, '').trim();
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(cleanCitations);
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key of Object.keys(obj)) {
+      newObj[key] = cleanCitations(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
 function loadJson(filename: string) {
   try {
     const filePath = path.join(process.cwd(), 'Data', filename);
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data);
+      return cleanCitations(JSON.parse(data));
     }
   } catch (e) {
     console.error(`Error loading ${filename}:`, e);
@@ -151,18 +168,18 @@ export default async function handler(req: any, res: any) {
 
     if (publicCompanies.length < 10) {
       const defaultPublicList = [
-        { company: '한국전력공사 (한전)', sector: '전력자원 개발 및 발전, 송배전' },
-        { company: '한국수력원자력 (한수원)', sector: '원자력 및 수력 발전' },
-        { company: '한국철도공사 (코레일)', sector: '철도 여객/화물 수송 및 역세권 개발' },
-        { company: '인천국제공항공사', sector: '인천국제공항 건설, 관리 및 운영' },
-        { company: '한국도로공사', sector: '고속도로 건설, 유지관리 및 부대시설' },
-        { company: '한국수자원공사 (K-water)', sector: '수자원의 종합적 개발 및 관리' },
-        { company: '한국가스공사', sector: '천연가스 도입, 제조 및 공급' },
-        { company: '한국토지주택공사 (LH)', sector: '주택 건설, 도시 개발 및 주거 복지' },
-        { company: '한국지역난방공사', sector: '집단에너지 사업, 지역 냉·난방 공급' },
-        { company: '한전KDN', sector: '전력 IT, 에너지 ICT 솔루션' },
-        { company: '한국남동발전', sector: '화력, 신재생 발전 및 전력 생산' },
-        { company: '한국환경공단', sector: '환경 오염 방지, 자원순환' }
+        { company: '한국전력공사 (한전)', sector: '전력자원 개발 및 발전, 송배전', company_size: '공기업' },
+        { company: '한국수력원자력 (한수원)', sector: '원자력 및 수력 발전', company_size: '공기업' },
+        { company: '한국철도공사 (코레일)', sector: '철도 여객/화물 수송 및 역세권 개발', company_size: '공기업' },
+        { company: '인천국제공항공사', sector: '인천국제공항 건설, 관리 및 운영', company_size: '공기업' },
+        { company: '한국도로공사', sector: '고속도로 건설, 유지관리 및 부대시설', company_size: '공기업' },
+        { company: '한국수자원공사 (K-water)', sector: '수자원의 종합적 개발 및 관리', company_size: '공기업' },
+        { company: '한국가스공사', sector: '천연가스 도입, 제조 및 공급', company_size: '공기업' },
+        { company: '한국토지주택공사 (LH)', sector: '주택 건설, 도시 개발 및 주거 복지', company_size: '공기업' },
+        { company: '한국지역난방공사', sector: '집단에너지 사업, 지역 냉·난방 공급', company_size: '공기업' },
+        { company: '한전KDN', sector: '전력 IT, 에너지 ICT 솔루션', company_size: '공기업' },
+        { company: '한국남동발전', sector: '화력, 신재생 발전 및 전력 생산', company_size: '공기업' },
+        { company: '한국환경공단', sector: '환경 오염 방지, 자원순환', company_size: '공기업' }
       ];
 
       const existingNames = new Set(publicCompanies.map((c: any) => c.company));
