@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import companiesJson from '../Data/companies.json';
+import linkJson from '../Data/link.json';
 
 function cleanCitations(obj: any): any {
   if (typeof obj === 'string') {
@@ -18,21 +18,8 @@ function cleanCitations(obj: any): any {
   return obj;
 }
 
-function loadJson(filename: string) {
-  try {
-    const filePath = path.join(process.cwd(), 'Data', filename);
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      return cleanCitations(JSON.parse(data));
-    }
-  } catch (e) {
-    console.error(`Error loading ${filename}:`, e);
-  }
-  return [];
-}
-
-let parsedCompanies = loadJson('companies.json');
-let parsedLinks = loadJson('link.json');
+let parsedCompanies = cleanCitations(companiesJson);
+let parsedLinks = linkJson;
 
 function findCompanyUrl(companyObj: any, links: any[]): string {
   const companyName = companyObj.company;
@@ -64,11 +51,6 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    if (!parsedCompanies || parsedCompanies.length === 0) {
-      parsedCompanies = loadJson('companies.json');
-      parsedLinks = loadJson('link.json');
-    }
-
     const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
     const { mbti, hollandCode, major } = body;
 
