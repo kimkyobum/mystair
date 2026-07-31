@@ -17,6 +17,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   // Signup states
@@ -37,9 +38,14 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     }
     setEmailError(false);
 
-    if (!password) {
-      setServerError('비밀번호를 입력해주세요.');
+    if (password.length < 8) {
+      setPasswordError('비밀번호는 8글자 이상이어야 합니다.');
       return;
+    } else if (!/[!@#$%^&*(),.?":{}|<>\-_=+~`'[\]\\]/.test(password)) {
+      setPasswordError('특수기호를 반드시 포함해야 합니다.');
+      return;
+    } else {
+      setPasswordError('');
     }
 
     setServerError('');
@@ -113,6 +119,10 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
             setIsLoading(false);
             return;
           }
+        } else {
+          setServerError('등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.');
+          setIsLoading(false);
+          return;
         }
       }
 
@@ -376,9 +386,14 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     type={showPassword ? "text" : "password"}
                     id="password" 
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (passwordError) setPasswordError('');
+                    }}
                     placeholder={t('login.placeholder.password.enter')} 
-                    className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 pr-10"
+                    className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 pr-10 ${
+                      passwordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+                    }`}
                   />
                   <button 
                     type="button" 
@@ -398,6 +413,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     )}
                   </button>
                 </div>
+                {passwordError && <p className="text-red-500 text-xs">{passwordError}</p>}
               </div>
               
               <button 
