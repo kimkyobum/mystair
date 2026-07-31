@@ -1,12 +1,37 @@
 import { ArrowUp, History } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChat } from '../context/ChatContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string) => void }) {
   const [message, setMessage] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { messages, setChatActive } = useChat();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isFs = !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement ||
+        window.innerHeight === window.screen.height
+      );
+      setIsFullscreen(isFs);
+    };
+
+    handleFullscreenChange();
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    window.addEventListener('resize', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      window.removeEventListener('resize', handleFullscreenChange);
+    };
+  }, []);
 
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -16,7 +41,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   };
 
   return (
-    <div className="relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto mt-6 sm:mt-16 md:mt-28 px-3 sm:px-4">
+    <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-16 sm:mt-24 md:mt-36' : 'mt-6 sm:mt-16 md:mt-28'}`}>
       <h1 className="text-2xl sm:text-[40px] md:text-[56px] text-white font-bold mb-6 sm:mb-10 tracking-tight text-center leading-tight">
         MyStair <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">{t('성장의 계단')}</span>
       </h1>
