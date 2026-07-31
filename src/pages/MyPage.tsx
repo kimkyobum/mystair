@@ -797,7 +797,7 @@ export default function MyPage() {
                     <Building2 size={16} />
                   </span>
                   <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    희망 기업 ({profile.targetCompanies.length}개)
+                    {t('희망 기업')} ({profile.targetCompanies.length})
                   </span>
                 </div>
 
@@ -879,7 +879,7 @@ export default function MyPage() {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    보이기
+                    {t('보이기')}
                   </button>
                   <button
                     onClick={() => setShowAliens(false)}
@@ -889,7 +889,7 @@ export default function MyPage() {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    숨기기
+                    {t('숨기기')}
                   </button>
                 </div>
               </div>
@@ -1193,7 +1193,7 @@ export default function MyPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-extrabold text-slate-300">
-                    현재 선택된 희망 기업 ({profile.targetCompanies.length}개)
+                    {t('현재 선택된 희망 기업')} ({profile.targetCompanies.length})
                   </span>
                 </div>
 
