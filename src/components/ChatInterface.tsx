@@ -192,11 +192,11 @@ ${d.content || ""}
   1) 사용자가 오늘 있었던 일의 내용을 구체적으로 알려주지 않고 단지 "오늘의 다이어리 써줘" 하고 내용 없이 질문한 경우:
      - **절대 다이어리를 가상으로 지어내어 작성하지 마라! [[DIARY_SAVE:...]] 마커도 절대 생성하지 마라!**
      - 반드시 친근하게 무슨 일이 있었는지 어떤 내용을 적을지 먼저 물어봐라:
-       "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '다독상 땄어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 오늘 자 일기에 자동으로 작성해 드릴게요! 😊"
-  2) 사용자가 오늘 있었던 내용/경험/활동을 입력해주었거나 이전 대화/경험을 다이어리에 적어달라고 한 경우:
-     - **제목 작성 규칙 (매우 중요)**: 제목을 장황한 문장으로 적지 말고 핵심 명사/키워드 포인트만 1~3단어로 매우 간결하게 적어줘! (예: "다독상 땄어" -> "다독상", "전기기능사 실습했어" -> "전기기능사 실습", "독후감 제출 완료" -> "독후감 제출")
-     - **본문 작성 규칙 (매우 중요)**: 전달받은 내용을 너무 길고 과하게 부풀리지 마라! 부담스럽지 않게 사용자의 경험을 자연스럽고 깔끔하게 **살짝만 가다듬은 2~3문장 이내**의 편안한 어조로 작성해줘.
-     - 그리고 **답변 제일 마지막 줄에 반드시 아래 형태의 JSON 마커**를 정확히 포함시켜줘 (시스템이 사용자의 오늘 다이어리 저장소에 자동으로 등록함):
+       "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '다독상 땄어', '오늘 한화 연수 다녀왔어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 오늘 자 일기에 자동으로 작성해 드릴게요! 😊"
+  2) 사용자가 오늘 있었던 내용/경험/활동을 입력해주었거나 (AI가 "어떤 일이 있으셨나요?" 하고 질문한 것에 사용자가 "나오늘 한화에 가서 레이더 연수 들었어"처럼 있었던 일/활동을 대답한 경우 포함!):
+     - **대답 처리 규칙 (매우 중요)**: 사용자가 자신의 활동/경험을 말하면 칭찬/공감과 함께 2~3문장 이내의 부담없는 어조로 성장 다이어리 내용을 가다듬어 보여줘.
+     - **제목 작성 규칙 (매우 중요)**: 제목을 장황한 문장으로 적지 말고 핵심 명사/키워드 포인트만 1~3단어로 매우 간결하게 적어줘! (예: "다독상 땄어" -> "다독상", "한화 가서 레이더 연수 들었어" -> "한화 레이더 연수", "전기기능사 실습했어" -> "전기기능사 실습")
+     - **반드시 답변 제일 마지막 줄에 아래 형태의 JSON 마커**를 정확히 포함시켜야 해! (이 마커를 통해 오늘 자 다이어리 저장소에 자동으로 등록됨):
      [[DIARY_SAVE: {"title": "핵심포인트제목", "content": "부담없이 2~3문장으로 깔끔히 작성된 다이어리 본문", "tags": ["태그1", "태그2"], "mood": "보람참"}]]
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
@@ -463,11 +463,16 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           }
         }
 
-        // Stage 2: Fallback parser if JSON marker was omitted, but user asked for diary creation/summary
+        // Stage 2: Fallback parser if JSON marker was omitted, but user provided an experience or answered diary question
         const userAskedDiary = /다이어리|일기|적어줘|써줘|정리/i.test(text);
-        const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면/i.test(responseText);
+        const hasActivityDetail = /했어|갔어|땄어|배웠어|공부|실습|수상|완료|합격|정리|취득|연수|참석|수료|경험|들었어/i.test(text);
+        const prevAiMsg = messages.filter(m => m.role === 'ai').slice(-1)[0];
+        const prevWasDiaryQuestion = prevAiMsg && /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험/i.test(prevAiMsg.content);
 
-        if (!diarySaved && userAskedDiary && !isAiAskingQuestions && responseText) {
+        const isDiaryCreationTurn = userAskedDiary || prevWasDiaryQuestion || (hasActivityDetail && text.length >= 5);
+        const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험이 있으셨나요/i.test(responseText);
+
+        if (!diarySaved && isDiaryCreationTurn && !isAiAskingQuestions && responseText) {
           // Try extracting title from AI markdown output
           const titleMatch = responseText.match(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/) ||
                              responseText.match(/(?:제목|Title)\s*[:\-]\s*([^\n]+)/i) ||
@@ -509,11 +514,15 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           // Ensure title is short keypoint only (e.g., 1~3 words)
           let shortTitle = diaryTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
           if (shortTitle.includes('다독상')) shortTitle = '다독상';
-          else if (shortTitle.includes('반도체')) shortTitle = '반도체 후공정';
+          else if (shortTitle.includes('한화') || text.includes('한화')) shortTitle = '한화 레이더 연수';
+          else if (shortTitle.includes('전기') || text.includes('전기')) shortTitle = '전기기능사 실습';
           else if (shortTitle.length > 10) {
             shortTitle = shortTitle.slice(0, 10).trim();
           }
-          if (!shortTitle) shortTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+          if (!shortTitle) {
+            if (text.includes('레이더') || text.includes('한화')) shortTitle = '한화 레이더 연수';
+            else shortTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+          }
 
           const now = new Date();
           const year = now.getFullYear();
