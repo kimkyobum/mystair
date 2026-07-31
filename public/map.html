@@ -379,7 +379,24 @@
 
     <div id="title-overlay" style="display: flex; align-items: center; justify-content: center; position: absolute; top: 24px; left: 320px; width: calc(100% - 320px); z-index: 10;">
         <h1 style="margin: 0;">전국 마이스터고 지도</h1>
-        <div style="position: absolute; right: 32px; pointer-events: auto;">
+        <div style="position: absolute; right: 32px; pointer-events: auto; display: flex; align-items: center; gap: 12px;">
+            <!-- Language Selector -->
+            <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 9999px; padding: 2px; font-size: 11px; backdrop-filter: blur(8px);">
+                <button 
+                  id="lang-ko-btn"
+                  style="padding: 4px 10px; border-radius: 9999px; font-weight: 700; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; background: transparent; color: #94a3b8; outline: none; font-family: inherit;"
+                  onclick="setLanguage('ko')"
+                >
+                  한국어
+                </button>
+                <button 
+                  id="lang-en-btn"
+                  style="padding: 4px 10px; border-radius: 9999px; font-weight: 700; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; background: transparent; color: #94a3b8; outline: none; font-family: inherit;"
+                  onclick="setLanguage('en')"
+                >
+                  English
+                </button>
+            </div>
             <a href="/creators.html" style="color: #e2e8f0; text-decoration: none; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); padding: 8px 18px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.2s ease;" onmouseover="this.style.color='#fff'; this.style.background='rgba(45, 212, 191, 0.2)'; this.style.borderColor='rgba(45, 212, 191, 0.4)';" onmouseout="this.style.color='#e2e8f0'; this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.15)';">만든 사람들</a>
         </div>
     </div>
@@ -391,11 +408,10 @@
     <div id="info">마우스를 드래그하여 지도를 회전하거나 스크롤하여 확대/축소할 수 있습니다.</div>
     <div id="canvas-container"></div>
 
-    
     <!-- Language Support -->
     <script>
-window.enNames = {"수도전기공업고":"Sudo Electric Technical High","미림마이스터고":"Mirim Meister High","서울로봇고":"Seoul Robot High","서울도시과학기술고":"Seoul Urban Science Tech High","인천전자마이스터고":"Incheon Electronic Meister High","인천해사고":"Incheon Maritime High","수원하이텍고":"Suwon Hi-tech High","평택마이스터고":"Pyeongtaek Meister High","경기게임마이스터고":"Gyeonggi Game Meister High","원주의료고":"Wonju Medical High","한국에너지마이스터고":"Korea Energy Meister High","한국소방마이스터고":"Korea Fire Meister High","충북반도체고":"Chungbuk Semiconductor High","한국바이오마이스터고":"Korea Bio Meister High","충북에너지고":"Chungbuk Energy High","합덕제철고":"Hapdeok Steel High","공주마이스터고":"Gongju Meister High","연무마이스터고":"Yeonmu Meister High","한국식품마이스터고":"Korea Food Meister High","충남반도체마이스터고":"Chungnam Semiconductor Meister High","아산스마트팩토리마이스터고":"Asan Smart Factory Meister High","동아마이스터고":"Donga Meister High","대덕소프트웨어마이스터고":"Daedeok SW Meister High","군산기계공업고":"Gunsan Mechanical High","전북기계공업고":"Jeonbuk Mechanical High","김제농생명마이스터고":"Gimje Agri-Life Meister High","한국경마축산고":"Korea Horse Racing & Animal Husbandry High","한국항만물류고":"Korea Port Logistics High","전남생명과학고":"Jeonnam Life Science High","여수석유화학고":"Yeosu Petrochemical High","완도수산고":"Wando Fisheries High","광주자동화설비마이스터고":"Gwangju Automation Meister High","광주소프트웨어마이스터고":"Gwangju SW Meister High","구미전자공업고":"Gumi Electronic Technical High","금오공업고":"Geumo Technical High","포항제철공업고":"Pohang Steel Technical High","한국원자력마이스터고":"Korea Nuclear Meister High","한국국제통상마이스터고":"Korea International Trade Meister High","경북바이오마이스터고":"Gyeongbuk Bio Meister High","경북소프트웨어마이스터고":"Gyeongbuk SW Meister High","경북기계공업고":"Gyeongbuk Mechanical High","대구일마이스터고":"Daegu Il Meister High","대구소프트웨어마이스터고":"Daegu SW Meister High","대구농업마이스터고":"Daegu Agricultural Meister High","대구반도체마이스터고":"Daegu Semiconductor Meister High","울산마이스터고":"Ulsan Meister High","현대공업고":"Hyundai Technical High","울산에너지고":"Ulsan Energy High","부산기계공업고":"Busan Mechanical High","부산해사고":"Busan Maritime High","부산자동차마이스터고":"Busan Auto Meister High","부산소프트웨어마이스터고":"Busan SW Meister High","거제공업고":"Geoje Technical High","삼천포공업고":"Samcheonpo Technical High","공군항공과학고":"Air Force Aviation Science High","한국나노마이스터고":"Korea Nano Meister High","한국해양마이스터고":"Korea Maritime Meister High","한국반도체마이스터고등학교":"Korea Semiconductor Meister High"};
-window.enFields = {"에너지":"Energy","뉴미디어콘텐츠":"New Media Content","로봇":"Robotics","해외건설·플랜트":"Overseas Construction & Plant","전자·통신":"Electronics & Communication","해양":"Maritime","메카트로닉스":"Mechatronics","자동차·기계":"Auto & Mechanical","게임콘텐츠":"Game Contents","의료기기·바이오":"Medical Device & Bio","발전산업":"Power Generation Industry","소방":"Firefighting","반도체장비":"Semiconductor Equipment","바이오":"Bio","차세대전지":"Next-gen Battery","철강":"Steel","SMT장비/전기·전자":"SMT/Electricity & Electronics","자동차부품제조":"Auto Parts Manufacturing","식품":"Food","스마트팩토리":"Smart Factory","전기전자/기계":"Electricity, Electronics & Mechanical","기계":"Mechanical","소프트웨어":"Software","농생명":"Agricultural Life","말산업":"Horse Industry","항만물류":"Port Logistics","친환경농축산":"Eco-friendly Agriculture & Livestock","석유화학":"Petrochemical","수산":"Fisheries","자동화설비":"Automation Facility","전자":"Electronics","정밀기계":"Precision Mechanical","원자력":"Nuclear","국제무역":"International Trade","스마트농업":"Smart Agriculture","반도체":"Semiconductor","조선플랜트":"Shipbuilding Plant","자동차":"Automotive","조선":"Shipbuilding","항공":"Aviation","나노":"Nano"};
+window.enNames = {"수도전기공업고":"Sudo Electric Technical High","미림마이스터고":"Mirim Meister High","서울로봇고":"Seoul Robot High","서울도시과학기술고":"Seoul Urban Science Tech High","인천전자마이스터고":"Incheon Electronic Meister High","인천해사고":"Incheon Maritime High","수원하이텍고":"Suwon Hi-tech High","평택마이스터고":"Pyeongtaek Meister High","경기게임마이스터고":"Gyeonggi Game Meister High","원주의료고":"Wonju Medical High","한국에너지마이스터고":"Korea Energy Meister High","한국소방마이스터고":"Korea Fire Meister High","충북반도체고":"Chungbuk Semiconductor High","한국바이오마이스터고":"Korea Bio Meister High","충북에너지고":"Chungbuk Energy High","합덕제철고":"Hapdeok Steel High","공주마이스터고":"Gongju Meister High","연무마이스터고":"Yeonmu Meister High","한국식품마이스터고":"Korea Food Meister High","충남반도체마이스터고":"Chungnam Semiconductor Meister High","아산스마트팩토리마이스터고":"Asan Smart Factory Meister High","동아마이스터고":"Donga Meister High","대덕소프트웨어마이스터고":"Daedeok SW Meister High","군산기계공업고":"Gunsan Mechanical High","전북기계공업고":"Jeonbuk Mechanical High","김제농생명마이스터고":"Gimje Agri-Life Meister High","한국경마축산고":"Korea Horse Racing & Animal Husbandry High","한국항만물류고":"Korea Port Logistics High","전남생명과학고":"Pre-vocational Life Science High","여수석유화학고":"Yeosu Petrochemical High","완도수산고":"Wando Fisheries High","광주자동화설비마이스터고":"Gwangju Automation Meister High","광주소프트웨어마이스터고":"Gwangju SW Meister High","구미전자공업고":"Gumi Electronic Technical High","금오공업고":"Geumo Technical High","포항제철공업고":"Pohang Steel Technical High","한국원자력마이스터고":"Korea Nuclear Meister High","한국국제통상마이스터고":"Korea International Trade Meister High","경북바이오마이스터고":"Gyeongbuk Bio Meister High","경북소프트웨어마이스터고":"Gyeongbuk SW Meister High","경북기계공업고":"Gyeongbuk Mechanical High","대구일마이스터고":"Daegu Il Meister High","대구소프트웨어마이스터고":"Daegu SW Meister High","대구농업마이스터고":"Daegu Agricultural Meister High","대구반도체마이스터고":"Daegu Semiconductor Meister High","울산마이스터고":"Ulsan Meister High","현대공업고":"Hyundai Technical High","울산에너지고":"Ulsan Energy High","부산기계공업고":"Busan Mechanical High","부산해사고":"Busan Maritime High","부산자동차마이스터고":"Busan Auto Meister High","부산소프트웨어마이스터고":"Busan SW Meister High","거제공업고":"Geoje Technical High","삼천포공업고":"Samcheonpo Technical High","공군항공과학고":"Air Force Aviation Science High","한국나노마이스터고":"Korea Nano Meister High","한국해양마이스터고":"Korea Maritime Meister High","한국반도체마이스터고등학교":"Korea Semiconductor Meister High"};
+window.enFields = {"에너지":"Energy","뉴미디어콘텐츠":"New Media Content","로봇":"Robotics","해외건설·플랜트":"Overseas Construction & Plant","전자·통신":"Electronics & Communication","해양":"Maritime","메카트로닉스":"Mechatronics","자동차·기계":"Auto & Mechanical","게임콘텐츠":"Game Contents","의료기기·바이오":"Medical Device & Bio","발전산업":"Power Generation Industry","소방":"Firefighting","반도체장비":"Semiconductor Equipment","바이오":"Bio","차세대전지":"Next-gen Battery","철강":"Steel","SMT장비/전기·전자":"SMT/Electricity & Electronics","자동차부품제조":"Auto Parts Manufacturing","식품":"Food","스마트팩토리":"Smart Factory","전기전자/기계":"Electricity, Electronics & Mechanical","기계":"Mechanical","소프트웨어":"Software","농생명":"Agricultural Life","말산업":"Horse Industry","항만물류":"Port Logistics","친환경농축산":"Eco-friendly Agriculture & Livestock","석유화학":"Petrochemical","수산":"Fisheries","자동화설비":"Automation Facility","전자":"Electronics","정밀기계":"Precision Mechanical","원자력":"Nuclear","국제무역":"International Trade","스마트농업":"Smart Agriculture","반도체":"Semiconductor","조선플랜트":"Shipbuilding Plant","자동차":"Automotive","조선":"Shipbuilding","항공":"Aviation","나노":"Nano","스마트공장":"Smart Factory","전자·기계":"Electronics & Mechanical","조선·기계":"Shipbuilding & Mechanical","말 산업":"Horse Industry","농생명자원생산·가공":"Agri-Life Resource Production & Processing","석유화학산업":"Petrochemical Industry","어업 및 수산물 가공":"Fisheries & Seafood Processing","기계·전자모바일":"Mechanical & Electronic Mobile","원자력발전설비":"Nuclear Power Plant Facility","글로벌 비즈니스":"Global Business","스마트해양수산":"Smart Ocean & Fisheries","디지털":"Digital","기계·메카트로닉스":"Mechanical & Mechatronics","SW·SW융합":"SW & SW Convergence","도시형 첨단농업경영":"Urban Advanced Agricultural Management","기계·자동화":"Mechanical & Automation","조선해양플랜트":"Shipbuilding & Marine Plant","자동차산업":"Automotive Industry","항공·조선":"Aviation & Shipbuilding","항공기술":"Aviation Technology","나노융합":"Nano Convergence"};
 
         const mapTranslations = {
             ko: {
@@ -433,14 +449,43 @@ window.enFields = {"에너지":"Energy","뉴미디어콘텐츠":"New Media Conte
         };
 
         function getCurrentLanguage() {
-            return localStorage.getItem('language') === 'en' ? 'en' : 'ko';
+            const lang = localStorage.getItem('language');
+            return lang === 'en' ? 'en' : 'ko';
+        }
+
+        function setLanguage(lang) {
+            localStorage.setItem('language', lang);
+            updateTexts();
+            window.dispatchEvent(new Event('languageChanged'));
         }
 
         function updateTexts() {
             const lang = getCurrentLanguage();
             const t = mapTranslations[lang];
 
-            
+            // Update language toggle buttons active styles
+            const koBtn = document.getElementById('lang-ko-btn');
+            const enBtn = document.getElementById('lang-en-btn');
+            if (koBtn && enBtn) {
+                if (lang === 'ko') {
+                    koBtn.style.background = 'rgba(45, 212, 191, 0.2)';
+                    koBtn.style.color = '#2dd4bf';
+                    koBtn.style.borderColor = 'rgba(45, 212, 191, 0.2)';
+                    
+                    enBtn.style.background = 'transparent';
+                    enBtn.style.color = '#94a3b8';
+                    enBtn.style.borderColor = 'transparent';
+                } else {
+                    enBtn.style.background = 'rgba(45, 212, 191, 0.2)';
+                    enBtn.style.color = '#2dd4bf';
+                    enBtn.style.borderColor = 'rgba(45, 212, 191, 0.2)';
+                    
+                    koBtn.style.background = 'transparent';
+                    koBtn.style.color = '#94a3b8';
+                    koBtn.style.borderColor = 'transparent';
+                }
+            }
+
             if (document.querySelector('.sidebar-header h2')) document.querySelector('.sidebar-header h2').textContent = t.title;
             if (document.querySelector('#title-overlay h1')) document.querySelector('#title-overlay h1').textContent = t.map_title;
             if (document.querySelector('#title-overlay a')) document.querySelector('#title-overlay a').textContent = t.creators;
@@ -448,13 +493,15 @@ window.enFields = {"에너지":"Energy","뉴미디어콘텐츠":"New Media Conte
             if (document.querySelector('#info')) document.querySelector('#info').textContent = t.info;
             if (document.querySelector('#school-search')) document.querySelector('#school-search').placeholder = t.search_placeholder;
 
-            // Trigger search to update count text
-            const searchInput = document.getElementById('school-search');
-            searchInput.dispatchEvent(new Event('input'));
-            
             // Re-render school cards if they exist
             if (document.querySelectorAll('.school-card').length > 0) {
                 populateSidebar();
+            }
+
+            // Trigger search to update count text & apply filters on newly built cards
+            const searchInput = document.getElementById('school-search');
+            if (searchInput) {
+                searchInput.dispatchEvent(new Event('input'));
             }
 
             // Update Map labels

@@ -16,19 +16,46 @@ import CompanySearch from './pages/CompanySearch';
 import Creators from './pages/Creators';
 
 export default function App() {
-  const [showMainApp, setShowMainApp] = useState(() => {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return sessionStorage.getItem('isLoggedIn') === 'true';
+  });
+
+  const [viewingPromo, setViewingPromo] = useState(() => {
+    const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    if (!loggedIn) return true;
+    return sessionStorage.getItem('viewingPromo') === 'true';
   });
 
   const handleLoginSuccess = () => {
     sessionStorage.setItem('isLoggedIn', 'true');
-    setShowMainApp(true);
+    sessionStorage.setItem('viewingPromo', 'false');
+    setIsLoggedIn(true);
+    setViewingPromo(false);
   };
+
+  const handleReturnToMainApp = () => {
+    sessionStorage.setItem('viewingPromo', 'false');
+    setViewingPromo(false);
+  };
+
+  const handleLogoutOtherAccount = () => {
+    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('viewingPromo');
+    setIsLoggedIn(false);
+    setViewingPromo(true);
+  };
+
+  const showMarketing = !isLoggedIn || viewingPromo;
 
   return (
     <LanguageProvider>
-      {!showMainApp ? (
-        <MarketingApp onLoginSuccess={handleLoginSuccess} />
+      {showMarketing ? (
+        <MarketingApp 
+          onLoginSuccess={handleLoginSuccess} 
+          isLoggedIn={isLoggedIn}
+          onReturnToMainApp={handleReturnToMainApp}
+          onLogoutOtherAccount={handleLogoutOtherAccount}
+        />
       ) : (
         <AuthProvider>
           <ChatProvider>

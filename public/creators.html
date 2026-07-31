@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mystair - 만든 사람들 (Creators)</title>
+  <title data-t="doc_title">Mystair - 만든 사람들 (Creators)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
   <style>
@@ -40,10 +40,29 @@
     </a>
 
     <div class="flex items-center gap-6 text-sm font-medium">
-      <a href="/" class="text-slate-300 hover:text-white transition-colors">홈 (홍보사이트)</a>
-      <a href="/map.html" class="text-slate-300 hover:text-white transition-colors">마이스터고 지도</a>
-      <a href="/creators.html" class="text-teal-300 font-bold border-b-2 border-teal-400 pb-0.5">만든 사람들</a>
-      <a href="/" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3.5 py-1.5 rounded-full transition-all border border-white/10 ml-2">메인 앱 이동</a>
+      <a href="/" class="text-slate-300 hover:text-white transition-colors" data-t="nav_home">홈 (홍보사이트)</a>
+      <a href="/map.html" class="text-slate-300 hover:text-white transition-colors" data-t="nav_map">마이스터고 지도</a>
+      <a href="/creators.html" class="text-teal-300 font-bold border-b-2 border-teal-400 pb-0.5" data-t="nav_creators">만든 사람들</a>
+      
+      <!-- Language Selector -->
+      <div class="flex items-center bg-white/5 border border-white/10 rounded-full p-1 text-[11px] select-none">
+        <button 
+          id="lang-ko-btn"
+          class="px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400"
+          onclick="setLanguage('ko')"
+        >
+          한국어
+        </button>
+        <button 
+          id="lang-en-btn"
+          class="px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400"
+          onclick="setLanguage('en')"
+        >
+          English
+        </button>
+      </div>
+
+      <a href="/" class="text-xs font-semibold bg-white/10 hover:bg-white/20 text-white px-3.5 py-1.5 rounded-full transition-all border border-white/10 ml-2" data-t="nav_main">메인 앱 이동</a>
     </div>
   </header>
 
@@ -54,11 +73,11 @@
         ✨ GUMI ELECTRONIC TECH HIGH SCHOOL
       </div>
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight mb-5">
-        <span class="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+        <span class="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent" data-t="hero_title">
           Mystair를 만든 사람들
         </span>
       </h1>
-      <p class="text-slate-400 text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto">
+      <p class="text-slate-400 text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto" data-t="hero_desc">
         구미전자공업고등학교 2학년 주역들이 의기투합하여 기획하고 개발한<br class="hidden sm:inline" />
         전국 마이스터고 학생 맞춤형 AI 커리어·진로 탐색 플랫폼입니다.
       </p>
@@ -81,11 +100,11 @@
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator1_name">
               김교범
             </h3>
             <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
-              <span>🎓 구미전자공업고등학교 2학년</span>
+              <span data-t="creator1_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
@@ -93,7 +112,7 @@
             GitHub &amp; Main Page Design
           </div>
 
-          <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator1_bio">
             프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 담당.
           </p>
         </div>
@@ -121,11 +140,11 @@
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator2_name">
               박영진
             </h3>
             <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
-              <span>🎓 구미전자공업고등학교 2학년</span>
+              <span data-t="creator2_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
@@ -133,7 +152,7 @@
             Backend &amp; Data Collection
           </div>
 
-          <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator2_bio">
             서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 취업 데이터 수집·분석 담당.
           </p>
         </div>
@@ -161,11 +180,11 @@
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator3_name">
               노현우
             </h3>
             <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
-              <span>🎓 구미전자공업고등학교 2학년</span>
+              <span data-t="creator3_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
@@ -173,7 +192,7 @@
             Planning &amp; Promo Page Design
           </div>
 
-          <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator3_bio">
             서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.
           </p>
         </div>
@@ -194,7 +213,7 @@
       <div class="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-300 mb-1">
         <span>🏆 DEVELOPED BY GUMI ELECTRONIC TECHNICAL HIGH SCHOOL TEAM</span>
       </div>
-      <p class="text-xs text-slate-500 mt-1">
+      <p class="text-xs text-slate-500 mt-1" data-t="banner_desc">
         마이스터고 학생들의 열정과 기술력으로 제작된 플랫폼입니다. 꿈을 향한 힘찬 첫걸음을 응원합니다.
       </p>
     </div>
@@ -205,5 +224,102 @@
     <p>© 2026 Mystair Inc. All rights reserved.</p>
   </footer>
 
+  <script>
+    const translations = {
+      ko: {
+        doc_title: "Mystair - 만든 사람들 (Creators)",
+        nav_home: "홈 (홍보사이트)",
+        nav_map: "마이스터고 지도",
+        nav_creators: "만든 사람들",
+        nav_main: "메인 앱 이동",
+        hero_title: "Mystair를 만든 사람들",
+        hero_desc: "구미전자공업고등학교 2학년 주역들이 의기투합하여 기획하고 개발한<br class=\"hidden sm:inline\" /> 전국 마이스터고 학생 맞춤형 AI 커리어·진로 탐색 플랫폼입니다.",
+        creator1_name: "김교범",
+        creator1_grade: "🎓 구미전자공업고등학교 2학년",
+        creator1_bio: "프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 담당.",
+        creator2_name: "박영진",
+        creator2_grade: "🎓 구미전자공업고등학교 2학년",
+        creator2_bio: "서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 취업 데이터 수집·분석 담당.",
+        creator3_name: "노현우",
+        creator3_grade: "🎓 구미전자공업고등학교 2학년",
+        creator3_bio: "서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.",
+        banner_desc: "마이스터고 학생들의 열정과 기술력으로 제작된 플랫폼입니다. 꿈을 향한 힘찬 첫걸음을 응원합니다."
+      },
+      en: {
+        doc_title: "Mystair - Creators",
+        nav_home: "Home (Promo)",
+        nav_map: "Meister Map",
+        nav_creators: "Creators",
+        nav_main: "Go to App",
+        hero_title: "The Creators of Mystair",
+        hero_desc: "An AI career & vocational guidance platform customized for vocational high school students nationwide,<br class=\"hidden sm:inline\" /> planned and developed together by the brilliant 2nd-grade students of Gumi Electronic Technical High School.",
+        creator1_name: "Kim Gyo-beom",
+        creator1_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
+        creator1_bio: "In charge of managing the project's GitHub repository, establishing collaboration pipelines, and designing the UI/UX of Mystair's main page.",
+        creator2_name: "Park Young-jin",
+        creator2_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
+        creator2_bio: "In charge of server backend architecture, API communication design, and collecting & analyzing employment data of technical schools and enterprises.",
+        creator3_name: "Noh Hyun-woo",
+        creator3_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
+        creator3_bio: "In charge of service planning, storyboard blueprinting, and visual UI/UX & interaction design of the brand presentation pages.",
+        banner_desc: "This platform was built through the passion and technological expertise of vocational high school students. We sincerely cheer for your powerful first step towards your dreams."
+      }
+    };
+
+    function setLanguage(lang) {
+      localStorage.setItem('language', lang);
+      updateLanguage();
+      window.dispatchEvent(new Event('languageChanged'));
+    }
+
+    function updateLanguage() {
+      const lang = localStorage.getItem('language') || 'ko';
+      const dict = translations[lang] || translations.ko;
+      
+      // Update toggle buttons styling
+      const koBtn = document.getElementById('lang-ko-btn');
+      const enBtn = document.getElementById('lang-en-btn');
+      if (koBtn && enBtn) {
+        if (lang === 'ko') {
+          koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-teal-500/20 bg-teal-500/20 text-teal-300";
+          enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400";
+        } else {
+          enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-teal-500/20 bg-teal-500/20 text-teal-300";
+          koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400";
+        }
+      }
+
+      document.querySelectorAll('[data-t]').forEach(el => {
+        const key = el.getAttribute('data-t');
+        if (dict[key]) {
+          if (key === 'doc_title') {
+            document.title = dict[key];
+          } else {
+            el.innerHTML = dict[key];
+          }
+        }
+      });
+    }
+
+    // Initialize
+    updateLanguage();
+
+    // Listen for storage changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'language') {
+        updateLanguage();
+      }
+    });
+    
+    // Polling in case of missing event
+    let currentLang = localStorage.getItem('language') || 'ko';
+    setInterval(() => {
+      const checkLang = localStorage.getItem('language') || 'ko';
+      if (checkLang !== currentLang) {
+        currentLang = checkLang;
+        updateLanguage();
+      }
+    }, 500);
+  </script>
 </body>
 </html>

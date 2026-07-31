@@ -5,13 +5,35 @@ import Dashboard from './Dashboard';
 import Login from './Login';
 import { useLanguage } from './LanguageContext';
 
-export default function App({ onLoginSuccess }: { onLoginSuccess?: () => void }) {
+interface MarketingAppProps {
+  onLoginSuccess?: () => void;
+  isLoggedIn?: boolean;
+  onReturnToMainApp?: () => void;
+  onLogoutOtherAccount?: () => void;
+}
+
+export default function App({ 
+  onLoginSuccess, 
+  isLoggedIn = false, 
+  onReturnToMainApp, 
+  onLogoutOtherAccount 
+}: MarketingAppProps) {
   const [currentPage, setCurrentPage] = useState<'home' | 'login'>('home');
   const { language, setLanguage, t } = useLanguage();
 
   if (currentPage === 'login') {
     return <Login onBack={() => setCurrentPage('home')} onLoginSuccess={onLoginSuccess} />;
   }
+
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      if (onLogoutOtherAccount) {
+        onLogoutOtherAccount();
+      }
+    } else {
+      setCurrentPage('login');
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-black text-white selection:bg-blue-500/30 font-sans">
@@ -40,27 +62,48 @@ export default function App({ onLoginSuccess }: { onLoginSuccess?: () => void })
           <a href="/creators.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t('nav.creators')}</a>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
-          <select 
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as any)}
-            className="bg-transparent text-white border border-white/20 rounded-full px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium outline-none hover:bg-white/5 transition-colors focus:border-teal-400 appearance-none cursor-pointer"
-            style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.4rem center', backgroundSize: '0.8em 0.8em', paddingRight: '1.6rem' }}
-          >
-            <option value="ko" className="bg-gray-900 text-white">한국어</option>
-            <option value="en" className="bg-gray-900 text-white">English</option>
-          </select>
+          {/* Quick Language Toggle Buttons */}
+          <div className="flex items-center bg-white/5 border border-white/10 rounded-full p-1 text-[11px] sm:text-xs">
+            <button 
+              onClick={() => setLanguage('ko')}
+              className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                language === 'ko' 
+                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/20' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              한국어
+            </button>
+            <button 
+              onClick={() => setLanguage('en')}
+              className={`px-2.5 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
+                language === 'en' 
+                  ? 'bg-teal-500/20 text-teal-300 border border-teal-500/20' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              English
+            </button>
+          </div>
+          
           <button 
-            onClick={() => setCurrentPage('login')}
-            className="bg-white/10 hover:bg-white/20 text-white px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap"
+            onClick={handleLoginClick}
+            className={`px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap cursor-pointer ${
+              isLoggedIn 
+                ? 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/25' 
+                : 'bg-white/10 hover:bg-white/20 text-white'
+            }`}
           >
-            {t('nav.login')}
+            {isLoggedIn 
+              ? t('다른 계정으로 로그인하기', 'Login with another account') 
+              : t('nav.login')}
           </button>
         </div>
       </nav>
       
       {/* The Dashboard content acts as an interactive overlay with glassmorphism */}
       <div className="relative z-10 pt-16 pointer-events-none">
-        <Dashboard onNavigateToLogin={() => setCurrentPage('login')} />
+        <Dashboard onNavigateToLogin={isLoggedIn ? onReturnToMainApp : () => setCurrentPage('login')} />
       </div>
     </div>
   );

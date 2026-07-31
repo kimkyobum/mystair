@@ -36,7 +36,7 @@ export default function Header() {
       <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={() => {
-            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.setItem('viewingPromo', 'true');
             window.location.href = '/';
           }}
           className="flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 border border-teal-500/40 text-teal-300 text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(20,184,166,0.15)] hover:scale-105 whitespace-nowrap"

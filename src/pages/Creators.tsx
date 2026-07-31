@@ -69,7 +69,7 @@ export default function Creators() {
 
           <button
             onClick={() => {
-              sessionStorage.removeItem('isLoggedIn');
+              sessionStorage.setItem('viewingPromo', 'true');
               window.location.href = '/';
             }}
             className="inline-flex items-center gap-2 text-sm font-bold text-teal-300 hover:text-teal-200 transition-all duration-200 bg-teal-500/10 hover:bg-teal-500/20 px-5 py-2.5 rounded-full border border-teal-500/30 shadow-[0_0_15px_rgba(20,184,166,0.15)] cursor-pointer"
