@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { createContext, useState, useEffect } from 'react';
+import { certNameMap, companyBrandMap, qualTypeMap, categoryMap, certEligibilityMap, certDescMap, autoTranslateDynamicText } from '../lib/translations';
 
 export type Language = 'ko' | 'en';
 
@@ -1105,7 +1106,185 @@ const koToZhMap: Record<string, string> = {
   '서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.': '负责服务策划、原型设计，以及用于 brand 介绍的宣传页面 UI/UX 设计与交互。',
   '홍보 전문가': '宣传专家',
   '검사 시작하기': '开始测试',
-  '결과 확인하기': '查看结果'
+  '결과 확인하기': '查看结果',
+
+  // Certificate Types & Categories & UI
+  '국가기술자격': 'National Technical Qualification',
+  '국가전문자격': 'National Professional Qualification',
+  '민간자격': 'Private Qualification',
+  '국가공인민간자격': 'National Authorized Private Qualification',
+  '국제공인자격': 'International Authorized Qualification',
+  '국가자격증': 'National Qualification',
+  '응시 자격 제한 없음': 'No eligibility restrictions',
+  '제한 없음': 'No restrictions',
+  '제한없음': 'No restrictions',
+  '전기/전자/에너지': 'Electrical / Electronics / Energy',
+  '기계/메카/모빌리티': 'Machinery / Mechatronics / Mobility',
+  '화학/바이오/환경': 'Chemical / Bio / Environment',
+  'IT/소프트웨어/OA': 'IT / Software / OA',
+  '건설/중장비/안전': 'Construction / Heavy Equip / Safety',
+  '공통/어학/사무': 'General / Language / Office',
+  '기계/메카트로닉스': 'Machinery / Mechatronics',
+  '모빌리티/자동차/항공': 'Mobility / Automotive / Aviation',
+  '농림/환경': 'Agriculture / Environment',
+  'IT/소프트웨어': 'IT / Software',
+  '공통/OA/데이터': 'General / OA / Data',
+  '중장비/물류/안전': 'Heavy Machinery / Logistics / Safety',
+  '건설/부동산': 'Construction / Real Estate',
+  '건설/기계': 'Construction / Machinery',
+  '건설/건축': 'Construction / Architecture',
+  '공통/어학/한국사': 'General / Language / Korean History',
+  '공통/경영/사무': 'General / Management / Office',
+  '공통/어학/무역': 'General / Language / Trade',
+  '공통/어학': 'General / Language',
+  '금융/보험': 'Finance / Insurance',
+  '복지/보건': 'Welfare / Healthcare',
+  '조리/식품': 'Culinary / Food',
+  '미용/패션': 'Beauty / Fashion',
+
+  // Certificate Names
+  '산업안전기사': 'Industrial Safety Engineer',
+  '건설안전기사': 'Construction Safety Engineer',
+  '사무자동화산업기사': 'Industrial Engineer Office Automation',
+  '빅데이터분석기사': 'Big Data Analytics Engineer',
+  '전기기능사': 'Electrician Craftsman',
+  '전산응용기계제도기능사': 'Craftsman Computer Aided Mechanical Drawing',
+  '컴퓨터응용밀링기능사': 'Craftsman Computer Aided Milling',
+  '컴퓨터응용선반기능사': 'Craftsman Computer Aided Lathing',
+  '설비보전기능사': 'Craftsman Maintenance',
+  '위험물기능사': 'Craftsman Hazardous Materials',
+  '화학분석기능사': 'Craftsman Chemical Analysis',
+  '정보처리기능사': 'Craftsman Information Processing',
+  '자동차정비기능사': 'Craftsman Motor Vehicle Maintenance',
+  '지게차운전기능사': 'Craftsman Forklift Truck Driving',
+  '공조냉동기계기능사': 'Craftsman Air-Conditioning & Refrigerating Machinery',
+  '에너지관리기능사': 'Craftsman Energy Management',
+  '승강기기능사': 'Craftsman Elevator',
+  '피복아크용접기능사': 'Craftsman Shielded Metal Arc Welding',
+  '전자기능사': 'Craftsman Electronics',
+  '한국사능력검정시험 (심화)': 'Korean History Proficiency Test (Advanced)',
+  '컴퓨터활용능력 1급': 'Computer Literacy Level 1',
+  '컴퓨터활용능력 2급': 'Computer Literacy Level 2',
+  'SQLD (SQL 개발자)': 'SQL Developer (SQLD)',
+  '전기공사산업기사 (과정평가형)': 'Industrial Engineer Electrical Construction (Course-Evaluation)',
+  '기계설계산업기사 (과정평가형)': 'Industrial Engineer Mechanical Design (Course-Evaluation)',
+  '바이오화학제품제조기능사': 'Craftsman Biochemical Product Manufacturing',
+  '항공기체정비기능사': 'Craftsman Aircraft Airframe Maintenance',
+  '굴착기운전기능사': 'Craftsman Excavator Driving',
+  '초경량비행장치 조종자 (드론 1종)': 'Ultra-light Flying Device Pilot (Drone Class 1)',
+  '가스기능사': 'Craftsman Gas',
+  '가스티그용접기능사': 'Craftsman Gas Tungsten Arc Welding',
+  '공유압기능사': 'Craftsman Pneumatic and Hydraulic',
+  '기계정비기능사': 'Craftsman Mechanical Maintenance',
+  '전자캐드기능사': 'Craftsman Electronic CAD',
+  '신재생에너지발전설비기능사(태양광)': 'Craftsman Renewable Energy Power Generation Equipment (Solar)',
+  '3D프린터운용기능사': 'Craftsman 3D Printer Operation',
+  '웹디자인기능사': 'Craftsman Web Design',
+  '컴퓨터그래픽스운용기능사': 'Craftsman Computer Graphics',
+  '환경기능사': 'Craftsman Environmental',
+  '측량기능사': 'Craftsman Surveying',
+  '지적기능사': 'Craftsman Cadastral',
+  '무선설비기능사': 'Craftsman Wireless Communication Equipment',
+  '정보통신기능사': 'Craftsman Information Telecommunication',
+  '네트워크관리사 2급': 'Network Administrator Class 2',
+  '항공기관정비기능사': 'Craftsman Aircraft Engine Maintenance',
+  '자동차보수도장기능사': 'Craftsman Motor Vehicle Painting',
+  '자동차차체수리기능사': 'Craftsman Motor Vehicle Body Repair',
+  '이산화탄소가스아크용접기능사': 'Craftsman Carbon Dioxide Gas Arc Welding',
+  '로더운전기능사': 'Craftsman Loader Driving',
+  '롤러운전기능사': 'Craftsman Roller Driving',
+  '천장크레인운전기능사': 'Craftsman Overhead Crane Driving',
+  '컨테이너크레인운전기능사': 'Craftsman Container Crane Driving',
+  '정밀측정기능사': 'Craftsman Precision Measurement',
+  '전자계산기기능사': 'Craftsman Computer',
+  '생산자동화기능사': 'Craftsman Production Automation',
+
+  // Company Names & Sectors & Badges
+  '삼성전자': 'Samsung Electronics',
+  'SK하이닉스': 'SK Hynix',
+  'LG디스플레이': 'LG Display',
+  '현대자동차': 'Hyundai Motor',
+  'LG에너지솔루션': 'LG Energy Solution',
+  'POSCO': 'POSCO',
+  '포스코': 'POSCO',
+  '삼성SDI': 'Samsung SDI',
+  '한화에어로스페이스': 'Hanwha Aerospace',
+  '현대모비스': 'Hyundai Mobis',
+  'HD현대중공업': 'HD Hyundai Heavy Industries',
+  '한국전력공사': 'KEPCO',
+  '한국수력원자력': 'KHNP',
+  '한국가스공사': 'KOGAS',
+  '한국도로공사': 'Korea Expressway Corporation',
+  '한국철도공사 (코레일)': 'KORAIL',
+  '한국철도공사': 'KORAIL',
+  '한국수자원공사': 'K-water',
+  '한국토지주택공사 (LH)': 'LH Corporation',
+  '한국토지주택공사': 'LH Corporation',
+  '한국남동발전': 'KOEN',
+  '한국서부발전': 'KOWEPO',
+  '한국동서발전': 'EWP',
+  '한국남부발전': 'KOSPO',
+  '한국중부발전': 'KOMIPO',
+
+  '반도체 / IT': 'Semiconductor / IT',
+  '반도체 / 메모리': 'Semiconductor / Memory',
+  '디스플레이 / 전자': 'Display / Electronics',
+  '자동차 / 모빌리티': 'Automotive / Mobility',
+  '배터리 / 2차전지': 'Battery / Secondary Battery',
+  '철강 / 소재': 'Steel / Materials',
+  '방산 / 항공우주': 'Defense / Aerospace',
+  '자동차부품 / 모빌리티': 'Auto Parts / Mobility',
+  '조선 / 해양': 'Shipbuilding / Marine',
+  '전력 / 에너지': 'Electric Power / Energy',
+  '원자력 / 에너지': 'Nuclear / Energy',
+  '가스 / 에너지': 'Gas / Energy',
+  '도로 / 교통': 'Roads / Transportation',
+  '철도 / 교통': 'Railways / Transportation',
+  '수자원 / 환경': 'Water Resources / Environment',
+  '주택 / 도시': 'Housing / Urban Development',
+
+  // Company UI text
+  '내 성향과 전공에 딱 맞는 기업 TOP 10': 'Top 10 Companies Tailored to My Profile',
+  '나머지 기업 보기': 'View Other Companies',
+  '나머지 기업 목록': 'List of Other Companies',
+  'TOP 10 이외의 전체 기업': 'All Companies Outside TOP 10',
+  '상위 TOP 10 이외의 모든 추천 대기업 및 공기업 리스트입니다. 클릭 시 상세 정보를 볼 수 있습니다.': 'List of all recommended large & public enterprises outside top 10. Click for details.',
+  '기업명 또는 업종 검색...': 'Search company name or industry...',
+  '추천 대기업 TOP 10': 'Recommended Large Corps TOP 10',
+  '내 성향과 전공에 맞춘 가장 적합한 대기업 리스트입니다.': 'Most suitable large enterprise list matching your major & traits.',
+  '추천 공기업 TOP 10': 'Recommended Public Corps TOP 10',
+  '내 성향과 전공에 맞춘 가장 적합한 공기업/공공기관 리스트입니다.': 'Most suitable public enterprise list matching your major & traits.',
+  '주요 사업/제품': 'Key Business / Products',
+  '조직 문화': 'Organizational Culture',
+  '핵심 역량 및 가치': 'Core Competencies & Values',
+  '우대 전공 & 자격증': 'Preferred Majors & Certs',
+  '연봉 & 복리후생': 'Salary & Benefits',
+  '근무 & 채용절차': 'Work & Recruitment',
+  '커리어 패스': 'Career Path',
+  'AI 추천 사유': 'AI Recommendation Reason',
+  '주요 사업 및 제품': 'Key Business & Products',
+  '조직 문화 및 근무 분위기': 'Organizational Culture & Atmosphere',
+  '💡 현직자 리뷰 / 특징 요약': '💡 Employee Reviews / Summary',
+  '핵심 역량 및 가치 (인재상)': 'Core Competencies & Values (Ideal Candidate)',
+  '우대 전공': 'Preferred Majors',
+  '필요 역량 및 자격증 (하나씩 확인)': 'Required Competencies & Certifications',
+  '마이스터고 출신 평균 연봉 기준': 'Average Salary for Vocational High Graduates',
+  '기본급 기준': 'Base Salary Standard',
+  '성과급 및 수당 포함': 'Including Incentives & Allowances',
+  '복리후생 및 복지 제도': 'Welfare & Benefits System',
+  '근무 지역': 'Work Location',
+  '근무 형태': 'Work Schedule',
+  '채용 절차': 'Recruitment Process',
+  '마이스터고 졸업생 커리어 패스': 'Career Path for Vocational High Graduates',
+  'MyStair AI 맞춤 추천 사유': 'MyStair AI Custom Recommendation Reason',
+  '공식 채용 및 기업 홈페이지에서 상세 채용 공고를 확인하세요.': 'Check detailed job postings on the official corporate recruitment website.',
+  '🔗 공식 홈페이지 방문하기': '🔗 Visit Official Website',
+  '원하시는 정보 카테고리를 선택해주세요': 'Please select an information category',
+  '상단의 버튼(주요 사업, 조직 문화, 연봉 및 복지, 우대 자격증 등)을 누르면 해당 상세 내용이 표시됩니다.': 'Click the buttons above (Main Business, Culture, Salary & Welfare, Certifications) to view details.',
+  '등록된 주요 사업 정보가 없습니다.': 'No registered main business information.',
+  '등록된 조직 문화 정보가 없습니다.': 'No registered organizational culture information.',
+  '등록된 커리어 패스 정보가 없습니다.': 'No registered career path information.',
+  '등록된 추천 사유가 없습니다.': 'No registered recommendation reason.'
 };
 
 const translations = {
@@ -1239,33 +1418,32 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if ((translations.en as any)[keyOrKo]) {
       return (translations.en as any)[keyOrKo];
     }
-    if (fallbackEn) {
-      return fallbackEn;
+    if (certNameMap[keyOrKo]) {
+      return certNameMap[keyOrKo];
+    }
+    if (companyBrandMap[keyOrKo]) {
+      return companyBrandMap[keyOrKo];
+    }
+    if (qualTypeMap[keyOrKo]) {
+      return qualTypeMap[keyOrKo];
+    }
+    if (categoryMap[keyOrKo]) {
+      return categoryMap[keyOrKo];
+    }
+    if (certEligibilityMap[keyOrKo]) {
+      return certEligibilityMap[keyOrKo];
+    }
+    if (certDescMap[keyOrKo]) {
+      return certDescMap[keyOrKo];
     }
     if (koToEnMap[keyOrKo]) {
       return koToEnMap[keyOrKo];
     }
-
-    // Dynamic currency replacement
-    if (keyOrKo.endsWith('원')) {
-      const numStr = keyOrKo.slice(0, -1);
-      if (/^[0-9,]+$/.test(numStr)) {
-        return numStr + ' KRW';
-      }
+    if (fallbackEn) {
+      return fallbackEn;
     }
 
-    // Dynamic pass rate translation
-    if (keyOrKo.includes('필기 약 ') || keyOrKo.includes('실기 약 ') || keyOrKo.includes('필기') || keyOrKo.includes('실기')) {
-      let result = keyOrKo;
-      result = result.replace(/필기 약 /g, 'Written approx. ');
-      result = result.replace(/실기 약 /g, 'Practical approx. ');
-      result = result.replace(/필기/g, 'Written');
-      result = result.replace(/실기/g, 'Practical');
-      result = result.replace(/약 /g, 'approx. ');
-      return result;
-    }
-
-    return keyOrKo;
+    return autoTranslateDynamicText(keyOrKo);
   };
 
   return (

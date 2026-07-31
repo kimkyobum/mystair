@@ -265,9 +265,9 @@ export default function CompanySearch() {
                 }`}>
                   {t(getCompanyTypeBadge(company))}
                 </span>
-                <span className="text-white/50 text-[13px] font-medium tracking-wide">{cleanText(company.sector)}</span>
+                <span className="text-white/50 text-[13px] font-medium tracking-wide">{t(cleanText(company.sector))}</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{cleanText(company.company)}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{t(cleanText(company.company))}</h2>
             </div>
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0">
               <Building2 size={28} />
@@ -336,7 +336,7 @@ export default function CompanySearch() {
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <Briefcase size={20} className="text-blue-400" />{t('주요 사업 및 제품')}</h3>
                   <p className="text-white/80 leading-relaxed text-base">
-                    {company.main_business_products || '등록된 주요 사업 정보가 없습니다.'}
+                    {t(company.main_business_products || '등록된 주요 사업 정보가 없습니다.')}
                   </p>
                 </div>
               )}
@@ -346,12 +346,12 @@ export default function CompanySearch() {
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <User size={20} className="text-emerald-400" />{t('조직 문화 및 근무 분위기')}</h3>
                   <p className="text-white/80 leading-relaxed text-base mb-4">
-                    {company.organizational_culture || '등록된 조직 문화 정보가 없습니다.'}
+                    {t(company.organizational_culture || '등록된 조직 문화 정보가 없습니다.')}
                   </p>
                   {company.employee_review_summary && (
                     <div className="bg-black/20 p-4 rounded-xl border border-white/5">
                       <span className="text-xs font-semibold text-emerald-400 block mb-1">{t('💡 현직자 리뷰 / 특징 요약')}</span>
-                      <p className="text-white/70 text-sm leading-relaxed">{company.employee_review_summary}</p>
+                      <p className="text-white/70 text-sm leading-relaxed">{t(company.employee_review_summary)}</p>
                     </div>
                   )}
                 </div>
@@ -364,7 +364,7 @@ export default function CompanySearch() {
                   <div className="flex flex-wrap gap-2.5">
                     {company.core_talent_keywords?.map((kw: string, i: number) => (
                        <span key={i} className="px-4 py-2 bg-white/10 text-white/90 text-sm font-medium rounded-xl border border-white/10 flex items-center gap-2.5">
-                         <CheckCircle2 size={16} className="text-amber-400" /> {kw}
+                         <CheckCircle2 size={16} className="text-amber-400" /> {t(kw)}
                        </span>
                     ))}
                   </div>
@@ -379,7 +379,7 @@ export default function CompanySearch() {
                     <div className="flex flex-wrap gap-2">
                       {company.preferred_majors?.map((mj: string, i: number) => (
                          <span key={i} className="px-3.5 py-1.5 bg-purple-500/15 text-purple-200 text-sm font-medium rounded-xl border border-purple-500/30">
-                           {mj}
+                           {t(mj)}
                          </span>
                       ))}
                     </div>
@@ -392,7 +392,7 @@ export default function CompanySearch() {
                       {company.required_competencies_certifications?.map((cert: string, i: number) => (
                          <div key={i} className="px-4 py-2.5 bg-pink-500/10 text-pink-200 text-sm font-medium rounded-xl border border-pink-500/20 flex items-center gap-3">
                            <span className="w-6 h-6 rounded-full bg-pink-500/20 text-pink-300 font-bold flex items-center justify-center text-xs shrink-0">{i + 1}</span>
-                           <span>{cert}</span>
+                           <span>{t(cert)}</span>
                          </div>
                       ))}
                     </div>
@@ -409,11 +409,11 @@ export default function CompanySearch() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5">
                           <span className="text-white/50 text-xs font-medium block mb-1">{t('기본급 기준')}</span>
-                          <span className="text-white font-semibold text-sm">{company.meister_average_salary.starting_salary_base}</span>
+                          <span className="text-white font-semibold text-sm">{t(company.meister_average_salary.starting_salary_base)}</span>
                         </div>
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5">
                           <span className="text-green-400/85 text-xs font-medium block mb-1">{t('성과급 및 수당 포함')}</span>
-                          <span className="text-green-300 font-bold text-sm">{company.meister_average_salary.annual_salary_with_incentives}</span>
+                          <span className="text-green-300 font-bold text-sm">{t(company.meister_average_salary.annual_salary_with_incentives)}</span>
                         </div>
                       </div>
                     </div>
@@ -427,7 +427,7 @@ export default function CompanySearch() {
                         {company.welfare_benefits.map((wb: string, i: number) => (
                           <div key={i} className="px-3.5 py-2 bg-white/10 text-white/90 text-xs font-medium rounded-xl border border-white/10 flex items-center gap-2">
                             <CheckCircle2 size={14} className="text-amber-400 shrink-0" />
-                            <span>{wb}</span>
+                            <span>{t(wb)}</span>
                           </div>
                         ))}
                       </div>
@@ -444,7 +444,7 @@ export default function CompanySearch() {
                         <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 지역')}</span>
                         <div className="flex flex-wrap gap-1.5 mt-1">
                           {company.work_locations.map((loc: string, i: number) => (
-                            <span key={i} className="px-2.5 py-1 bg-white/10 text-white text-xs rounded-md">{loc}</span>
+                            <span key={i} className="px-2.5 py-1 bg-white/10 text-white text-xs rounded-md">{t(loc)}</span>
                           ))}
                         </div>
                       </div>
@@ -452,7 +452,7 @@ export default function CompanySearch() {
                     {company.expected_work_hours && (
                       <div className="bg-black/20 p-4 rounded-xl border border-white/5">
                         <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 형태')}</span>
-                        <span className="text-white text-sm font-medium">{company.expected_work_hours}</span>
+                        <span className="text-white text-sm font-medium">{t(company.expected_work_hours)}</span>
                       </div>
                     )}
                   </div>
@@ -465,7 +465,7 @@ export default function CompanySearch() {
                         {company.recruitment_process.map((step: string, i: number) => (
                           <React.Fragment key={i}>
                             <span className="px-3 py-1.5 bg-pink-500/10 text-pink-200 text-xs font-semibold rounded-xl border border-pink-500/20">
-                              {step}
+                              {t(step)}
                             </span>
                             {i < company.recruitment_process.length - 1 && (
                               <ChevronRight size={14} className="text-white/30" />
@@ -483,7 +483,7 @@ export default function CompanySearch() {
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <ChevronRight size={20} className="text-cyan-400" />{t('마이스터고 졸업생 커리어 패스')}</h3>
                   <p className="text-white/80 leading-relaxed text-base bg-black/20 p-5 rounded-2xl border border-white/5">
-                    {company.meister_career_path || '등록된 커리어 패스 정보가 없습니다.'}
+                    {t(company.meister_career_path || '등록된 커리어 패스 정보가 없습니다.')}
                   </p>
                 </div>
               )}
@@ -493,7 +493,7 @@ export default function CompanySearch() {
                   <h3 className="text-lg font-bold text-indigo-300 mb-4 flex items-center gap-2">
                     <Brain size={20} />{t('MyStair AI 맞춤 추천 사유')}</h3>
                   <p className="text-indigo-100/90 leading-relaxed text-base bg-indigo-500/10 p-5 rounded-2xl border border-indigo-500/20">
-                    {company.reason || '등록된 추천 사유가 없습니다.'}
+                    {t(company.reason || '등록된 추천 사유가 없습니다.')}
                   </p>
                 </div>
               )}
@@ -627,7 +627,7 @@ export default function CompanySearch() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base text-white group-hover:text-indigo-300 transition-colors">
-                          {cleanText(company.company)}
+                          {t(cleanText(company.company))}
                         </span>
                         <span className={`px-2 py-0.5 text-[11px] font-medium rounded border shrink-0 ${
                           getCompanyTypeBadge(company) === '공기업'
@@ -639,7 +639,7 @@ export default function CompanySearch() {
                       </div>
                       {company.sector && (
                         <p className="text-white/50 text-xs mt-0.5 truncate max-w-lg">
-                          {cleanText(company.sector)}
+                          {t(cleanText(company.sector))}
                         </p>
                       )}
                     </div>
@@ -743,7 +743,7 @@ export default function CompanySearch() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-lg text-white group-hover:text-indigo-300 transition-colors">
-                            {cleanText(company.company)}
+                            {t(cleanText(company.company))}
                           </span>
                           <span className="px-2.5 py-0.5 bg-blue-500/15 text-blue-300 text-xs font-medium rounded-md border border-blue-500/30 shrink-0">
                             {t('대기업')}
@@ -751,7 +751,7 @@ export default function CompanySearch() {
                         </div>
                         {company.sector && (
                           <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
-                            {cleanText(company.sector)}
+                            {t(cleanText(company.sector))}
                           </p>
                         )}
                       </div>
@@ -786,7 +786,7 @@ export default function CompanySearch() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-lg text-white group-hover:text-emerald-300 transition-colors">
-                            {cleanText(company.company)}
+                            {t(cleanText(company.company))}
                           </span>
                           <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-300 text-xs font-medium rounded-md border border-emerald-500/30 shrink-0">
                             {t('공기업')}
@@ -794,7 +794,7 @@ export default function CompanySearch() {
                         </div>
                         {company.sector && (
                           <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
-                            {cleanText(company.sector)}
+                            {t(cleanText(company.sector))}
                           </p>
                         )}
                       </div>
