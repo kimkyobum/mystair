@@ -24,13 +24,26 @@ export default function Header() {
   return (
     <>
       <header className="relative z-20 flex items-center justify-between px-2.5 sm:px-6 py-2.5 sm:py-5 w-full max-w-full sm:max-w-[1600px] mx-auto box-border overflow-x-hidden min-w-0">
-        <Link to="/" className="text-white font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0">
-          <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
-            <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
-            <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
-          </svg>
-          <span className="group-hover:text-teal-300 transition-colors duration-300 shrink-0">Mystair</span>
-        </Link>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link to="/" className="text-white font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0">
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+            </svg>
+            <span className="group-hover:text-teal-300 transition-colors duration-300 shrink-0">Mystair</span>
+          </Link>
+
+          {/* Usage Guide Button */}
+          <button
+            onClick={() => setGuideModalOpen(true)}
+            title={t('사용방법', 'How to use')}
+            className="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[34px] shrink-0"
+          >
+            <HelpCircle size={14} className="text-teal-400 shrink-0" />
+            <span className="hidden md:inline">{t('사용방법', 'How to use')}</span>
+            <span className="inline md:hidden">{t('사용법', 'Guide')}</span>
+          </button>
+        </div>
         
         <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
           {navItems.slice(1, -1).map(item => (
@@ -41,17 +54,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
-          {/* Usage Guide Button */}
-          <button
-            onClick={() => setGuideModalOpen(true)}
-            title={t('사용방법', 'How to use')}
-            className="flex items-center justify-center gap-1 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0"
-          >
-            <HelpCircle size={15} className="text-teal-400 shrink-0" />
-            <span className="hidden sm:inline">{t('사용방법', 'How to use')}</span>
-            <span className="inline sm:hidden">{t('사용법', 'Guide')}</span>
-          </button>
-
           {/* Promo Site Button (Icon & mini label on mobile, full label on tablet/desktop) */}
           <button
             onClick={() => {

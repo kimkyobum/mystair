@@ -41,35 +41,28 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
         </button>
       </form>
       
-      {/* Mobile Responsive Touch-Friendly Quick Action Buttons */}
-      <div className="w-full grid grid-cols-1 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-3 mt-6 sm:mt-8">
+      {/* Example Action Buttons */}
+      <div className="w-full flex flex-wrap items-center justify-center gap-2 mt-6 sm:mt-8 max-w-4xl mx-auto px-2">
         <button 
-          onClick={() => onStartChat?.('오늘의 다이어리 써줘')} 
-          className="w-full sm:w-auto min-h-[48px] px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full border border-emerald-500/50 text-emerald-300 text-xs sm:text-sm hover:bg-emerald-500/20 hover:border-emerald-500/70 transition-all bg-emerald-500/15 backdrop-blur-md font-semibold cursor-pointer flex items-center justify-center gap-2 shadow-sm active:scale-98"
+          onClick={() => onStartChat?.('오늘의 다이어리 작성해줘')} 
+          className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-emerald-500/50 text-emerald-300 text-xs sm:text-sm hover:bg-emerald-500/20 hover:border-emerald-500/70 transition-all bg-emerald-500/15 backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-98"
         >
-          <span className="text-base">✍️</span> 
-          <span>{t('오늘의 다이어리 써줘')}</span>
+          <span className="text-xs">✍️</span> 
+          <span>{t('오늘의 다이어리 작성')}</span>
         </button>
 
         <button 
-          onClick={() => onStartChat?.('내 MBTI와 홀랜드검사, 학교, 전공등을 분석하여 회사 데이터를 기반으로 대기업 10곳과 공기업 10곳 차례대로 추천해줘')} 
-          className="w-full sm:w-auto min-h-[48px] px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer text-center leading-snug active:scale-98"
+          onClick={() => onStartChat?.('내 전공과 적성에 맞는 대기업 및 공기업 추천해줘')} 
+          className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer active:scale-98"
         >
           {t('나만의 기업찾기 (대기업/공기업 TOP 10)')}
         </button>
 
         <button 
-          onClick={() => onStartChat?.('마이스터고 학생들이 많이 가는 대표 대기업/공기업')} 
-          className="w-full sm:w-auto min-h-[48px] px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer text-center leading-snug active:scale-98"
+          onClick={() => onStartChat?.('Mystair 서비스에 대해 자세히 자기소개해줘')} 
+          className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer active:scale-98"
         >
-          {t('대표 대기업 & 공기업 리스트')}
-        </button>
-
-        <button 
-          onClick={() => onStartChat?.('내 성장기록(다이어리) 바탕으로 가기 좋은 우수 중견기업 추천')} 
-          className="w-full sm:w-auto min-h-[48px] px-4 sm:px-5 py-3 rounded-2xl sm:rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer text-center leading-snug active:scale-98"
-        >
-          {t('성장기록 기반 우수 기업 매칭')}
+          {t('Mystair 자기소개')}
         </button>
       </div>
 
