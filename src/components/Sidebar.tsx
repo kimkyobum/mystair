@@ -102,7 +102,7 @@ export default function Sidebar() {
             <Link 
               key={index} 
               to={item.path} 
-              className={`flex items-center gap-3.5 px-2.5 py-3 rounded-xl transition-colors whitespace-nowrap ${
+              className={`flex items-center gap-3.5 px-2.5 py-3 rounded-xl transition-colors whitespace-nowrap min-h-[48px] ${
                 isActive 
                   ? (isDarkTheme ? 'bg-white/15 text-white font-semibold shadow-sm' : 'bg-slate-100 text-slate-900 font-bold shadow-sm')
                   : (isDarkTheme ? 'text-white/70 hover:bg-white/10 hover:text-white font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium')

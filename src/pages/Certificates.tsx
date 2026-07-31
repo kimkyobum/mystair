@@ -79,14 +79,14 @@ export default function Certificates() {
 
   return (
     <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-slate-100 font-sans relative">
-      <header className="bg-[#0F172A]/80 backdrop-blur-md h-[72px] flex items-center px-10 sticky top-0 z-50 border-b border-white/5 shadow-[0_4px_20px_rgba(15,23,42,0.15)]">
-        <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
+      <header className="bg-[#0F172A]/80 backdrop-blur-md h-[64px] sm:h-[72px] flex items-center px-4 sm:px-10 sticky top-0 z-50 border-b border-white/5 shadow-[0_4px_20px_rgba(15,23,42,0.15)]">
+        <Link to="/" className="text-white font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
           MyStair
         </Link>
-        <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] ml-3">
+        <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] ml-2 sm:ml-3 shrink-0">
           {t('자격증 NAVI')}
         </span>
-        <span className="text-[#94A3B8] text-[14px] font-medium border-l border-slate-800 pl-4 ml-4 hidden sm:block">
+        <span className="text-[#94A3B8] text-[14px] font-medium border-l border-slate-800 pl-4 ml-4 hidden md:block">
           {t('우리가 원하는 자격증을 한눈에!')}
         </span>
       </header>
@@ -116,7 +116,7 @@ export default function Certificates() {
               <button 
                 key={cat}
                 onClick={() => setCurrentCategory(cat)}
-                className={`px-[16px] py-2 rounded-full text-[13px] font-semibold border transition-all cursor-pointer shadow-sm ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-white hover:text-indigo-600 hover:border-indigo-300'}`}
+                className={`px-4 py-2.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-semibold border transition-all cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : 'bg-white/95 border-slate-200 text-slate-700 hover:bg-white hover:text-indigo-600 hover:border-indigo-300'}`}
               >
                 {cat === 'ALL' ? t('전체보기') : t(cat)}
               </button>

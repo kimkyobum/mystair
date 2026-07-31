@@ -680,36 +680,36 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
-        className="flex-1 h-full flex flex-col p-6 sm:p-8 relative z-20 bg-[#050505]/45 backdrop-blur-md rounded-[40px] border border-white/20 min-w-0"
+        className="flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 bg-[#050505]/45 backdrop-blur-md rounded-[24px] sm:rounded-[40px] border border-white/20 min-w-0"
       >
         {/* Chat header with control buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6 border-b border-white/10 pb-4 select-none shrink-0">
+        <div className="flex flex-wrap sm:flex-row gap-2.5 items-center justify-between mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 select-none shrink-0">
           <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-indigo-400 animate-pulse" />
-            <span className="text-white/70 text-[14px] font-semibold">{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
+            <Sparkles size={16} className="text-indigo-400 animate-pulse shrink-0" />
+            <span className="text-white/80 text-xs sm:text-[14px] font-semibold">{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
-              className="flex items-center gap-1.5 text-white/80 hover:text-white text-[13px] font-semibold bg-teal-500/10 hover:bg-teal-500/20 px-3.5 py-1.5 rounded-full border border-teal-500/20 hover:border-teal-500/45 cursor-pointer transition-all active:scale-95 shadow-sm"
+              className="flex items-center justify-center gap-1.5 text-white/90 hover:text-white text-xs sm:text-[13px] font-semibold bg-teal-500/15 hover:bg-teal-500/25 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-teal-500/30 hover:border-teal-500/50 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]"
               title={t('이전 질문 기록 보기', 'View previous question history')}
             >
-              <History size={13} className="text-teal-400 animate-pulse" />
+              <History size={14} className="text-teal-400 animate-pulse shrink-0" />
               <span>{t('이전 기록', 'History')} ({messages.filter(m => m.role === 'user').length})</span>
             </button>
             <button 
               onClick={clearChat}
-              className="flex items-center gap-1.5 text-white/50 hover:text-white text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm"
+              className="flex items-center justify-center gap-1.5 text-white/60 hover:text-white text-xs sm:text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]"
               title={t('새로운 대화 시작하기', 'Start a new conversation')}
             >
-              <Trash2 size={13} />
+              <Trash2 size={14} className="shrink-0" />
               <span>{t('새 대화 시작', 'New Chat')}</span>
             </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-8 pb-6 pr-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="flex-1 overflow-y-auto overflow-x-hidden space-y-6 sm:space-y-8 pb-4 sm:pb-6 pr-1 sm:pr-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {messages.map((msg) => (
             <motion.div 
               initial={{ opacity: 0, y: 15 }}
@@ -721,32 +721,35 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             >
               <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className="bg-[#e4e4e7] text-gray-800 px-6 py-3.5 rounded-[24px] rounded-tr-lg text-[16px] shadow-sm max-w-[80%] tracking-wide">
+                  <div className="bg-[#e4e4e7] text-gray-800 px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed">
                     {msg.content}
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-3 max-w-[85%]">
-                    <div className="text-white text-[16px] px-2 py-2 leading-relaxed tracking-wide min-h-[44px]">
+                  <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
+                    <div className="text-white text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]">
                       {msg.isStreaming && !msg.content ? (
-                        <div className="flex items-center gap-2 text-purple-300 font-medium">
-                          <RefreshCw size={16} className="animate-spin text-purple-400" />
+                        <div className="flex items-center gap-2 text-purple-300 font-medium text-xs sm:text-sm">
+                          <RefreshCw size={16} className="animate-spin text-purple-400 shrink-0" />
                           <span>{t('MyStair AI가 프로필과 다이어리를 바탕으로 나만의 기업을 탐색 중입니다...', 'MyStair AI is exploring matching companies based on your profile and diary...')}</span>
                         </div>
                       ) : (
-                        <div className="markdown-body space-y-2 text-white">
+                        <div className="markdown-body space-y-2 text-white text-sm sm:text-base">
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       )}
                     </div>
 
                     {!msg.isStreaming && msg.content && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-4 px-2 text-white/40 text-sm">
-                        <ThumbsUp size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-                        <ThumbsDown size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
-                        <button onClick={() => handleCopyText(msg.id, msg.content)} className="flex items-center gap-1 cursor-pointer hover:text-white/80 transition-colors">
-                          {copiedId === msg.id ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 px-1 sm:px-2 text-white/40 text-sm">
+                        <button className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="좋아요">
+                          <ThumbsUp size={16} className="hover:text-white/80" />
                         </button>
-                        <MoreHorizontal size={18} className="cursor-pointer hover:text-white/80 transition-colors" />
+                        <button className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="싫어요">
+                          <ThumbsDown size={16} className="hover:text-white/80" />
+                        </button>
+                        <button onClick={() => handleCopyText(msg.id, msg.content)} className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="텍스트 복사">
+                          {copiedId === msg.id ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                        </button>
                       </motion.div>
                     )}
                   </div>
@@ -755,35 +758,36 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             </motion.div>
           ))}
 
-          {/* Quick Question Suggestions */}
+          {/* Quick Question Suggestions - Mobile Responsive 48px touch targets */}
           {messages.length <= 2 && !isLoading && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
-              <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
-                <Sparkles size={14} />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-1 sm:px-2">
+              <span className="text-xs font-medium text-white/60 flex items-center gap-1.5">
+                <Sparkles size={14} className="text-teal-400" />
                 {t('추천 질의 예시', 'Suggested Questions')}
               </span>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
                 <button 
                   onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
-                  className="text-[12px] text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 font-semibold px-4 py-2 rounded-full transition-all active:scale-95 border border-emerald-500/40 cursor-pointer flex items-center gap-1.5 shadow-sm"
+                  className="w-full sm:w-auto text-xs sm:text-xs text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-emerald-500/40 cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center"
                 >
-                  <span>✍️</span> "{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"
+                  <span className="text-sm">✍️</span> 
+                  <span>"{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"</span>
                 </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
-                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
                 >
                   "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
-                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
                 >
                   "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
-                  className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
+                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
                 >
                   "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
                 </button>
@@ -794,20 +798,21 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="pt-4 mt-auto shrink-0">
-          <form onSubmit={handleSubmit} className="w-full bg-white rounded-[32px] p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ring-purple-400/30 transition-all duration-300">
+        <div className="pt-3 sm:pt-4 mt-auto shrink-0">
+          <form onSubmit={handleSubmit} className="w-full bg-white rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ring-purple-400/30 transition-all duration-300 min-h-[52px]">
             <input 
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}
               placeholder={isLoading ? t("AI 답변을 준비 중입니다...", "AI is preparing your answer...") : t("추가로 궁금한 점을 물어보세요", "Ask any other questions you have")}
-              className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-6 py-3 outline-none text-[16px]"
+              className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-3 sm:px-6 py-2 sm:py-3 outline-none text-sm sm:text-[16px] min-h-[44px]"
             />
             <button 
               type="submit" 
               disabled={isLoading || !inputValue.trim()}
-              className="bg-black text-white p-3.5 rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-2 group cursor-pointer disabled:opacity-40"
+              aria-label="질문 제출"
+              className="bg-black text-white p-3 sm:p-3.5 rounded-xl sm:rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95"
             >
               <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
             </button>
