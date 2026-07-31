@@ -77,7 +77,13 @@ MyStair는 사용자의 단편적인 기록을 가치 있는 커리어 자산으
 
 ## 🚀 서비스 접속 방법
 MyStair 서비스는 복잡한 로컬 환경 세팅 없이 웹에서 바로 경험하실 수 있도록 배포되어 있습니다.
+
 👉 **웹사이트 바로가기:** https://mystair-henna.vercel.app
+
+> **[심사위원용 테스트 계정]**
+> 회원가입 없이 즉시 핵심 기능을 체험해 보실 수 있습니다.
+> *   **ID:** `test@naver.com`
+> *   **PW:** `12345678`
 
 ## 📄 라이선스
 This project is licensed under the **MIT License**.
