@@ -113,13 +113,6 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
             setIsLoading(false);
             return;
           }
-        } else {
-          // Allow login seamlessly if registered on local state
-          loggedInUser = {
-            uid: 'user_' + Math.random().toString(36).substring(2, 11),
-            email: normEmail,
-            displayName: normEmail.split('@')[0]
-          };
         }
       }
 
@@ -146,7 +139,10 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     let hasError = false;
 
     if (signupPassword.length < 8) {
-      setSignupPasswordError('8글자 이상이여야 합니다');
+      setSignupPasswordError('비밀번호는 8글자 이상이어야 합니다.');
+      hasError = true;
+    } else if (!/[!@#$%^&*(),.?":{}|<>\-_=+~`'[\]\\]/.test(signupPassword)) {
+      setSignupPasswordError('특수기호를 반드시 포함해야 합니다.');
       hasError = true;
     } else {
       setSignupPasswordError('');
