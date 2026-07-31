@@ -244,7 +244,6 @@ const koToEnMap: Record<string, string> = {
 
   // Growth Diary page
   '성장 다이어리': 'Growth Diary',
-  '성장다이어리': 'Growth Diary',
   '시험 일정 설정': 'Exam Schedule Settings',
   '달력 보기': 'Calendar View',
   '자소서 요약': 'Resume Summary',
