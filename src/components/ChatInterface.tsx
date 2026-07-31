@@ -103,7 +103,8 @@ export default function ChatInterface() {
 
     if (diariesList.length === 0) {
       try {
-        const savedDiaries = localStorage.getItem('mystair_diaries');
+        const currentUid = firestoreProfile?.uid || user?.uid || 'local-user';
+        const savedDiaries = localStorage.getItem(`mystair_local_diaries_${currentUid}`) || localStorage.getItem('mystair_diaries');
         if (savedDiaries) {
           diariesList = JSON.parse(savedDiaries);
         }
@@ -387,45 +388,110 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         }
       }
 
-      // Check for [[DIARY_SAVE: ...]] marker in AI response to automatically save today's diary
+      // Dual-Stage Automatic Diary Saver
+      let diarySaved = false;
+      let diaryTitle = '';
+      let diaryContent = '';
+      let diaryTags: string[] = ['성장일기', 'AI자동작성'];
+      let diaryMood = '보람참';
+
+      // Stage 1: Check for [[DIARY_SAVE: ...]] JSON marker
       if (responseText && responseText.includes('[[DIARY_SAVE:')) {
         const diaryMatch = responseText.match(/\[\[DIARY_SAVE:\s*({[\s\S]*?})\s*\]\]/);
         if (diaryMatch) {
           try {
             const rawJson = diaryMatch[1];
             const diaryData = JSON.parse(rawJson);
-            
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
-
-            const diaryToSave = {
-              title: diaryData.title || (language === 'en' ? "Today's Growth Diary" : "오늘의 성장 다이어리"),
-              content: diaryData.content || "",
-              date: todayStr,
-              mood: diaryData.mood || '성장중',
-              tags: Array.isArray(diaryData.tags) && diaryData.tags.length > 0 ? diaryData.tags : ['성장일기', 'AI자동작성']
-            };
-
-            await saveDiary(diaryToSave);
-
-            // Strip the JSON marker from AI response
+            diaryTitle = diaryData.title || '';
+            diaryContent = diaryData.content || '';
+            if (Array.isArray(diaryData.tags) && diaryData.tags.length > 0) diaryTags = diaryData.tags;
+            if (diaryData.mood) diaryMood = diaryData.mood;
+            diarySaved = true;
             responseText = responseText.replace(/\[\[DIARY_SAVE:\s*{[\s\S]*?}\s*\]\]/g, '').trim();
-
-            const banner = language === 'en'
-              ? `\n\n---\n✅ **Today's Growth Diary (${todayStr}) has been automatically saved!** You can check it out in the 'Growth Diary' menu.`
-              : `\n\n---\n✅ **오늘의 성장 다이어리 (${todayStr})에 자동 등록되었습니다!** '성장 다이어리' 페이지에서 확인하실 수 있습니다.`;
-
-            responseText += banner;
-
-            window.dispatchEvent(new Event('diaryUpdated'));
           } catch (e) {
-            console.error("Failed to parse or save diary JSON from AI response:", e);
+            console.error("Failed to parse diary JSON from AI response:", e);
             responseText = responseText.replace(/\[\[DIARY_SAVE:\s*{[\s\S]*?}\s*\]\]/g, '').trim();
           }
         }
+      }
+
+      // Stage 2: Fallback parser if JSON marker was omitted, but user asked for diary creation/summary
+      const userAskedDiary = /다이어리|일기|적어줘|써줘|정리/i.test(text);
+      const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면/i.test(responseText);
+
+      if (!diarySaved && userAskedDiary && !isAiAskingQuestions && responseText) {
+        // Try extracting title from AI markdown output
+        const titleMatch = responseText.match(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/) ||
+                           responseText.match(/(?:제목|Title)\s*[:\-]\s*([^\n]+)/i) ||
+                           responseText.match(/\[오늘의\s*성장\s*다이어리\]\s*[:\-]?\s*([^\n]+)/);
+
+        if (titleMatch && titleMatch[1]) {
+          diaryTitle = titleMatch[1].trim();
+        }
+
+        // Extract hashtag tags if present
+        const tagMatches = responseText.match(/#[가-힣a-zA-Z0-9_]+/g);
+        if (tagMatches && tagMatches.length > 0) {
+          diaryTags = tagMatches.map(t => t.replace('#', ''));
+        }
+
+        // Extract mood if present
+        const moodMatch = responseText.match(/(?:기분|Mood)\s*[:\-]\s*([^\n📌🗓️🔥!]+)/i);
+        if (moodMatch && moodMatch[1]) {
+          diaryMood = moodMatch[1].trim();
+        }
+
+        // Clean body content by stripping meta header lines
+        let cleanedContent = responseText
+          .split('\n')
+          .filter(line => !line.startsWith('🗓️') && !line.startsWith('📌') && !line.startsWith('🔥') && !line.includes('날짜:') && !line.includes('태그:') && !line.includes('기분:'))
+          .join('\n')
+          .replace(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/g, '')
+          .replace(/\[오늘의\s*성장\s*다이어리\]/g, '')
+          .trim();
+
+        if (cleanedContent.length > 5) {
+          diaryContent = cleanedContent;
+          diarySaved = true;
+        }
+      }
+
+      // Execute Save Action if valid diary data obtained
+      if (diarySaved && diaryContent) {
+        // Ensure title is short keypoint only (e.g., 1~3 words)
+        let shortTitle = diaryTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
+        if (shortTitle.includes('다독상')) shortTitle = '다독상';
+        else if (shortTitle.includes('반도체')) shortTitle = '반도체 후공정';
+        else if (shortTitle.length > 10) {
+          shortTitle = shortTitle.slice(0, 10).trim();
+        }
+        if (!shortTitle) shortTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
+        const diaryToSave = {
+          title: shortTitle,
+          content: diaryContent,
+          date: todayStr,
+          mood: diaryMood,
+          tags: diaryTags
+        };
+
+        await saveDiary(diaryToSave);
+
+        const banner = language === 'en'
+          ? `\n\n---\n✅ **Today's Growth Diary (${todayStr}) has been automatically saved!** You can check it out in the 'Growth Diary' menu.`
+          : `\n\n---\n✅ **오늘의 성장 다이어리 (${todayStr})에 자동 등록되었습니다!** '성장 다이어리' 페이지에서 확인하실 수 있습니다.`;
+
+        if (!responseText.includes('자동 등록되었습니다')) {
+          responseText += banner;
+        }
+
+        window.dispatchEvent(new Event('diaryUpdated'));
       }
 
       // Animate the text character by character (typewriter effect)
