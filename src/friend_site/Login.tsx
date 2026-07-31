@@ -55,34 +55,55 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     try {
       let loggedInUser: any = null;
 
-      // 1. Attempt Backend API call (/api/login)
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: normEmail, password })
-        });
+      // 1. Check LocalStorage registered users first (most robust for client/Vercel environments)
+      const rawUsers = localStorage.getItem('mystair_registered_users');
+      const users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
+      const foundLocalUser = users.find(u => u.email === normEmail);
 
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const data = await response.json();
-          if (response.ok) {
-            loggedInUser = {
-              uid: data.uid,
-              email: data.email,
-              displayName: data.displayName || data.email.split('@')[0],
-            };
-          } else if (response.status === 400 && data.message) {
-            setServerError(data.message);
-            setIsLoading(false);
-            return;
-          }
+      if (foundLocalUser) {
+        if (foundLocalUser.password === password) {
+          loggedInUser = {
+            uid: foundLocalUser.uid,
+            email: foundLocalUser.email,
+            displayName: foundLocalUser.displayName || normEmail.split('@')[0]
+          };
+        } else {
+          setServerError('비밀번호가 올바르지 않습니다.');
+          setIsLoading(false);
+          return;
         }
-      } catch (err) {
-        console.warn('Backend login request failed, falling back to Firebase/Local:', err);
       }
 
-      // 2. Fallback: Firebase Auth
+      // 2. If not found locally, attempt Backend API call (/api/login)
+      if (!loggedInUser) {
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: normEmail, password })
+          });
+
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            if (response.ok) {
+              loggedInUser = {
+                uid: data.uid,
+                email: data.email,
+                displayName: data.displayName || data.email.split('@')[0],
+              };
+            } else if (response.status === 400 && data.message) {
+              setServerError(data.message);
+              setIsLoading(false);
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('Backend login request failed:', err);
+        }
+      }
+
+      // 3. Fallback: Firebase Auth
       if (!loggedInUser) {
         const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
         if (!isDummyKey) {
@@ -101,29 +122,10 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         }
       }
 
-      // 3. Fallback: LocalStorage user registry
       if (!loggedInUser) {
-        const rawUsers = localStorage.getItem('mystair_registered_users');
-        const users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
-        const found = users.find(u => u.email === normEmail);
-
-        if (found) {
-          if (found.password === password) {
-            loggedInUser = {
-              uid: found.uid,
-              email: found.email,
-              displayName: found.displayName || normEmail.split('@')[0]
-            };
-          } else {
-            setServerError('비밀번호가 올바르지 않습니다.');
-            setIsLoading(false);
-            return;
-          }
-        } else {
-          setServerError('등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.');
-          setIsLoading(false);
-          return;
-        }
+        setServerError('등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요.');
+        setIsLoading(false);
+        return;
       }
 
       if (loggedInUser) {
@@ -174,6 +176,15 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     try {
       let success = false;
 
+      // Check if already registered in localStorage first
+      const rawUsers = localStorage.getItem('mystair_registered_users');
+      const users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
+      if (users.some(u => u.email === normEmail)) {
+        setServerError('이미 가입된 이메일입니다.');
+        setIsLoading(false);
+        return;
+      }
+
       // 1. Attempt Backend API (/api/signup)
       try {
         const response = await fetch('/api/signup', {
@@ -215,27 +226,16 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         }
       }
 
-      // 3. Fallback: LocalStorage user registry
-      if (!success) {
-        const rawUsers = localStorage.getItem('mystair_registered_users');
-        const users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
-
-        if (users.some(u => u.email === normEmail)) {
-          setServerError('이미 가입된 이메일입니다.');
-          setIsLoading(false);
-          return;
-        }
-
-        const newUser = {
-          uid: 'user_' + Math.random().toString(36).substring(2, 11),
-          email: normEmail,
-          password: signupPassword,
-          displayName: normEmail.split('@')[0]
-        };
-        users.push(newUser);
-        localStorage.setItem('mystair_registered_users', JSON.stringify(users));
-        success = true;
-      }
+      // Always save to LocalStorage registered users so login succeeds reliably
+      const newUser = {
+        uid: 'user_' + Math.random().toString(36).substring(2, 11),
+        email: normEmail,
+        password: signupPassword,
+        displayName: normEmail.split('@')[0]
+      };
+      users.push(newUser);
+      localStorage.setItem('mystair_registered_users', JSON.stringify(users));
+      success = true;
 
       if (success) {
         alert('회원가입이 완료되었습니다. 로그인해주세요.');
