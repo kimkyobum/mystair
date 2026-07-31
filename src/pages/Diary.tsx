@@ -245,6 +245,11 @@ JSON 구조 규격:
   useEffect(() => {
     loadDiaryList();
 
+    const handleDiaryUpdate = () => {
+      loadDiaryList();
+    };
+    window.addEventListener('diaryUpdated', handleDiaryUpdate);
+
     // Load user specific exam schedule
     const uid = user?.uid || 'local-user';
     const saved = localStorage.getItem(`mystair_exam_schedule_${uid}`);
@@ -257,6 +262,10 @@ JSON 구조 규격:
     } else {
       setExamSchedule(DEFAULT_EXAM_SCHEDULE);
     }
+
+    return () => {
+      window.removeEventListener('diaryUpdated', handleDiaryUpdate);
+    };
   }, [user]);
 
   const showToast = (msg: string) => {
@@ -773,8 +782,7 @@ JSON 구조 규격:
 
                       {/* DIARY ENTRY DISPLAY */}
                       {diaryEntry && (
-                        <div className="bg-indigo-500/10 border border-indigo-500/25 p-1 sm:p-1.5 rounded-lg flex items-center gap-1 text-[11px] font-bold text-indigo-200 truncate shadow-xs">
-                          <span className="text-sm shrink-0">{diaryEntry.mood || '🔥'}</span>
+                        <div className="bg-indigo-500/10 border border-indigo-500/25 p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[11px] sm:text-xs font-bold text-indigo-200 truncate shadow-xs text-center">
                           <span className="truncate">{t(diaryEntry.title)}</span>
                         </div>
                       )}

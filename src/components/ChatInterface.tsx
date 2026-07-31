@@ -10,7 +10,7 @@ import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function ChatInterface() {
   const { language, t } = useLanguage();
-  const { userProfile: firestoreProfile, fetchDiaries } = useAuth();
+  const { userProfile: firestoreProfile, fetchDiaries, saveDiary, user } = useAuth();
   const {
     messages,
     setMessages,
@@ -46,32 +46,47 @@ export default function ChatInterface() {
 
   const getCombinedProfileData = () => {
     let profile = {
-      name: firestoreProfile?.name || '마이스터 인재',
-      highSchool: firestoreProfile?.highSchool || '수도전기공업고등학교',
-      major: firestoreProfile?.major || '전기제어과',
-      mbti: firestoreProfile?.mbti || 'ISTJ',
-      hollandCode: firestoreProfile?.hollandCode || 'RC',
-      targetCompanies: firestoreProfile?.targetCompanies || ['한국전력공사', '삼성전자', '현대자동차', '한화시스템']
+      name: firestoreProfile?.name || '',
+      highSchool: firestoreProfile?.highSchool || '',
+      major: firestoreProfile?.major || '',
+      mbti: firestoreProfile?.mbti || '',
+      hollandCode: firestoreProfile?.hollandCode || '',
+      targetCompanies: firestoreProfile?.targetCompanies || []
     };
 
     try {
       const savedMyPage = localStorage.getItem('mystair_mypage_data');
       if (savedMyPage) {
         const parsed = JSON.parse(savedMyPage);
-        profile = {
-          ...profile,
-          ...parsed,
-          name: parsed.name || profile.name,
-          highSchool: parsed.highSchool || profile.highSchool,
-          major: parsed.major || profile.major,
-          mbti: parsed.mbti || profile.mbti,
-          hollandCode: parsed.hollandCode || profile.hollandCode,
-          targetCompanies: parsed.targetCompanies || profile.targetCompanies
-        };
+        if (parsed.name) profile.name = parsed.name;
+        if (parsed.highSchool) profile.highSchool = parsed.highSchool;
+        if (parsed.major) profile.major = parsed.major;
+        if (parsed.mbti) profile.mbti = parsed.mbti;
+        if (parsed.hollandCode) profile.hollandCode = parsed.hollandCode;
+        if (parsed.targetCompanies && Array.isArray(parsed.targetCompanies)) profile.targetCompanies = parsed.targetCompanies;
       }
     } catch (e) {
       console.error('Error parsing local mypage data:', e);
     }
+
+    try {
+      const currentUid = firestoreProfile?.uid || user?.uid || 'local-user';
+      const savedLocal = localStorage.getItem(`mystair_local_user_profile_${currentUid}`);
+      if (savedLocal) {
+        const parsed = JSON.parse(savedLocal);
+        if (!profile.name && parsed.name) profile.name = parsed.name;
+        if (!profile.highSchool && parsed.highSchool) profile.highSchool = parsed.highSchool;
+        if (!profile.major && parsed.major) profile.major = parsed.major;
+        if (!profile.mbti && parsed.mbti) profile.mbti = parsed.mbti;
+        if (!profile.hollandCode && parsed.hollandCode) profile.hollandCode = parsed.hollandCode;
+        if ((!profile.targetCompanies || profile.targetCompanies.length === 0) && Array.isArray(parsed.targetCompanies)) {
+          profile.targetCompanies = parsed.targetCompanies;
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing local user profile:', e);
+    }
+
     return profile;
   };
 
@@ -129,17 +144,17 @@ export default function ChatInterface() {
     const profileText = profile
       ? `
 [사용자 프로필 데이터]
-- 이름: ${profile.name || "미설정"}
-- 학교 및 전공: ${profile.highSchool || "마이스터고"} / ${profile.major || "전공학과"}
-- MBTI 성격유형: ${profile.mbti || "미진단"}
-- 홀랜드 진로적성: ${profile.hollandCode || "미진단"}
+- 이름: ${profile.name || "미입력"}
+- 학교 및 전공: ${profile.highSchool || "미입력"} / ${profile.major || "미입력"}
+- MBTI 성격유형: ${profile.mbti || "미진단 (MBTI 미입력)"}
+- 홀랜드 진로적성: ${profile.hollandCode || "미진단 (홀랜드 코드 미입력)"}
 - 희망/관심 기업: ${
           Array.isArray(profile.targetCompanies) && profile.targetCompanies.length > 0
             ? profile.targetCompanies.join(", ")
-            : "삼성전자, 한국전력공사, 현대자동차, 한화시스템"
+            : "미선택 (희망 기업 미지정)"
         }
 `
-      : "[사용자 프로필 미입력 - 마이스터고/특성화고 표준 모범 프로필 기준으로 맞춤 응답]";
+      : "[사용자 프로필 미입력 - 마이페이지 미작성 상태]";
 
     const diariesText =
       Array.isArray(diaries) && diaries.length > 0
@@ -160,11 +175,26 @@ ${d.content || ""}
   )
   .join("\n-------------------\n")}
 `
-        : "[성장 다이어리 기록 없음 - 자소서 작성 팁 및 예시 경험 작성 가이드 제공]";
+        : "[성장 다이어리 기록 없음]";
 
     const systemInstruction = `
 너는 마이스터고 및 특성화고 학생들을 위한 '나만의 기업찾기' 및 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
 사용자의 학과, MBTI, 홀랜드 적성검사 코드, 그리고 작성해온 성장 다이어리(기록)를 분석하여 학생 개개인에게 가장 잘 어울리고 적합한 맞춤형 추천 기업(대기업, 공공기관, 유망 중견/강소기업 등)을 찾아주고 분석해주는 역할을 담당해.
+
+[중요: 사용자의 프로필 미입력/미진단 상태 처리 지침]
+- 사용자의 MBTI, 홀랜드 적성검사, 전공, 학교 등이 '미진단' 또는 '미입력'으로 되어 있다면, 이전 데이터나 기본값을 임의로 지어내며 MBTI(예: ISTJ 등)나 적성 코드가 원래 적혀있었다고 아는 척하지 마라.
+- 만약 사용자가 "나 MBTI/홀랜드 안 적어놨는데 뭐야?", "마이페이지 안 적었는데 알고 있네?" 하고 묻는다면:
+  "아 미안해! 사용자님의 마이페이지 프로필이 아직 작성되지 않은 미진단/미입력 상태네요! 😅 마이페이지에서 MBTI와 진로 적성검사, 전공을 입력해 주시면 딱 맞는 기업과 자격증을 추천해 드릴게요!" 하고 아는 척했던 오류를 정정하고 솔직하며 친절하게 대답해줘.
+
+[오늘의 성장 다이어리 자동 작성 및 저장 기능]
+- 사용자가 "오늘의 다이어리 써줘", "오늘 일기 적어줘", "다이어리에 ~내용 적어줘"라고 요청하거나 하루 동안의 경험/학습을 다이어리에 작성해 달라고 한 경우:
+  1) 사용자가 오늘 있었던 일의 내용을 구체적으로 알려주지 않고 단지 "오늘의 다이어리 써줘" 하고 질문한 경우:
+     "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습하고 정리했어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 오늘 자 일기에 자동으로 작성해 드릴게요! 😊" 처럼 친근하게 무슨 내용을 쓸지 물어봐.
+  2) 사용자가 오늘 있었던 내용/경험을 입력해 주었거나 특정 내용을 작성해달라고 한 경우:
+     - **제목 작성 규칙 (매우 중요)**: 제목을 장황한 문장으로 적지 말고 핵심 명사/키워드 포인트만 1~3단어로 매우 간결하게 적어줘! (예: "다독상 땄어" -> "다독상", "전기기능사 실습했어" -> "전기기능사 실습", "독후감 제출 완료" -> "독후감 제출")
+     - **본문 작성 규칙 (매우 중요)**: 전달받은 내용을 너무 길고 과하게 부풀리지 마라! 부담스럽지 않게 사용자의 경험을 자연스럽고 깔끔하게 **살짝만 가다듬은 2~3문장 이내**의 편안한 어조로 작성해줘.
+     - 그리고 **답변 제일 마지막 줄에 반드시 아래 형태의 JSON 마커**를 정확히 포함시켜줘 (시스템이 사용자의 오늘 다이어리 저장소에 자동으로 등록함):
+     [[DIARY_SAVE: {"title": "핵심포인트제목", "content": "부담없이 2~3문장으로 깔끔히 작성된 다이어리 본문", "tags": ["태그1", "태그2"], "mood": "보람참"}]]
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
@@ -353,6 +383,47 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             responseText = language === 'en'
               ? `⚠️ AI Configuration Notice:\n\nPlease register **VITE_GEMINI_API_KEY** or **GEMINI_API_KEY** in the environment variables to activate AI responses.\n\n(Details: ${errStr})`
               : `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${errStr})`;
+          }
+        }
+      }
+
+      // Check for [[DIARY_SAVE: ...]] marker in AI response to automatically save today's diary
+      if (responseText && responseText.includes('[[DIARY_SAVE:')) {
+        const diaryMatch = responseText.match(/\[\[DIARY_SAVE:\s*({[\s\S]*?})\s*\]\]/);
+        if (diaryMatch) {
+          try {
+            const rawJson = diaryMatch[1];
+            const diaryData = JSON.parse(rawJson);
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
+
+            const diaryToSave = {
+              title: diaryData.title || (language === 'en' ? "Today's Growth Diary" : "오늘의 성장 다이어리"),
+              content: diaryData.content || "",
+              date: todayStr,
+              mood: diaryData.mood || '성장중',
+              tags: Array.isArray(diaryData.tags) && diaryData.tags.length > 0 ? diaryData.tags : ['성장일기', 'AI자동작성']
+            };
+
+            await saveDiary(diaryToSave);
+
+            // Strip the JSON marker from AI response
+            responseText = responseText.replace(/\[\[DIARY_SAVE:\s*{[\s\S]*?}\s*\]\]/g, '').trim();
+
+            const banner = language === 'en'
+              ? `\n\n---\n✅ **Today's Growth Diary (${todayStr}) has been automatically saved!** You can check it out in the 'Growth Diary' menu.`
+              : `\n\n---\n✅ **오늘의 성장 다이어리 (${todayStr})에 자동 등록되었습니다!** '성장 다이어리' 페이지에서 확인하실 수 있습니다.`;
+
+            responseText += banner;
+
+            window.dispatchEvent(new Event('diaryUpdated'));
+          } catch (e) {
+            console.error("Failed to parse or save diary JSON from AI response:", e);
+            responseText = responseText.replace(/\[\[DIARY_SAVE:\s*{[\s\S]*?}\s*\]\]/g, '').trim();
           }
         }
       }
@@ -577,6 +648,12 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                 {t('추천 질의 예시', 'Suggested Questions')}
               </span>
               <div className="flex flex-wrap gap-2.5">
+                <button 
+                  onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
+                  className="text-[12px] text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 font-semibold px-4 py-2 rounded-full transition-all active:scale-95 border border-emerald-500/40 cursor-pointer flex items-center gap-1.5 shadow-sm"
+                >
+                  <span>✍️</span> "{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"
+                </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
                   className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"

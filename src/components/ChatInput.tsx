@@ -38,6 +38,9 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       </form>
       
       <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+        <button onClick={() => onStartChat?.('오늘의 다이어리 써줘')} className="px-5 py-2 rounded-full border border-emerald-500/40 text-emerald-300 text-sm hover:bg-emerald-500/20 hover:border-emerald-500/60 transition-all bg-emerald-500/10 backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>✍️</span> {t('오늘의 다이어리 써줘')}
+        </button>
         <button onClick={() => onStartChat?.('내 MBTI와 홀랜드검사, 학교, 전공등을 분석하여 회사 데이터를 기반으로 대기업 10곳과 공기업 10곳 차례대로 추천해줘')} className="px-5 py-2 rounded-full border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer">
           {t('나만의 기업찾기 (대기업/공기업 TOP 10)')}
         </button>
