@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Globe, Sparkles, HelpCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
+import { createPortal } from 'react-dom';
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [guideModalOpen, setGuideModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const navItems = [
@@ -39,6 +41,17 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
+          {/* Usage Guide Button */}
+          <button
+            onClick={() => setGuideModalOpen(true)}
+            title={t('사용방법', 'How to use')}
+            className="flex items-center justify-center gap-1 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0"
+          >
+            <HelpCircle size={15} className="text-teal-400 shrink-0" />
+            <span className="hidden sm:inline">{t('사용방법', 'How to use')}</span>
+            <span className="inline sm:hidden">{t('사용법', 'Guide')}</span>
+          </button>
+
           {/* Promo Site Button (Icon & mini label on mobile, full label on tablet/desktop) */}
           <button
             onClick={() => {
@@ -91,6 +104,86 @@ export default function Header() {
         </div>
       </header>
 
+      {/* USAGE GUIDE MODAL */}
+      {guideModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setGuideModalOpen(false)}>
+          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="bg-teal-500/20 p-2.5 rounded-2xl border border-teal-500/40 text-teal-300">
+                  <HelpCircle size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-white">{t('Mystair AI 이용 가이드 & 사용법', 'Mystair AI User Guide')}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400">{t('마이스터고 학생들을 위한 맞춤형 성장 & 취업 플랫폼 사용 설명서', 'Custom growth & employment platform guide for high school students')}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setGuideModalOpen(false)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-6 text-sm text-slate-300">
+              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <h4 className="font-bold text-teal-300 flex items-center gap-2">
+                  <span>🏢 1. 나만의 기업찾기 사용법</span>
+                </h4>
+                <p className="leading-relaxed text-slate-300">
+                  자신의 학교, 전공, MBTI, 홀랜드 적성검사를 마이페이지에 입력하면 MYSTAIR AI가 모두 분석하여 회사의 인재상, 환경 등을 고려하여 대기업, 공공기관 리스트를 뽑아줍니다.
+                </p>
+              </div>
+
+              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <h4 className="font-bold text-indigo-300 flex items-center gap-2">
+                  <span>🤖 2. AI 사용법</span>
+                </h4>
+                <p className="leading-relaxed text-slate-300">
+                  MYSTAIR의 모든 기능과 연결되어 있어서 나만의 AI 컨설팅을 할 수 있으며, 일상적인 궁금증뿐만 아니라 아래 예시 프롬프트처럼 다양하게 활용할 수 있습니다.
+                </p>
+                <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-1.5 text-xs text-indigo-200">
+                  <p className="font-semibold text-indigo-300">💡 예시 프롬프트:</p>
+                  <p>1) 오늘 ~활동을 했는데 내 다이어리에 기록해줘</p>
+                  <p>2) ~기업에 가려면 필수 자격증이 뭐야?</p>
+                  <p>3) 나의 적성을 고려했을 때 가장 맞는 기업은 어디야?</p>
+                  <p>4) ~기업의 정보 알려줘</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <h4 className="font-bold text-emerald-300 flex items-center gap-2">
+                  <span>✨ 3. 성장 다이어리 사용법</span>
+                </h4>
+                <p className="leading-relaxed text-slate-300">
+                  하루하루 다이어리를 일기 형식으로 기록하면, 자소서 요약 버튼에서 지금까지 했던 기록을 대내외활동, 상, 자격증 등으로 분류해주고 <strong>STAR 공법(Situation, Task, Action, Result)</strong>으로 상세하게 적어줍니다.
+                </p>
+              </div>
+
+              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <h4 className="font-bold text-amber-300 flex items-center gap-2">
+                  <span>📜 4. 자격증 가이드 사용법</span>
+                </h4>
+                <p className="leading-relaxed text-slate-300">
+                  MYSTAIR AI에게 추천받았거나 내가 원하는 자격증을 검색하여 기본적인 정보를 확인할 수 있으며, 해당 자격증의 공식 홈페이지 URL로 바로 연결되어 원서접수 및 정보를 쉽게 파악할 수 있습니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-4 border-t border-slate-800 flex justify-end">
+              <button
+                onClick={() => setGuideModalOpen(false)}
+                className="px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold transition-all cursor-pointer shadow-md"
+              >
+                {t('확인 완료', 'Got it')}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
       {/* MOBILE NAVIGATION DRAWER */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[200] flex justify-end xl:hidden">
@@ -139,6 +232,16 @@ export default function Header() {
 
             {/* Bottom Actions */}
             <div className="pt-5 border-t border-white/10 flex flex-col gap-2.5 mt-5">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setGuideModalOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
+              >
+                <HelpCircle size={16} className="text-teal-400 shrink-0" />
+                <span>{t('사용방법', 'How to use')}</span>
+              </button>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

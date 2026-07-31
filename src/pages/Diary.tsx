@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   GraduationCap,
   Award,
   Settings,
@@ -83,12 +84,14 @@ export default function Diary() {
     others: any[];
   } | null>(null);
   const [activeSummaryTab, setActiveSummaryTab] = useState<'certificates' | 'activities' | 'awards' | 'others'>('certificates');
+  const [expandedSummaryIndex, setExpandedSummaryIndex] = useState<number | null>(null);
 
   const handleSummarizeDiaries = async () => {
     setShowSummaryModal(true);
     setSummaryLoading(true);
     setSummaryText(null);
     setSummaryData(null);
+    setExpandedSummaryIndex(null);
 
     const profileData = localStorage.getItem('mystair_profile') || '';
     
@@ -827,7 +830,10 @@ JSON 구조 규격:
                   {/* Category Filter Buttons */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-slate-800 pb-4">
                     <button
-                      onClick={() => setActiveSummaryTab('certificates')}
+                      onClick={() => {
+                        setActiveSummaryTab('certificates');
+                        setExpandedSummaryIndex(null);
+                      }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
                         activeSummaryTab === 'certificates'
                           ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
@@ -838,7 +844,10 @@ JSON 구조 규격:
                       <span className="text-xs font-bold">{t('자격증 노력')}</span>
                     </button>
                     <button
-                      onClick={() => setActiveSummaryTab('activities')}
+                      onClick={() => {
+                        setActiveSummaryTab('activities');
+                        setExpandedSummaryIndex(null);
+                      }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
                         activeSummaryTab === 'activities'
                           ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
@@ -849,7 +858,10 @@ JSON 구조 규격:
                       <span className="text-xs font-bold">{t('대내외 활동')}</span>
                     </button>
                     <button
-                      onClick={() => setActiveSummaryTab('awards')}
+                      onClick={() => {
+                        setActiveSummaryTab('awards');
+                        setExpandedSummaryIndex(null);
+                      }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
                         activeSummaryTab === 'awards'
                           ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
@@ -860,7 +872,10 @@ JSON 구조 규격:
                       <span className="text-xs font-bold">{t('수상 및 성과')}</span>
                     </button>
                     <button
-                      onClick={() => setActiveSummaryTab('others')}
+                      onClick={() => {
+                        setActiveSummaryTab('others');
+                        setExpandedSummaryIndex(null);
+                      }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
                         activeSummaryTab === 'others'
                           ? 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md'
@@ -883,59 +898,92 @@ JSON 구조 규격:
                         </p>
                       </div>
                     ) : (
-                      summaryData[activeSummaryTab].map((item: any, idx: number) => (
-                        <div key={idx} className="bg-slate-800/30 border border-slate-800/80 rounded-3xl p-5 space-y-4 shadow-sm hover:border-indigo-500/30 transition-all">
-                          {/* Card Header (Date & Title) */}
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800/50">
-                            <h4 className="text-base font-extrabold text-white leading-snug flex items-center gap-2">
-                              <span className="text-indigo-400 text-lg">✦</span> {t(item.title)}
-                            </h4>
-                            <div className="bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-extrabold px-3 py-1 rounded-full shrink-0 flex items-center gap-1 w-fit">
-                              <CalendarIcon size={12} />
-                              <span>{item.date || t('날짜 미지정')}</span>
-                            </div>
+                      summaryData[activeSummaryTab].map((item: any, idx: number) => {
+                        const isExpanded = expandedSummaryIndex === idx;
+                        return (
+                          <div 
+                            key={idx} 
+                            className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
+                              isExpanded 
+                                ? 'bg-slate-800/60 border-indigo-500/60 shadow-lg' 
+                                : 'bg-slate-800/30 border-slate-800/80 hover:border-slate-700/80'
+                            }`}
+                          >
+                            {/* 날짜 및 간결한 제목 버튼 (클릭 시 STAR 공법 토글) */}
+                            <button
+                              type="button"
+                              onClick={() => setExpandedSummaryIndex(prev => prev === idx ? null : idx)}
+                              className="w-full flex items-center justify-between p-4 sm:p-5 text-left transition-colors cursor-pointer select-none group"
+                            >
+                              <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-2">
+                                <div className="bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs sm:text-sm font-black px-3.5 py-1.5 rounded-xl shrink-0 flex items-center gap-1.5 group-hover:bg-indigo-500/30 transition-colors">
+                                  <CalendarIcon size={14} className="text-indigo-400 shrink-0" />
+                                  <span className="whitespace-nowrap">{item.date || t('날짜 미지정')}</span>
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="text-sm sm:text-base font-extrabold text-white group-hover:text-indigo-300 transition-colors truncate">
+                                    {t(item.title)}
+                                  </h4>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span className="text-xs font-bold text-slate-400 hidden sm:inline">
+                                  {isExpanded ? t('STAR 닫기') : t('STAR 공법 보기')}
+                                </span>
+                                <div className={`p-1.5 rounded-xl transition-all duration-200 ${
+                                  isExpanded
+                                    ? 'bg-indigo-500/20 text-indigo-300 rotate-180'
+                                    : 'bg-slate-800 text-slate-400 group-hover:text-white'
+                                }`}>
+                                  <ChevronDown size={16} />
+                                </div>
+                              </div>
+                            </button>
+
+                            {/* STAR 공법 상세 영역 (날짜 버튼 클릭 시에만 표시) */}
+                            {isExpanded && (
+                              <div className="p-5 pt-4 border-t border-slate-700/60 space-y-4 bg-slate-900/50 animate-in fade-in-50 duration-200">
+                                {/* Situation */}
+                                <div className="flex items-start gap-3">
+                                  <span className="bg-amber-500/10 text-amber-400 text-xs font-black px-2 py-1 rounded-lg border border-amber-500/25 shrink-0 w-8 text-center" title="Situation">S</span>
+                                  <div className="space-y-0.5">
+                                    <span className="text-xs font-extrabold text-amber-300/80">Situation ({t('상황 배경')})</span>
+                                    <p className="text-sm text-slate-300 leading-relaxed">{t(item.situation)}</p>
+                                  </div>
+                                </div>
+
+                                {/* Task */}
+                                <div className="flex items-start gap-3">
+                                  <span className="bg-sky-500/10 text-sky-400 text-xs font-black px-2 py-1 rounded-lg border border-sky-500/25 shrink-0 w-8 text-center" title="Task">T</span>
+                                  <div className="space-y-0.5">
+                                    <span className="text-xs font-extrabold text-sky-300/80">Task ({t('목표와 과제')})</span>
+                                    <p className="text-sm text-slate-300 leading-relaxed">{t(item.task)}</p>
+                                  </div>
+                                </div>
+
+                                {/* Action */}
+                                <div className="flex items-start gap-3">
+                                  <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded-lg border border-emerald-500/25 shrink-0 w-8 text-center" title="Action">A</span>
+                                  <div className="space-y-0.5">
+                                    <span className="text-xs font-extrabold text-emerald-300/80">Action ({t('내가 취한 구체적 행동')})</span>
+                                    <p className="text-sm text-slate-200 leading-relaxed font-bold">{t(item.action)}</p>
+                                  </div>
+                                </div>
+
+                                {/* Result */}
+                                <div className="flex items-start gap-3">
+                                  <span className="bg-purple-500/10 text-purple-400 text-xs font-black px-2 py-1 rounded-lg border border-purple-500/25 shrink-0 w-8 text-center" title="Result">R</span>
+                                  <div className="space-y-0.5">
+                                    <span className="text-xs font-extrabold text-purple-300/80">Result ({t('최종 성과 및 내적 성장')})</span>
+                                    <p className="text-sm text-slate-300 leading-relaxed">{t(item.result)}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
-
-                          {/* STAR Methods Layout */}
-                          <div className="space-y-4 pt-1">
-                            {/* Situation */}
-                            <div className="flex items-start gap-3">
-                              <span className="bg-amber-500/10 text-amber-400 text-xs font-black px-2 py-1 rounded-lg border border-amber-500/25 shrink-0 w-8 text-center" title="Situation">S</span>
-                              <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-amber-300/80">Situation ({t('상황 배경')})</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.situation)}</p>
-                              </div>
-                            </div>
-
-                            {/* Task */}
-                            <div className="flex items-start gap-3">
-                              <span className="bg-sky-500/10 text-sky-400 text-xs font-black px-2 py-1 rounded-lg border border-sky-500/25 shrink-0 w-8 text-center" title="Task">T</span>
-                              <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-sky-300/80">Task ({t('목표와 과제')})</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.task)}</p>
-                              </div>
-                            </div>
-
-                            {/* Action */}
-                            <div className="flex items-start gap-3">
-                              <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded-lg border border-emerald-500/25 shrink-0 w-8 text-center" title="Action">A</span>
-                              <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-emerald-300/80">Action ({t('내가 취한 구체적 행동')})</span>
-                                <p className="text-sm text-slate-200 leading-relaxed font-bold">{t(item.action)}</p>
-                              </div>
-                            </div>
-
-                            {/* Result */}
-                            <div className="flex items-start gap-3">
-                              <span className="bg-purple-500/10 text-purple-400 text-xs font-black px-2 py-1 rounded-lg border border-purple-500/25 shrink-0 w-8 text-center" title="Result">R</span>
-                              <div className="space-y-0.5">
-                                <span className="text-xs font-extrabold text-purple-300/80">Result ({t('최종 성과 및 내적 성장')})</span>
-                                <p className="text-sm text-slate-300 leading-relaxed">{t(item.result)}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>

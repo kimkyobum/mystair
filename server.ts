@@ -59,8 +59,23 @@ try {
 }
 
 function findCompanyUrl(company: any, links: any[]): string | undefined {
+  const compRaw = company.company || "";
+  const compName = compRaw.toLowerCase().replace(/\s+/g, "");
+
+  if (compName.includes("lig넥스원") || compName.includes("lignex1")) {
+    return "https://www.lignex1.com/";
+  }
+
+  // Direct match with link.json company names
+  for (const l of links) {
+    const lCompRaw = l.company || "";
+    const lComp = lCompRaw.toLowerCase().replace(/\s+/g, "");
+    if (compName.includes(lComp) || lComp.includes(compName)) {
+      if (l.url && l.url.startsWith("http")) return l.url;
+    }
+  }
+
   const sector = (company.sector || "").toLowerCase().replace(/\s+/g, "");
-  const compName = (company.company || "").toLowerCase().replace(/\s+/g, "");
 
   for (const l of links) {
     const lComp = (l.company || "").toLowerCase().replace(/\s+/g, "");
@@ -323,9 +338,7 @@ app.post("/api/recommend-companies", (req, res) => {
         reason = `기업의 핵심 가치와 사용자님의 전반적인 성향이 부합합니다.`;
       }
 
-      // Random jitter for tie-breaking
-      score += Math.random();
-
+      // Stable deterministic sorting instead of random jitter
       const url = findCompanyUrl(c, parsedLinks);
 
       return {
@@ -340,14 +353,14 @@ app.post("/api/recommend-companies", (req, res) => {
 
     const allLargeCompanies = validCompanies
       .filter((c: any) => c.company_size && typeof c.company_size === 'string' && c.company_size.includes("대기업"))
-      .sort((a: any, b: any) => b.score - a.score);
+      .sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
 
     const largeCompaniesTop10 = allLargeCompanies.slice(0, 10);
     const otherLargeCompanies = allLargeCompanies.slice(10);
       
     let publicCompanies = validCompanies
       .filter((c: any) => c.company_size && typeof c.company_size === 'string' && (c.company_size.includes("공공기관") || c.company_size.includes("공기업") || c.company_size.includes("공공") || c.company_size.includes("공사") || c.company_size.includes("공단")))
-      .sort((a: any, b: any) => b.score - a.score);
+      .sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
 
     if (publicCompanies.length < 10) {
       const defaultPublicList = [
@@ -620,7 +633,7 @@ app.post("/api/recommend-companies", (req, res) => {
       const existingNames = new Set(publicCompanies.map((c: any) => c.company));
       for (const defC of defaultPublicList) {
         if (!existingNames.has(defC.company)) {
-          let score = Math.random() * 20 + 50;
+          let score = 50;
           let isMajorMatch = false;
           if (major && defC.preferred_majors && Array.isArray(defC.preferred_majors)) {
             if (defC.preferred_majors.some((m: string) => major.includes(m) || m.includes(major) || major === m)) {
@@ -640,7 +653,7 @@ app.post("/api/recommend-companies", (req, res) => {
           });
         }
       }
-      publicCompanies.sort((a: any, b: any) => b.score - a.score);
+      publicCompanies.sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
     }
 
     const publicCompaniesTop10 = publicCompanies.slice(0, 10);
@@ -969,12 +982,16 @@ ${diaries.map((d: any, idx: number) => `일기 ${idx + 1}. 날짜: ${d.date}, �
   1) 사용자가 오늘 있었던 일의 내용을 구체적으로 알려주지 않고 단지 "오늘의 다이어리 써줘" 하고 내용 없이 질문한 경우:
      - **절대 다이어리를 가상으로 지어내어 작성하지 마라! [[DIARY_SAVE:...]] 마커도 절대 생성하지 마라!**
      - 반드시 친근하게 무슨 일이 있었는지 어떤 내용을 적을지 먼저 물어봐라:
-       "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '다독상 땄어', '오늘 한화 연수 다녀왔어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 오늘 자 일기에 자동으로 작성해 드릴게요! 😊"
-  2) 사용자가 오늘 있었던 내용/경험/활동을 입력해주었거나 (AI가 "어떤 일이 있으셨나요?" 하고 질문한 것에 사용자가 "나오늘 한화에 가서 레이더 연수 들었어"처럼 있었던 일/활동을 대답한 경우 포함!):
+       "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '다독상 땄어', '오늘 한화 연수 다녀왔어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 일기에 자동으로 작성해 드릴게요! 😊"
+  2) 사용자가 오늘 또는 특정 날짜(예: 7/20, 7/21, 어제, 각 날짜별 등)의 경험/활동을 입력했거나 다이어리에 등록을 요청한 경우:
      - **대답 처리 규칙 (매우 중요)**: 사용자가 자신의 활동/경험을 말하면 칭찬/공감과 함께 2~3문장 이내의 부담없는 어조로 성장 다이어리 내용을 가다듬어 보여줘.
+     - **날짜 구분 규칙 (매우 중요)**: 사용자가 "오늘의 다이어리에 넣지말고 각 날짜에 넣어줘"라고 하거나 7/20, 7/21, 7/22 등 특정/여러 날짜를 지정한 경우, 절대로 오늘 날짜 하나의 다이어리로 합쳐서 저장하지 마라! 요청된 각각의 날짜(date: "2026-07-20" 등)별로 개별 다이어리 항목을 만들어 JSON 배열 또는 단일 객체로 마커를 출력해라.
      - **제목 작성 규칙 (매우 중요)**: 제목을 장황한 문장으로 적지 말고 핵심 명사/키워드 포인트만 1~3단어로 매우 간결하게 적어줘! (예: "다독상 땄어" -> "다독상", "한화 가서 레이더 연수 들었어" -> "한화 레이더 연수", "전기기능사 실습했어" -> "전기기능사 실습")
-     - **반드시 답변 제일 마지막 줄에 아래 형태의 JSON 마커**를 정확히 포함시켜야 해! (이 마커를 통해 오늘 자 다이어리 저장소에 자동으로 등록됨):
-     [[DIARY_SAVE: {"title": "핵심포인트제목", "content": "부담없이 2~3문장으로 깔끔히 작성된 다이어리 본문", "tags": ["태그1", "태그2"], "mood": "보람참"}]]
+     - **반드시 답변 제일 마지막 줄에 아래 형태의 JSON 마커**를 정확히 포함시켜야 해! (date 필드는 지정된 날짜 'YYYY-MM-DD' 형식, 지정 없으면 오늘 날짜):
+       - 단일 날짜 예시:
+         [[DIARY_SAVE: {"date": "2026-07-20", "title": "핵심포인트제목", "content": "부담없이 2~3문장으로 깔끔히 작성된 다이어리 본문", "tags": ["태그1", "태그2"], "mood": "보람참"}]]
+       - 다중 날짜 예시 (사용자가 날짜별로 넣으라고 한 경우 각각의 날짜로 개별 항목 저장):
+         [[DIARY_SAVE: [{"date": "2026-07-20", "title": "회로 설계 오류 분석", "content": "전공 실습 중 회로 설계 오류를 분석함.", "tags": ["실습"], "mood": "열정"}, {"date": "2026-07-21", "title": "팀원 갈등 해결", "content": "프로젝트 팀원 갈등 발생 시 경청과 제안으로...", "tags": ["팀워크"], "mood": "보람참"}]]]
 
 [회사 및 공식 링크 데이터]
 아래 회사 데이터(companies.json)와 공식 링크 데이터(link.json)를 바탕으로 사용자에게 기업을 추천해주고 공식 홈페이지 링크 안내 및 관련 질문에 답해줘:

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Building2, User, Brain, Briefcase, Award, GraduationCap, ChevronRight, Sparkles, Building, CheckCircle2, X, Banknote, Search } from 'lucide-react';
+import { Building2, User, Brain, Briefcase, Award, GraduationCap, ChevronRight, Sparkles, Building, CheckCircle2, X, Banknote, Search, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import companiesJson from '../../Data/companies.json';
@@ -65,10 +65,13 @@ export default function CompanySearch() {
     const findCompanyUrl = (companyObj: any, links: any[]): string => {
       const companyName = companyObj.company;
       if (!companyName) return '';
+      if (companyName.includes('LIG넥스원')) return 'https://www.lignex1.com/';
       const cleanName = companyName.replace(/\s*\(.*?\)/g, '').trim();
       let linkObj = links.find((l: any) => l.company === companyName || l.company === cleanName);
       if (!linkObj) linkObj = links.find((l: any) => l.company && (l.company.includes(cleanName) || cleanName.includes(l.company)));
-      return linkObj ? (linkObj.recruitment_page_url || linkObj.official_website || linkObj.job_korea_url || linkObj.saramin_url || '') : '';
+      const rawUrl = linkObj ? (linkObj.url || linkObj.recruitment_page_url || linkObj.official_website || linkObj.job_korea_url || linkObj.saramin_url || '') : '';
+      if (rawUrl && rawUrl.startsWith('http')) return rawUrl;
+      return '';
     };
 
     const scoredCompanies = allCompanies.map((c: any) => {
@@ -104,7 +107,6 @@ export default function CompanySearch() {
         reason = `기업의 핵심 가치와 사용자님의 전반적인 성향이 부합합니다.`;
       }
 
-      score += Math.random();
       return { ...c, score, reason, url: findCompanyUrl(c, parsedLinks) };
     });
 
@@ -112,14 +114,14 @@ export default function CompanySearch() {
 
     const allLargeCompanies = validCompanies
       .filter((c: any) => c.company_size && typeof c.company_size === 'string' && c.company_size.includes("대기업"))
-      .sort((a: any, b: any) => b.score - a.score);
+      .sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
 
     const largeCompaniesTop10 = allLargeCompanies.slice(0, 10);
     const otherLargeCompaniesList = allLargeCompanies.slice(10);
       
     let publicCompaniesList = validCompanies
       .filter((c: any) => c.company_size && typeof c.company_size === 'string' && (c.company_size.includes("공공기관") || c.company_size.includes("공기업") || c.company_size.includes("공공") || c.company_size.includes("공사") || c.company_size.includes("공단")))
-      .sort((a: any, b: any) => b.score - a.score);
+      .sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
 
     if (publicCompaniesList.length < 10) {
       const defaultPublicList = [
@@ -140,7 +142,7 @@ export default function CompanySearch() {
       const existingNames = new Set(publicCompaniesList.map((c: any) => c.company));
       for (const defC of defaultPublicList) {
         if (!existingNames.has(defC.company)) {
-          let score = Math.random() * 20 + 50;
+          let score = 50;
           let isMajorMatch = false;
           if (major && (defC as any).preferred_majors && Array.isArray((defC as any).preferred_majors)) {
             if ((defC as any).preferred_majors.some((m: string) => major.includes(m) || m.includes(major) || major === m)) {
@@ -160,7 +162,7 @@ export default function CompanySearch() {
           });
         }
       }
-      publicCompaniesList.sort((a: any, b: any) => b.score - a.score);
+      publicCompaniesList.sort((a: any, b: any) => b.score - a.score || a.company.localeCompare(b.company));
     }
 
     const publicCompaniesTop10 = publicCompaniesList.slice(0, 10);
@@ -611,7 +613,7 @@ export default function CompanySearch() {
               </div>
             ) : (
               filtered.map((company, idx) => (
-                <button
+                <div
                   key={`other-${idx}-${company.company}`}
                   onClick={() => setSelectedCompany(company)}
                   className="w-full flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-left group cursor-pointer"
@@ -644,8 +646,27 @@ export default function CompanySearch() {
                       )}
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-white/20 group-hover:text-white/60 transition-colors shrink-0 ml-2" />
-                </button>
+                  <div className="flex items-center gap-2.5 shrink-0 ml-2" onClick={(e) => e.stopPropagation()}>
+                    {company.url && company.url.startsWith('http') && (
+                      <a
+                        href={company.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={t('공식 홈페이지 방문')}
+                        className="px-2.5 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 text-xs font-bold rounded-lg transition-all shadow-sm flex items-center gap-1"
+                      >
+                        <ExternalLink size={13} />
+                        <span className="hidden sm:inline">{t('홈페이지')}</span>
+                      </a>
+                    )}
+                    <button
+                      onClick={() => setSelectedCompany(company)}
+                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
               ))
             )}
           </div>
@@ -731,10 +752,10 @@ export default function CompanySearch() {
               
               <div className="flex flex-col gap-4">
                 {largeCompanies.map((company, index) => (
-                  <button 
+                  <div 
                     key={`large-${index}`}
                     onClick={() => setSelectedCompany(company)}
-                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group"
+                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group cursor-pointer"
                   >
                     <div className="flex items-center gap-5 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 font-bold flex items-center justify-center text-sm border border-blue-500/20 group-hover:bg-blue-500 group-hover:text-white transition-colors shrink-0">
@@ -756,8 +777,27 @@ export default function CompanySearch() {
                         )}
                       </div>
                     </div>
-                    <ChevronRight size={20} className="text-white/20 group-hover:text-white/60 transition-colors shrink-0 ml-4" />
-                  </button>
+                    <div className="flex items-center gap-3 shrink-0 ml-4" onClick={(e) => e.stopPropagation()}>
+                      {company.url && company.url.startsWith('http') && (
+                        <a
+                          href={company.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t('공식 홈페이지 방문')}
+                          className="px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/40 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                        >
+                          <ExternalLink size={14} />
+                          <span className="hidden sm:inline">{t('홈페이지')}</span>
+                        </a>
+                      )}
+                      <button
+                        onClick={() => setSelectedCompany(company)}
+                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
@@ -774,7 +814,7 @@ export default function CompanySearch() {
               
               <div className="flex flex-col gap-4">
                 {publicCompanies.map((company, index) => (
-                  <button 
+                  <div 
                     key={`public-${index}`}
                     onClick={() => setSelectedCompany(company)}
                     className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group cursor-pointer"
@@ -799,8 +839,27 @@ export default function CompanySearch() {
                         )}
                       </div>
                     </div>
-                    <ChevronRight size={20} className="text-white/20 group-hover:text-white/60 transition-colors shrink-0 ml-4" />
-                  </button>
+                    <div className="flex items-center gap-3 shrink-0 ml-4" onClick={(e) => e.stopPropagation()}>
+                      {company.url && company.url.startsWith('http') && (
+                        <a
+                          href={company.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={t('공식 홈페이지 방문')}
+                          className="px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40 text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                        >
+                          <ExternalLink size={14} />
+                          <span className="hidden sm:inline">{t('홈페이지')}</span>
+                        </a>
+                      )}
+                      <button
+                        onClick={() => setSelectedCompany(company)}
+                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
