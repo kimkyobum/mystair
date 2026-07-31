@@ -678,8 +678,13 @@ app.post("/api/signup", async (req, res) => {
     return res.status(400).json({ message: "이메일과 비밀번호를 입력해주세요." });
   }
 
+  if (password.length < 8) {
+    return res.status(400).json({ message: "비밀번호는 8글자 이상이어야 합니다." });
+  }
+
   const normalizedEmail = email.toLowerCase().trim();
   const uid = "user_" + Math.random().toString(36).substring(2, 11);
+  const displayName = normalizedEmail.split('@')[0];
 
   if (process.env.DATABASE_URL) {
     try {
@@ -691,9 +696,9 @@ app.post("/api/signup", async (req, res) => {
         normalizedEmail,
         password,
         uid,
-        normalizedEmail.split('@')[0]
+        displayName
       ]);
-      return res.json({ status: "success", uid, email: normalizedEmail });
+      return res.json({ status: "success", uid, email: normalizedEmail, displayName });
     } catch (e) {
       console.error("PG signup error, falling back to memory:", e);
     }
@@ -702,8 +707,8 @@ app.post("/api/signup", async (req, res) => {
   if (usersDb[normalizedEmail]) {
     return res.status(400).json({ message: "이미 가입된 이메일입니다." });
   }
-  usersDb[normalizedEmail] = { email: normalizedEmail, password, uid, displayName: normalizedEmail.split('@')[0] };
-  return res.json({ status: "success", uid, email: normalizedEmail });
+  usersDb[normalizedEmail] = { email: normalizedEmail, password, uid, displayName };
+  return res.json({ status: "success", uid, email: normalizedEmail, displayName });
 });
 
 app.post("/api/login", async (req, res) => {
@@ -716,10 +721,16 @@ app.post("/api/login", async (req, res) => {
 
   if (process.env.DATABASE_URL) {
     try {
-      const result = await pool.query('SELECT * FROM users WHERE email = $1 AND password = $2', [normalizedEmail, password]);
+      const result = await pool.query('SELECT * FROM users WHERE email = $1', [normalizedEmail]);
       if (result.rows.length > 0) {
         const user = result.rows[0];
-        return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.display_name });
+        if (user.password === password) {
+          return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.display_name || user.email.split('@')[0] });
+        } else {
+          return res.status(400).json({ message: "비밀번호가 올바르지 않습니다." });
+        }
+      } else {
+        return res.status(400).json({ message: "등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요." });
       }
     } catch (e) {
       console.error("PG login error, falling back to memory:", e);
@@ -727,10 +738,14 @@ app.post("/api/login", async (req, res) => {
   }
 
   const user = usersDb[normalizedEmail];
-  if (user && user.password === password) {
-    return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.displayName });
+  if (user) {
+    if (user.password === password) {
+      return res.json({ status: "success", uid: user.uid, email: user.email, displayName: user.displayName });
+    } else {
+      return res.status(400).json({ message: "비밀번호가 올바르지 않습니다." });
+    }
   }
-  return res.status(400).json({ message: "이메일 또는 비밀번호가 틀렸습니다." });
+  return res.status(400).json({ message: "등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요." });
 });
 
 // 1. User Profile API Endpoints
