@@ -48,16 +48,16 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
 
   const faqData = [
     {
-      q: "일반 고등학교 학생도 함께할 수 있나요?",
-      a: "네, 일반 고등학교 학생도 이용할 수 있습니다! 교내외 다양한 활동과 경험을 캘린더에 기록하고, 이를 바탕으로 나만의 진솔한 자소서 소재를 발굴하는 데 유용하게 활용할 수 있습니다."
+      q: t("일반 고등학교 학생도 함께할 수 있나요?", "Can regular high school students join as well?"),
+      a: t("네, 일반 고등학교 학생도 이용할 수 있습니다! 교내외 다양한 활동과 경험을 캘린더에 기록하고, 이를 바탕으로 나만의 진솔한 자소서 소재를 발굴하는 데 유용하게 활용할 수 있습니다.", "Yes, regular high school students can use it too! You can record various school activities and experiences in the calendar, and use them to discover genuine materials for your personal statement.")
     },
     {
-      q: "AI 자소서 소재는 어떻게 만들어지나요?",
-      a: "캘린더에 차곡차곡 적어둔 생생한 실습과 트러블슈팅 경험들을 바탕으로, 기업이 선호하는 STAR 구조(상황-과제-행동-결과)에 맞추어 진솔하게 다듬어 드립니다."
+      q: t("AI 자소서 소재는 어떻게 만들어지나요?", "How are AI personal statement materials generated?"),
+      a: t("캘린더에 차곡차곡 적어둔 생생한 실습과 트러블슈팅 경험들을 바탕으로, 기업이 선호하는 STAR 구조(상황-과제-행동-결과)에 맞추어 진솔하게 다듬어 드립니다.", "Based on the vivid practice and troubleshooting experiences you've recorded in the calendar, we refine them genuinely into the STAR structure (Situation-Task-Action-Result) preferred by companies.")
     },
     {
-      q: "기록한 소중한 데이터는 안전한가요?",
-      a: "학생들이 정성껏 쌓아올린 모든 커리어 기록들은 안전하게 보호되며, 언제든 대시보드에서 편안하게 꺼내어 수정하고 활용하실 수 있습니다."
+      q: t("기록한 소중한 데이터는 안전한가요?", "Is my recorded valuable data safe?"),
+      a: t("학생들이 정성껏 쌓아올린 모든 커리어 기록들은 안전하게 보호되며, 언제든 대시보드에서 편안하게 꺼내어 수정하고 활용하실 수 있습니다.", "All the career records that students have carefully accumulated are securely protected, and you can comfortably retrieve, edit, and use them anytime from the dashboard.")
     }
   ];
 

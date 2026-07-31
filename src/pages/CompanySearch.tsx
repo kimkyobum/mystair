@@ -174,6 +174,13 @@ export default function CompanySearch() {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
+      const isProfileComplete = userProfile?.highSchool && userProfile?.major && userProfile?.mbti && userProfile?.hollandCode;
+      
+      if (!isProfileComplete) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch('/api/recommend-companies', {
           method: 'POST',
@@ -273,50 +280,42 @@ export default function CompanySearch() {
               onClick={() => setActiveTab('business')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'business' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <Briefcase size={16} className="text-blue-400" /> 주요 사업/제품
-            </button>
+              <Briefcase size={16} className="text-blue-400" />{t('주요 사업/제품')}</button>
             <button
               onClick={() => setActiveTab('culture')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'culture' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <User size={16} className="text-emerald-400" /> 조직 문화
-            </button>
+              <User size={16} className="text-emerald-400" />{t('조직 문화')}</button>
             <button
               onClick={() => setActiveTab('talent')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'talent' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <Sparkles size={16} className="text-amber-400" /> 핵심 역량 및 가치
-            </button>
+              <Sparkles size={16} className="text-amber-400" />{t('핵심 역량 및 가치')}</button>
             <button
               onClick={() => setActiveTab('majors_certs')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'majors_certs' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <GraduationCap size={16} className="text-purple-400" /> 우대 전공 & 자격증
-            </button>
+              <GraduationCap size={16} className="text-purple-400" />{t('우대 전공 & 자격증')}</button>
             <button
               onClick={() => setActiveTab('salary_welfare')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'salary_welfare' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <Banknote size={16} className="text-green-400" /> 연봉 & 복리후생
-            </button>
+              <Banknote size={16} className="text-green-400" />{t('연봉 & 복리후생')}</button>
             <button
               onClick={() => setActiveTab('work_recruitment')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'work_recruitment' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <Building size={16} className="text-pink-400" /> 근무 & 채용절차
-            </button>
+              <Building size={16} className="text-pink-400" />{t('근무 & 채용절차')}</button>
             <button
               onClick={() => setActiveTab('career')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'career' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <ChevronRight size={16} className="text-cyan-400" /> 커리어 패스
-            </button>
+              <ChevronRight size={16} className="text-cyan-400" />{t('커리어 패스')}</button>
             <button
               onClick={() => setActiveTab('reason')}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'reason' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
             >
-              <Brain size={16} className="text-indigo-300" /> AI 추천 사유
-            </button>
+              <Brain size={16} className="text-indigo-300" />{t('AI 추천 사유')}</button>
           </div>
           
           {/* Active Tab Content */}
@@ -327,18 +326,15 @@ export default function CompanySearch() {
                   <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4 shadow-inner">
                     <Sparkles size={28} />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">원하시는 정보 카테고리를 선택해주세요</h3>
-                  <p className="text-white/60 text-sm max-w-md">
-                    상단의 버튼(주요 사업, 조직 문화, 연봉 및 복지, 우대 자격증 등)을 누르면 해당 상세 내용이 표시됩니다.
-                  </p>
+                  <h3 className="text-lg font-bold text-white mb-2">{t('원하시는 정보 카테고리를 선택해주세요')}</h3>
+                  <p className="text-white/60 text-sm max-w-md">{t('상단의 버튼(주요 사업, 조직 문화, 연봉 및 복지, 우대 자격증 등)을 누르면 해당 상세 내용이 표시됩니다.')}</p>
                 </div>
               )}
 
               {activeTab === 'business' && (
                 <div>
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <Briefcase size={20} className="text-blue-400" /> 주요 사업 및 제품
-                  </h3>
+                    <Briefcase size={20} className="text-blue-400" />{t('주요 사업 및 제품')}</h3>
                   <p className="text-white/80 leading-relaxed text-base">
                     {company.main_business_products || '등록된 주요 사업 정보가 없습니다.'}
                   </p>
@@ -348,14 +344,13 @@ export default function CompanySearch() {
               {activeTab === 'culture' && (
                 <div>
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <User size={20} className="text-emerald-400" /> 조직 문화 및 근무 분위기
-                  </h3>
+                    <User size={20} className="text-emerald-400" />{t('조직 문화 및 근무 분위기')}</h3>
                   <p className="text-white/80 leading-relaxed text-base mb-4">
                     {company.organizational_culture || '등록된 조직 문화 정보가 없습니다.'}
                   </p>
                   {company.employee_review_summary && (
                     <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-                      <span className="text-xs font-semibold text-emerald-400 block mb-1">💡 현직자 리뷰 / 특징 요약</span>
+                      <span className="text-xs font-semibold text-emerald-400 block mb-1">{t('💡 현직자 리뷰 / 특징 요약')}</span>
                       <p className="text-white/70 text-sm leading-relaxed">{company.employee_review_summary}</p>
                     </div>
                   )}
@@ -365,8 +360,7 @@ export default function CompanySearch() {
               {activeTab === 'talent' && (
                 <div>
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <Sparkles size={20} className="text-amber-400" /> 핵심 역량 및 가치 (인재상)
-                  </h3>
+                    <Sparkles size={20} className="text-amber-400" />{t('핵심 역량 및 가치 (인재상)')}</h3>
                   <div className="flex flex-wrap gap-2.5">
                     {company.core_talent_keywords?.map((kw: string, i: number) => (
                        <span key={i} className="px-4 py-2 bg-white/10 text-white/90 text-sm font-medium rounded-xl border border-white/10 flex items-center gap-2.5">
@@ -381,8 +375,7 @@ export default function CompanySearch() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
-                      <GraduationCap size={18} className="text-purple-400" /> 우대 전공
-                    </h3>
+                      <GraduationCap size={18} className="text-purple-400" />{t('우대 전공')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {company.preferred_majors?.map((mj: string, i: number) => (
                          <span key={i} className="px-3.5 py-1.5 bg-purple-500/15 text-purple-200 text-sm font-medium rounded-xl border border-purple-500/30">
@@ -394,8 +387,7 @@ export default function CompanySearch() {
 
                   <div>
                     <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
-                      <Award size={18} className="text-pink-400" /> 필요 역량 및 자격증 (하나씩 확인)
-                    </h3>
+                      <Award size={18} className="text-pink-400" />{t('필요 역량 및 자격증 (하나씩 확인)')}</h3>
                     <div className="flex flex-col gap-2">
                       {company.required_competencies_certifications?.map((cert: string, i: number) => (
                          <div key={i} className="px-4 py-2.5 bg-pink-500/10 text-pink-200 text-sm font-medium rounded-xl border border-pink-500/20 flex items-center gap-3">
@@ -413,15 +405,14 @@ export default function CompanySearch() {
                   {company.meister_average_salary && (
                     <div>
                       <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
-                        <Banknote size={18} className="text-green-400" /> 마이스터고 출신 평균 연봉 기준
-                      </h3>
+                        <Banknote size={18} className="text-green-400" />{t('마이스터고 출신 평균 연봉 기준')}</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-                          <span className="text-white/50 text-xs font-medium block mb-1">기본급 기준</span>
+                          <span className="text-white/50 text-xs font-medium block mb-1">{t('기본급 기준')}</span>
                           <span className="text-white font-semibold text-sm">{company.meister_average_salary.starting_salary_base}</span>
                         </div>
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-                          <span className="text-green-400/85 text-xs font-medium block mb-1">성과급 및 수당 포함</span>
+                          <span className="text-green-400/85 text-xs font-medium block mb-1">{t('성과급 및 수당 포함')}</span>
                           <span className="text-green-300 font-bold text-sm">{company.meister_average_salary.annual_salary_with_incentives}</span>
                         </div>
                       </div>
@@ -431,8 +422,7 @@ export default function CompanySearch() {
                   {company.welfare_benefits && (
                     <div>
                       <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
-                        <Sparkles size={18} className="text-amber-400" /> 복리후생 및 복지 제도
-                      </h3>
+                        <Sparkles size={18} className="text-amber-400" />{t('복리후생 및 복지 제도')}</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {company.welfare_benefits.map((wb: string, i: number) => (
                           <div key={i} className="px-3.5 py-2 bg-white/10 text-white/90 text-xs font-medium rounded-xl border border-white/10 flex items-center gap-2">
@@ -451,7 +441,7 @@ export default function CompanySearch() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {company.work_locations && (
                       <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-                        <span className="text-white/50 text-xs font-medium block mb-1">근무 지역</span>
+                        <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 지역')}</span>
                         <div className="flex flex-wrap gap-1.5 mt-1">
                           {company.work_locations.map((loc: string, i: number) => (
                             <span key={i} className="px-2.5 py-1 bg-white/10 text-white text-xs rounded-md">{loc}</span>
@@ -461,7 +451,7 @@ export default function CompanySearch() {
                     )}
                     {company.expected_work_hours && (
                       <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-                        <span className="text-white/50 text-xs font-medium block mb-1">근무 형태</span>
+                        <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 형태')}</span>
                         <span className="text-white text-sm font-medium">{company.expected_work_hours}</span>
                       </div>
                     )}
@@ -470,8 +460,7 @@ export default function CompanySearch() {
                   {company.recruitment_process && (
                     <div>
                       <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
-                        <Building size={18} className="text-pink-400" /> 채용 절차
-                      </h3>
+                        <Building size={18} className="text-pink-400" />{t('채용 절차')}</h3>
                       <div className="flex flex-wrap items-center gap-2">
                         {company.recruitment_process.map((step: string, i: number) => (
                           <React.Fragment key={i}>
@@ -492,8 +481,7 @@ export default function CompanySearch() {
               {activeTab === 'career' && (
                 <div>
                   <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <ChevronRight size={20} className="text-cyan-400" /> 마이스터고 졸업생 커리어 패스
-                  </h3>
+                    <ChevronRight size={20} className="text-cyan-400" />{t('마이스터고 졸업생 커리어 패스')}</h3>
                   <p className="text-white/80 leading-relaxed text-base bg-black/20 p-5 rounded-2xl border border-white/5">
                     {company.meister_career_path || '등록된 커리어 패스 정보가 없습니다.'}
                   </p>
@@ -503,8 +491,7 @@ export default function CompanySearch() {
               {activeTab === 'reason' && (
                 <div>
                   <h3 className="text-lg font-bold text-indigo-300 mb-4 flex items-center gap-2">
-                    <Brain size={20} /> MyStair AI 맞춤 추천 사유
-                  </h3>
+                    <Brain size={20} />{t('MyStair AI 맞춤 추천 사유')}</h3>
                   <p className="text-indigo-100/90 leading-relaxed text-base bg-indigo-500/10 p-5 rounded-2xl border border-indigo-500/20">
                     {company.reason || '등록된 추천 사유가 없습니다.'}
                   </p>
@@ -515,14 +502,14 @@ export default function CompanySearch() {
             {/* Official Website Link at bottom */}
             {company.url && company.url.startsWith('http') && (
               <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="text-white/50 text-xs">공식 채용 및 기업 홈페이지에서 상세 채용 공고를 확인하세요.</span>
+                <span className="text-white/50 text-xs">{t('공식 채용 및 기업 홈페이지에서 상세 채용 공고를 확인하세요.')}</span>
                 <a 
                   href={company.url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all shadow-md flex items-center gap-2"
                 >
-                  <span>🔗 공식 홈페이지 방문하기</span>
+                  <span>{t('🔗 공식 홈페이지 방문하기')}</span>
                 </a>
               </div>
             )}
@@ -576,12 +563,10 @@ export default function CompanySearch() {
 
           <div className="mb-6 pb-4 border-b border-white/10 pr-10">
             <div className="flex items-center gap-3 mb-2">
-              <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-lg border border-indigo-500/30">
-                나머지 기업 목록
-              </span>
+              <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-lg border border-indigo-500/30">{t('나머지 기업 목록')}</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">TOP 10 이외의 전체 기업 ({totalCount}개)</h2>
-            <p className="text-white/50 text-xs sm:text-sm mt-1">상위 TOP 10 이외의 모든 추천 대기업 및 공기업 리스트입니다. 클릭 시 상세 정보를 볼 수 있습니다.</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{t('TOP 10 이외의 전체 기업')} ({totalCount}{t('개')})</h2>
+            <p className="text-white/50 text-xs sm:text-sm mt-1">{t('상위 TOP 10 이외의 모든 추천 대기업 및 공기업 리스트입니다. 클릭 시 상세 정보를 볼 수 있습니다.')}</p>
           </div>
 
           {/* Search Bar & Filter Tabs */}
@@ -592,7 +577,7 @@ export default function CompanySearch() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="기업명 또는 업종 검색..."
+                placeholder={t('기업명 또는 업종 검색...')}
                 className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 placeholder-white/30"
               />
             </div>
@@ -601,19 +586,19 @@ export default function CompanySearch() {
                 onClick={() => setActiveTab('ALL')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'ALL' ? 'bg-indigo-600 text-white' : 'text-white/60 hover:text-white'}`}
               >
-                전체 ({totalCount})
+                {t('전체')} ({totalCount})
               </button>
               <button
                 onClick={() => setActiveTab('LARGE')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'LARGE' ? 'bg-blue-600 text-white' : 'text-white/60 hover:text-white'}`}
               >
-                대기업 ({otherLargeCompanies.length})
+                {t('대기업')} ({otherLargeCompanies.length})
               </button>
               <button
                 onClick={() => setActiveTab('PUBLIC')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'PUBLIC' ? 'bg-emerald-600 text-white' : 'text-white/60 hover:text-white'}`}
               >
-                공기업 ({otherPublicCompanies.length})
+                {t('공기업')} ({otherPublicCompanies.length})
               </button>
             </div>
           </div>
@@ -679,8 +664,8 @@ export default function CompanySearch() {
               <Briefcase size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">나만의 기업찾기</h1>
-              <p className="text-[13px] text-white/60 font-medium mt-0.5">내 성향과 전공에 딱 맞는 기업 TOP 10</p>
+              <h1 className="text-xl font-bold text-white tracking-tight">{t('나만의 기업찾기')}</h1>
+              <p className="text-[13px] text-white/60 font-medium mt-0.5">{t('내 성향과 전공에 딱 맞는 기업 TOP 10')}</p>
             </div>
           </div>
           
@@ -690,7 +675,7 @@ export default function CompanySearch() {
               className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-md hover:shadow-indigo-500/20 flex items-center gap-2 border border-indigo-400/30 shrink-0"
             >
               <Building2 size={16} />
-              <span>나머지 기업 보기</span>
+              <span>{t('나머지 기업 보기')}</span>
               <span className="px-2 py-0.5 bg-white/20 text-white text-[11px] rounded-full font-bold">
                 {otherLargeCompanies.length + otherPublicCompanies.length}
               </span>
@@ -702,7 +687,7 @@ export default function CompanySearch() {
                 className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition-all flex items-center gap-2 border border-white/5 hover:border-white/10"
               >
                 <User className="w-4 h-4" />
-                <span className="hidden md:inline">프로필 완성</span>
+                <span className="hidden md:inline">{t('프로필 완성')}</span>
               </button>
             )}
           </div>
@@ -713,7 +698,24 @@ export default function CompanySearch() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
             <div className="w-12 h-12 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mb-6"></div>
-            <p className="text-white/60 font-medium text-lg">사용자님의 프로필을 분석 중입니다...</p>
+            <p className="text-white/60 font-medium text-lg">{t('사용자님의 프로필을 분석 중입니다...')}</p>
+          </div>
+        ) : !(userProfile?.highSchool && userProfile?.major && userProfile?.mbti && userProfile?.hollandCode) ? (
+          <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] text-center">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30 mb-6">
+              <User size={32} />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('프로필 정보가 필요합니다')}</h2>
+            <p className="text-white/60 text-lg mb-8 max-w-md leading-relaxed">
+              {t('나만의 맞춤 기업을 추천받기 위해 마이페이지에서')}<br/>
+              <span className="text-indigo-400 font-semibold">{t('학교, 학과, MBTI, 홀랜드 적성검사')}</span>{t('정보를 먼저 입력해주세요.')}</p>
+            <button
+              onClick={() => navigate('/mypage')}
+              className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2"
+            >
+              {t('마이페이지로 이동하기')}
+              <ChevronRight size={18} />
+            </button>
           </div>
         ) : (
           <div className="space-y-12 pb-20">
@@ -723,8 +725,8 @@ export default function CompanySearch() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/30 mb-4">
                   <Building2 size={24} />
                 </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">추천 대기업 TOP 10</h2>
-                <p className="text-white/50 text-sm">내 성향과 전공에 맞춘 가장 적합한 대기업 리스트입니다.</p>
+                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">{t('추천 대기업 TOP 10')}</h2>
+                <p className="text-white/50 text-sm">{t('내 성향과 전공에 맞춘 가장 적합한 대기업 리스트입니다.')}</p>
               </div>
               
               <div className="flex flex-col gap-4">

@@ -129,7 +129,7 @@ export default function Sidebar() {
             {userProfile?.avatarUrl || user?.photoURL ? (
               <img 
                 src={userProfile?.avatarUrl || user?.photoURL || ''} 
-                alt="프로필" 
+                alt={t('프로필')} 
                 className="w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full object-cover shrink-0 transition-all group-hover:scale-105 shadow-sm"
               />
             ) : (
@@ -156,7 +156,7 @@ export default function Sidebar() {
               {!user && (
                 <button 
                   onClick={() => loginWithGoogle()}
-                  title="구글 로그인"
+                  title={t('구글 로그인')}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                     isDarkTheme ? 'hover:bg-white/10 text-indigo-300 hover:text-white' : 'hover:bg-slate-200 text-indigo-600 hover:text-indigo-800'
                   }`}
@@ -166,7 +166,7 @@ export default function Sidebar() {
               )}
               <button 
                 onClick={handleLogout}
-                title={user ? "로그아웃" : "홍보 페이지로 이동"}
+                title={user ? t('로그아웃') : t('홍보 페이지로 이동')}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                   isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
                 }`}

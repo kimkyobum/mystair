@@ -342,7 +342,7 @@ export default function MyPage() {
             className="bg-transparent text-white border border-white/20 rounded-full px-3 py-1.5 text-sm font-medium outline-none hover:bg-white/5 transition-colors focus:border-teal-400 appearance-none cursor-pointer"
             style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em', paddingRight: '2rem' }}
           >
-            <option value="ko" className="bg-gray-900 text-white">한국어</option>
+            <option value="ko" className="bg-gray-900 text-white">{t('한국어')}</option>
             <option value="en" className="bg-gray-900 text-white">English</option>
           </select>
         </div>
@@ -385,7 +385,7 @@ export default function MyPage() {
                   
                   <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
                     {profile.avatarUrl ? (
-                      <img src={profile.avatarUrl} alt="프로필" className="w-full h-full object-cover" />
+                      <img src={profile.avatarUrl} alt={t('프로필')} className="w-full h-full object-cover" />
                     ) : (
                       <div className="text-indigo-600 flex flex-col items-center justify-center">
                         <User size={36} className="shrink-0" />
@@ -396,7 +396,7 @@ export default function MyPage() {
                     {isFullEditing && (
                       <label className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 cursor-pointer text-[10px] text-white font-extrabold transition-opacity duration-200">
                         <Edit3 size={14} className="text-indigo-600 animate-bounce" />
-                        <span>사진 변경</span>
+                        <span>{t('사진 변경')}</span>
                         <input 
                           type="file" 
                           accept="image/*" 
@@ -418,9 +418,7 @@ export default function MyPage() {
                   <h1 className="text-xl sm:text-2xl font-black tracking-tight">
                     {profile.name}
                   </h1>
-                  <span className="bg-indigo-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-400/30">
-                    마이스터 인재
-                  </span>
+                  <span className="bg-indigo-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-400/30">{t('마이스터 인재')}</span>
                 </div>
                 <p className="text-xs text-slate-300 font-medium mt-1 flex items-center gap-2">
                   <span>{profile.highSchool}</span>
@@ -455,9 +453,7 @@ export default function MyPage() {
                   <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
                     <User size={16} />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    이름
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('이름')}</span>
                 </div>
 
                 {editingField !== 'name' && !isFullEditing && (
@@ -466,7 +462,7 @@ export default function MyPage() {
                     className="text-xs font-bold text-indigo-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
-                    <span>수정</span>
+                    <span>{t('수정')}</span>
                   </button>
                 )}
               </div>
@@ -479,7 +475,7 @@ export default function MyPage() {
                     onChange={e => isFullEditing ? setProfile({ ...profile, name: e.target.value }) : setTempName(e.target.value)}
                     onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('name', tempName.trim(), '이름')}
                     className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm font-bold text-slate-900 outline-none transition"
-                    placeholder="이름 입력"
+                    placeholder={t('이름 입력')}
                   />
                   {!isFullEditing && (
                     <button
@@ -487,7 +483,7 @@ export default function MyPage() {
                       className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                     >
                       <Check size={14} />
-                      <span>저장</span>
+                      <span>{t('저장')}</span>
                     </button>
                   )}
                 </div>
@@ -505,9 +501,7 @@ export default function MyPage() {
                   <span className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
                     <School size={16} />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    고등학교
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('고등학교')}</span>
                 </div>
 
                 {editingField !== 'school' && !isFullEditing && (
@@ -516,7 +510,7 @@ export default function MyPage() {
                     className="text-xs font-bold text-indigo-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
-                    <span>수정</span>
+                    <span>{t('수정')}</span>
                   </button>
                 )}
               </div>
@@ -530,7 +524,7 @@ export default function MyPage() {
                       onChange={e => isFullEditing ? setProfile({ ...profile, highSchool: e.target.value }) : setTempSchool(e.target.value)}
                       onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('highSchool', tempSchool.trim(), '고등학교')}
                       className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                      placeholder="고등학교 선택 또는 입력"
+                      placeholder={t('고등학교 선택 또는 입력')}
                     />
                     {!isFullEditing && (
                       <button
@@ -538,7 +532,7 @@ export default function MyPage() {
                         className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                       >
                         <Check size={14} />
-                        <span>저장</span>
+                        <span>{t('저장')}</span>
                       </button>
                     )}
                   </div>
@@ -572,9 +566,7 @@ export default function MyPage() {
                   <span className="p-1.5 bg-purple-100 text-purple-600 rounded-lg">
                     <GraduationCap size={16} />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    전공 학과
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('전공 학과')}</span>
                 </div>
 
                 {editingField !== 'major' && !isFullEditing && (
@@ -583,7 +575,7 @@ export default function MyPage() {
                     className="text-xs font-bold text-indigo-400 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
-                    <span>수정</span>
+                    <span>{t('수정')}</span>
                   </button>
                 )}
               </div>
@@ -597,7 +589,7 @@ export default function MyPage() {
                       onChange={e => isFullEditing ? setProfile({ ...profile, major: e.target.value }) : setTempMajor(e.target.value)}
                       onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('major', tempMajor.trim(), '전공')}
                       className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                      placeholder="전공 학과 선택 또는 입력"
+                      placeholder={t('전공 학과 선택 또는 입력')}
                     />
                     {!isFullEditing && (
                       <button
@@ -605,7 +597,7 @@ export default function MyPage() {
                         className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                       >
                         <Check size={14} />
-                        <span>저장</span>
+                        <span>{t('저장')}</span>
                       </button>
                     )}
                   </div>
@@ -639,9 +631,7 @@ export default function MyPage() {
                   <span className="p-1.5 bg-pink-100 text-pink-600 rounded-lg">
                     <Brain size={16} />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    MBTI 성격 진단
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('MBTI 성격 진단')}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -651,7 +641,7 @@ export default function MyPage() {
                       className="text-xs font-bold text-pink-400 hover:text-pink-600 flex items-center gap-0.5 cursor-pointer"
                     >
                       <Edit3 size={13} />
-                      <span>수정</span>
+                      <span>{t('수정')}</span>
                     </button>
                   )}
                 </div>
@@ -665,7 +655,7 @@ export default function MyPage() {
                       onChange={e => isFullEditing ? setProfile({ ...profile, mbti: e.target.value }) : setTempMbti(e.target.value)}
                       className="flex-1 bg-white border border-pink-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 outline-none"
                     >
-                      <option value="">선택 안 함 (미진단)</option>
+                      <option value="">{t('선택 안 함 (미진단)')}</option>
                       {Object.keys(mbtiMeta).map(type => (
                         <option key={type} value={type}>
                           {type} - {mbtiMeta[type].alias}
@@ -695,24 +685,22 @@ export default function MyPage() {
                     onClick={() => setActiveModal('mbti')}
                     className="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer animate-pulse"
                   >
-                    <span>상세분석</span>
+                    <span>{t('상세분석')}</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div>
-                    <span className="text-sm font-bold text-slate-400">진단 결과 없음</span>
-                    <span className="text-xs font-medium text-slate-500 block mt-0.5">
-                      MBTI 진단 검사를 진행해보세요
-                    </span>
+                    <span className="text-sm font-bold text-slate-400">{t('진단 결과 없음')}</span>
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5">{t('MBTI 진단 검사를 진행해보세요')}</span>
                   </div>
 
                   <Link
                     to="/mbti"
                     className="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
                   >
-                    <span>검사하기</span>
+                    <span>{t('검사하기')}</span>
                     <ChevronRight size={14} />
                   </Link>
                 </div>
@@ -726,9 +714,7 @@ export default function MyPage() {
                   <span className="p-1.5 bg-cyan-100 text-cyan-600 rounded-lg">
                     <Compass size={16} />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    홀랜드 진로 적성
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('홀랜드 진로 적성')}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -738,7 +724,7 @@ export default function MyPage() {
                       className="text-xs font-bold text-cyan-400 hover:text-cyan-600 flex items-center gap-0.5 cursor-pointer"
                     >
                       <Edit3 size={13} />
-                      <span>수정</span>
+                      <span>{t('수정')}</span>
                     </button>
                   )}
                 </div>
@@ -756,7 +742,7 @@ export default function MyPage() {
                         else setTempHolland(val);
                       }}
                       className="flex-1 bg-white border border-cyan-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 uppercase outline-none"
-                      placeholder="예: RC (비워두면 미진단)"
+                      placeholder={t('예: RC (비워두면 미진단)')}
                     />
                     {!isFullEditing && (
                       <button
@@ -781,24 +767,22 @@ export default function MyPage() {
                     onClick={() => setActiveModal('holland')}
                     className="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
                   >
-                    <span>상세분석</span>
+                    <span>{t('상세분석')}</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div>
-                    <span className="text-sm font-bold text-slate-400">진단 결과 없음</span>
-                    <span className="text-xs font-medium text-slate-500 block mt-0.5">
-                      홀랜드 적성 검사를 진행해보세요
-                    </span>
+                    <span className="text-sm font-bold text-slate-400">{t('진단 결과 없음')}</span>
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5">{t('홀랜드 적성 검사를 진행해보세요')}</span>
                   </div>
 
                   <Link
                     to="/holland"
                     className="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
                   >
-                    <span>검사하기</span>
+                    <span>{t('검사하기')}</span>
                     <ChevronRight size={14} />
                   </Link>
                 </div>
@@ -821,7 +805,7 @@ export default function MyPage() {
                   onClick={() => setActiveModal('companies')}
                   className="text-xs font-bold text-indigo-400 hover:text-indigo-600 flex items-center gap-0.5 cursor-pointer font-extrabold"
                 >
-                  <span>기업 추가/관리</span> <ChevronRight size={14} />
+                  <span>{t('기업 추가/관리')}</span> <ChevronRight size={14} />
                 </button>
               </div>
 
@@ -832,7 +816,7 @@ export default function MyPage() {
                     value={newCompanyInput}
                     onChange={e => setNewCompanyInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
-                    placeholder="목표 기업명 입력 (예: 삼성전자, 한국전력공사)"
+                    placeholder={t('목표 기업명 입력 (예: 삼성전자, 한국전력공사)')}
                     className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
                   />
                   <button
@@ -840,13 +824,13 @@ export default function MyPage() {
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
                   >
                     <Plus size={14} />
-                    <span>추가</span>
+                    <span>{t('추가')}</span>
                   </button>
                 </div>
 
                 <div className="flex flex-wrap gap-2 pt-1">
                   {profile.targetCompanies.length === 0 ? (
-                    <span className="text-xs text-slate-500 italic">설정된 희망 기업이 없습니다.</span>
+                    <span className="text-xs text-slate-500 italic">{t('설정된 희망 기업이 없습니다.')}</span>
                   ) : (
                     profile.targetCompanies.map(comp => (
                       <div 
@@ -857,7 +841,7 @@ export default function MyPage() {
                         <span>{comp}</span>
                         <button
                           onClick={() => handleRemoveCompany(comp)}
-                          title="삭제"
+                          title={t('삭제')}
                           className="text-slate-400 hover:text-red-500 transition cursor-pointer ml-1"
                         >
                           <X size={14} />
@@ -876,20 +860,14 @@ export default function MyPage() {
                   <span className="p-1.5 bg-indigo-500/10 text-indigo-600 rounded-lg">
                     <Sparkles size={16} className="text-indigo-600 animate-pulse" />
                   </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    배경 외계인 설정
-                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('배경 외계인 설정')}</span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between gap-4 pt-1">
                 <div className="flex-1">
-                  <div className="text-sm font-extrabold text-slate-950">
-                    우주를 떠다니는 외계인 캐릭터
-                  </div>
-                  <div className="text-xs text-slate-500 mt-0.5 font-medium leading-relaxed">
-                    홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.
-                  </div>
+                  <div className="text-sm font-extrabold text-slate-950">{t('우주를 떠다니는 외계인 캐릭터')}</div>
+                  <div className="text-xs text-slate-500 mt-0.5 font-medium leading-relaxed">{t('홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.')}</div>
                 </div>
 
                 <div className="shrink-0 flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
@@ -921,9 +899,7 @@ export default function MyPage() {
 
           {/* Footer Bar */}
           <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-            <span className="text-xs text-slate-400 font-medium">
-              💡 각 박스의 [수정]으로 즉시 변경하거나 [전체 편집 모드]로 상단에서 일괄 수정할 수 있습니다.
-            </span>
+            <span className="text-xs text-slate-400 font-medium">{t('💡 각 박스의 [수정]으로 즉시 변경하거나 [전체 편집 모드]로 상단에서 일괄 수정할 수 있습니다.')}</span>
 
             <div className="flex items-center gap-2">
               {isFullEditing && (
@@ -932,7 +908,7 @@ export default function MyPage() {
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer shadow-md flex items-center gap-1.5"
                 >
                   <Check size={16} />
-                  <span>전체 저장 완료</span>
+                  <span>{t('전체 저장 완료')}</span>
                 </button>
               )}
             </div>
@@ -958,8 +934,8 @@ export default function MyPage() {
                 <Brain size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">MBTI 성격 진단 상세 내역</h3>
-                <p className="text-xs text-slate-400 font-medium">나의 성격 유형 분석 및 맞춤 직무 가이드</p>
+                <h3 className="text-xl font-extrabold text-white">{t('MBTI 성격 진단 상세 내역')}</h3>
+                <p className="text-xs text-slate-400 font-medium">{t('나의 성격 유형 분석 및 맞춤 직무 가이드')}</p>
               </div>
             </div>
 
@@ -977,7 +953,7 @@ export default function MyPage() {
                 </div>
 
                 <div className="shrink-0 space-y-1 bg-slate-950 p-2.5 rounded-xl border border-pink-500/20 shadow-xs">
-                  <label className="text-[10px] font-extrabold text-slate-400 block">수동 유형 변경</label>
+                  <label className="text-[10px] font-extrabold text-slate-400 block">{t('수동 유형 변경')}</label>
                   <select
                     value={profile.mbti}
                     onChange={e => savePartialField('mbti', e.target.value, 'MBTI')}
@@ -997,7 +973,7 @@ export default function MyPage() {
                 <div className="bg-indigo-950/30 rounded-2xl p-4 border border-indigo-500/20 space-y-3">
                   <div className="text-xs font-extrabold text-indigo-600 flex items-center gap-1.5">
                     <Sparkles size={14} className="text-indigo-400 animate-pulse" />
-                    <span>실제 검사 세부지표 비율</span>
+                    <span>{t('실제 검사 세부지표 비율')}</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {Object.keys(mbtiResult.ratios).map(k => {
@@ -1023,9 +999,7 @@ export default function MyPage() {
 
               {/* Recommended Jobs */}
               <div className="space-y-2">
-                <span className="text-xs font-extrabold text-slate-300 block">
-                  🎯 MBTI 유형별 추천 직무 전체 목록
-                </span>
+                <span className="text-xs font-extrabold text-slate-300 block">{t('🎯 MBTI 유형별 추천 직무 전체 목록')}</span>
                 <div className="flex flex-wrap gap-2">
                   {modalMbtiMeta.jobs.map((job: string) => (
                     <span 
@@ -1044,7 +1018,7 @@ export default function MyPage() {
                 to="/mbti"
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
               >
-                <span>MBTI 진단 검사 다시하기</span>
+                <span>{t('MBTI 진단 검사 다시하기')}</span>
                 <ExternalLink size={13} />
               </Link>
               <button
@@ -1074,8 +1048,8 @@ export default function MyPage() {
                 <Compass size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">홀랜드 직업 적성 검사 상세</h3>
-                <p className="text-xs text-slate-400 font-medium">RIASEC 직업적성 유형 분석 및 진로 소견</p>
+                <h3 className="text-xl font-extrabold text-white">{t('홀랜드 직업 적성 검사 상세')}</h3>
+                <p className="text-xs text-slate-400 font-medium">{t('RIASEC 직업적성 유형 분석 및 진로 소견')}</p>
               </div>
             </div>
 
@@ -1095,7 +1069,7 @@ export default function MyPage() {
                     value={profile.hollandCode}
                     onChange={e => savePartialField('hollandCode', e.target.value.toUpperCase(), '홀랜드 코드')}
                     className="bg-slate-950 border border-white/10 rounded-xl px-2.5 py-1 text-xs font-bold text-white outline-none w-24 text-center"
-                    placeholder="예: RC"
+                    placeholder={t('예: RC')}
                   />
                 </div>
 
@@ -1116,7 +1090,7 @@ export default function MyPage() {
                 <div className="bg-cyan-950/30 rounded-2xl p-4 border border-cyan-500/20 space-y-3">
                   <div className="text-xs font-extrabold text-cyan-600 flex items-center gap-1.5">
                     <Award size={14} className="text-cyan-400 animate-pulse" />
-                    <span>실제 홀랜드 RIASEC 적합도 지표</span>
+                    <span>{t('실제 홀랜드 RIASEC 적합도 지표')}</span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {Object.keys(hollandResult.percentages).map(typeKey => {
@@ -1143,23 +1117,19 @@ export default function MyPage() {
 
               {/* Editable Holland Note */}
               <div className="space-y-2">
-                <label className="text-xs font-extrabold text-slate-300 block">
-                  📝 진로 지도 및 적성 종합 소견
-                </label>
+                <label className="text-xs font-extrabold text-slate-300 block">{t('📝 진로 지도 및 적성 종합 소견')}</label>
                 <textarea
                   value={profile.hollandNote}
                   onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
                   rows={3}
                   className="w-full bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl p-3 text-xs font-medium text-white outline-none transition"
-                  placeholder="진로 지도 메모 및 소견을 입력하세요."
+                  placeholder={t('진로 지도 메모 및 소견을 입력하세요.')}
                 />
               </div>
 
               {/* Recommended Jobs */}
               <div className="space-y-2">
-                <span className="text-xs font-extrabold text-slate-300 block">
-                  🎯 맞춤 추천 직무
-                </span>
+                <span className="text-xs font-extrabold text-slate-300 block">{t('🎯 맞춤 추천 직무')}</span>
                 <div className="flex flex-wrap gap-2">
                   {Array.from(new Set([...modalPrimaryHollandMeta.jobs, ...modalSecondaryHollandMeta.jobs])).map((job: string) => (
                     <span 
@@ -1178,7 +1148,7 @@ export default function MyPage() {
                 to="/holland"
                 className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
               >
-                <span>홀랜드 검사 다시하기</span>
+                <span>{t('홀랜드 검사 다시하기')}</span>
                 <ExternalLink size={13} />
               </Link>
               <button
@@ -1213,8 +1183,8 @@ export default function MyPage() {
                 <Building2 size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">희망 기업 (Target Companies) 설정</h3>
-                <p className="text-xs text-slate-400 font-medium">마이스터고 및 직업계고 학생들이 목표로 하는 주요 기업 관리</p>
+                <h3 className="text-xl font-extrabold text-white">{t('희망 기업 (Target Companies) 설정')}</h3>
+                <p className="text-xs text-slate-400 font-medium">{t('마이스터고 및 직업계고 학생들이 목표로 하는 주요 기업 관리')}</p>
               </div>
             </div>
 
@@ -1229,7 +1199,7 @@ export default function MyPage() {
 
                 <div className="flex flex-wrap gap-2 min-h-[52px] p-3.5 bg-slate-950/80 rounded-2xl border border-white/10 items-center">
                   {profile.targetCompanies.length === 0 ? (
-                    <span className="text-xs text-slate-400 italic">등록된 기업이 없습니다. 아래의 추천 기업을 클릭하여 추가해 보세요.</span>
+                    <span className="text-xs text-slate-400 italic">{t('등록된 기업이 없습니다. 아래의 추천 기업을 클릭하여 추가해 보세요.')}</span>
                   ) : (
                     profile.targetCompanies.map(comp => (
                       <div 
@@ -1240,7 +1210,7 @@ export default function MyPage() {
                         <span>{comp}</span>
                         <button
                           onClick={() => handleRemoveCompany(comp)}
-                          title="삭제"
+                          title={t('삭제')}
                           className="text-slate-400 hover:text-red-400 transition cursor-pointer ml-1"
                         >
                           <X size={14} />
@@ -1253,16 +1223,14 @@ export default function MyPage() {
 
               {/* Search / Add Input */}
               <div className="space-y-2">
-                <label className="text-xs font-extrabold text-slate-300 block">
-                  직접 기업 추가하기
-                </label>
+                <label className="text-xs font-extrabold text-slate-300 block">{t('직접 기업 추가하기')}</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={newCompanyInput}
                     onChange={e => setNewCompanyInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
-                    placeholder="기업명을 입력하세요 (예: LG에너지솔루션)"
+                    placeholder={t('기업명을 입력하세요 (예: LG에너지솔루션)')}
                     className="flex-1 bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none transition"
                   />
                   <button
@@ -1271,16 +1239,14 @@ export default function MyPage() {
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-sm shrink-0"
                   >
                     <Plus size={15} />
-                    <span>추가</span>
+                    <span>{t('추가')}</span>
                   </button>
                 </div>
               </div>
 
               {/* Popular Presets */}
               <div className="space-y-2 pt-2">
-                <span className="text-xs font-extrabold text-slate-400 block">
-                  💡 인기 마이스터고 추천 목표 기업 (클릭시 바로 추가/삭제)
-                </span>
+                <span className="text-xs font-extrabold text-slate-400 block">{t('💡 인기 마이스터고 추천 목표 기업 (클릭시 바로 추가/삭제)')}</span>
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_COMPANIES.map(comp => {
                     const isAdded = profile.targetCompanies.includes(comp);
