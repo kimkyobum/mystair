@@ -708,7 +708,7 @@ export default function CompanySearch() {
             <h2 className="text-2xl font-bold text-white mb-4">{t('프로필 정보가 필요합니다')}</h2>
             <p className="text-white/60 text-lg mb-8 max-w-md leading-relaxed">
               {t('나만의 맞춤 기업을 추천받기 위해 마이페이지에서')}<br/>
-              <span className="text-indigo-400 font-semibold">{t('학교, 학과, MBTI, 홀랜드 적성검사')}</span>{t('정보를 먼저 입력해주세요.')}</p>
+              <span className="text-indigo-400 font-semibold">{t('학교, 학과, MBTI, 홀랜드 적성검사')}</span> {t('정보를 먼저 입력해주세요.')}</p>
             <button
               onClick={() => navigate('/mypage')}
               className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2"

@@ -20,6 +20,27 @@
   background: #2d415b; /* Slightly lighter on hover */
 }
 
+/* Light scrollbar styles for white/light modals */
+.light-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.light-scrollbar::-webkit-scrollbar-track {
+  background: #f8fafc; /* Light slate/gray track */
+  border-radius: 0 24px 24px 0; /* Align with modal rounded corner */
+}
+.light-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* Light gray thumb */
+  border: 2px solid #f8fafc;
+  border-radius: 9999px;
+}
+.light-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* Slightly darker on hover */
+}
+.light-scrollbar {
+  scrollbar-color: #cbd5e1 #f8fafc;
+  scrollbar-width: thin;
+}
+
 html {
   scrollbar-color: #1e293b #090d16; /* For Firefox */
   scrollbar-width: thin;

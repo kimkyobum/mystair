@@ -65,7 +65,7 @@ const SAMPLE_EXAM_SCHEDULE: ExamSchedule = {
 
 export default function Diary() {
   const { fetchDiaries, saveDiary, deleteDiary, user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [loading, setLoading] = useState(false);
@@ -963,7 +963,7 @@ JSON 구조 규격:
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <CalendarCheck size={20} className="text-indigo-400" />
-                <span>{selectedDate} {t('성장 다이어리')} {editingId ? t('수정') : t('작성')}</span>
+                <span>{language === 'ko' ? `${selectedDate} 성장 다이어리 ${editingId ? '수정' : '작성'}` : `${editingId ? 'Edit' : 'Write'} Growth Diary (${selectedDate})`}</span>
               </h3>
               <button 
                 type="button" 

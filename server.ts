@@ -923,10 +923,10 @@ app.delete("/api/diaries/:id", async (req, res) => {
 // Main AI Chat Route
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message, chatHistory, userProfile, diaries } = req.body;
+    const { message, chatHistory, userProfile, diaries, language } = req.body;
 
     if (!message || typeof message !== "string" || !message.trim()) {
-      return res.status(400).json({ error: "질문 내용이 없습니다." });
+      return res.status(400).json({ error: language === "en" ? "There is no question content." : "질문 내용이 없습니다." });
     }
 
     // Format student's user profile
@@ -1015,20 +1015,43 @@ ${linkDataJson}
       ];
     }
 
-    const response = await generateContentWithFallback(contents, systemInstruction);
+    let finalSystemInstruction = systemInstruction;
+    if (language === "en") {
+      finalSystemInstruction += `
 
-    const replyText = response.text || "답변을 생성하지 못했습니다. 다시 시도해주세요.";
+[LANGUAGE REQUIREMENT]
+CRITICAL: The current user interface language is English ('en'). You MUST reply entirely in English! 
+- Translate all insights, guidance, recommendations, greetings, and notes to English naturally.
+- Use supportive, professional, and clear English appropriate for high school students.
+- Keep the response structured, clear, and highly professional.
+- Do NOT use Korean unless explaining a very specific Korean term (which should also be accompanied by its English translation/explanation).
+- If the user asks in Korean, still reply in English because the site language is set to English.
+`;
+    } else {
+      finalSystemInstruction += `
+
+[LANGUAGE REQUIREMENT]
+CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')입니다. 반드시 한국어로 대답해주세요.
+`;
+    }
+
+    const response = await generateContentWithFallback(contents, finalSystemInstruction);
+
+    const replyText = response.text || (language === "en" ? "Failed to generate a response. Please try again." : "답변을 생성하지 못했습니다. 다시 시도해주세요.");
     return res.json({ response: replyText });
   } catch (error: any) {
     console.error("Gemini API Error in /api/chat:", error);
     const errStr = String(error?.message || error);
+    const isEn = req.body?.language === "en";
     if (errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("Quota exceeded")) {
       return res.json({
-        response: "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 친절하게 답변해 드릴게요! 😊"
+        response: isEn
+          ? "⏳ **The API usage has temporarily reached its limit due to high traffic.**\n\nGoogle Gemini free tier's requests per minute limit has been exceeded. **Please try again in about 30 seconds to 1 minute**, and we will be happy to answer you! 😊"
+          : "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 친절하게 답변해 드릴게요! 😊"
       });
     }
     return res.status(500).json({
-      error: "AI 대화 도중 오류가 발생했습니다.",
+      error: isEn ? "An error occurred during AI conversation." : "AI 대화 도중 오류가 발생했습니다.",
       details: error?.message || String(error),
     });
   }

@@ -182,7 +182,7 @@ export default function Certificates() {
 
       {selectedModalItem && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-[4px] flex justify-center items-center z-[1000] p-5" onClick={() => setSelectedModalItem(null)}>
-          <div className="bg-white border border-slate-100 w-full max-w-[650px] max-h-[90vh] rounded-[24px] overflow-y-auto p-8 relative text-slate-800 shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="bg-white border border-slate-100 w-full max-w-[650px] max-h-[90vh] rounded-[24px] overflow-y-auto light-scrollbar p-8 relative text-slate-800 shadow-2xl" onClick={e => e.stopPropagation()}>
             <button className="absolute top-6 right-6 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 border-none w-9 h-9 rounded-full text-[18px] font-bold text-slate-500 cursor-pointer flex items-center justify-center transition-colors" onClick={() => setSelectedModalItem(null)}>✕</button>
             
             <span className="inline-block bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white px-3 py-1 rounded-xl text-[12px] font-bold mb-3">

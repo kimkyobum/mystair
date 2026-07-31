@@ -438,7 +438,7 @@ export default function MyPage() {
                 }`}
               >
                 {isFullEditing ? <Check size={16} /> : <Edit3 size={16} />}
-                <span>{isFullEditing ? '전체 저장' : '전체 편집 모드'}</span>
+                <span>{isFullEditing ? t('전체 저장') : t('전체 편집 모드')}</span>
               </button>
             </div>
           </div>

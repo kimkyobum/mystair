@@ -6,8 +6,10 @@ import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from '@google/genai';
 import { useAuth } from '../context/AuthContext';
 import { useChat, Message } from '../context/ChatContext';
+import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function ChatInterface() {
+  const { language, t } = useLanguage();
   const { userProfile: firestoreProfile, fetchDiaries } = useAuth();
   const {
     messages,
@@ -179,6 +181,26 @@ ${d.content || ""}
 위 규칙을 엄격하게 지켜서 답변 길이를 조절해줘.
 `;
 
+    let finalSystemInstruction = systemInstruction;
+    if (language === 'en') {
+      finalSystemInstruction += `
+
+[LANGUAGE REQUIREMENT]
+CRITICAL: The current user interface language is English ('en'). You MUST reply entirely in English! 
+- Translate all insights, guidance, recommendations, greetings, and notes to English naturally.
+- Use supportive, professional, and clear English appropriate for high school students.
+- Keep the response structured, clear, and highly professional.
+- Do NOT use Korean unless explaining a very specific Korean term (which should also be accompanied by its English translation/explanation).
+- If the user asks in Korean, still reply in English because the site language is set to English.
+`;
+    } else {
+      finalSystemInstruction += `
+
+[LANGUAGE REQUIREMENT]
+CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')입니다. 반드시 한국어로 대답해주세요.
+`;
+    }
+
     const contents = [
       {
         role: "user",
@@ -212,13 +234,13 @@ ${d.content || ""}
             model: modelName,
             contents: contents,
             config: {
-              systemInstruction: systemInstruction,
+              systemInstruction: finalSystemInstruction,
               temperature: 0.7,
             },
           });
 
           console.log(`Client direct direct API call succeeded using key index ${keyIndex} with model ${modelName}`);
-          return response.text || "답변을 생성하지 못했습니다.";
+          return response.text || (language === 'en' ? "Failed to generate a response. Please try again." : "답변을 생성하지 못했습니다. 다시 시도해주세요.");
         } catch (err: any) {
           console.warn(`Client direct API key index ${keyIndex} failed with model ${modelName}:`, err?.message || err);
           lastError = err;
@@ -226,7 +248,7 @@ ${d.content || ""}
       }
     }
 
-    throw lastError || new Error("모든 클라이언트 Gemini API 키 및 모델 호출이 실패했습니다.");
+    throw lastError || new Error("All client-side Gemini API keys and model calls failed.");
   };
 
   // Helper function for smooth character-by-character typewriter animation
@@ -297,7 +319,8 @@ ${d.content || ""}
             message: text,
             chatHistory: chatHistory,
             userProfile: profile,
-            diaries: diaries
+            diaries: diaries,
+            language: language
           })
         });
 
@@ -323,9 +346,13 @@ ${d.content || ""}
           console.error('Client Gemini fallback error:', clientErr);
           const errStr = String(clientErr?.message || clientErr);
           if (errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("Quota exceeded")) {
-            responseText = "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 바로 답변해 드릴게요! 😊";
+            responseText = language === 'en'
+              ? "⏳ **The API usage has temporarily reached its limit due to high traffic.**\n\nGoogle Gemini free tier's requests per minute limit has been exceeded. **Please try again in about 30 seconds to 1 minute**, and we will be happy to answer you! 😊"
+              : "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 바로 답변해 드릴게요! 😊";
           } else {
-            responseText = `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${errStr})`;
+            responseText = language === 'en'
+              ? `⚠️ AI Configuration Notice:\n\nPlease register **VITE_GEMINI_API_KEY** or **GEMINI_API_KEY** in the environment variables to activate AI responses.\n\n(Details: ${errStr})`
+              : `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${errStr})`;
           }
         }
       }
@@ -339,7 +366,9 @@ ${d.content || ""}
           m.id === tempAiMsgId
             ? {
                 ...m,
-                content: `⚠️ 오류가 발생했습니다: ${err?.message || String(err)}`,
+                content: language === 'en'
+                  ? `⚠️ An error occurred: ${err?.message || String(err)}`
+                  : `⚠️ 오류가 발생했습니다: ${err?.message || String(err)}`,
                 isStreaming: false
               }
             : m
@@ -408,7 +437,7 @@ ${d.content || ""}
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                   <div className="flex items-center gap-2">
                     <History size={18} className="text-teal-400" />
-                    <span className="text-white text-[15px] font-bold">이전 질문 기록</span>
+                    <span className="text-white text-[15px] font-bold">{t('이전 질문 기록', 'Previous Questions')}</span>
                     <span className="bg-teal-400/10 text-teal-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-teal-500/10">
                       {messages.filter(m => m.role === 'user').length}
                     </span>
@@ -425,8 +454,8 @@ ${d.content || ""}
                   {messages.filter(m => m.role === 'user').length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center text-white/40 text-[13px] p-4 gap-2">
                       <Sparkles size={28} className="text-white/20 animate-pulse" />
-                      <span>아직 질문 기록이 없습니다.</span>
-                      <span className="text-[11px] text-white/30">AI에게 질문을 시작해보세요!</span>
+                      <span>{t('아직 질문 기록이 없습니다.', 'No question history yet.')}</span>
+                      <span className="text-[11px] text-white/30">{t('AI에게 질문을 시작해보세요!', 'Start asking questions to AI!')}</span>
                     </div>
                   ) : (
                     messages.filter(m => m.role === 'user').map((msg) => (
@@ -451,7 +480,7 @@ ${d.content || ""}
                 </div>
 
                 <div className="mt-4 pt-4 border-t border-white/10 text-center text-[11px] text-white/30">
-                  기록을 클릭하면 해당 대화로 이동합니다.
+                  {t('기록을 클릭하면 해당 대화로 이동합니다.', 'Click on history to jump to that conversation.')}
                 </div>
               </motion.div>
             </div>
@@ -471,25 +500,25 @@ ${d.content || ""}
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6 border-b border-white/10 pb-4 select-none shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-indigo-400 animate-pulse" />
-            <span className="text-white/70 text-[14px] font-semibold">MyStair AI 대화 분석</span>
+            <span className="text-white/70 text-[14px] font-semibold">{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
               className="flex items-center gap-1.5 text-white/80 hover:text-white text-[13px] font-semibold bg-teal-500/10 hover:bg-teal-500/20 px-3.5 py-1.5 rounded-full border border-teal-500/20 hover:border-teal-500/45 cursor-pointer transition-all active:scale-95 shadow-sm"
-              title="이전 질문 기록 보기"
+              title={t('이전 질문 기록 보기', 'View previous question history')}
             >
               <History size={13} className="text-teal-400 animate-pulse" />
-              <span>이전 기록 ({messages.filter(m => m.role === 'user').length})</span>
+              <span>{t('이전 기록', 'History')} ({messages.filter(m => m.role === 'user').length})</span>
             </button>
             <button 
               onClick={clearChat}
               className="flex items-center gap-1.5 text-white/50 hover:text-white text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm"
-              title="새로운 대화 시작하기"
+              title={t('새로운 대화 시작하기', 'Start a new conversation')}
             >
               <Trash2 size={13} />
-              <span>새 대화 시작</span>
+              <span>{t('새 대화 시작', 'New Chat')}</span>
             </button>
           </div>
         </div>
@@ -515,7 +544,7 @@ ${d.content || ""}
                       {msg.isStreaming && !msg.content ? (
                         <div className="flex items-center gap-2 text-purple-300 font-medium">
                           <RefreshCw size={16} className="animate-spin text-purple-400" />
-                          <span>MyStair AI가 프로필과 다이어리를 바탕으로 나만의 기업을 탐색 중입니다...</span>
+                          <span>{t('MyStair AI가 프로필과 다이어리를 바탕으로 나만의 기업을 탐색 중입니다...', 'MyStair AI is exploring matching companies based on your profile and diary...')}</span>
                         </div>
                       ) : (
                         <div className="markdown-body space-y-2 text-white">
@@ -545,26 +574,26 @@ ${d.content || ""}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-2">
               <span className="text-[12px] font-medium text-white/50 flex items-center gap-1.5">
                 <Sparkles size={14} />
-                추천 질의 예시
+                {t('추천 질의 예시', 'Suggested Questions')}
               </span>
               <div className="flex flex-wrap gap-2.5">
                 <button 
-                  onClick={() => setInputValue('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?')} 
+                  onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
                   className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
                 >
-                  "마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?"
+                  "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
                 </button>
                 <button 
-                  onClick={() => setInputValue('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘')} 
+                  onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
                   className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
                 >
-                  "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘"
+                  "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
                 </button>
                 <button 
-                  onClick={() => setInputValue('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘')} 
+                  onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
                   className="text-[12px] text-white/80 bg-white/5 hover:bg-white/10 px-3.5 py-2 rounded-full transition-all active:scale-95 border border-white/10 cursor-pointer"
                 >
-                  "내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘"
+                  "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
                 </button>
               </div>
             </motion.div>
@@ -580,7 +609,7 @@ ${d.content || ""}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}
-              placeholder={isLoading ? "AI 답변을 준비 중입니다..." : "추가로 궁금한 점을 물어보세요"}
+              placeholder={isLoading ? t("AI 답변을 준비 중입니다...", "AI is preparing your answer...") : t("추가로 궁금한 점을 물어보세요", "Ask any other questions you have")}
               className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-6 py-3 outline-none text-[16px]"
             />
             <button 

@@ -174,8 +174,8 @@ const koToEnMap: Record<string, string> = {
   '전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.': 'Full edit mode. After editing the information, click the [Save All] button.',
   '저장 완료': 'Save completed',
   '프로필': 'profile',
-  '전체 저장': 'save all',
-  '전체 편집 모드': 'full edit mode',
+  '전체 저장': 'Save All',
+  '전체 편집 모드': 'Full Edit Mode',
   '이름': 'name',
   '이름 입력': 'Enter your name',
   '고등학교': 'high school',
@@ -690,6 +690,187 @@ const koToEnMap: Record<string, string> = {
   '마이스터고 커리큘럼 및 진로 데이터 분석, AI 프롬프트 엔지니어링 및 전체 웹 플랫폼 총괄 개발.': 'Curriculum & career data analysis, AI prompt engineering, and full platform development.',
   '학생들이 부담 없이 쉽게 마이페이지, 성장 일기, MBTI 및 홀랜드 검사를 이용할 수 있는 다크 글래스모피즘 인터페이스 설계.': 'Designed dark glassmorphism interface for easy access to My Page, Growth Diary, MBTI & Holland tests.',
   '전국 마이스터고 위치 데이터, 전공별 필수 자격증 추천 정보, 주요 대기업/공기업 가이드라인 수집 및 검증.': 'Location data of vocational schools, recommended certifications, and major company guidelines research.',
+  
+  // General texts in certificates
+  '제한 없음 (연령, 학력, 경력 무관)': 'No restrictions (Regardless of age, education, or experience)',
+  '제한 없음': 'No restrictions',
+  '제한없음': 'No restrictions',
+  '해당 없음': 'Not Applicable',
+  '발전 5사': '5 Power Generation Companies',
+  '발전5사': '5 Power Generation Companies',
+  '모든 공기업': 'All Public Enterprises',
+  '부품 제조업체': 'Component Manufacturing Companies',
+  '기계 부품 제조사': 'Mechanical Component Manufacturers',
+  '전국 제조업 생산/물류 현장': 'Manufacturing Production & Logistics Sites Nationwide',
+  '수입차 공식 서비스센터': 'Imported Car Official Service Centers',
+  'IT 서비스 기업': 'IT Service Companies',
+  '대형 빌딩 관리업체': 'Large Building Management Companies',
+  '에너지 공기업': 'Energy Public Enterprises',
+  '대형병원/시설': 'Large Hospitals and Facilities',
+  '반도체 장비사': 'Semiconductor Equipment Manufacturers',
+
+  // Top Certificates & Descriptions
+  '전기기능사': 'Electrician Craftsman',
+  '전기 설비의 시공, 정비, 운용 및 관련 기기의 유지보수 작업을 수행하는 마이스터고 전기 계열 핵심 필수 자격증입니다.': 'An essential certification for Meister high school electrical departments, covering construction, maintenance, and operation of electrical installations and maintenance of related equipment.',
+  
+  '전산응용기계제도기능사': 'Craftsman Computer Aided Mechanical Drawing',
+  'CAD 시스템을 활용해 기계 도면을 규격에 맞게 작성, 검토, 수정하는 정밀 기계 설계 대표 자격증입니다.': 'The representative certification for precision mechanical design, covering the drawing, review, and modification of mechanical blueprints using CAD systems.',
+  
+  '컴퓨터응용밀링기능사': 'Craftsman Computer Aided Milling',
+  'CNC 밀링 머신 절삭 프로그램을 작성하고 부품을 정밀 가공하는 대표적인 금속 가공 자격입니다.': 'A representative metal processing qualification, covering the writing of CNC milling machine cutting programs and precision part machining.',
+  
+  '컴퓨터응용선반기능사': 'Craftsman Computer Aided Lathing',
+  'CNC 선반 머신을 제어하여 회전체 부품을 정밀 가공 및 측정하는 정밀 공작 자격입니다.': 'A precision metalworking qualification, covering the control of CNC lathes to machine and measure precision rotating parts.',
+  
+  '설비보전기능사': 'Craftsman Maintenance',
+  '플랜트 및 생산 자동화 설비의 기계·전기적 고장을 예방하고 보수 정비하는 스마트 팩토리 필수 자격입니다.': 'An essential smart factory qualification, covering preventive maintenance and repair of mechanical and electrical faults in plant and production automation facilities.',
+  
+  '위험물기능사': 'Craftsman Hazardous Materials',
+  '인화성, 발화성 위험 물질의 안전 관리 및 관련 제조 시설 점검을 담당하는 화공계열 대표 법정 자격입니다.': 'A representative statutory qualification for chemical engineering, covering safety management of flammable and ignitable hazardous substances and inspection of related manufacturing facilities.',
+  
+  '화학분석기능사': 'Craftsman Chemical Analysis',
+  '화학 물질의 정성·정량 분석 및 품질 관리를 위한 화학 실험 및 기기 분석을 수행하는 자격입니다.': 'A qualification for performing chemical experiments and instrumental analysis for qualitative/quantitative analysis and quality control of chemical substances.',
+  
+  '정보처리기능사': 'Craftsman Information Processing',
+  '소프트웨어 프로그래밍 언어(C, Java, Python), 데이터베이스 및 알고리즘 기초를 평가하는 IT 자격입니다.': 'An IT qualification evaluating basic programming languages (C, Java, Python), databases, and core algorithms.',
+  
+  '자동차정비기능사': 'Craftsman Motor Vehicle Maintenance',
+  '자동차 엔진, 기관, 샤시, 전기장치 구조를 점검, 진단하고 정비하는 모빌리티 분야 필수 자격입니다.': 'An essential qualification in mobility, covering inspection, diagnosis, and repair of car engines, chassis, and electrical devices.',
+  
+  '지게차운전기능사': 'Craftsman Forklift Truck Driving',
+  '제조 및 물류 현장에서 지게차을 안전하게 조종해 화물을 적재, 하역, 수송하는 대표 취업 우대 자격입니다.': 'A key qualification for employment, covering safe operation of forklifts to load, unload, and transport cargo in manufacturing and logistics sites.',
+  
+  '공조냉동기계기능사': 'Craftsman Air-Conditioning & Refrigerating Machinery',
+  '냉동 장치 및 공기조화 설비를 설치, 운전, 정비하는 시설관리 및 설비 분야 필수 자격입니다.': 'An essential qualification for facility and equipment management, covering installation, operation, and maintenance of refrigeration and air conditioning systems.',
+  
+  '에너지관리기능사': 'Craftsman Energy Management',
+  '보일러 및 열사용 기기의 에너지 효율 운전과 안전 관리를 담당하는 자격입니다.': 'A qualification covering energy-efficient operation and safety management of boilers and thermal equipment.',
+  
+  '승강기기능사': 'Craftsman Elevator',
+  '엘리베이터, 에스컬레이터 등 승강 설비를 시공 및 안전 보수하는 자격입니다.': 'A qualification for constructing and safely maintaining elevators, escalators, and other lift equipment.',
+  
+  '피복아크용접기능사': 'Craftsman Shielded Metal Arc Welding',
+  '아크 용접봉을 이용해 철골 구조물 및 관재를 정밀 용접하는 전통 기술자격입니다.': 'A traditional technical qualification for precise welding of steel structures and pipes using arc welding rods.',
+  
+  '전자기능사': 'Craftsman Electronics',
+  '전자 회로의 설계, 부품 조립, 수리 및 측정 테스트 작업을 안전하게 수행하는 자격입니다.': 'A qualification covering safe design, component assembly, repair, and measurement/testing of electronic circuits.',
+  
+  '한국사능력검정시험 (심화)': 'Korean History Proficiency Test (Advanced)',
+  '한국사에 대한 체계적 이해와 역사적 사고력을 평가하는 시험으로 공기업 필수 가산점 자격증입니다.': 'An exam evaluating systematic understanding of Korean history and historical thinking, which is an essential qualification for extra points in public enterprises.',
+  
+  '컴퓨터활용능력 1급': 'Computer Literacy Level 1',
+  '스프레드시트(Excel) 및 데이터베이스(Access) 실무 활용 능력을 평가하는 대표 사무 자동화 자격입니다.': 'A representative office automation qualification evaluating practical spreadsheet (Excel) and database (Access) skills.',
+  '컴퓨터활용능력 2급': 'Computer Literacy Level 2',
+  'SQLD (SQL 개발자)': 'SQL Developer (SQLD)',
+  '전기공사산업기사 (과정평가형)': 'Industrial Engineer Electrical Construction (Course-Evaluation)',
+  '기계설계산업기사 (과정평가형)': 'Industrial Engineer Mechanical Design (Course-Evaluation)',
+  '바이오화학제품제조기능사': 'Craftsman Biochemical Product Manufacturing',
+  '항공기체정비기능사': 'Craftsman Aircraft Airframe Maintenance',
+  '굴착기운전기능사': 'Craftsman Excavator Driving',
+  '초경량비행장치 조종자 (드론 1종)': 'Ultra-light Flying Device Pilot (Drone Class 1)',
+  '가스기능사': 'Craftsman Gas',
+  '가스티그용접기능사': 'Craftsman Gas Tungsten Arc Welding',
+  '공유압기능사': 'Craftsman Pneumatic and Hydraulic',
+  '기계정비기능사': 'Craftsman Mechanical Maintenance',
+  '전자캐드기능사': 'Craftsman Electronic CAD',
+  '신재생에너지발전설비기능사(태양광)': 'Craftsman Renewable Energy Power Generation Equipment (Solar)',
+  '3D프린터운용기능사': 'Craftsman 3D Printer Operation',
+  '웹디자인기능사': 'Craftsman Web Design',
+  '컴퓨터그래픽스운용기능사': 'Craftsman Computer Graphics',
+  '환경기능사': 'Craftsman Environmental',
+  '측량기능사': 'Craftsman Surveying',
+  '지적기능사': 'Craftsman Cadastral',
+  '무선설비기능사': 'Craftsman Wireless Communication Equipment',
+  '정보통신기능사': 'Craftsman Information Telecommunication',
+  '네트워크관리사 2급': 'Network Administrator Class 2',
+  '항공기관정비기능사': 'Craftsman Aircraft Engine Maintenance',
+  '자동차보수도장기능사': 'Craftsman Motor Vehicle Painting',
+  '자동차차체수리기능사': 'Craftsman Motor Vehicle Body Repair',
+  '이산화탄소가스아크용접기능사': 'Craftsman Carbon Dioxide Gas Arc Welding',
+  '로더운전기능사': 'Craftsman Loader Driving',
+  '롤러운전기능사': 'Craftsman Roller Driving',
+  '천장크레인운전기능사': 'Craftsman Overhead Crane Driving',
+  '컨테이너크레인운전기능사': 'Craftsman Container Crane Driving',
+  '정밀측정기능사': 'Craftsman Precision Measurement',
+  '전자계산기기능사': 'Craftsman Computer',
+  '생산자동화기능사': 'Craftsman Production Automation',
+  '배전전공': 'Distribution Lineman',
+  '소방안전관리자 2급': 'Fire Safety Manager Class 2',
+  '소방안전관리자 1급': 'Fire Safety Manager Class 1',
+  'ADsP (데이터분석 준전문가)': 'ADsP (Advanced Data Analytics Semi-Professional)',
+  '리눅스마스터 2급': 'Linux Master Class 2',
+  'ITQ 한글': 'ITQ Hangul (Korean Word Processing)',
+  'ITQ 엑셀': 'ITQ Excel',
+  'ITQ 파워포인트': 'ITQ PowerPoint',
+  'ITQ OA Master': 'ITQ OA Master',
+  'MOS Master': 'MOS Master',
+  '워드프로세서': 'Word Processor',
+  '전산회계 1급': 'Computerized Accounting Class 1',
+  '전산회계 2급': 'Computerized Accounting Class 2',
+  '전산세무 2급': 'Computerized Tax Accounting Class 2',
+  '전산회계운용사 2급': 'Computerized Accounting Administrator Class 2',
+  '전산회계운용사 3급': 'Computerized Accounting Administrator Class 3',
+  '매경TEST (우수/최우수)': 'MaeKyung TEST (Outstanding/Outstanding+)',
+  'TESAT (S급/1급/2급)': 'TESAT (Grade S/1/2)',
+  '물류관리사': 'Logistics Manager',
+  '유통관리사 2급': 'Distribution Manager Class 2',
+  '무역영어 1급': 'Trade English Class 1',
+  'KBS한국어능력시험': 'KBS Korean Language Proficiency Test',
+  'ToKL (국어능력인증시험)': 'ToKL (Test of Korean Language)',
+  'TOEIC': 'TOEIC',
+  'TOEIC Speaking': 'TOEIC Speaking',
+  'OPIc': 'OPIc',
+  'JPT': 'JPT (Japanese Proficiency Test)',
+  'HSK 4급': 'HSK Level 4',
+  '전기공사산업기사': 'Industrial Engineer Electrical Construction',
+  '전기산업기사': 'Industrial Engineer Electrical',
+  '한국철도공사': 'Korea Railroad Corporation (KORAIL)',
+  '기계설계산업기사': 'Industrial Engineer Mechanical Design',
+  '위험물산업기사': 'Industrial Engineer Hazardous Materials',
+  '정보처리산업기사': 'Industrial Engineer Information Processing',
+  'SQLD': 'SQL Developer (SQLD)',
+  '기아': 'Kia',
+  'CJ대한통운': 'CJ Logistics',
+  '삼성전자 물류센터': 'Samsung Electronics Logistics Center',
+  '삼성물산': 'Samsung C&T',
+  'LG전자': 'LG Electronics',
+  '지역난방공사': 'Korea District Heating Corporation',
+  '현대엘리베이터': 'Hyundai Elevator',
+  '오티스엘리베이터': 'Otis Elevator',
+  '쉰들러': 'Schindler',
+  'HD현대중공업': 'HD Hyundai Heavy Industries',
+  '한화오션': 'Hanwha Ocean',
+  '삼성중공업': 'Samsung Heavy Industries',
+  'LG이노텍': 'LG Innotek',
+  '전국 모든 공기업': 'All Public Enterprises Nationwide',
+  '네이버': 'Naver',
+  '카카오': 'Kakao',
+  '금융권(은행/카드사)': 'Financial Sector (Banks/Cards)',
+  'IT 부서': 'IT Department',
+  'LH공사': 'Korea Land and Housing Corporation (LH)',
+  '마이페이지로 이동하기': 'Go to My Page',
+  '예: 전기기능사 회로 실습 성공 기록': 'e.g., Electrical Craftsman circuit practice success record',
+  '오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요...': 'Feel free to record what practical skills you learned today, exam study progress, and your reflections...',
+  '날짜': 'Date',
+  '오늘의 기분': "Today's Mood",
+  '오늘의 성장 기록 및 일기 내용': "Today's Growth Record & Diary Content",
+  '일기 삭제': 'Delete Diary',
+  '수정 완료': 'Edit Completed',
+  '일기 저장': 'Save Diary',
+  '다이어리 기록이 삭제되었습니다.': 'The diary record has been deleted.',
+  '성장 다이어리가 성공적으로 저장되었습니다!': 'Growth diary saved successfully!',
+  '시험 일정이 성공적으로 저장되었습니다!': 'Exam schedule saved successfully!',
+  '모든 일정을 비웠습니다.': 'Cleared all schedules.',
+  '샘플 시험 일정이 적용되었습니다.': 'Sample exam schedule applied.',
+  '이 다이어리 기록을 삭제하시겠습니까?': 'Are you sure you want to delete this diary record?',
+  '제목과 내용을 입력해주세요.': 'Please enter a title and content.',
+  '서버에서 요약을 생성하지 못했습니다.': 'Failed to generate summary from the server.',
+  '요약 중 오류가 발생했습니다.': 'An error occurred during summarization.',
+  '구조화 탭 로딩 실패': 'Structured Tab Loading Failed',
+  'AI 요약 데이터가 JSON 규격에 맞지 않아 일반 텍스트 형태로 출력합니다. 아래 분석글을 참고해 주세요.': 'The AI summary data is not in JSON format, so it is displayed in plain text. Please refer to the analysis below.',
+  '내가 취한 구체적 행동': 'Specific actions I took',
+  '최종 성과 및 내적 성장': 'Final achievements and inner growth',
+  '날짜 미지정': 'No Date Specified',
 };
 
 const translations = {
@@ -799,6 +980,26 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (koToEnMap[keyOrKo]) {
       return koToEnMap[keyOrKo];
     }
+
+    // Dynamic currency replacement
+    if (keyOrKo.endsWith('원')) {
+      const numStr = keyOrKo.slice(0, -1);
+      if (/^[0-9,]+$/.test(numStr)) {
+        return numStr + ' KRW';
+      }
+    }
+
+    // Dynamic pass rate translation
+    if (keyOrKo.includes('필기 약 ') || keyOrKo.includes('실기 약 ') || keyOrKo.includes('필기') || keyOrKo.includes('실기')) {
+      let result = keyOrKo;
+      result = result.replace(/필기 약 /g, 'Written approx. ');
+      result = result.replace(/실기 약 /g, 'Practical approx. ');
+      result = result.replace(/필기/g, 'Written');
+      result = result.replace(/실기/g, 'Practical');
+      result = result.replace(/약 /g, 'approx. ');
+      return result;
+    }
+
     return keyOrKo;
   };
 
