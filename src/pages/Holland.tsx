@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Holland() {
-  const { user } = useAuth();
+  const { user, updateProfileInFirestore } = useAuth();
   const { t } = useLanguage();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,6 +82,9 @@ export default function Holland() {
       let myPageData = savedMyPage ? JSON.parse(savedMyPage) : {};
       myPageData.hollandCode = res.topCode;
       localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(myPageData));
+      
+      // Also update firestore profile so context is updated for CompanySearch
+      updateProfileInFirestore({ hollandCode: res.topCode });
     } catch (e) {
       console.error('Failed to save Holland result to localStorage', e);
     }

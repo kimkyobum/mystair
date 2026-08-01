@@ -45,7 +45,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateProfileInFirestore: (data: Partial<UserProfileData>) => Promise<void>;
   fetchDiaries: () => Promise<DiaryEntry[]>;
-  saveDiary: (diary: Omit<DiaryEntry, 'id' | 'userId'>) => Promise<string>;
+  saveDiary: (diary: Omit<DiaryEntry, 'userId'>) => Promise<string>;
   deleteDiary: (diaryId: string) => Promise<void>;
 }
 
@@ -245,7 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return diaries.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
   };
 
-  const saveDiary = async (diary: Omit<DiaryEntry, 'id' | 'userId'>): Promise<string> => {
+  const saveDiary = async (diary: Omit<DiaryEntry, 'userId'>): Promise<string> => {
     const currentUid = user ? user.uid : 'local-user';
     const savedEntry = await apiService.addDiary(diary, currentUid);
     return savedEntry.id;

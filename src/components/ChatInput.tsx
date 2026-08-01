@@ -41,7 +41,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   };
 
   return (
-    <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-16 sm:mt-24 md:mt-36' : 'mt-6 sm:mt-16 md:mt-28'}`}>
+    <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-32 sm:mt-48 md:mt-64' : 'mt-6 sm:mt-16 md:mt-28'}`}>
       <h1 className="text-2xl sm:text-[40px] md:text-[56px] text-white font-bold mb-6 sm:mb-10 tracking-tight text-center leading-tight">
         MyStair <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">{t('성장의 계단')}</span>
       </h1>
@@ -77,10 +77,10 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
         </button>
 
         <button 
-          onClick={() => onStartChat?.('내 전공과 적성에 맞는 대기업 및 공기업 추천해줘')} 
+          onClick={() => onStartChat?.('내 전공과 적성에 맞는 AI 맞춤형 기업 추천해줘')} 
           className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer active:scale-98"
         >
-          {t('나만의 기업찾기 (대기업/공기업 TOP 10)')}
+          {t('나만의 기업찾기 (AI 맞춤 기업 추천)')}
         </button>
 
         <button 

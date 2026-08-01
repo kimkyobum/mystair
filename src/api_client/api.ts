@@ -12,7 +12,7 @@ export interface UserProfileData {
 }
 
 export interface DiaryEntry {
-  id: string;
+  id?: string;
   userId: string;
   title: string;
   content: string;
@@ -94,30 +94,43 @@ export const apiService = {
   // 2. 다이어리 API
   async getDiaries(userId?: string): Promise<DiaryEntry[]> {
     const uid = userId || getUserId();
+    const saved = localStorage.getItem(`mystair_local_diaries_${uid}`);
+    let localDiaries: DiaryEntry[] = saved ? JSON.parse(saved) : [];
+
     try {
       const res = await fetch(`/api/diaries?userId=${encodeURIComponent(uid)}`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.diaries)) {
-          localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(data.diaries));
-          return data.diaries;
+          // Merge backend and local diaries (prioritize local if duplicate date, but combine both)
+          const backendDiaries = data.diaries;
+          const merged = [...localDiaries];
+          
+          backendDiaries.forEach((bd: DiaryEntry) => {
+            if (!merged.find(md => md.date === bd.date)) {
+              merged.push(bd);
+            }
+          });
+          
+          merged.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(merged));
+          return merged;
         }
       }
     } catch (err) {
       console.warn('Backend diaries fetch failed, using local fallback:', err);
     }
 
-    const saved = localStorage.getItem(`mystair_local_diaries_${uid}`);
-    return saved ? JSON.parse(saved) : [];
+    return localDiaries;
   },
 
-  async addDiary(entry: Omit<DiaryEntry, 'id' | 'userId'>, userId?: string): Promise<DiaryEntry> {
+  async addDiary(entry: Omit<DiaryEntry, 'userId'>, userId?: string): Promise<DiaryEntry> {
     const uid = userId || getUserId();
     const newEntry: DiaryEntry = {
       ...entry,
-      id: 'diary_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 6),
+      id: entry.id || 'diary_' + Date.now().toString() + '_' + Math.random().toString(36).substring(2, 6),
       userId: uid,
-      createdAt: new Date().toISOString()
+      createdAt: entry.createdAt || new Date().toISOString()
     };
 
     // Update Local Storage - Replace any existing entry for the exact same date

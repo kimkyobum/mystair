@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function MBTI() {
-  const { user } = useAuth();
+  const { user, updateProfileInFirestore } = useAuth();
   const { t } = useLanguage();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -96,6 +96,9 @@ export default function MBTI() {
       let myPageData = savedMyPage ? JSON.parse(savedMyPage) : {};
       myPageData.mbti = res.baseType;
       localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(myPageData));
+      
+      // Also update firestore profile so context is updated for CompanySearch
+      updateProfileInFirestore({ mbti: res.baseType });
     } catch (e) {
       console.error('Failed to save MBTI result to localStorage', e);
     }
