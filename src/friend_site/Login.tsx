@@ -204,6 +204,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         targetCompanies: ['한국전력공사', '삼성전자']
       };
       localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+      localStorage.setItem(`mystair_user_profile_${user.uid}`, JSON.stringify(profile));
+      localStorage.setItem(`mystair_mypage_data_${user.uid}`, JSON.stringify(profile));
       
       setIsLoading(false);
       if (onLoginSuccess) {
@@ -295,6 +297,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     }
 
     localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+    localStorage.setItem(`mystair_user_profile_${mockUser.uid}`, JSON.stringify(profile));
+    localStorage.setItem(`mystair_mypage_data_${mockUser.uid}`, JSON.stringify(profile));
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
 

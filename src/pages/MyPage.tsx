@@ -111,17 +111,24 @@ export default function MyPage() {
     if (firestoreProfile) {
       setProfile(prev => ({
         ...prev,
-        name: firestoreProfile.name !== undefined ? firestoreProfile.name : prev.name,
-        email: firestoreProfile.email || prev.email,
-        avatarUrl: firestoreProfile.avatarUrl || prev.avatarUrl,
+        name: firestoreProfile.name !== undefined ? firestoreProfile.name : (prev.name || user?.displayName || ''),
+        email: firestoreProfile.email || prev.email || user?.email || '',
+        avatarUrl: firestoreProfile.avatarUrl || user?.photoURL || prev.avatarUrl,
         highSchool: firestoreProfile.highSchool !== undefined ? firestoreProfile.highSchool : prev.highSchool,
         major: firestoreProfile.major !== undefined ? firestoreProfile.major : prev.major,
         mbti: firestoreProfile.mbti !== undefined ? firestoreProfile.mbti : prev.mbti,
         hollandCode: firestoreProfile.hollandCode !== undefined ? firestoreProfile.hollandCode : prev.hollandCode,
         targetCompanies: firestoreProfile.targetCompanies || []
       }));
+    } else if (user) {
+      setProfile(prev => ({
+        ...prev,
+        name: prev.name || user.displayName || '',
+        email: prev.email || user.email || '',
+        avatarUrl: prev.avatarUrl || user.photoURL || ''
+      }));
     }
-  }, [firestoreProfile]);
+  }, [firestoreProfile, user]);
 
   // Stored test results
   const [mbtiResult, setMbtiResult] = useState<any>(null);
@@ -132,13 +139,28 @@ export default function MyPage() {
 
     // 1. Load basic user profile from localStorage if exists
     const savedSidebarProfile = localStorage.getItem(`mystair_user_profile_${uid}`);
-    let baseName = '';
+    let baseName = user?.displayName || '';
     let baseEmail = user?.email || '';
+    let baseAvatarUrl = firestoreProfile?.avatarUrl || user?.photoURL || '';
+
     if (savedSidebarProfile) {
       try {
         const parsed = JSON.parse(savedSidebarProfile);
         if (parsed.name) baseName = parsed.name;
         if (parsed.email) baseEmail = parsed.email;
+        if (parsed.avatarUrl || parsed.photoURL) baseAvatarUrl = parsed.avatarUrl || parsed.photoURL;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Check mock user as fallback
+    const savedMockUser = localStorage.getItem('mystair_mock_user');
+    if (savedMockUser) {
+      try {
+        const parsedMock = JSON.parse(savedMockUser);
+        if (parsedMock.photoURL && !baseAvatarUrl) baseAvatarUrl = parsedMock.photoURL;
+        if (parsedMock.displayName && !baseName) baseName = parsedMock.displayName;
       } catch (e) {
         console.error(e);
       }
@@ -148,7 +170,7 @@ export default function MyPage() {
     let currentProfile = {
       name: baseName,
       email: baseEmail,
-      avatarUrl: '',
+      avatarUrl: baseAvatarUrl,
       highSchool: '',
       major: '',
       mbti: '',
@@ -164,8 +186,9 @@ export default function MyPage() {
         currentProfile = {
           ...currentProfile,
           ...parsed,
-          name: parsed.name !== undefined ? parsed.name : baseName,
-          email: parsed.email || baseEmail
+          name: parsed.name !== undefined && parsed.name !== '' ? parsed.name : baseName,
+          email: parsed.email || baseEmail,
+          avatarUrl: parsed.avatarUrl || baseAvatarUrl || currentProfile.avatarUrl
         };
       } catch (e) {
         console.error(e);
@@ -384,10 +407,14 @@ export default function MyPage() {
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-pulse" />
                   
                   <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
-                    {profile.avatarUrl ? (
-                      <img src={profile.avatarUrl} alt={t('프로필')} className="w-full h-full object-cover" />
+                    {(profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL) ? (
+                      <img 
+                        src={profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL || ''} 
+                        alt={t('프로필')} 
+                        className="w-full h-full object-cover" 
+                      />
                     ) : (
-                      <div className="text-indigo-600 flex flex-col items-center justify-center">
+                      <div className="text-indigo-400 flex flex-col items-center justify-center">
                         <User size={36} className="shrink-0" />
                       </div>
                     )}

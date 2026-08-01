@@ -127,7 +127,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loadUserProfile = async (currentUser: FirebaseUser) => {
     const remoteProfile = await apiService.getProfile(currentUser.uid);
     if (remoteProfile) {
-      setUserProfile(remoteProfile as UserProfileData);
+      let updated = false;
+      const profileData = { ...remoteProfile } as UserProfileData;
+      if (currentUser.photoURL && (!profileData.avatarUrl || profileData.avatarUrl !== currentUser.photoURL)) {
+        profileData.avatarUrl = currentUser.photoURL;
+        updated = true;
+      }
+      if (currentUser.displayName && (!profileData.name || profileData.name === '마이스터 인재')) {
+        profileData.name = currentUser.displayName;
+        updated = true;
+      }
+      if (updated) {
+        await apiService.updateProfile(profileData, currentUser.uid);
+      }
+      setUserProfile(profileData);
       return;
     }
 
