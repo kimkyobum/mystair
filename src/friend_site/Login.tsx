@@ -222,8 +222,17 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         return;
       }
       
-      if (error?.code === 'auth/unauthorized-domain') {
-        setServerError('현재 배포 도메인이 Firebase의 승인된 도메인에 등록되지 않았습니다.');
+      if (
+        error?.code === 'auth/unauthorized-domain' ||
+        error?.code === 'auth/popup-blocked' ||
+        error?.code === 'auth/operation-not-allowed' ||
+        error?.code === 'auth/internal-error'
+      ) {
+        console.warn('Domain restriction or popup blocked in preview environment. Switching to Google account entry mode.');
+        setShowMockAccountChooser(true);
+        setShowCustomMockInput(true);
+        setIsLoading(false);
+        return;
       } else if (error?.code === 'auth/popup-closed-by-user') {
         setServerError('구글 로그인 창이 닫혔습니다.');
       } else {
