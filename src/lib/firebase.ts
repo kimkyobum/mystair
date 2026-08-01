@@ -11,13 +11,15 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 
+import firebaseConfigJson from '../../firebase-applet-config.json';
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDummyKeyForLocalDevOnly",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "localhost",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "local-app",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || firebaseConfigJson.apiKey || "AIzaSyDummyKeyForLocalDevOnly",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfigJson.authDomain || "localhost",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseConfigJson.projectId || "local-app",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfigJson.storageBucket || "",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfigJson.messagingSenderId || "",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || firebaseConfigJson.appId || "1:123456789:web:abcdef",
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();

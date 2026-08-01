@@ -52,7 +52,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const [showMockAccountChooser, setShowMockAccountChooser] = useState(false);
   const [customMockEmail, setCustomMockEmail] = useState('');
   const [customMockName, setCustomMockName] = useState('');
-  const [showCustomMockInput, setShowCustomMockInput] = useState(false);
+  const [showCustomMockInput, setShowCustomMockInput] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,7 +130,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
       // 3. Fallback: Firebase Auth
       if (!loggedInUser) {
-        const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+        const currentApiKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY;
+        const isDummyKey = !currentApiKey || currentApiKey === "AIzaSyDummyKeyForLocalDevOnly";
         if (!isDummyKey) {
           try {
             const userCred = await signInWithEmailAndPassword(auth, normEmail, password);
@@ -174,7 +175,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const handleGoogleLogin = async () => {
     setServerError('');
     setIsLoading(true);
-    const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+    const currentApiKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY;
+    const isDummyKey = !currentApiKey || currentApiKey === "AIzaSyDummyKeyForLocalDevOnly";
     
     if (isDummyKey) {
       console.warn('Using graceful mock Google login since real Firebase credentials are not provided.');
@@ -368,7 +370,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
       // 2. Fallback: Firebase Auth
       if (!success) {
-        const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+        const currentApiKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY;
+        const isDummyKey = !currentApiKey || currentApiKey === "AIzaSyDummyKeyForLocalDevOnly";
         if (!isDummyKey) {
           try {
             await createUserWithEmailAndPassword(auth, normEmail, signupPassword);
@@ -784,11 +787,11 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                   <h2 className="text-[24px] font-normal text-[#1f1f1f] leading-8 mb-1">로그인</h2>
                   <p className="text-[14px] text-[#1f1f1f] mb-6">Google 계정으로 로그인</p>
 
-                  <div className="flex flex-col gap-4 mb-8">
+                  <div className="flex flex-col gap-4 mb-6">
                     <div className="relative">
                       <input 
                         type="email"
-                        placeholder="이메일 주소"
+                        placeholder="이메일 주소 (예: user@gmail.com)"
                         required
                         value={customMockEmail}
                         onChange={(e) => setCustomMockEmail(e.target.value)}
@@ -798,7 +801,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     <div className="relative">
                       <input 
                         type="text"
-                        placeholder="사용자 이름 (선택사항)"
+                        placeholder="사용자 이름 (예: 홍길동)"
+                        required
                         value={customMockName}
                         onChange={(e) => setCustomMockName(e.target.value)}
                         className="w-full border border-[#dadce0] rounded-lg py-3.5 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 text-[14px]"
@@ -806,17 +810,28 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     </div>
                   </div>
 
+                  {/* Link to developer/test accounts */}
+                  <div className="mb-8">
+                    <button
+                      type="button"
+                      onClick={() => setShowCustomMockInput(false)}
+                      className="text-[14px] text-blue-600 hover:underline font-medium focus:outline-none cursor-pointer"
+                    >
+                      또는 개발자/테스트 계정 선택하기
+                    </button>
+                  </div>
+
                   <div className="flex justify-between items-center">
                     <button 
                       type="button" 
-                      onClick={() => setShowCustomMockInput(false)}
-                      className="text-blue-600 hover:bg-blue-50/50 px-4 py-2.5 rounded-lg font-semibold text-[14px] transition-colors"
+                      onClick={() => setShowMockAccountChooser(false)}
+                      className="text-gray-500 hover:bg-gray-100 px-4 py-2.5 rounded-lg font-medium text-[14px] transition-colors cursor-pointer"
                     >
-                      이전으로
+                      취소
                     </button>
                     <button 
                       type="submit"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-[14px] transition-colors shadow-sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-[14px] transition-colors shadow-sm cursor-pointer"
                     >
                       다음
                     </button>
