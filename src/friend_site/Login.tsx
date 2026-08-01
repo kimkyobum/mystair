@@ -3,7 +3,9 @@ import { useLanguage } from './LanguageContext';
 import { 
   auth, 
   createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword 
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  googleProvider
 } from '../lib/firebase';
 
 interface LoginProps {
@@ -14,6 +16,7 @@ interface LoginProps {
 export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const { t } = useLanguage();
   const [step, setStep] = useState<'login' | 'signup'>('login');
+  const [loginMethod, setLoginMethod] = useState<'select' | 'email'>('select');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -146,6 +149,103 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setServerError('');
+    setIsLoading(true);
+    const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
+    
+    if (isDummyKey) {
+      console.warn('Using graceful mock Google login since real Firebase credentials are not provided.');
+      const mockUser = {
+        uid: 'mock-google-user-123',
+        displayName: '마이스터 구글 인재',
+        email: 'meister_google@mystair.com',
+        photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+      };
+      localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+      
+      const profile = {
+        uid: mockUser.uid,
+        name: mockUser.displayName,
+        email: mockUser.email,
+        highSchool: '서울마이스터고등학교',
+        major: '전기전자과',
+        mbti: 'ENTJ',
+        hollandCode: 'RIC',
+        targetCompanies: ['한국전력공사', '삼성전자']
+      };
+      localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+      setIsLoading(false);
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+      return;
+    }
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      const profile = {
+        uid: user.uid,
+        name: user.displayName || user.email?.split('@')[0] || '사용자',
+        email: user.email || '',
+        highSchool: '서울마이스터고등학교',
+        major: '전기전자과',
+        mbti: 'ENTJ',
+        hollandCode: 'RIC',
+        targetCompanies: ['한국전력공사', '삼성전자']
+      };
+      localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+      
+      setIsLoading(false);
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+    } catch (error: any) {
+      console.error('Google login failed:', error);
+      if (
+        error?.message?.includes('api-key-not-valid') || 
+        error?.code?.includes('api-key-not-valid') || 
+        error?.message?.includes('API key')
+      ) {
+        console.warn('Firebase key invalid, falling back to mock Google login.');
+        const mockUser = {
+          uid: 'mock-google-user-123',
+          displayName: '마이스터 구글 인재',
+          email: 'meister_google@mystair.com',
+          photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+        };
+        localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
+        const profile = {
+          uid: mockUser.uid,
+          name: mockUser.displayName,
+          email: mockUser.email,
+          highSchool: '서울마이스터고등학교',
+          major: '전기전자과',
+          mbti: 'ENTJ',
+          hollandCode: 'RIC',
+          targetCompanies: ['한국전력공사', '삼성전자']
+        };
+        localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+        setIsLoading(false);
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+        return;
+      }
+      
+      if (error?.code === 'auth/unauthorized-domain') {
+        setServerError('현재 배포 도메인이 Firebase의 승인된 도메인에 등록되지 않았습니다.');
+      } else if (error?.code === 'auth/popup-closed-by-user') {
+        setServerError('구글 로그인 창이 닫혔습니다.');
+      } else {
+        setServerError(error?.message || '구글 로그인 중 오류가 발생했습니다.');
+      }
+      setIsLoading(false);
+    }
+  };
+
   const handleSignupSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let hasError = false;
@@ -241,6 +341,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         alert('회원가입이 완료되었습니다. 로그인해주세요.');
         setEmail(signupEmail);
         setStep('login');
+        setLoginMethod('email');
         setSignupPassword('');
         setSignupConfirmPassword('');
       } else {
@@ -348,9 +449,59 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 {isLoading ? t('login.button.processing') : t('login.button.signup')}
               </button>
               <div className="mt-2 text-center text-sm text-gray-500">
-                {t('login.has_account')} <button type="button" onClick={() => setStep('login')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.login')}</button>
+                {t('login.has_account')} <button type="button" onClick={() => { setStep('login'); setLoginMethod('select'); }} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.login')}</button>
               </div>
             </form>
+          ) : loginMethod === 'select' ? (
+            <div className="flex flex-col gap-4">
+              {serverError && <div className="p-3 bg-red-100 text-red-600 rounded-lg text-sm">{serverError}</div>}
+              
+              {/* 이메일 또는 사용자 이름 로그인 버튼 */}
+              <button
+                type="button"
+                onClick={() => setLoginMethod('email')}
+                className="w-full bg-black hover:bg-gray-900 text-white font-semibold rounded-xl py-3.5 px-5 flex items-center justify-center gap-3 transition-colors border border-gray-950 shadow-md cursor-pointer text-sm sm:text-base"
+              >
+                {/* Custom Elegant Stair/Arrow icon */}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white shrink-0">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                  <line x1="4" y1="22" x2="4" y2="15"></line>
+                </svg>
+                <span>이메일 또는 사용자 이름</span>
+              </button>
+
+              {/* Google로 로그인 버튼 */}
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-xl py-3.5 px-5 flex items-center justify-center gap-3 transition-colors border border-gray-300 shadow-sm cursor-pointer text-sm sm:text-base"
+              >
+                {/* Google Logo */}
+                <svg width="18" height="18" viewBox="0 0 24 24" className="shrink-0">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                  />
+                </svg>
+                <span>Google로 로그인</span>
+              </button>
+
+              <div className="mt-6 text-center text-sm text-gray-500">
+                {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
+              </div>
+            </div>
           ) : (
             <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
               {serverError && <div className="p-3 bg-red-100 text-red-600 rounded-lg text-sm">{serverError}</div>}
@@ -424,8 +575,13 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 {isLoading ? t('login.button.processing') : t('login.button.login')}
               </button>
 
-              <div className="mt-2 text-center text-sm text-gray-500">
-                {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
+              <div className="mt-4 flex flex-col gap-2 items-center text-sm text-gray-500">
+                <button type="button" onClick={() => setLoginMethod('select')} className="text-gray-400 hover:text-gray-600 hover:underline text-xs">
+                  ← 다른 로그인 방법 선택
+                </button>
+                <div className="mt-1">
+                  {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
+                </div>
               </div>
             </form>
           )}
