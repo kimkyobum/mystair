@@ -49,6 +49,24 @@ interface AuthContextType {
   deleteDiary: (diaryId: string) => Promise<void>;
 }
 
+const generateInitialsAvatar = (name: string) => {
+  const initial = name ? name.charAt(0).toUpperCase() : 'U';
+  // Google avatar material palette: Blue, Red, Yellow, Green, Purple, Teal
+  const colors = ['#1a73e8', '#ea4335', '#f9ab00', '#137333', '#a142f4', '#00acc1'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = colors[Math.abs(hash) % colors.length];
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <rect width="100" height="100" fill="${color}"/>
+    <text x="50%" y="54%" font-family="'Google Sans', Roboto, Arial, sans-serif" font-size="44" font-weight="bold" fill="#ffffff" dominant-baseline="middle" text-anchor="middle">${initial}</text>
+  </svg>`;
+  
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+};
+
 const DEFAULT_PROFILE: Omit<UserProfileData, 'uid'> = {
   name: '',
   email: '',
@@ -113,11 +131,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
+    const name = currentUser.displayName || '마이스터 인재';
+    const avatarUrl = currentUser.photoURL || generateInitialsAvatar(name);
+
     const newProfile: UserProfileData = {
-      uid: currentUser.uid,
-      name: currentUser.displayName || '마이스터 인재',
-      email: currentUser.email || 'user@mystair.com',
       ...DEFAULT_PROFILE,
+      uid: currentUser.uid,
+      name: name,
+      email: currentUser.email || 'user@mystair.com',
+      avatarUrl: avatarUrl,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -130,11 +152,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const isDummyKey = !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "AIzaSyDummyKeyForLocalDevOnly";
     if (isDummyKey) {
       console.warn('Using graceful mock Google login since real Firebase credentials are not provided.');
+      const displayName = '마이스터 구글 인재';
       const mockUser = {
         uid: 'mock-google-user-123',
-        displayName: '마이스터 구글 인재',
+        displayName: displayName,
         email: 'meister_google@mystair.com',
-        photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+        photoURL: generateInitialsAvatar(displayName)
       };
       localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
       setUser(mockUser as any);
@@ -153,11 +176,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         error?.message?.includes('API key')
       ) {
         console.warn('Firebase key invalid, falling back to mock Google login.');
+        const displayName = '마이스터 구글 인재';
         const mockUser = {
           uid: 'mock-google-user-123',
-          displayName: '마이스터 구글 인재',
+          displayName: displayName,
           email: 'meister_google@mystair.com',
-          photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+          photoURL: generateInitialsAvatar(displayName)
         };
         localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
         setUser(mockUser as any);

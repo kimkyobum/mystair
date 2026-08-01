@@ -13,6 +13,24 @@ interface LoginProps {
   onLoginSuccess?: () => void;
 }
 
+const generateInitialsAvatar = (name: string) => {
+  const initial = name ? name.charAt(0).toUpperCase() : 'U';
+  // Google avatar material palette: Blue, Red, Yellow, Green, Purple, Teal
+  const colors = ['#1a73e8', '#ea4335', '#f9ab00', '#137333', '#a142f4', '#00acc1'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = colors[Math.abs(hash) % colors.length];
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+    <rect width="100" height="100" fill="${color}"/>
+    <text x="50%" y="54%" font-family="'Google Sans', Roboto, Arial, sans-serif" font-size="44" font-weight="bold" fill="#ffffff" dominant-baseline="middle" text-anchor="middle">${initial}</text>
+  </svg>`;
+  
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+};
+
 export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const { t } = useLanguage();
   const [step, setStep] = useState<'login' | 'signup'>('login');
@@ -169,10 +187,14 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       
+      const name = user.displayName || user.email?.split('@')[0] || '사용자';
+      const avatarUrl = user.photoURL || generateInitialsAvatar(name);
+      
       const profile = {
         uid: user.uid,
-        name: user.displayName || user.email?.split('@')[0] || '사용자',
+        name: name,
         email: user.email || '',
+        avatarUrl: avatarUrl,
         highSchool: '서울마이스터고등학교',
         major: '전기전자과',
         mbti: 'ENTJ',
@@ -211,11 +233,24 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
   const handleSelectMockAccount = (selectedEmail: string, selectedName: string) => {
     setIsLoading(true);
+    setCustomMockEmail(selectedEmail); // Show chosen email in the mock authentication screen
+    
+    let resolvedName = selectedName;
+    if (selectedEmail === 'honest20090509@gmail.com') {
+      resolvedName = '김교범';
+    } else if (selectedEmail === 'hanwhateam78@gmail.com') {
+      resolvedName = '김HANWHA';
+    } else if (selectedEmail === 'mystair09@gmail.com') {
+      resolvedName = '마이스터';
+    }
+
+    const photoURL = generateInitialsAvatar(resolvedName);
+    
     const mockUser = {
       uid: 'mock-google-user-' + Math.random().toString(36).substring(2, 9),
-      displayName: selectedName,
+      displayName: resolvedName,
       email: selectedEmail,
-      photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+      photoURL: photoURL
     };
     localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
     
@@ -223,6 +258,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       uid: mockUser.uid,
       name: mockUser.displayName,
       email: mockUser.email,
+      avatarUrl: photoURL,
       highSchool: '서울마이스터고등학교',
       major: '전기전자과',
       mbti: 'ENTJ',
@@ -231,19 +267,16 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     };
 
     if (selectedEmail === 'honest20090509@gmail.com') {
-      profile.name = '김교범';
       profile.major = '소프트웨어학과';
       profile.mbti = 'INFJ';
       profile.hollandCode = 'IAS';
       profile.targetCompanies = ['삼성전자', '네이버', '카카오'];
     } else if (selectedEmail === 'hanwhateam78@gmail.com') {
-      profile.name = '김HANWHA';
       profile.major = '메카트로닉스과';
       profile.mbti = 'ESTJ';
       profile.hollandCode = 'RCE';
       profile.targetCompanies = ['한화에어로스페이스', '현대자동차', '한국전력공사'];
     } else if (selectedEmail === 'mystair09@gmail.com') {
-      profile.name = '마이스터';
       profile.major = '자동화시스템과';
       profile.mbti = 'INTP';
       profile.hollandCode = 'IRC';
@@ -254,11 +287,14 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
 
-    setIsLoading(false);
-    setShowMockAccountChooser(false);
-    if (onLoginSuccess) {
-      onLoginSuccess();
-    }
+    // Add 1.5 seconds delay to show polished Google account connecting screen
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowMockAccountChooser(false);
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
+    }, 1500);
   };
 
   const handleCustomMockLoginSubmit = (e: React.FormEvent) => {
@@ -651,7 +687,24 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 </svg>
               </div>
 
-              {!showCustomMockInput ? (
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  {/* Google Material Spinner */}
+                  <div className="relative w-16 h-16 mb-6">
+                    <div className="absolute inset-0 rounded-full border-4 border-gray-100"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-red-500 border-b-yellow-500 border-l-green-500 animate-spin"></div>
+                  </div>
+                  <h3 className="text-[18px] font-medium text-[#1f1f1f] mb-1">안전하게 로그인하는 중</h3>
+                  <p className="text-[14px] text-[#5f6368] mb-4">Google 서비스와 연결을 시도하고 있습니다...</p>
+                  <div className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-full text-xs text-[#5f6368] flex items-center gap-2 max-w-full">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-blue-500 shrink-0">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    <span className="truncate">{customMockEmail || 'Google 계정'}</span>
+                  </div>
+                </div>
+              ) : !showCustomMockInput ? (
                 <div>
                   <h2 className="text-[24px] font-normal text-[#1f1f1f] leading-8 mb-1">계정을 선택하세요.</h2>
                   <div className="text-[14px] text-[#1f1f1f] mb-6">
