@@ -1,6 +1,7 @@
 import { ArrowUp, History } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useChat } from '../context/ChatContext';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string) => void }) {
@@ -8,6 +9,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { messages, setChatActive } = useChat();
   const { t } = useLanguage();
+  const { isLightMode } = useTheme();
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -42,12 +44,12 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
 
   return (
     <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-32 sm:mt-48 md:mt-64' : 'mt-6 sm:mt-16 md:mt-28'}`}>
-      <h1 className="text-2xl sm:text-[40px] md:text-[56px] text-white font-bold mb-6 sm:mb-10 tracking-tight text-center leading-tight">
+      <h1 className={`text-2xl sm:text-[40px] md:text-[56px] ${isLightMode ? "text-slate-900" : "text-white"} font-bold mb-6 sm:mb-10 tracking-tight text-center leading-tight`}>
         MyStair <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">{t('성장의 계단')}</span>
       </h1>
       
-      <form onSubmit={handleSubmit} className="w-full bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 animate-gradient rounded-2xl p-2 sm:p-2.5 shadow-2xl flex items-center focus-within:ring-4 ring-purple-500/30 transition-all duration-300 relative group min-h-[52px]">
-        <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-[20px] blur-xl opacity-20 group-focus-within:opacity-50 transition duration-500 -z-10"></div>
+      <form onSubmit={handleSubmit} className={`w-full bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 animate-gradient rounded-2xl p-2 sm:p-2.5 shadow-2xl flex items-center focus-within:ring-4 ${isLightMode ? "ring-teal-400/30" : "ring-purple-500/30"} transition-all duration-300 relative group min-h-[52px]`}>
+        <div className={`absolute -inset-1 bg-gradient-to-r ${isLightMode ? "from-teal-400 to-emerald-400" : "from-purple-600 to-indigo-600"} rounded-[20px] blur-xl opacity-0 group-hover:opacity-20 group-focus-within:opacity-50 transition duration-500 -z-10`}></div>
 
         <input 
           type="text"
@@ -78,14 +80,14 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
 
         <button 
           onClick={() => onStartChat?.('내 전공과 적성에 맞는 AI 맞춤형 기업 추천해줘')} 
-          className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer active:scale-98"
+          className={`whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5"} text-xs sm:text-sm transition-all backdrop-blur-md font-medium cursor-pointer active:scale-98`}
         >
           {t('나만의 기업찾기 (AI 맞춤 기업 추천)')}
         </button>
 
         <button 
           onClick={() => onStartChat?.('Mystair 서비스에 대해 자세히 자기소개해줘')} 
-          className="whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 text-white/90 text-xs sm:text-sm hover:bg-white/10 hover:border-white/40 hover:text-white transition-all bg-white/5 backdrop-blur-md font-medium cursor-pointer active:scale-98"
+          className={`whitespace-nowrap shrink-0 min-h-[40px] px-3.5 py-2 rounded-full border border-white/20 ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5"} text-xs sm:text-sm transition-all backdrop-blur-md font-medium cursor-pointer active:scale-98`}
         >
           {t('Mystair 자기소개')}
         </button>

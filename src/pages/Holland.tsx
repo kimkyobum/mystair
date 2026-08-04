@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { hollandQuestions, hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function Holland() {
   const { user, updateProfileInFirestore } = useAuth();
   const { t } = useLanguage();
+  const { isLightMode } = useTheme();
   const [screen, setScreen] = useState<'start' | 'quiz' | 'result'>('start');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(new Array(hollandQuestions.length).fill(null));
@@ -123,9 +125,9 @@ export default function Holland() {
 
   return (
     <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-[#0F172A] font-sans flex flex-col relative">
-      <header className="bg-[#0F172A]/80 backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-[0_4px_20px_rgba(15,23,42,0.15)] sticky top-0 z-50 border-b border-white/5">
+      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-sm sticky top-0 z-50 border-b ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
         <div className="flex items-center gap-4">
-          <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
+          <Link to="/" className={`font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
           <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Building2, User, Brain, Briefcase, Award, GraduationCap, ChevronRight, Sparkles, Building, CheckCircle2, X, Banknote, Search, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import companiesJson from '../../Data/companies.json';
 import linkJson from '../../Data/link.json';
@@ -10,6 +11,7 @@ export default function CompanySearch() {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { isLightMode } = useTheme();
   const [largeCompanies, setLargeCompanies] = useState<any[]>([]);
   const [publicCompanies, setPublicCompanies] = useState<any[]>([]);
   const [otherLargeCompanies, setOtherLargeCompanies] = useState<any[]>([]);
@@ -496,20 +498,20 @@ export default function CompanySearch() {
       <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6">
         {/* Backdrop */}
         <div 
-          className="absolute inset-0 bg-[#0F172A]/85 backdrop-blur-md"
+          className={`absolute inset-0 backdrop-blur-md ${isLightMode ? "bg-white/85" : "bg-[#0F172A]/85"}`}
           onClick={onClose}
         />
         
         {/* Modal Content */}
-        <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto no-scrollbar bg-[#111827] border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl flex flex-col z-10">
+        <div className={`relative w-full max-w-3xl max-h-[90vh] overflow-y-auto no-scrollbar rounded-3xl p-6 md:p-8 shadow-2xl flex flex-col z-10 border ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-[#111827] border-white/10 text-white"}`}>
           <button 
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 rounded-full bg-white/5 text-white/50 hover:bg-white/10 hover:text-white transition-colors z-10 cursor-pointer"
+            className={`absolute top-6 right-6 p-2 rounded-full transition-colors z-10 cursor-pointer ${isLightMode ? "bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white"}`}
           >
             <X size={24} />
           </button>
 
-          <div className="flex flex-col md:flex-row items-start justify-between mb-6 pb-6 border-b border-white/10 gap-6 pr-12">
+          <div className={`flex flex-col md:flex-row items-start justify-between mb-6 pb-6 border-b gap-6 pr-12 ${isLightMode ? "border-slate-200" : "border-white/10"}`}>
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <span className={`px-3 py-1 text-[13px] font-semibold rounded-lg border ${
@@ -519,9 +521,9 @@ export default function CompanySearch() {
                 }`}>
                   {t(getCompanyTypeBadge(company))}
                 </span>
-                <span className="text-white/50 text-[13px] font-medium tracking-wide">{t(cleanText(company.sector))}</span>
+                <span className={`text-[13px] font-medium tracking-wide ${isLightMode ? "text-slate-500" : "text-white/50"}`}>{t(cleanText(company.sector))}</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">{t(cleanText(company.company))}</h2>
+              <h2 className={`text-3xl md:text-4xl font-bold tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t(cleanText(company.company))}</h2>
             </div>
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0">
               <Building2 size={28} />
@@ -529,67 +531,67 @@ export default function CompanySearch() {
           </div>
 
           {/* Interactive Category Buttons / Tabs (Wrapped to prevent cutoff) */}
-          <div className="flex flex-wrap gap-2.5 pb-6 mb-6 border-b border-white/10">
+          <div className={`flex flex-wrap gap-2.5 pb-6 mb-6 border-b ${isLightMode ? "border-slate-200" : "border-white/10"}`}>
             <button
               onClick={() => setActiveTab('business')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'business' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'business' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <Briefcase size={16} className="text-blue-400" />{t('주요 사업/제품')}</button>
             <button
               onClick={() => setActiveTab('culture')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'culture' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'culture' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <User size={16} className="text-emerald-400" />{t('조직 문화')}</button>
             <button
               onClick={() => setActiveTab('talent')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'talent' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'talent' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <Sparkles size={16} className="text-amber-400" />{t('핵심 역량 및 가치')}</button>
             <button
               onClick={() => setActiveTab('majors_certs')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'majors_certs' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'majors_certs' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <GraduationCap size={16} className="text-purple-400" />{t('우대 전공 & 자격증')}</button>
             <button
               onClick={() => setActiveTab('salary_welfare')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'salary_welfare' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'salary_welfare' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <Banknote size={16} className="text-green-400" />{t('연봉 & 복리후생')}</button>
             <button
               onClick={() => setActiveTab('work_recruitment')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'work_recruitment' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'work_recruitment' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <Building size={16} className="text-pink-400" />{t('근무 & 채용절차')}</button>
             <button
               onClick={() => setActiveTab('career')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'career' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'career' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <ChevronRight size={16} className="text-cyan-400" />{t('커리어 패스')}</button>
             <button
               onClick={() => setActiveTab('reason')}
-              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'reason' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'}`}
+              className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === 'reason' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : isLightMode ? "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900" : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"}`}
             >
               <Brain size={16} className="text-indigo-300" />{t('AI 추천 사유')}</button>
           </div>
           
           {/* Active Tab Content */}
-          <div className="flex-1 bg-white/5 rounded-2xl p-6 md:p-8 border border-white/5 min-h-[240px] max-h-[420px] overflow-y-auto flex flex-col justify-between">
+          <div className={`flex-1 rounded-2xl p-6 md:p-8 border min-h-[240px] max-h-[420px] overflow-y-auto flex flex-col justify-between ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-800" : "bg-white/5 border-white/5"}`}>
             <div>
               {activeTab === null && (
                 <div className="text-center py-10 flex flex-col items-center justify-center">
                   <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4 shadow-inner">
                     <Sparkles size={28} />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{t('원하시는 정보 카테고리를 선택해주세요')}</h3>
-                  <p className="text-white/60 text-sm max-w-md">{t('상단의 버튼(주요 사업, 조직 문화, 연봉 및 복지, 우대 자격증 등)을 누르면 해당 상세 내용이 표시됩니다.')}</p>
+                  <h3 className={`text-lg font-bold mb-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('원하시는 정보 카테고리를 선택해주세요')}</h3>
+                  <p className={`text-sm max-w-md ${isLightMode ? "text-slate-500" : "text-white/60"}`}>{t('상단의 버튼(주요 사업, 조직 문화, 연봉 및 복지, 우대 자격증 등)을 누르면 해당 상세 내용이 표시됩니다.')}</p>
                 </div>
               )}
 
               {activeTab === 'business' && (
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                     <Briefcase size={20} className="text-blue-400" />{t('주요 사업 및 제품')}</h3>
-                  <p className="text-white/80 leading-relaxed text-base">
+                  <p className={`leading-relaxed text-base ${isLightMode ? "text-slate-700" : "text-white/80"}`}>
                     {t(company.main_business_products || '등록된 주요 사업 정보가 없습니다.')}
                   </p>
                 </div>
@@ -597,13 +599,13 @@ export default function CompanySearch() {
 
               {activeTab === 'culture' && (
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                     <User size={20} className="text-emerald-400" />{t('조직 문화 및 근무 분위기')}</h3>
-                  <p className="text-white/80 leading-relaxed text-base mb-4">
+                  <p className={`leading-relaxed text-base mb-4 ${isLightMode ? "text-slate-700" : "text-white/80"}`}>
                     {t(company.organizational_culture || '등록된 조직 문화 정보가 없습니다.')}
                   </p>
                   {company.employee_review_summary && (
-                    <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                    <div className={`p-4 rounded-xl border ${isLightMode ? "bg-white border-slate-200" : "bg-black/20 border-white/5"}`}>
                       <span className="text-xs font-semibold text-emerald-400 block mb-1">{t('💡 현직자 리뷰 / 특징 요약')}</span>
                       <p className="text-white/70 text-sm leading-relaxed">{t(company.employee_review_summary)}</p>
                     </div>
@@ -613,7 +615,7 @@ export default function CompanySearch() {
 
               {activeTab === 'talent' && (
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                     <Sparkles size={20} className="text-amber-400" />{t('핵심 역량 및 가치 (인재상)')}</h3>
                   <div className="flex flex-wrap gap-2.5">
                     {company.core_talent_keywords?.map((kw: string, i: number) => (
@@ -628,7 +630,7 @@ export default function CompanySearch() {
               {activeTab === 'majors_certs' && (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
+                    <h3 className={`text-md font-bold mb-3 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                       <GraduationCap size={18} className="text-purple-400" />{t('우대 전공')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {company.preferred_majors?.map((mj: string, i: number) => (
@@ -640,7 +642,7 @@ export default function CompanySearch() {
                   </div>
 
                   <div>
-                    <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
+                    <h3 className={`text-md font-bold mb-3 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                       <Award size={18} className="text-pink-400" />{t('필요 역량 및 자격증 (하나씩 확인)')}</h3>
                     <div className="flex flex-col gap-2">
                       {company.required_competencies_certifications?.map((cert: string, i: number) => (
@@ -658,14 +660,14 @@ export default function CompanySearch() {
                 <div className="space-y-6">
                   {company.meister_average_salary && (
                     <div>
-                      <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
+                      <h3 className={`text-md font-bold mb-3 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                         <Banknote size={18} className="text-green-400" />{t('마이스터고 출신 평균 연봉 기준')}</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                        <div className={`p-4 rounded-xl border ${isLightMode ? "bg-white border-slate-200" : "bg-black/20 border-white/5"}`}>
                           <span className="text-white/50 text-xs font-medium block mb-1">{t('기본급 기준')}</span>
-                          <span className="text-white font-semibold text-sm">{t(company.meister_average_salary.starting_salary_base)}</span>
+                          <span className={`text-white ${isLightMode ? "text-slate-900" : ""} font-semibold text-sm`}>{t(company.meister_average_salary.starting_salary_base)}</span>
                         </div>
-                        <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                        <div className={`p-4 rounded-xl border ${isLightMode ? "bg-white border-slate-200" : "bg-black/20 border-white/5"}`}>
                           <span className="text-green-400/85 text-xs font-medium block mb-1">{t('성과급 및 수당 포함')}</span>
                           <span className="text-green-300 font-bold text-sm">{t(company.meister_average_salary.annual_salary_with_incentives)}</span>
                         </div>
@@ -675,7 +677,7 @@ export default function CompanySearch() {
 
                   {company.welfare_benefits && (
                     <div>
-                      <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
+                      <h3 className={`text-md font-bold mb-3 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                         <Sparkles size={18} className="text-amber-400" />{t('복리후생 및 복지 제도')}</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {company.welfare_benefits.map((wb: string, i: number) => (
@@ -694,7 +696,7 @@ export default function CompanySearch() {
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {company.work_locations && (
-                      <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                      <div className={`p-4 rounded-xl border ${isLightMode ? "bg-white border-slate-200" : "bg-black/20 border-white/5"}`}>
                         <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 지역')}</span>
                         <div className="flex flex-wrap gap-1.5 mt-1">
                           {company.work_locations.map((loc: string, i: number) => (
@@ -704,16 +706,16 @@ export default function CompanySearch() {
                       </div>
                     )}
                     {company.expected_work_hours && (
-                      <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                      <div className={`p-4 rounded-xl border ${isLightMode ? "bg-white border-slate-200" : "bg-black/20 border-white/5"}`}>
                         <span className="text-white/50 text-xs font-medium block mb-1">{t('근무 형태')}</span>
-                        <span className="text-white text-sm font-medium">{t(company.expected_work_hours)}</span>
+                        <span className={`text-white ${isLightMode ? "text-slate-900" : ""} text-sm font-medium`}>{t(company.expected_work_hours)}</span>
                       </div>
                     )}
                   </div>
 
                   {company.recruitment_process && (
                     <div>
-                      <h3 className="text-md font-bold text-white mb-3 flex items-center gap-2">
+                      <h3 className={`text-md font-bold mb-3 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                         <Building size={18} className="text-pink-400" />{t('채용 절차')}</h3>
                       <div className="flex flex-wrap items-center gap-2">
                         {company.recruitment_process.map((step: string, i: number) => (
@@ -734,7 +736,7 @@ export default function CompanySearch() {
 
               {activeTab === 'career' && (
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                     <ChevronRight size={20} className="text-cyan-400" />{t('마이스터고 졸업생 커리어 패스')}</h3>
                   <p className="text-white/80 leading-relaxed text-base bg-black/20 p-5 rounded-2xl border border-white/5">
                     {t(company.meister_career_path || '등록된 커리어 패스 정보가 없습니다.')}
@@ -819,20 +821,20 @@ export default function CompanySearch() {
             <div className="flex items-center gap-3 mb-2">
               <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-semibold rounded-lg border border-indigo-500/30">{t('나머지 기업 목록')}</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{t('TOP 10 이외의 전체 기업')} ({totalCount}{t('개')})</h2>
-            <p className="text-white/50 text-xs sm:text-sm mt-1">{t('상위 TOP 10 이외의 모든 추천 대기업 및 공기업 리스트입니다. 클릭 시 상세 정보를 볼 수 있습니다.')}</p>
+            <h2 className={`text-2xl md:text-3xl font-bold tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}` }>{t('TOP 10 이외의 전체 기업')} ({totalCount}{t('개')})</h2>
+            <p className={`text-xs sm:text-sm mt-1 ${isLightMode ? "text-slate-500" : "text-white/50"}` }>{t('상위 TOP 10 이외의 모든 추천 대기업 및 공기업 리스트입니다. 클릭 시 상세 정보를 볼 수 있습니다.')}</p>
           </div>
 
           {/* Search Bar & Filter Tabs */}
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+              <Search size={18} className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${isLightMode ? "text-slate-400" : "text-white/40"}` } />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('기업명 또는 업종 검색...')}
-                className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 placeholder-white/30"
+                className={`w-full pl-10 pr-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition-colors ${isLightMode ? "bg-white border-slate-200 text-slate-900 placeholder-slate-400" : "bg-white/5 border-white/10 text-white placeholder-white/30"}` }
               />
             </div>
             <div className="flex gap-1.5 bg-white/5 p-1 rounded-xl border border-white/10 shrink-0">
@@ -860,7 +862,7 @@ export default function CompanySearch() {
           {/* Companies List */}
           <div className="flex-1 overflow-y-auto no-scrollbar space-y-3 pr-1">
             {filtered.length === 0 ? (
-              <div className="py-12 text-center text-white/40 text-sm">
+              <div className={`py-12 text-center text-sm ${isLightMode ? "text-slate-400" : "text-white/40"}` }>
                 {t('검색 조건에 일치하는 기업이 없습니다.')}
               </div>
             ) : (
@@ -880,7 +882,7 @@ export default function CompanySearch() {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base text-white group-hover:text-indigo-300 transition-colors">
+                        <span className={`font-semibold text-base transition-colors ${isLightMode ? "text-slate-900 group-hover:text-indigo-600" : "text-white group-hover:text-indigo-300"}` }>
                           {t(cleanText(company.company))}
                         </span>
                         <span className={`px-2 py-0.5 text-[11px] font-medium rounded border shrink-0 ${
@@ -892,7 +894,7 @@ export default function CompanySearch() {
                         </span>
                       </div>
                       {company.sector && (
-                        <p className="text-white/50 text-xs mt-0.5 truncate max-w-lg">
+                        <p className={`text-xs mt-0.5 truncate max-w-lg ${isLightMode ? "text-slate-500" : "text-white/50"}` }>
                           {t(cleanText(company.sector))}
                         </p>
                       )}
@@ -913,7 +915,7 @@ export default function CompanySearch() {
                     )}
                     <button
                       onClick={() => setSelectedCompany(company)}
-                      className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                      className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700" : "bg-white/5 hover:bg-white/10 text-white/40 hover:text-white"}` }
                     >
                       <ChevronRight size={18} />
                     </button>
@@ -930,15 +932,15 @@ export default function CompanySearch() {
   return (
     <div className="h-full w-full bg-transparent flex flex-col relative z-10 overflow-y-auto no-scrollbar">
       {/* Header */}
-      <div className="bg-[#0F172A]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 shrink-0">
+      <div className={`backdrop-blur-md border-b sticky top-0 z-50 shrink-0 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
         <div className="max-w-4xl mx-auto px-6 h-[72px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white shrink-0">
               <Briefcase size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">{t('나만의 기업찾기')}</h1>
-              <p className="text-[13px] text-white/60 font-medium mt-0.5">{t('다이어리 성장기록 & 프로필 종합 AI 맞춤 기업 추천')}</p>
+              <h1 className={`text-xl font-bold tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t("나만의 기업찾기")}</h1>
+              <p className={`text-[13px] font-medium mt-0.5 ${isLightMode ? "text-slate-500" : "text-white/60"}`}>{t("다이어리 성장기록 & 프로필 종합 AI 맞춤 기업 추천")}</p>
             </div>
           </div>
           
@@ -957,7 +959,7 @@ export default function CompanySearch() {
             {!hasProfileData && (
               <button 
                 onClick={() => navigate('/mypage')}
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition-all flex items-center gap-2 border border-white/5 hover:border-white/10"
+                className={`px-4 py-2 text-sm font-medium rounded-xl transition-all flex items-center gap-2 border ${isLightMode ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm" : "bg-white/10 hover:bg-white/20 text-white border-white/5 hover:border-white/10"}` }
               >
                 <User className="w-4 h-4" />
                 <span className="hidden md:inline">{t('프로필 완성')}</span>
@@ -971,15 +973,15 @@ export default function CompanySearch() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
             <div className="w-12 h-12 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin mb-6"></div>
-            <p className="text-white/60 font-medium text-lg">{t('사용자님의 프로필을 분석 중입니다...')}</p>
+            <p className={`font-medium text-lg ${isLightMode ? "text-slate-500" : "text-white/60"}` }>{t('사용자님의 프로필을 분석 중입니다...')}</p>
           </div>
         ) : !hasProfileData ? (
           <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] text-center">
             <div className="w-16 h-16 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/30 mb-6">
               <User size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">{t('프로필 정보가 필요합니다')}</h2>
-            <p className="text-white/60 text-lg mb-8 max-w-md leading-relaxed">
+            <h2 className={`text-2xl font-bold mb-4 ${isLightMode ? "text-slate-900" : "text-white"}` }>{t('프로필 정보가 필요합니다')}</h2>
+            <p className={`text-lg mb-8 max-w-md leading-relaxed ${isLightMode ? "text-slate-500" : "text-white/60"}` }>
               {t('나만의 맞춤 기업을 추천받기 위해 마이페이지에서')}<br/>
               <span className="text-indigo-400 font-semibold">{t('전공, MBTI, 홀랜드 적성검사')}</span> {t('중 하나 이상의 정보를 입력해주세요.')}</p>
             <button
@@ -998,8 +1000,8 @@ export default function CompanySearch() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/30 mb-4">
                   <Building2 size={24} />
                 </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">{t('AI 맞춤 추천 대기업')}</h2>
-                <p className="text-white/50 text-sm">{t('사용자님의 다이어리 성장기록과 학과, MBTI, 적성검사 결과를 AI가 종합 분석하여 선별한 최적의 대기업입니다.')}</p>
+                <h2 className={`text-2xl font-bold tracking-tight mb-2 ${isLightMode ? "text-slate-900" : "text-white"}` }>{t('AI 맞춤 추천 대기업')}</h2>
+                <p className={`text-sm ${isLightMode ? "text-slate-500" : "text-white/50"}` }>{t('사용자님의 다이어리 성장기록과 학과, MBTI, 적성검사 결과를 AI가 종합 분석하여 선별한 최적의 대기업입니다.')}</p>
               </div>
               
               <div className="flex flex-col gap-4">
@@ -1007,7 +1009,7 @@ export default function CompanySearch() {
                   <div 
                     key={`large-${index}`}
                     onClick={() => setSelectedCompany(company)}
-                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group cursor-pointer"
+                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all duration-200 text-left group cursor-pointer ${isLightMode ? "bg-white border-slate-200 hover:border-indigo-400 hover:shadow-md" : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20"}` }
                   >
                     <div className="flex items-center gap-5 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 font-bold flex items-center justify-center text-sm border border-blue-500/20 group-hover:bg-blue-500 group-hover:text-white transition-colors shrink-0">
@@ -1015,7 +1017,7 @@ export default function CompanySearch() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
-                          <span className="font-semibold text-lg text-white group-hover:text-indigo-300 transition-colors">
+                          <span className={`font-semibold text-lg transition-colors ${isLightMode ? "text-slate-900 group-hover:text-indigo-600" : "text-white group-hover:text-indigo-300"}` }>
                             {t(cleanText(company.company))}
                           </span>
                           <span className="px-2.5 py-0.5 bg-blue-500/15 text-blue-300 text-xs font-medium rounded-md border border-blue-500/30 shrink-0">
@@ -1023,7 +1025,7 @@ export default function CompanySearch() {
                           </span>
                         </div>
                         {company.sector && (
-                          <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
+                          <p className={`text-xs mt-1 truncate max-w-md sm:max-w-xl ${isLightMode ? "text-slate-500" : "text-white/60"}` }>
                             {t(cleanText(company.sector))}
                           </p>
                         )}
@@ -1044,7 +1046,7 @@ export default function CompanySearch() {
                       )}
                       <button
                         onClick={() => setSelectedCompany(company)}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                        className={`p-2 rounded-xl transition-colors cursor-pointer ${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700" : "bg-white/5 hover:bg-white/10 text-white/40 hover:text-white"}` }
                       >
                         <ChevronRight size={20} />
                       </button>
@@ -1060,8 +1062,8 @@ export default function CompanySearch() {
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30 mb-4">
                   <Building size={24} />
                 </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight mb-2">{t('AI 맞춤 추천 공기업·공공기관')}</h2>
-                <p className="text-white/50 text-sm">{t('사용자님의 다이어리 성장기록과 학과, 적성검사 결과를 AI가 종합 분석하여 선별한 최적의 공기업·공공기관입니다.')}</p>
+                <h2 className={`text-2xl font-bold tracking-tight mb-2 ${isLightMode ? "text-slate-900" : "text-white"}` }>{t('AI 맞춤 추천 공기업·공공기관')}</h2>
+                <p className={`text-sm ${isLightMode ? "text-slate-500" : "text-white/50"}` }>{t('사용자님의 다이어리 성장기록과 학과, 적성검사 결과를 AI가 종합 분석하여 선별한 최적의 공기업·공공기관입니다.')}</p>
               </div>
               
               <div className="flex flex-col gap-4">
@@ -1069,7 +1071,7 @@ export default function CompanySearch() {
                   <div 
                     key={`public-${index}`}
                     onClick={() => setSelectedCompany(company)}
-                    className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-200 text-left group cursor-pointer"
+                    className={`flex items-center justify-between p-5 rounded-2xl border transition-all duration-200 text-left group cursor-pointer ${isLightMode ? "bg-white border-slate-200 hover:border-indigo-400 hover:shadow-md" : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20"}` }
                   >
                     <div className="flex items-center gap-5 min-w-0">
                       <div className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 font-bold flex items-center justify-center text-sm border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
@@ -1077,7 +1079,7 @@ export default function CompanySearch() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-3">
-                          <span className="font-semibold text-lg text-white group-hover:text-emerald-300 transition-colors">
+                          <span className={`font-semibold text-lg transition-colors ${isLightMode ? "text-slate-900 group-hover:text-emerald-600" : "text-white group-hover:text-emerald-300"}` }>
                             {t(cleanText(company.company))}
                           </span>
                           <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-300 text-xs font-medium rounded-md border border-emerald-500/30 shrink-0">
@@ -1085,7 +1087,7 @@ export default function CompanySearch() {
                           </span>
                         </div>
                         {company.sector && (
-                          <p className="text-white/60 text-xs mt-1 truncate max-w-md sm:max-w-xl">
+                          <p className={`text-xs mt-1 truncate max-w-md sm:max-w-xl ${isLightMode ? "text-slate-500" : "text-white/60"}` }>
                             {t(cleanText(company.sector))}
                           </p>
                         )}
@@ -1106,7 +1108,7 @@ export default function CompanySearch() {
                       )}
                       <button
                         onClick={() => setSelectedCompany(company)}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/40 hover:text-white transition-colors cursor-pointer"
+                        className={`p-2 rounded-xl transition-colors cursor-pointer ${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700" : "bg-white/5 hover:bg-white/10 text-white/40 hover:text-white"}` }
                       >
                         <ChevronRight size={20} />
                       </button>

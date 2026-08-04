@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import certificatesJson from '../../Data/certificates.json';
 
 export default function Certificates() {
   const { t } = useLanguage();
+  const { isLightMode } = useTheme();
   const [licensesData, setLicensesData] = useState<any[]>(certificatesJson || []);
   const [currentCategory, setCurrentCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,7 +81,7 @@ export default function Certificates() {
 
   return (
     <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-slate-100 font-sans relative">
-      <header className="bg-[#0F172A]/80 backdrop-blur-md h-[64px] sm:h-[72px] flex items-center px-4 sm:px-10 sticky top-0 z-50 border-b border-white/5 shadow-[0_4px_20px_rgba(15,23,42,0.15)]">
+      <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center px-4 sm:px-10 sticky top-0 z-50 border-b shadow-sm ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
         <Link to="/" className="text-white font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
           MyStair
         </Link>

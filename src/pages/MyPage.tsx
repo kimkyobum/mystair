@@ -16,12 +16,16 @@ import {
   Award,
   ChevronRight,
   Save,
-  RotateCcw
+  RotateCcw,
+  Sun,
+  Moon,
+  Image as ImageIcon
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 interface MyProfileData {
@@ -76,6 +80,7 @@ export default function MyPage() {
   const { user, userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
   const { showAliens, setShowAliens } = useChat();
   const { language, setLanguage, t } = useLanguage();
+  const { isLightMode, setIsLightMode, backgroundType, setBackgroundType } = useTheme();
 
   const [isFullEditing, setIsFullEditing] = useState(false);
   const [editingField, setEditingField] = useState<'name' | 'school' | 'major' | 'mbti' | 'holland' | null>(null);
@@ -345,9 +350,9 @@ export default function MyPage() {
       <div className="absolute bottom-[30%] right-[20%] w-[420px] h-[420px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none z-0" />
 
       {/* Top Header */}
-      <header className="bg-slate-900/60 backdrop-blur-md border-b border-white/10 h-[72px] w-full flex items-center justify-between px-6 sm:px-10 sticky top-0 z-40">
+      <header className={` backdrop-blur-md border-b  h-[72px] w-full flex items-center justify-between px-6 sm:px-10 sticky top-0 z-40 ${isLightMode ? "bg-white/80 border-slate-200 text-slate-900" : "bg-slate-900/60 border-white/10"}`}>
         <div className="flex items-center gap-4">
-          <Link to="/" className="text-white font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity">
+          <Link to="/" className={` font-black text-[26px]  tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
           <span className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
@@ -442,7 +447,7 @@ export default function MyPage() {
 
               <div>
                 <div className="flex items-center gap-2.5">
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+                  <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : ""}`}>
                     {profile.name}
                   </h1>
                   <span className="bg-indigo-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-400/30">{t('마이스터 인재')}</span>
@@ -922,10 +927,50 @@ export default function MyPage() {
               </div>
             </div>
 
+            {/* Box 8: 화면 테마 설정 */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-purple-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-purple-500/10 text-purple-600 rounded-lg">
+                    <ImageIcon size={16} />
+                  </span>
+                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('화면 및 배경 설정')}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Light Mode */}
+                <button
+                  onClick={() => setIsLightMode(true)}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    isLightMode ? 'border-amber-500 bg-amber-50 text-amber-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  <Sun size={24} className={isLightMode ? 'text-amber-500 mb-2' : 'mb-2'} />
+                  <span className="font-bold text-sm">{t('라이트 모드 (기본)', 'Light Mode')}</span>
+                  <span className="text-xs mt-1 opacity-70">{t('깔끔한 화이트 테마', 'Clean white theme')}</span>
+                </button>
+
+                {/* Space Mode (Dark) */}
+                <button
+                  onClick={() => {
+                    setIsLightMode(false);
+                    setBackgroundType('black');
+                  }}
+                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
+                    !isLightMode ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  <Moon size={24} className={!isLightMode ? 'text-indigo-500 mb-2' : 'mb-2'} />
+                  <span className="font-bold text-sm">{t('우주 모드', 'Space Mode')}</span>
+                  <span className="text-xs mt-1 opacity-70">{t('아름다운 별빛 테마', 'Beautiful starlight theme')}</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Footer Bar */}
-          <div className="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className={`backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs border ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/60 border-white/10"}`}>
             <span className="text-xs text-slate-400 font-medium">{t('💡 각 박스의 [수정]으로 즉시 변경하거나 [전체 편집 모드]로 상단에서 일괄 수정할 수 있습니다.')}</span>
 
             <div className="flex items-center gap-2">
@@ -947,8 +992,8 @@ export default function MyPage() {
 
       {/* ================= MODAL 1: MBTI Detail Modal ================= */}
       {activeModal === 'mbti' && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-slate-900/95 text-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 relative space-y-6 my-auto animate-in fade-in zoom-in duration-200">
+        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
+          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
             <button
               onClick={() => setActiveModal(null)}
               className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
@@ -961,7 +1006,7 @@ export default function MyPage() {
                 <Brain size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">{t('MBTI 성격 진단 상세 내역')}</h3>
+                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('MBTI 성격 진단 상세 내역')}</h3>
                 <p className="text-xs text-slate-400 font-medium">{t('나의 성격 유형 분석 및 맞춤 직무 가이드')}</p>
               </div>
             </div>
@@ -1061,8 +1106,8 @@ export default function MyPage() {
 
       {/* ================= MODAL 2: Holland Detail Modal ================= */}
       {activeModal === 'holland' && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-slate-900/95 text-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 relative space-y-6 my-auto animate-in fade-in zoom-in duration-200">
+        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
+          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
             <button
               onClick={() => setActiveModal(null)}
               className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
@@ -1075,7 +1120,7 @@ export default function MyPage() {
                 <Compass size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">{t('홀랜드 직업 적성 검사 상세')}</h3>
+                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('홀랜드 직업 적성 검사 상세')}</h3>
                 <p className="text-xs text-slate-400 font-medium">{t('RIASEC 직업적성 유형 분석 및 진로 소견')}</p>
               </div>
             </div>
@@ -1196,8 +1241,8 @@ export default function MyPage() {
 
       {/* ================= MODAL 3: Target Companies Detail Modal ================= */}
       {activeModal === 'companies' && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-slate-900/95 text-white w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/10 relative space-y-6 my-auto animate-in fade-in zoom-in duration-200">
+        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
+          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
             <button
               onClick={() => setActiveModal(null)}
               className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
@@ -1210,7 +1255,7 @@ export default function MyPage() {
                 <Building2 size={24} />
               </span>
               <div>
-                <h3 className="text-xl font-extrabold text-white">{t('희망 기업 (Target Companies) 설정')}</h3>
+                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('희망 기업 (Target Companies) 설정')}</h3>
                 <p className="text-xs text-slate-400 font-medium">{t('마이스터고 및 직업계고 학생들이 목표로 하는 주요 기업 관리')}</p>
               </div>
             </div>

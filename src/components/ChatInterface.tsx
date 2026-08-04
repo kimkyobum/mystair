@@ -6,10 +6,12 @@ import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from '@google/genai';
 import { useAuth } from '../context/AuthContext';
 import { useChat, Message } from '../context/ChatContext';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function ChatInterface() {
   const { language, t } = useLanguage();
+  const { isLightMode } = useTheme();
   const { userProfile: firestoreProfile, fetchDiaries, saveDiary, user } = useAuth();
   const {
     messages,
@@ -728,10 +730,10 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
 
                 <div className="flex-1 overflow-y-auto space-y-2 pr-1" style={{ scrollbarWidth: 'thin' }}>
                   {messages.filter(m => m.role === 'user').length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-center text-white/40 text-[13px] p-4 gap-2">
-                      <Sparkles size={28} className="text-white/20 animate-pulse" />
+                    <div className={`h-full flex flex-col items-center justify-center text-center ${isLightMode ? "text-slate-400" : "text-white/40"} text-[13px] p-4 gap-2`}>
+                      <Sparkles size={28} className={`${isLightMode ? "text-slate-300" : "text-white/20"} animate-pulse`} />
                       <span>{t('아직 질문 기록이 없습니다.', 'No question history yet.')}</span>
-                      <span className="text-[11px] text-white/30">{t('AI에게 질문을 시작해보세요!', 'Start asking questions to AI!')}</span>
+                      <span className={`text-[11px] ${isLightMode ? "text-slate-400" : "text-white/30"}`}>{t('AI에게 질문을 시작해보세요!', 'Start asking questions to AI!')}</span>
                     </div>
                   ) : (
                     messages.filter(m => m.role === 'user').map((msg) => (
@@ -755,7 +757,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-white/10 text-center text-[11px] text-white/30">
+                <div className={`mt-4 pt-4 border-t border-white/10 text-center text-[11px] ${isLightMode ? "text-slate-400" : "text-white/30"}`}>
                   {t('기록을 클릭하면 해당 대화로 이동합니다.', 'Click on history to jump to that conversation.')}
                 </div>
               </motion.div>
@@ -770,19 +772,19 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
-        className="flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 bg-[#050505]/45 backdrop-blur-md rounded-[24px] sm:rounded-[40px] border border-white/20 min-w-0"
+        className={`flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 backdrop-blur-md rounded-[24px] sm:rounded-[40px] border min-w-0 ${isLightMode ? "bg-white border-slate-200 shadow-md" : "bg-[#050505]/45 border-white/20"}`}
       >
         {/* Chat header with control buttons */}
         <div className="flex flex-wrap sm:flex-row gap-2.5 items-center justify-between mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 select-none shrink-0">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-indigo-400 animate-pulse shrink-0" />
-            <span className="text-white/80 text-xs sm:text-[14px] font-semibold">{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
+            <span className={`text-xs sm:text-[14px] font-semibold ${isLightMode ? "text-slate-900" : "text-white/80"}`}>{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
-              className="flex items-center justify-center gap-1.5 text-white/90 hover:text-white text-xs sm:text-[13px] font-semibold bg-teal-500/15 hover:bg-teal-500/25 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-teal-500/30 hover:border-teal-500/50 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]"
+              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 hover:text-slate-900 border-slate-300" : "text-white/90 hover:text-white"} text-xs sm:text-[13px] font-semibold bg-teal-500/15 hover:bg-teal-500/25 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-teal-500/30 hover:border-teal-500/50 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
               title={t('이전 질문 기록 보기', 'View previous question history')}
             >
               <History size={14} className="text-teal-400 animate-pulse shrink-0" />
@@ -790,7 +792,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             </button>
             <button 
               onClick={clearChat}
-              className="flex items-center justify-center gap-1.5 text-white/60 hover:text-white text-xs sm:text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]"
+              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/60 hover:text-white"} text-xs sm:text-[13px] font-medium bg-white/5 hover:bg-white/10 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-white/10 hover:border-white/25 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
               title={t('새로운 대화 시작하기', 'Start a new conversation')}
             >
               <Trash2 size={14} className="shrink-0" />
@@ -816,14 +818,14 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
-                    <div className="text-white text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]">
+                    <div className={`${isLightMode ? "text-slate-800" : "text-white"} text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]`}>
                       {msg.isStreaming && !msg.content ? (
                         <div className="flex items-center gap-2 text-teal-300 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis">
                           <RefreshCw size={16} className="animate-spin text-teal-400 shrink-0" />
                           <span className="truncate">{t('🔍 사용자님의 자격증, 성장 다이어리, MBTI, 진로 적성검사(Holland) 데이터를 분석하여 맞춤형 인사이트를 준비 중입니다...', '🔍 Analyzing your certificates, growth diaries, MBTI, Holland test data to prepare customized insights...')}</span>
                         </div>
                       ) : (
-                        <div className="markdown-body space-y-2 text-white text-sm sm:text-base">
+                        <div className={`markdown-body space-y-2 text-sm sm:text-base ${isLightMode ? "text-slate-800" : "text-white"}`}>
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       )}
@@ -865,19 +867,19 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                 </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
-                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
-                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
-                  className="w-full sm:w-auto text-xs sm:text-xs text-white/80 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]"
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
                 </button>
@@ -889,7 +891,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         </div>
 
         <div className="pt-3 sm:pt-4 mt-auto shrink-0">
-          <form onSubmit={handleSubmit} className="w-full bg-white rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ring-purple-400/30 transition-all duration-300 min-h-[52px]">
+          <form onSubmit={handleSubmit} className={`w-full bg-white rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ${isLightMode ? "ring-teal-400/30" : "ring-purple-400/30"} transition-all duration-300 min-h-[52px]`}>
             <input 
               type="text"
               value={inputValue}

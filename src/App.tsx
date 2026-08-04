@@ -1,19 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { ChatProvider } from './context/ChatContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './friend_site/LanguageContext';
 import MarketingApp from './friend_site/App';
-import Starfield from './components/Starfield';
-import Sidebar from './components/Sidebar';
-import Home from './pages/Home';
-import Certificates from './pages/Certificates';
-import MBTI from './pages/MBTI';
-import Holland from './pages/Holland';
-import MyPage from './pages/MyPage';
-import Diary from './pages/Diary';
-import CompanySearch from './pages/CompanySearch';
-import Creators from './pages/Creators';
+import AppWrapper from './AppWrapper';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -59,25 +50,9 @@ export default function App() {
       ) : (
         <AuthProvider>
           <ChatProvider>
-            <BrowserRouter>
-              <div className="h-screen bg-black text-white font-sans overflow-hidden selection:bg-purple-500/30 flex relative">
-                <Sidebar />
-                <Starfield />
-                <div className="flex-1 h-full pl-14 relative flex flex-col min-w-0 overflow-hidden">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/diary" element={<Diary />} />
-                    <Route path="/company-search" element={<CompanySearch />} />
-                    <Route path="/certificates" element={<Certificates />} />
-                    <Route path="/mbti" element={<MBTI />} />
-                    <Route path="/holland" element={<Holland />} />
-                    <Route path="/mypage" element={<MyPage />} />
-                    <Route path="/profile" element={<MyPage />} />
-                    <Route path="/creators" element={<Creators />} />
-                  </Routes>
-                </div>
-              </div>
-            </BrowserRouter>
+            <ThemeProvider>
+              <AppWrapper />
+            </ThemeProvider>
           </ChatProvider>
         </AuthProvider>
       )}

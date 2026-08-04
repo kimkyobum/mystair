@@ -1,8 +1,10 @@
 import { motion } from 'motion/react';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
 export default function TopBanner() {
   const { t } = useLanguage();
+  const { isLightMode } = useTheme();
 
   const phrases = [
     "빛나는 기술인으로 성장하는 여정, MyStair가 당신의 든든한 날개가 되어줄게요",
@@ -14,7 +16,7 @@ export default function TopBanner() {
   ];
   
   return (
-    <div className="relative z-50 w-full overflow-hidden bg-black/60 backdrop-blur-md border-b border-white/5 py-3 flex text-white/70 font-medium text-xs sm:text-sm">
+    <div className={`relative z-50 w-full overflow-hidden backdrop-blur-md border-b py-3 flex font-medium text-xs sm:text-sm ${isLightMode ? "bg-white/80 border-slate-200 text-slate-700" : "bg-black/60 border-white/5 text-white/70"}`}>
       {/* 윗부분의 은은한 보랏빛 네온 라인 효과 */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
       
@@ -26,7 +28,7 @@ export default function TopBanner() {
         <div className="flex items-center pr-12">
           {phrases.map((item, index) => (
             <div key={`first-${index}`} className="flex items-center">
-              <span className="tracking-wide hover:text-white transition-colors cursor-default">{t(item)}</span>
+              <span className={`tracking-wide transition-colors cursor-default ${isLightMode ? "hover:text-slate-900" : "hover:text-white"}`}>{t(item)}</span>
               {/* 이모지 대신 우주/별빛 컨셉에 맞는 빛나는 점(Dot)을 구분자로 사용 */}
               <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
             </div>
@@ -35,7 +37,7 @@ export default function TopBanner() {
         <div className="flex items-center pr-12">
           {phrases.map((item, index) => (
             <div key={`second-${index}`} className="flex items-center">
-              <span className="tracking-wide hover:text-white transition-colors cursor-default">{t(item)}</span>
+              <span className={`tracking-wide transition-colors cursor-default ${isLightMode ? "hover:text-slate-900" : "hover:text-white"}`}>{t(item)}</span>
               <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
             </div>
           ))}
