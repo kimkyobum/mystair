@@ -21,6 +21,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     localStorage.setItem('mystair_light_mode', String(isLightMode));
+    if (isLightMode) {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
   }, [isLightMode]);
 
   useEffect(() => {

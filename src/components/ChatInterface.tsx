@@ -813,34 +813,34 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             >
               <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className="bg-[#e4e4e7] text-gray-800 px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed">
+                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-indigo-600 text-white" : "bg-indigo-600/90 text-white"}`}>
                     {msg.content}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
-                    <div className={`${isLightMode ? "text-slate-800" : "text-white"} text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]`}>
+                    <div className={`${isLightMode ? "text-slate-900" : "text-white"} text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]`}>
                       {msg.isStreaming && !msg.content ? (
-                        <div className="flex items-center gap-2 text-teal-300 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis">
-                          <RefreshCw size={16} className="animate-spin text-teal-400 shrink-0" />
+                        <div className={`flex items-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis ${isLightMode ? "text-indigo-600" : "text-teal-300"}`}>
+                          <RefreshCw size={16} className={`animate-spin shrink-0 ${isLightMode ? "text-indigo-600" : "text-teal-400"}`} />
                           <span className="truncate">{t('🔍 사용자님의 자격증, 성장 다이어리, MBTI, 진로 적성검사(Holland) 데이터를 분석하여 맞춤형 인사이트를 준비 중입니다...', '🔍 Analyzing your certificates, growth diaries, MBTI, Holland test data to prepare customized insights...')}</span>
                         </div>
                       ) : (
-                        <div className={`markdown-body space-y-2 text-sm sm:text-base ${isLightMode ? "text-slate-800" : "text-white"}`}>
+                        <div className={`space-y-2 text-sm sm:text-base ${isLightMode ? "markdown-body-light text-slate-900 font-medium" : "markdown-body text-white"}`}>
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       )}
                     </div>
 
                     {!msg.isStreaming && msg.content && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 px-1 sm:px-2 text-white/40 text-sm">
-                        <button className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="좋아요">
-                          <ThumbsUp size={16} className="hover:text-white/80" />
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`flex items-center gap-3 px-1 sm:px-2 text-sm ${isLightMode ? "text-slate-500" : "text-white/40"}`}>
+                        <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="좋아요">
+                          <ThumbsUp size={16} />
                         </button>
-                        <button className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="싫어요">
-                          <ThumbsDown size={16} className="hover:text-white/80" />
+                        <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="싫어요">
+                          <ThumbsDown size={16} />
                         </button>
-                        <button onClick={() => handleCopyText(msg.id, msg.content)} className="p-2 hover:bg-white/10 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer" aria-label="텍스트 복사">
-                          {copiedId === msg.id ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                        <button onClick={() => handleCopyText(msg.id, msg.content)} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
+                          {copiedId === msg.id ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
                         </button>
                       </motion.div>
                     )}
@@ -853,33 +853,33 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           {/* Quick Question Suggestions - Mobile Responsive 48px touch targets */}
           {messages.length <= 2 && !isLoading && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-1 sm:px-2">
-              <span className="text-xs font-medium text-white/60 flex items-center gap-1.5">
+              <span className={`text-xs font-bold flex items-center gap-1.5 ${isLightMode ? "text-slate-700" : "text-white/70"}`}>
                 <Sparkles size={14} className="text-teal-400" />
                 {t('추천 질의 예시', 'Suggested Questions')}
               </span>
               <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
                 <button 
                   onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
-                  className="w-full sm:w-auto text-xs sm:text-xs text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-emerald-500/40 cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center"
+                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border-emerald-300" : "text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/40"}`}
                 >
                   <span className="text-sm">✍️</span> 
                   <span>"{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"</span>
                 </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-700 bg-slate-100 hover:bg-slate-200 border-slate-200" : "text-white/80 bg-white/5 hover:bg-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border border-white/10 cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
                 </button>
@@ -891,20 +891,20 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         </div>
 
         <div className="pt-3 sm:pt-4 mt-auto shrink-0">
-          <form onSubmit={handleSubmit} className={`w-full bg-white rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border border-gray-200 flex items-center focus-within:ring-2 ${isLightMode ? "ring-teal-400/30" : "ring-purple-400/30"} transition-all duration-300 min-h-[52px]`}>
+          <form onSubmit={handleSubmit} className={`w-full rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border flex items-center focus-within:ring-2 transition-all duration-300 min-h-[52px] ${isLightMode ? "bg-slate-50 border-slate-300 ring-teal-500/30" : "bg-slate-900/90 border-white/20 ring-purple-500/30"}`}>
             <input 
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}
               placeholder={isLoading ? t("AI 답변을 준비 중입니다...", "AI is preparing your answer...") : t("추가로 궁금한 점을 물어보세요", "Ask any other questions you have")}
-              className="w-full bg-transparent text-gray-800 placeholder-gray-400 px-3 sm:px-6 py-2 sm:py-3 outline-none text-sm sm:text-[16px] min-h-[44px]"
+              className={`w-full bg-transparent px-3 sm:px-6 py-2 sm:py-3 outline-none text-sm sm:text-[16px] min-h-[44px] ${isLightMode ? "text-slate-900 placeholder-slate-400" : "text-white placeholder-slate-400"}`}
             />
             <button 
               type="submit" 
               disabled={isLoading || !inputValue.trim()}
               aria-label="질문 제출"
-              className="bg-black text-white p-3 sm:p-3.5 rounded-xl sm:rounded-full hover:bg-gray-800 transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95"
+              className={`p-3 sm:p-3.5 rounded-xl sm:rounded-full transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95 ${isLightMode ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-white hover:bg-slate-200 text-slate-900"}`}
             >
               <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
             </button>

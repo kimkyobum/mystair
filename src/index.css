@@ -104,7 +104,7 @@ button, a, label, span, header, nav, p, h1, h2, h3, h4, h5, h6 {
 .markdown-body p {
   margin-bottom: 0.85rem;
   line-height: 1.7;
-  color: #cbd5e1;
+  color: #f1f5f9;
 }
 .markdown-body ul, .markdown-body ol {
   margin-left: 1.5rem;
@@ -120,25 +120,25 @@ button, a, label, span, header, nav, p, h1, h2, h3, h4, h5, h6 {
 .markdown-body li {
   margin-bottom: 0.45rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: #f1f5f9;
 }
 .markdown-body strong {
-  color: #f8fafc;
-  font-weight: 700;
+  color: #ffffff;
+  font-weight: 800;
 }
 .markdown-body blockquote {
   border-left: 4px solid #6366f1;
   padding-left: 1rem;
   margin: 1rem 0;
-  color: #94a3b8;
+  color: #e2e8f0;
   font-style: italic;
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(99, 102, 241, 0.12);
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   border-radius: 0 0.5rem 0.5rem 0;
 }
 .markdown-body code {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   padding: 0.125rem 0.35rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
@@ -148,5 +148,80 @@ button, a, label, span, header, nav, p, h1, h2, h3, h4, h5, h6 {
 .markdown-body hr {
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 1.5rem 0;
+}
+
+/* Light mode Markdown styling - Crisp, sharp, high contrast dark slate text on light backgrounds */
+.light .markdown-body h1, .light .markdown-body h2, .light .markdown-body h3, .light .markdown-body h4,
+.markdown-body-light h1, .markdown-body-light h2, .markdown-body-light h3, .markdown-body-light h4 {
+  color: #0f172a !important;
+  font-weight: 800;
+}
+.light .markdown-body h1, .markdown-body-light h1 {
+  font-size: 1.6rem;
+  border-bottom: 2px solid rgba(99, 102, 241, 0.4) !important;
+  padding-bottom: 0.5rem;
+}
+.light .markdown-body h2, .markdown-body-light h2 {
+  font-size: 1.35rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.15) !important;
+  padding-bottom: 0.4rem;
+  color: #1e293b !important;
+}
+.light .markdown-body h3, .markdown-body-light h3 {
+  font-size: 1.15rem;
+  color: #334155 !important;
+}
+.light .markdown-body p, .markdown-body-light p {
+  margin-bottom: 0.85rem;
+  line-height: 1.7;
+  color: #0f172a !important;
+  font-weight: 500;
+}
+.light .markdown-body ul, .light .markdown-body ol,
+.markdown-body-light ul, .markdown-body-light ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  list-style-position: outside;
+}
+.light .markdown-body ul, .markdown-body-light ul {
+  list-style-type: disc;
+}
+.light .markdown-body ol, .markdown-body-light ol {
+  list-style-type: decimal;
+}
+.light .markdown-body li, .markdown-body-light li {
+  margin-bottom: 0.45rem;
+  line-height: 1.6;
+  color: #0f172a !important;
+  font-weight: 500;
+}
+.light .markdown-body strong, .markdown-body-light strong {
+  color: #020617 !important;
+  font-weight: 800;
+}
+.light .markdown-body blockquote, .markdown-body-light blockquote {
+  border-left: 4px solid #4f46e5 !important;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #334155 !important;
+  font-style: italic;
+  background: rgba(99, 102, 241, 0.08) !important;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.light .markdown-body code, .markdown-body-light code {
+  background-color: rgba(15, 23, 42, 0.08) !important;
+  padding: 0.125rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-family: monospace;
+  color: #be185d !important;
+  font-weight: 600;
+}
+.light .markdown-body hr, .markdown-body-light hr {
+  border: 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.15) !important;
   margin: 1.5rem 0;
 }
