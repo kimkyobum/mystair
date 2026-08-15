@@ -8,7 +8,7 @@ export default function LightBackground() {
       <div className="absolute -top-[10%] left-[5%] w-[70vw] h-[55vh] bg-gradient-to-r from-sky-200/35 via-indigo-200/30 to-purple-200/25 rounded-[100%] blur-[120px] animate-float-slow" />
       
       <div 
-        className="absolute top-[25%] -right-[10%] w-[65vw] h-[60vh] bg-gradient-to-l from-teal-200/30 via-emerald-100/35 to-cyan-200/25 rounded-[100%] blur-[130px] animate-pulse-glow" 
+        className="absolute top-[25%] -right-[10%] w-[65vw] h-[60vh] bg-gradient-to-l from-indigo-200/30 via-purple-100/35 to-pink-200/25 rounded-[100%] blur-[130px] animate-pulse-glow" 
       />
 
       <div 

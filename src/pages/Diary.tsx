@@ -54,14 +54,14 @@ interface ExamSchedule {
 const DEFAULT_EXAM_SCHEDULE: ExamSchedule = {
   firstMid: { start: '', end: '', name: '1학기 중간고사', color: 'bg-amber-100 text-amber-900 border-amber-400' },
   firstFinal: { start: '', end: '', name: '1학기 기말고사', color: 'bg-rose-100 text-rose-900 border-rose-400' },
-  secondMid: { start: '', end: '', name: '2학기 중간고사', color: 'bg-teal-100 text-indigo-900 border-teal-500' },
+  secondMid: { start: '', end: '', name: '2학기 중간고사', color: 'bg-indigo-100 text-indigo-900 border-indigo-500' },
   secondFinal: { start: '', end: '', name: '2학기 기말고사', color: 'bg-purple-100 text-purple-900 border-purple-400' },
 };
 
 const SAMPLE_EXAM_SCHEDULE: ExamSchedule = {
   firstMid: { start: '2026-04-20', end: '2026-04-23', name: '1학기 중간고사', color: 'bg-amber-100 text-amber-900 border-amber-400' },
   firstFinal: { start: '2026-06-22', end: '2026-06-25', name: '1학기 기말고사', color: 'bg-rose-100 text-rose-900 border-rose-400' },
-  secondMid: { start: '2026-10-19', end: '2026-10-22', name: '2학기 중간고사', color: 'bg-teal-100 text-indigo-900 border-teal-500' },
+  secondMid: { start: '2026-10-19', end: '2026-10-22', name: '2학기 중간고사', color: 'bg-indigo-100 text-indigo-900 border-indigo-500' },
   secondFinal: { start: '2026-12-14', end: '2026-12-17', name: '2학기 기말고사', color: 'bg-purple-100 text-purple-900 border-purple-400' },
 };
 
@@ -411,12 +411,12 @@ JSON 구조 규격:
   return (
     <div className={`h-full flex-1 overflow-hidden font-sans flex flex-col relative transition-colors duration-200 ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-slate-950/45 text-white"}`}>
       {/* Soft Ambient Cosmic Glows */}
-      <div className={`absolute top-[15%] left-[20%] w-[380px] h-[380px] rounded-full blur-[100px] pointer-events-none z-0 ${isLightMode ? "bg-teal-200/20" : "bg-teal-500/10"}`} />
-      <div className={`absolute bottom-[25%] right-[15%] w-[450px] h-[450px] rounded-full blur-[120px] pointer-events-none z-0 ${isLightMode ? "bg-emerald-200/20" : "bg-purple-500/10"}`} />
+      <div className={`absolute top-[15%] left-[20%] w-[380px] h-[380px] rounded-full blur-[100px] pointer-events-none z-0 ${isLightMode ? "bg-indigo-200/20" : "bg-indigo-500/10"}`} />
+      <div className={`absolute bottom-[25%] right-[15%] w-[450px] h-[450px] rounded-full blur-[120px] pointer-events-none z-0 ${isLightMode ? "bg-purple-200/20" : "bg-purple-500/10"}`} />
 
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-teal-600 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border border-teal-500 animate-bounce">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-indigo-600 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-bold flex items-center gap-2 border border-indigo-500 animate-bounce">
           <Sparkles size={16} />
           <span>{toastMsg}</span>
         </div>
@@ -428,7 +428,7 @@ JSON 구조 규격:
           <Link to="/" className={`transition ${isLightMode ? "text-slate-500 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}>
             <ArrowLeft size={20} />
           </Link>
-          <BookOpen size={24} className="text-teal-500" />
+          <BookOpen size={24} className="text-indigo-500" />
           <h1 className={`text-xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('성장 다이어리')}</h1>
         </div>
 
@@ -446,7 +446,7 @@ JSON 구조 규격:
             <button
               onClick={() => setViewMode('calendar')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                viewMode === 'calendar' ? isLightMode ? 'bg-teal-600 text-white shadow' : 'bg-teal-600 text-white shadow' : (isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white')
+                viewMode === 'calendar' ? isLightMode ? 'bg-indigo-600 text-white shadow' : 'bg-indigo-600 text-white shadow' : (isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white')
               }`}
             >
               <CalendarIcon size={14} />
@@ -542,7 +542,7 @@ JSON 구조 규격:
 
               {/* 2학기 중간고사 */}
               <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
-                <label className="text-xs font-extrabold text-teal-500 flex items-center gap-1">
+                <label className="text-xs font-extrabold text-indigo-500 flex items-center gap-1">
                   <span>📝 {t('2학기 중간고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
@@ -638,7 +638,7 @@ JSON 구조 규격:
                 <h2 className={`text-3xl sm:text-4xl font-black tracking-wider font-sans uppercase ${isLightMode ? "text-slate-900" : "text-white"}`}>
                   {MONTH_NAMES_EN[currentMonth]}
                 </h2>
-                <div className={`text-sm font-extrabold tracking-widest mt-0.5 ${isLightMode ? "text-teal-600" : "text-teal-500/80"}`}>
+                <div className={`text-sm font-extrabold tracking-widest mt-0.5 ${isLightMode ? "text-indigo-600" : "text-indigo-500/80"}`}>
                   {currentYear}.{monthFormatted}
                 </div>
               </div>
@@ -661,7 +661,7 @@ JSON 구조 규격:
                 </button>
                 <button
                   onClick={() => handleOpenDayModal(getLocalDateString())}
-                  className={`ml-2 px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${isLightMode ? "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 shadow-xs" : "border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300"}`}
+                  className={`ml-2 px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${isLightMode ? "border-indigo-300 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 shadow-xs" : "border-indigo-500/30 bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-300"}`}
                 >
                   <Plus size={15} />
                   <span>{t('일기 쓰기')}</span>
@@ -745,7 +745,7 @@ JSON 구조 규격:
                   } else {
                     examBadgeClass = exam.name.includes("1학기")
                       ? (isLightMode ? "bg-amber-100 text-amber-900 border-amber-300" : "bg-amber-500/10 text-amber-300 border-amber-500/25")
-                      : (isLightMode ? "bg-teal-100 text-indigo-900 border-teal-300" : "bg-teal-500/10 text-teal-300 border-teal-500/25");
+                      : (isLightMode ? "bg-indigo-100 text-indigo-900 border-indigo-300" : "bg-indigo-500/10 text-indigo-300 border-indigo-500/25");
                   }
                 }
 
@@ -755,8 +755,8 @@ JSON 구조 규격:
                     onClick={() => handleOpenDayModal(fullDateStr)}
                     className={`rounded-xl border-2 transition-all p-1.5 sm:p-2 flex flex-col justify-between min-h-0 cursor-pointer relative group ${
                       isToday 
-                        ? (isLightMode ? 'bg-teal-50/90 border-teal-500 ring-2 ring-teal-500/20 shadow-md hover:border-teal-600' : 'bg-indigo-950/45 border-teal-500 ring-1 ring-teal-500/30 shadow-[0_0_12px_rgba(99,102,241,0.25)] hover:border-teal-500') 
-                        : (isLightMode ? 'bg-white hover:bg-teal-50/30 border-slate-200 hover:border-teal-300 shadow-xs' : 'bg-slate-900/55 hover:bg-slate-800/85 border-white/15 hover:border-white/35 shadow-md hover:shadow-[0_4px_16px_rgba(255,255,255,0.05)]')
+                        ? (isLightMode ? 'bg-indigo-50/90 border-indigo-500 ring-2 ring-indigo-500/20 shadow-md hover:border-indigo-600' : 'bg-indigo-950/45 border-indigo-500 ring-1 ring-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.25)] hover:border-indigo-500') 
+                        : (isLightMode ? 'bg-white hover:bg-indigo-50/30 border-slate-200 hover:border-indigo-300 shadow-xs' : 'bg-slate-900/55 hover:bg-slate-800/85 border-white/15 hover:border-white/35 shadow-md hover:shadow-[0_4px_16px_rgba(255,255,255,0.05)]')
                     }`}
                   >
                     {/* Header line inside date cell */}
@@ -769,7 +769,7 @@ JSON 구조 규격:
 
                       {/* Today Badge */}
                       {isToday && (
-                        <span className="bg-teal-500 text-white text-[8px] font-black px-1 rounded border border-teal-500 shadow-sm">
+                        <span className="bg-indigo-500 text-white text-[8px] font-black px-1 rounded border border-indigo-500 shadow-sm">
                           TODAY
                         </span>
                       )}
@@ -787,7 +787,7 @@ JSON 구조 규격:
 
                       {/* DIARY ENTRY DISPLAY */}
                       {diaryEntry && (
-                        <div className={`p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[11px] sm:text-xs font-bold truncate shadow-xs text-center border ${isLightMode ? "bg-teal-50 border-indigo-200 text-indigo-900" : "bg-teal-500/10 border-teal-500/25 text-indigo-200"}`}>
+                        <div className={`p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[11px] sm:text-xs font-bold truncate shadow-xs text-center border ${isLightMode ? "bg-indigo-50 border-indigo-200 text-indigo-900" : "bg-indigo-500/10 border-indigo-500/25 text-indigo-200"}`}>
                           <span className="truncate">{t(diaryEntry.title)}</span>
                         </div>
                       )}
@@ -795,7 +795,7 @@ JSON 구조 규격:
 
                     {/* Hover add prompt if empty */}
                     {!diaryEntry && !exam && (
-                      <div className={`opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-center ${isLightMode ? "text-teal-600" : "text-teal-500"}`}>
+                      <div className={`opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-center ${isLightMode ? "text-indigo-600" : "text-indigo-500"}`}>
                         + {t('일기 쓰기')}
                       </div>
                     )}
@@ -809,7 +809,7 @@ JSON 구조 규격:
       {/* SUMMARY MODAL */}
       {showSummaryModal && (
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
-          <div className={`border-2 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-teal-500/50 text-white"}`}>
+          <div className={`border-2 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-indigo-500/50 text-white"}`}>
             <div className={`flex items-center justify-between border-b pb-3 mb-4 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
               <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 <Sparkles size={20} className="text-amber-400 animate-pulse" />
@@ -823,7 +823,7 @@ JSON 구조 규격:
             <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar markdown-body">
               {summaryLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                  <div className="w-10 h-10 border-4 border-teal-500/30 border-t-teal-500 rounded-full animate-spin"></div>
+                  <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
                   <p className="text-sm font-bold text-slate-400">{t('다이어리 기록을 분석하여 자소서 소재를 추출하고 있습니다...')}</p>
                   <p className="text-xs text-slate-500">{t('각 경험을 탭과 타임라인 날짜별 STAR 공법으로 완벽히 분류 중입니다.')}</p>
                 </div>
@@ -837,7 +837,7 @@ JSON 구조 규격:
                         setExpandedSummaryIndex(null);
                       }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                        activeSummaryTab === 'certificates' ? (isLightMode ? 'bg-teal-50 border-teal-500 text-teal-900 shadow-xs' : 'bg-teal-600/20 border-teal-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
+                        activeSummaryTab === 'certificates' ? (isLightMode ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-xs' : 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
                       }`}
                     >
                       <span className="text-base mb-1">🏆</span>
@@ -849,7 +849,7 @@ JSON 구조 규격:
                         setExpandedSummaryIndex(null);
                       }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                        activeSummaryTab === 'activities' ? (isLightMode ? 'bg-teal-50 border-teal-500 text-teal-900 shadow-xs' : 'bg-teal-600/20 border-teal-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
+                        activeSummaryTab === 'activities' ? (isLightMode ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-xs' : 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
                       }`}
                     >
                       <span className="text-base mb-1">👥</span>
@@ -861,7 +861,7 @@ JSON 구조 규격:
                         setExpandedSummaryIndex(null);
                       }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                        activeSummaryTab === 'awards' ? (isLightMode ? 'bg-teal-50 border-teal-500 text-teal-900 shadow-xs' : 'bg-teal-600/20 border-teal-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
+                        activeSummaryTab === 'awards' ? (isLightMode ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-xs' : 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
                       }`}
                     >
                       <span className="text-base mb-1">🥇</span>
@@ -873,7 +873,7 @@ JSON 구조 규격:
                         setExpandedSummaryIndex(null);
                       }}
                       className={`flex flex-col items-center justify-center py-2.5 px-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                        activeSummaryTab === 'others' ? (isLightMode ? 'bg-teal-50 border-teal-500 text-teal-900 shadow-xs' : 'bg-teal-600/20 border-teal-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
+                        activeSummaryTab === 'others' ? (isLightMode ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-xs' : 'bg-indigo-600/20 border-indigo-500 text-indigo-200 shadow-md') : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900' : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-300')
                       }`}
                     >
                       <span className="text-base mb-1">💡</span>
@@ -899,7 +899,7 @@ JSON 구조 규격:
                             key={idx} 
                             className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
                               isExpanded 
-                                ? (isLightMode ? 'bg-teal-50/50 border-teal-500 shadow-xs' : 'bg-slate-800/60 border-teal-500/60 shadow-lg') 
+                                ? (isLightMode ? 'bg-indigo-50/50 border-indigo-500 shadow-xs' : 'bg-slate-800/60 border-indigo-500/60 shadow-lg') 
                                 : (isLightMode ? 'bg-white border-slate-200 hover:border-slate-300' : 'bg-slate-800/30 border-slate-800/80 hover:border-slate-700/80')
                             }`}
                           >
@@ -910,12 +910,12 @@ JSON 구조 규격:
                               className="w-full flex items-center justify-between p-4 sm:p-5 text-left transition-colors cursor-pointer select-none group"
                             >
                               <div className="flex items-center gap-3 sm:gap-4 min-w-0 pr-2">
-                                <div className={`text-xs sm:text-sm font-black px-3.5 py-1.5 rounded-xl shrink-0 flex items-center gap-1.5 transition-colors border ${isLightMode ? "bg-teal-50 border-indigo-200 text-indigo-800 group-hover:bg-teal-100" : "bg-teal-500/20 border-teal-500/40 text-teal-300 group-hover:bg-teal-500/30"}`}>
-                                  <CalendarIcon size={14} className="text-teal-500 shrink-0" />
+                                <div className={`text-xs sm:text-sm font-black px-3.5 py-1.5 rounded-xl shrink-0 flex items-center gap-1.5 transition-colors border ${isLightMode ? "bg-indigo-50 border-indigo-200 text-indigo-800 group-hover:bg-indigo-100" : "bg-indigo-500/20 border-indigo-500/40 text-indigo-300 group-hover:bg-indigo-500/30"}`}>
+                                  <CalendarIcon size={14} className="text-indigo-500 shrink-0" />
                                   <span className="whitespace-nowrap">{item.date || t('날짜 미지정')}</span>
                                 </div>
                                 <div className="min-w-0">
-                                  <h4 className={`text-sm sm:text-base font-extrabold transition-colors truncate ${isLightMode ? "text-slate-900 group-hover:text-teal-600" : "text-white group-hover:text-teal-300"}`}>
+                                  <h4 className={`text-sm sm:text-base font-extrabold transition-colors truncate ${isLightMode ? "text-slate-900 group-hover:text-indigo-600" : "text-white group-hover:text-indigo-300"}`}>
                                     {t(item.title)}
                                   </h4>
                                 </div>
@@ -927,7 +927,7 @@ JSON 구조 규격:
                                 </span>
                                 <div className={`p-1.5 rounded-xl transition-all duration-200 ${
                                   isExpanded
-                                    ? (isLightMode ? 'bg-teal-100 text-indigo-700 rotate-180' : 'bg-teal-500/20 text-teal-300 rotate-180')
+                                    ? (isLightMode ? 'bg-indigo-100 text-indigo-700 rotate-180' : 'bg-indigo-500/20 text-indigo-300 rotate-180')
                                     : (isLightMode ? 'bg-slate-100 text-slate-500 group-hover:text-slate-900' : 'bg-slate-800 text-slate-400 group-hover:text-white')
                                 }`}>
                                   <ChevronDown size={16} />
@@ -958,9 +958,9 @@ JSON 구조 규격:
 
                                 {/* Action */}
                                 <div className="flex items-start gap-3">
-                                  <span className="bg-emerald-500/10 text-emerald-400 text-xs font-black px-2 py-1 rounded-lg border border-emerald-500/25 shrink-0 w-8 text-center" title="Action">A</span>
+                                  <span className="bg-indigo-500/10 text-indigo-400 text-xs font-black px-2 py-1 rounded-lg border border-indigo-500/25 shrink-0 w-8 text-center" title="Action">A</span>
                                   <div className="space-y-0.5">
-                                    <span className="text-xs font-extrabold text-emerald-300/80">Action ({t('내가 취한 구체적 행동')})</span>
+                                    <span className="text-xs font-extrabold text-indigo-300/80">Action ({t('내가 취한 구체적 행동')})</span>
                                     <p className={`text-sm leading-relaxed font-bold ${isLightMode ? "text-slate-900" : "text-slate-200"}`}>{t(item.action)}</p>
                                   </div>
                                 </div>
@@ -1008,11 +1008,11 @@ JSON 구조 규격:
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
           <form 
             onSubmit={handleSubmitDiary}
-            className={`border-2 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-teal-500/50 text-white"}`}
+            className={`border-2 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-indigo-500/50 text-white"}`}
           >
             <div className={`flex items-center justify-between border-b pb-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
               <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                <CalendarCheck size={20} className={isLightMode ? "text-teal-500" : "text-teal-500"} />
+                <CalendarCheck size={20} className={isLightMode ? "text-indigo-500" : "text-indigo-500"} />
                 <span>{language === 'ko' ? `${selectedDate} 성장 다이어리 ${editingId ? '수정' : '작성'}` : `${editingId ? 'Edit' : 'Write'} Growth Diary (${selectedDate})`}</span>
               </h3>
               <button 
@@ -1032,7 +1032,7 @@ JSON 구조 규격:
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
                   placeholder={t('예: 전기기능사 회로 실습 성공 기록')}
-                  className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-teal-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-teal-500"}`}
+                  className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
                   required
                 />
               </div>
@@ -1044,7 +1044,7 @@ JSON 구조 규격:
                     type="date" 
                     value={selectedDate} 
                     onChange={e => setSelectedDate(e.target.value)}
-                    className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-teal-500" : "bg-slate-800 border-slate-700 text-white focus:border-teal-500"}`}
+                    className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white focus:border-indigo-500"}`}
                   />
                 </div>
 
@@ -1057,7 +1057,7 @@ JSON 구조 규격:
                         type="button"
                         onClick={() => setMood(m.emoji)}
                         className={`flex-1 py-1 rounded-lg text-sm transition-all cursor-pointer flex items-center justify-center ${
-                          mood === m.emoji ? 'bg-teal-600 scale-105 shadow text-base text-white' : (isLightMode ? 'hover:bg-slate-200 text-slate-600' : 'hover:bg-slate-700/50 text-slate-400')
+                          mood === m.emoji ? 'bg-indigo-600 scale-105 shadow text-base text-white' : (isLightMode ? 'hover:bg-slate-200 text-slate-600' : 'hover:bg-slate-700/50 text-slate-400')
                         }`}
                         title={t(m.label)}
                       >
@@ -1076,7 +1076,7 @@ JSON 구조 규격:
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 placeholder={t('오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요...')}
-                className={`w-full border rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-teal-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-teal-500"}`}
+                className={`w-full border rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
                 required
               />
             </div>
@@ -1103,7 +1103,7 @@ JSON 구조 규격:
                 </button>
                 <button
                   type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
                 >
                   <Check size={16} />
                   <span>{editingId ? t('수정 완료') : t('일기 저장')}</span>

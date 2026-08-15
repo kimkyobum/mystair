@@ -346,7 +346,7 @@ export default function MyPage() {
   return (
     <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans flex flex-col relative pb-28 ${isLightMode ? "text-slate-900" : "text-white"}`}>
       {/* Soft Ambient Cosmic Glows */}
-      <div className="absolute top-[10%] left-[25%] w-[400px] h-[400px] rounded-full bg-teal-500/10 blur-[110px] pointer-events-none z-0" />
+      <div className="absolute top-[10%] left-[25%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[110px] pointer-events-none z-0" />
       <div className="absolute bottom-[30%] right-[20%] w-[420px] h-[420px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none z-0" />
 
       {/* Top Header */}
@@ -355,7 +355,7 @@ export default function MyPage() {
           <Link to="/" className={` font-black text-[26px]  tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-teal-500 to-purple-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
+          <span className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
             MY PAGE
           </span>
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-white/10 pl-4 hidden sm:block">
@@ -367,7 +367,7 @@ export default function MyPage() {
           <select 
             value={language}
             onChange={(e) => setLanguage(e.target.value as any)}
-            className={`bg-transparent border rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors focus:border-teal-400 appearance-none cursor-pointer ${isLightMode ? "text-slate-900 border-slate-300 hover:bg-slate-100" : "text-white border-white/20 hover:bg-white/5"}`}
+            className={`bg-transparent border rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors focus:border-indigo-400 appearance-none cursor-pointer ${isLightMode ? "text-slate-900 border-slate-300 hover:bg-slate-100" : "text-white border-white/20 hover:bg-white/5"}`}
             style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em', paddingRight: '2rem' }}
           >
             <option value="ko" className={isLightMode ? "bg-white text-slate-900" : "bg-gray-900 text-white"}>{t('한국어')}</option>
@@ -403,12 +403,12 @@ export default function MyPage() {
           <div className={`backdrop-blur-xs rounded-3xl p-6 sm:p-7 shadow-lg border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
             {/* Cosmic Ambient Effects */}
             <div className="absolute -right-20 -top-20 w-48 h-48 bg-purple-100 rounded-full blur-[40px] pointer-events-none" />
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-teal-100 rounded-full blur-[45px] pointer-events-none" />
+            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-100 rounded-full blur-[45px] pointer-events-none" />
 
             <div className="flex items-center gap-5 relative z-10">
               {/* Circular Avatar Container */}
               <div className="relative group shrink-0">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-teal-500 via-purple-500 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] relative overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] relative overflow-hidden transition-transform duration-300 hover:scale-105">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-pulse" />
                   
                   <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
@@ -419,7 +419,7 @@ export default function MyPage() {
                         className="w-full h-full object-cover" 
                       />
                     ) : (
-                      <div className="text-teal-500 flex flex-col items-center justify-center">
+                      <div className="text-indigo-500 flex flex-col items-center justify-center">
                         <User size={36} className="shrink-0" />
                       </div>
                     )}
@@ -427,7 +427,7 @@ export default function MyPage() {
                     {/* Change profile overlay when editing */}
                     {isFullEditing && (
                       <label className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 cursor-pointer text-[10px] text-white font-extrabold transition-opacity duration-200">
-                        <Edit3 size={14} className="text-teal-600 animate-bounce" />
+                        <Edit3 size={14} className="text-indigo-600 animate-bounce" />
                         <span>{t('사진 변경')}</span>
                         <input 
                           type="file" 
@@ -450,7 +450,7 @@ export default function MyPage() {
                   <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : ""}`}>
                     {profile.name}
                   </h1>
-                  <span className="bg-teal-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-teal-500/30">{t('마이스터 인재')}</span>
+                  <span className="bg-indigo-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-500/30">{t('마이스터 인재')}</span>
                 </div>
                 <p className="text-xs text-slate-300 font-medium mt-1 flex items-center gap-2">
                   <span>{profile.highSchool}</span>
@@ -465,7 +465,7 @@ export default function MyPage() {
                 onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
                 className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
                   isFullEditing 
-                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white' 
+                    ? 'bg-indigo-500 hover:bg-indigo-600 text-white' 
                     : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
                 }`}
               >
@@ -479,10 +479,10 @@ export default function MyPage() {
           <div className="flex flex-col gap-4">
 
             {/* Box 1: 이름 (Name) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-teal-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-teal-100 text-teal-600 rounded-lg">
+                  <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
                     <User size={16} />
                   </span>
                   <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('이름')}</span>
@@ -491,7 +491,7 @@ export default function MyPage() {
                 {editingField !== 'name' && !isFullEditing && (
                   <button
                     onClick={() => { setTempName(profile.name); setEditingField('name'); }}
-                    className="text-xs font-bold text-teal-500 hover:text-teal-600 flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
                     <span>{t('수정')}</span>
@@ -506,13 +506,13 @@ export default function MyPage() {
                     value={isFullEditing ? profile.name : tempName}
                     onChange={e => isFullEditing ? setProfile({ ...profile, name: e.target.value }) : setTempName(e.target.value)}
                     onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('name', tempName.trim(), '이름')}
-                    className="flex-1 bg-white border border-slate-300 focus:border-teal-500 rounded-xl px-3.5 py-2 text-sm font-bold text-slate-900 outline-none transition"
+                    className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm font-bold text-slate-900 outline-none transition"
                     placeholder={t('이름 입력')}
                   />
                   {!isFullEditing && (
                     <button
                       onClick={() => savePartialField('name', tempName.trim(), '이름')}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                     >
                       <Check size={14} />
                       <span>{t('저장')}</span>
@@ -539,7 +539,7 @@ export default function MyPage() {
                 {editingField !== 'school' && !isFullEditing && (
                   <button
                     onClick={() => { setTempSchool(profile.highSchool); setEditingField('school'); }}
-                    className="text-xs font-bold text-teal-500 hover:text-teal-600 flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
                     <span>{t('수정')}</span>
@@ -555,13 +555,13 @@ export default function MyPage() {
                       value={isFullEditing ? profile.highSchool : tempSchool}
                       onChange={e => isFullEditing ? setProfile({ ...profile, highSchool: e.target.value }) : setTempSchool(e.target.value)}
                       onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('highSchool', tempSchool.trim(), '고등학교')}
-                      className="flex-1 bg-white border border-slate-300 focus:border-teal-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
+                      className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
                       placeholder={t('고등학교 선택 또는 입력')}
                     />
                     {!isFullEditing && (
                       <button
                         onClick={() => savePartialField('highSchool', tempSchool.trim(), '고등학교')}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                       >
                         <Check size={14} />
                         <span>{t('저장')}</span>
@@ -604,7 +604,7 @@ export default function MyPage() {
                 {editingField !== 'major' && !isFullEditing && (
                   <button
                     onClick={() => { setTempMajor(profile.major); setEditingField('major'); }}
-                    className="text-xs font-bold text-teal-500 hover:text-teal-600 flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
                     <span>{t('수정')}</span>
@@ -620,13 +620,13 @@ export default function MyPage() {
                       value={isFullEditing ? profile.major : tempMajor}
                       onChange={e => isFullEditing ? setProfile({ ...profile, major: e.target.value }) : setTempMajor(e.target.value)}
                       onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('major', tempMajor.trim(), '전공')}
-                      className="flex-1 bg-white border border-slate-300 focus:border-teal-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
+                      className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
                       placeholder={t('전공 학과 선택 또는 입력')}
                     />
                     {!isFullEditing && (
                       <button
                         onClick={() => savePartialField('major', tempMajor.trim(), '전공')}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
                       >
                         <Check size={14} />
                         <span>{t('저장')}</span>
@@ -822,10 +822,10 @@ export default function MyPage() {
             </div>
 
             {/* Box 6: 희망 기업 */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-emerald-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg">
+                  <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
                     <Building2 size={16} />
                   </span>
                   <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
@@ -835,7 +835,7 @@ export default function MyPage() {
 
                 <button
                   onClick={() => setActiveModal('companies')}
-                  className="text-xs font-bold text-teal-500 hover:text-teal-600 flex items-center gap-0.5 cursor-pointer font-extrabold"
+                  className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-0.5 cursor-pointer font-extrabold"
                 >
                   <span>{t('기업 추가/관리')}</span> <ChevronRight size={14} />
                 </button>
@@ -849,11 +849,11 @@ export default function MyPage() {
                     onChange={e => setNewCompanyInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
                     placeholder={t('목표 기업명 입력 (예: 삼성전자, 한국전력공사)')}
-                    className="flex-1 bg-white border border-slate-300 focus:border-teal-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
+                    className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
                   />
                   <button
                     onClick={() => handleAddCompany()}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
                   >
                     <Plus size={14} />
                     <span>{t('추가')}</span>
@@ -869,7 +869,7 @@ export default function MyPage() {
                         key={comp}
                         className="bg-slate-100 text-slate-700 font-bold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-sm border border-slate-200"
                       >
-                        <Building2 size={13} className="text-emerald-400" />
+                        <Building2 size={13} className="text-indigo-400" />
                         <span>{comp}</span>
                         <button
                           onClick={() => handleRemoveCompany(comp)}
@@ -886,11 +886,11 @@ export default function MyPage() {
             </div>
 
             {/* Box 7: 우주인/외계인 배경 설정 */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-teal-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-teal-500/10 text-teal-600 rounded-lg">
-                    <Sparkles size={16} className="text-teal-600 animate-pulse" />
+                  <span className="p-1.5 bg-indigo-500/10 text-indigo-600 rounded-lg">
+                    <Sparkles size={16} className="text-indigo-600 animate-pulse" />
                   </span>
                   <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('배경 외계인 설정')}</span>
                 </div>
@@ -907,7 +907,7 @@ export default function MyPage() {
                     onClick={() => setShowAliens(true)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       showAliens 
-                        ? 'bg-teal-600 text-white shadow-sm' 
+                        ? 'bg-indigo-600 text-white shadow-sm' 
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
@@ -958,10 +958,10 @@ export default function MyPage() {
                     setBackgroundType('black');
                   }}
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                    !isLightMode ? 'border-teal-500 bg-teal-50 text-indigo-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                    !isLightMode ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
                   }`}
                 >
-                  <Moon size={24} className={!isLightMode ? 'text-teal-500 mb-2' : 'mb-2'} />
+                  <Moon size={24} className={!isLightMode ? 'text-indigo-500 mb-2' : 'mb-2'} />
                   <span className="font-bold text-sm">{t('우주 모드', 'Space Mode')}</span>
                   <span className="text-xs mt-1 opacity-70">{t('아름다운 별빛 테마', 'Beautiful starlight theme')}</span>
                 </button>
@@ -974,7 +974,7 @@ export default function MyPage() {
                 </div>
                 <button
                   onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${isClickEffectEnabled ? 'bg-teal-500' : 'bg-slate-400'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${isClickEffectEnabled ? 'bg-indigo-500' : 'bg-slate-400'}`}
                 >
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${isClickEffectEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
@@ -991,7 +991,7 @@ export default function MyPage() {
               {isFullEditing && (
                 <button
                   onClick={handleFullSave}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer shadow-md flex items-center gap-1.5"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer shadow-md flex items-center gap-1.5"
                 >
                   <Check size={16} />
                   <span>{t('전체 저장 완료')}</span>
@@ -1056,9 +1056,9 @@ export default function MyPage() {
 
               {/* MBTI Ratios if test taken */}
               {mbtiResult && mbtiResult.ratios && (
-                <div className="bg-indigo-950/30 rounded-2xl p-4 border border-teal-500/20 space-y-3">
-                  <div className="text-xs font-extrabold text-teal-600 flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-teal-500 animate-pulse" />
+                <div className="bg-indigo-950/30 rounded-2xl p-4 border border-indigo-500/20 space-y-3">
+                  <div className="text-xs font-extrabold text-indigo-600 flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-indigo-500 animate-pulse" />
                     <span>{t('실제 검사 세부지표 비율')}</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1068,11 +1068,11 @@ export default function MyPage() {
                         <div key={k} className="bg-slate-950/80 p-3 rounded-xl border border-white/5 shadow-2xs">
                           <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
                             <span>{item.label}</span>
-                            <span className="text-teal-500">{item.val}%</span>
+                            <span className="text-indigo-500">{item.val}%</span>
                           </div>
                           <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-gradient-to-r from-pink-500 to-teal-500 rounded-full" 
+                              className="h-full bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full" 
                               style={{ width: `${item.val}%` }}
                             ></div>
                           </div>
@@ -1102,7 +1102,7 @@ export default function MyPage() {
             <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
               <Link
                 to="/mbti"
-                className="bg-teal-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
               >
                 <span>{t('MBTI 진단 검사 다시하기')}</span>
                 <ExternalLink size={13} />
@@ -1165,7 +1165,7 @@ export default function MyPage() {
                     <p className="text-slate-300 font-medium leading-relaxed">{modalPrimaryHollandMeta.desc}</p>
                   </div>
                   <div className="bg-slate-950/80 p-3 rounded-xl border border-white/10 space-y-1">
-                    <span className="font-extrabold text-teal-500 block">2순위: {modalSecondaryHollandMeta.name}</span>
+                    <span className="font-extrabold text-indigo-500 block">2순위: {modalSecondaryHollandMeta.name}</span>
                     <p className="text-slate-300 font-medium leading-relaxed">{modalSecondaryHollandMeta.desc}</p>
                   </div>
                 </div>
@@ -1208,7 +1208,7 @@ export default function MyPage() {
                   value={profile.hollandNote}
                   onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
                   rows={3}
-                  className="w-full bg-slate-950/80 border border-white/10 focus:border-teal-500 rounded-xl p-3 text-xs font-medium text-white outline-none transition"
+                  className="w-full bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl p-3 text-xs font-medium text-white outline-none transition"
                   placeholder={t('진로 지도 메모 및 소견을 입력하세요.')}
                 />
               </div>
@@ -1265,7 +1265,7 @@ export default function MyPage() {
             </button>
 
             <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <span className="p-2.5 bg-emerald-100 text-emerald-400 rounded-2xl">
+              <span className="p-2.5 bg-indigo-100 text-indigo-400 rounded-2xl">
                 <Building2 size={24} />
               </span>
               <div>
@@ -1292,7 +1292,7 @@ export default function MyPage() {
                         key={comp}
                         className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-xs border border-white/10"
                       >
-                        <Building2 size={13} className="text-emerald-400" />
+                        <Building2 size={13} className="text-indigo-400" />
                         <span>{comp}</span>
                         <button
                           onClick={() => handleRemoveCompany(comp)}
@@ -1317,12 +1317,12 @@ export default function MyPage() {
                     onChange={e => setNewCompanyInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
                     placeholder={t('기업명을 입력하세요 (예: LG에너지솔루션)')}
-                    className="flex-1 bg-slate-950/80 border border-white/10 focus:border-teal-500 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none transition"
+                    className="flex-1 bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none transition"
                   />
                   <button
                     type="button"
                     onClick={() => handleAddCompany()}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-sm shrink-0"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-sm shrink-0"
                   >
                     <Plus size={15} />
                     <span>{t('추가')}</span>
@@ -1343,7 +1343,7 @@ export default function MyPage() {
                         onClick={() => isAdded ? handleRemoveCompany(comp) : handleAddCompany(comp)}
                         className={`text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1 cursor-pointer ${
                           isAdded 
-                            ? 'bg-emerald-950/50 text-emerald-600 border border-emerald-500/30' 
+                            ? 'bg-indigo-950/50 text-indigo-600 border border-indigo-500/30' 
                             : 'bg-slate-950/50 text-slate-300 hover:bg-slate-950/80 border border-white/10'
                         }`}
                       >
@@ -1376,7 +1376,7 @@ export default function MyPage() {
       {/* Toast Popup */}
       {toastMsg && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-sm font-extrabold shadow-2xl z-[200] border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <Sparkles size={16} className="text-emerald-400" />
+          <Sparkles size={16} className="text-indigo-400" />
           <span>{toastMsg}</span>
         </div>
       )}

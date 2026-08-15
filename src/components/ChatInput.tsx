@@ -45,7 +45,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   return (
     <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-32 sm:mt-48 md:mt-64' : 'mt-6 sm:mt-16 md:mt-28'}`}>
       <h1 className={`text-2xl sm:text-[40px] md:text-[56px] ${isLightMode ? "text-slate-900 drop-shadow-sm" : "text-white"} font-black mb-6 sm:mb-10 tracking-tight text-center leading-tight`}>
-        MyStair <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isLightMode ? "from-teal-500 via-emerald-500 to-green-600" : "from-teal-500 via-indigo-600 to-purple-600"}`}>{t('성장의 계단')}</span>
+        MyStair <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isLightMode ? "from-indigo-600 via-purple-600 to-pink-600" : "from-indigo-600 via-purple-600 to-purple-600"}`}>{t('성장의 계단')}</span>
       </h1>
       
       <form onSubmit={handleSubmit} className={`w-full ${isLightMode ? "bg-white/90 border-slate-200 shadow-md ring-slate-200/50" : "bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 ring-purple-500/30"} backdrop-blur-xl animate-gradient rounded-2xl p-2 sm:p-2.5 shadow-2xl flex items-center border focus-within:ring-4 transition-all duration-300 relative group min-h-[52px]`}>
@@ -62,7 +62,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
         <button 
           type="submit" 
           aria-label="질문 보내기"
-          className={`${isLightMode ? "bg-slate-800 hover:bg-teal-600" : "bg-black hover:bg-gray-800"} text-white p-3 sm:p-3.5 rounded-xl transition-all shadow-md flex items-center justify-center shrink-0 group/btn ml-1.5 sm:ml-2 cursor-pointer min-h-[48px] min-w-[48px] active:scale-95`}
+          className={`${isLightMode ? "bg-slate-800 hover:bg-indigo-600" : "bg-black hover:bg-gray-800"} text-white p-3 sm:p-3.5 rounded-xl transition-all shadow-md flex items-center justify-center shrink-0 group/btn ml-1.5 sm:ml-2 cursor-pointer min-h-[48px] min-w-[48px] active:scale-95`}
         >
           <ArrowUp size={20} strokeWidth={2.5} className="group-hover/btn:-translate-y-0.5 transition-transform" />
         </button>
@@ -72,7 +72,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       <div className="w-full flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-2 mt-6 sm:mt-8 max-w-4xl mx-auto px-2">
         <button 
           onClick={() => onStartChat?.('오늘의 다이어리 작성해줘')} 
-          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "border-slate-300/80 text-slate-700 bg-white/80 hover:bg-emerald-50 hover:text-emerald-800 hover:border-emerald-300 shadow-sm" : "border-emerald-500/50 text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-98`}
+          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "border-slate-300/80 text-slate-700 bg-white/80 hover:bg-indigo-50 hover:text-indigo-800 hover:border-indigo-300 shadow-sm" : "border-indigo-500/50 text-indigo-300 bg-indigo-500/15 hover:bg-indigo-500/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-98`}
         >
           <span className="text-sm">✍️</span> 
           <span>{t('오늘의 다이어리 작성')}</span>
@@ -80,13 +80,13 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
 
         <button 
           onClick={() => onStartChat?.('내 전공과 적성에 맞는 AI 맞춤형 기업 추천해줘')} 
-          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "text-slate-700 bg-white/80 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 border-slate-300/80 shadow-sm" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5 border-white/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-98`}
+          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "text-slate-700 bg-white/80 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 border-slate-300/80 shadow-sm" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5 border-white/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-98`}
         >
           {t('나만의 기업찾기 (AI 맞춤 기업 추천)')}
         </button>
         <button 
           onClick={() => onStartChat?.('Mystair 서비스에 대해 자세히 자기소개해줘')} 
-          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "text-slate-700 bg-white/80 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 border-slate-300/80 shadow-sm" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5 border-white/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-98`}
+          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "text-slate-700 bg-white/80 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 border-slate-300/80 shadow-sm" : "text-white/90 hover:bg-white/10 hover:border-white/40 hover:text-white bg-white/5 border-white/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-98`}
         >
           {t('Mystair 자기소개')}
         </button>
@@ -95,7 +95,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       {messages.length > 0 && (
         <button 
           onClick={() => setChatActive(true)}
-          className={`mt-6 sm:mt-8 flex items-center justify-center gap-2 px-6 py-3 rounded-2xl sm:rounded-full border text-xs sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-95 min-h-[48px] w-full sm:w-auto ${isLightMode ? "border-slate-300 text-slate-700 bg-white/80 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 shadow-sm" : "border-teal-500/30 text-teal-300 hover:bg-teal-500/10 hover:border-teal-500/50 bg-teal-500/5 shadow-[0_0_15px_rgba(45,212,191,0.1)]"}`}
+          className={`mt-6 sm:mt-8 flex items-center justify-center gap-2 px-6 py-3 rounded-2xl sm:rounded-full border text-xs sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer active:scale-95 min-h-[48px] w-full sm:w-auto ${isLightMode ? "border-slate-300 text-slate-700 bg-white/80 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 shadow-sm" : "border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:border-indigo-500/50 bg-indigo-500/5 shadow-[0_0_15px_rgba(99,102,241,0.1)]"}`}
         >
           <History size={16} className="animate-pulse shrink-0" />
           <span>{t('이전 대화 이어하기')} ({messages.length})</span>

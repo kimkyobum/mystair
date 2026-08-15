@@ -13,7 +13,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const navItems = [
-    { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-teal-400" /> },
+    { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-indigo-400" /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={18} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={18} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={18} /> },
@@ -27,12 +27,12 @@ export default function Header() {
     <>
       <header className="relative z-20 flex items-center justify-between px-2.5 sm:px-6 py-2.5 sm:py-5 w-full max-w-full sm:max-w-[1600px] mx-auto box-border overflow-x-hidden min-w-0">
         <div className="flex items-center gap-3 shrink-0">
-          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'} font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0`}>
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
+          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-300'} font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0`}>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-indigo-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
-            <span className={`transition-colors duration-300 shrink-0 ${isLightMode ? 'group-hover:text-teal-600' : 'group-hover:text-teal-300'}`}>Mystair</span>
+            <span className={`transition-colors duration-300 shrink-0 ${isLightMode ? 'group-hover:text-indigo-600' : 'group-hover:text-indigo-300'}`}>Mystair</span>
           </Link>
 
           {/* Usage Guide Button */}
@@ -45,7 +45,7 @@ export default function Header() {
                 : 'bg-white/10 hover:bg-white/20 border-white/25 text-white'
             }`}
           >
-            <HelpCircle size={14} className="text-teal-400 shrink-0" />
+            <HelpCircle size={14} className="text-indigo-400 shrink-0" />
             <span className="hidden md:inline">{t('사용방법', 'How to use')}</span>
             <span className="inline md:hidden">{t('사용법', 'Guide')}</span>
           </button>
@@ -69,8 +69,8 @@ export default function Header() {
             title={t('홍보사이트 보기')}
             className={`flex items-center justify-center gap-1 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0 ${
               isLightMode
-                ? 'bg-teal-50/70 hover:bg-teal-100/90 backdrop-blur-md border-teal-300/80 text-teal-800 shadow-xs'
-                : 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 border-teal-500/40 text-teal-300 shadow-[0_0_15px_rgba(20,184,166,0.15)]'
+                ? 'bg-indigo-50/70 hover:bg-indigo-100/90 backdrop-blur-md border-indigo-300/80 text-indigo-800 shadow-xs'
+                : 'bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border-indigo-500/40 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.15)]'
             }`}
           >
             <Globe size={15} className="shrink-0" />
@@ -86,7 +86,7 @@ export default function Header() {
               onClick={() => setLanguage('ko')}
               className={`px-2 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer whitespace-nowrap ${
                 language === 'ko' 
-                  ? 'bg-teal-400 text-slate-950 shadow-sm' 
+                  ? 'bg-indigo-400 text-slate-950 shadow-sm' 
                   : isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-white/70 hover:text-white'
               }`}
             >
@@ -97,7 +97,7 @@ export default function Header() {
               onClick={() => setLanguage('en')}
               className={`px-2 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer whitespace-nowrap ${
                 language === 'en' 
-                  ? 'bg-teal-400 text-slate-950 shadow-sm' 
+                  ? 'bg-indigo-400 text-slate-950 shadow-sm' 
                   : isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-white/70 hover:text-white'
               }`}
             >
@@ -126,7 +126,7 @@ export default function Header() {
           <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="bg-teal-500/20 p-2.5 rounded-2xl border border-teal-500/40 text-teal-300">
+                <div className="bg-indigo-500/20 p-2.5 rounded-2xl border border-indigo-500/40 text-indigo-300">
                   <HelpCircle size={24} />
                 </div>
                 <div>
@@ -144,7 +144,7 @@ export default function Header() {
 
             <div className="space-y-6 text-sm text-slate-300">
               <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-teal-300 flex items-center gap-2">
+                <h4 className="font-bold text-indigo-300 flex items-center gap-2">
                   <span>🏢 1. 나만의 기업찾기 사용법</span>
                 </h4>
                 <p className="leading-relaxed text-slate-300">
@@ -169,7 +169,7 @@ export default function Header() {
               </div>
 
               <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-emerald-300 flex items-center gap-2">
+                <h4 className="font-bold text-indigo-300 flex items-center gap-2">
                   <span>✨ 3. 성장 다이어리 사용법</span>
                 </h4>
                 <p className="leading-relaxed text-slate-300">
@@ -190,7 +190,7 @@ export default function Header() {
             <div className="mt-8 pt-4 border-t border-slate-800 flex justify-end">
               <button
                 onClick={() => setGuideModalOpen(false)}
-                className="px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold transition-all cursor-pointer shadow-md"
+                className="px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-bold transition-all cursor-pointer shadow-md"
               >
                 {t('확인 완료', 'Got it')}
               </button>
@@ -214,8 +214,8 @@ export default function Header() {
             <div>
               {/* Header inside drawer */}
               <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-5">
-                <div className="flex items-center gap-2 font-black text-lg text-teal-300 shrink-0">
-                  <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 shrink-0">
+                <div className="flex items-center gap-2 font-black text-lg text-indigo-300 shrink-0">
+                  <svg width="22" height="22" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-indigo-400 shrink-0">
                     <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
                     <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
                   </svg>
@@ -239,7 +239,7 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 transition-all min-h-[44px] whitespace-nowrap word-keep"
                   >
-                    <span className="text-teal-400 shrink-0">{item.icon}</span>
+                    <span className="text-indigo-400 shrink-0">{item.icon}</span>
                     <span className="truncate">{t(item.name)}</span>
                   </Link>
                 ))}
@@ -255,7 +255,7 @@ export default function Header() {
                 }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
               >
-                <HelpCircle size={16} className="text-teal-400 shrink-0" />
+                <HelpCircle size={16} className="text-indigo-400 shrink-0" />
                 <span>{t('사용방법', 'How to use')}</span>
               </button>
               <button
@@ -264,7 +264,7 @@ export default function Header() {
                   sessionStorage.setItem('viewingPromo', 'true');
                   window.location.href = '/';
                 }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-teal-500/20 to-cyan-500/20 border border-teal-500/40 text-teal-300 font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
               >
                 <Globe size={16} className="shrink-0" />
                 <span>{t('홍보사이트 보기')}</span>

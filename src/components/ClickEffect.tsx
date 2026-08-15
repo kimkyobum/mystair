@@ -12,14 +12,14 @@ export default function ClickEffect() {
       // User said: "눌러도 아무의미없는 배경을 마우스로 터치하면 뭔가 톡톡 터지게 만들어줘"
       // If it's a button or link, maybe we don't do it, or do it everywhere. Let's do it everywhere for fun, or check tag name.
       const target = e.target as HTMLElement;
-      if (target.closest('button') || target.closest('a') || target.closest('input') || target.closest('textarea')) {
-         // optional: return; // Uncomment to disable on interactive elements
+      if (target.closest('button') || target.closest('a') || target.closest('input') || target.closest('textarea') || target.closest('select') || target.closest('[role="button"]')) {
+         return; // Uncomment to disable on interactive elements
       }
 
       const numParticles = 6;
       const colors = isLightMode 
-        ? ['#14b8a6', '#0ea5e9', '#f59e0b', '#ec4899', '#8b5cf6'] 
-        : ['#2dd4bf', '#38bdf8', '#fbbf24', '#f472b6', '#a78bfa'];
+        ? ['#4f46e5', '#8b5cf6', '#ec4899', '#3b82f6', '#10b981'] 
+        : ['#818cf8', '#c084fc', '#f472b6', '#60a5fa', '#34d399'];
 
       for (let i = 0; i < numParticles; i++) {
         const particle = document.createElement('div');

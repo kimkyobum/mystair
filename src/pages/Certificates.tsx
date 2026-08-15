@@ -82,7 +82,7 @@ export default function Certificates() {
   return (
     <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
       <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center px-4 sm:px-10 sticky top-0 z-50 border-b shadow-xs ${isLightMode ? "bg-white/60 border-slate-200/80" : "bg-[#0F172A]/80 border-white/5"}`}>
-        <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'} font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer transition-colors`}>
+        <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-300'} font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer transition-colors`}>
           MyStair
         </Link>
         <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] ml-2 sm:ml-3 shrink-0">
@@ -106,7 +106,7 @@ export default function Certificates() {
             <span className="absolute left-5 top-1/2 -translate-y-1/2 text-[18px] text-slate-500">🔍</span>
             <input 
               type="text" 
-              className={`w-full h-14 pl-[52px] pr-5 text-[16px] font-semibold border rounded-2xl outline-none backdrop-blur-md shadow-md transition-all focus:border-teal-500 focus:shadow-[0_0_20px_rgba(20,184,166,0.15)] ${isLightMode ? 'bg-white/80 border-slate-300/80 text-slate-900 placeholder-slate-400' : 'bg-slate-900/90 border-slate-700 text-white placeholder-slate-400'}`} 
+              className={`w-full h-14 pl-[52px] pr-5 text-[16px] font-semibold border rounded-2xl outline-none backdrop-blur-md shadow-md transition-all focus:border-indigo-500 focus:shadow-[0_0_20px_rgba(99,102,241,0.15)] ${isLightMode ? 'bg-white/80 border-slate-300/80 text-slate-900 placeholder-slate-400' : 'bg-slate-900/90 border-slate-700 text-white placeholder-slate-400'}`} 
               placeholder={t('자격증명, 우대기업, 카테고리 검색...')} 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
@@ -118,7 +118,7 @@ export default function Certificates() {
               <button 
                 key={cat}
                 onClick={() => setCurrentCategory(cat)}
-                className={`px-4 py-2.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-semibold border transition-all cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center ${currentCategory === cat ? 'bg-teal-600 text-white border-teal-500 hover:bg-teal-500' : isLightMode ? 'bg-white/70 backdrop-blur-md border-slate-300/80 text-slate-800 hover:bg-white hover:text-teal-600 hover:border-teal-300' : 'bg-slate-900/60 border-white/10 text-slate-300 hover:bg-slate-800 hover:text-white'}`}
+                className={`px-4 py-2.5 sm:py-2 rounded-full text-xs sm:text-[13px] font-semibold border transition-all cursor-pointer shadow-sm min-h-[44px] flex items-center justify-center ${currentCategory === cat ? 'bg-indigo-600 text-white border-indigo-500 hover:bg-indigo-500' : isLightMode ? 'bg-white/70 backdrop-blur-md border-slate-300/80 text-slate-800 hover:bg-white hover:text-indigo-600 hover:border-indigo-300' : 'bg-slate-900/60 border-white/10 text-slate-300 hover:bg-slate-800 hover:text-white'}`}
               >
                 {cat === 'ALL' ? t('전체보기') : t(cat)}
               </button>
@@ -129,7 +129,7 @@ export default function Certificates() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {isLoading ? (
             <div className={`col-span-full text-center py-15 font-medium ${isLightMode ? 'text-slate-600' : 'text-slate-400'}`}>
-              <div className="inline-block w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+              <div className="inline-block w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3"></div>
               <br />
               {t('자격증 데이터를 불러오는 중입니다...')}
             </div>
@@ -146,11 +146,11 @@ export default function Certificates() {
               <div 
                 key={item.id}
                 onClick={() => setSelectedModalItem(item)}
-                className={`backdrop-blur-md rounded-[20px] border p-6 flex flex-col justify-between transition-all duration-250 cursor-pointer hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(20,184,166,0.2)] hover:border-teal-500 ${isLightMode ? 'bg-white/75 border-slate-200/90 shadow-sm' : 'bg-slate-900/60 border-white/10 text-white'}`}
+                className={`backdrop-blur-md rounded-[20px] border p-6 flex flex-col justify-between transition-all duration-250 cursor-pointer hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(99,102,241,0.2)] hover:border-indigo-500 ${isLightMode ? 'bg-white/75 border-slate-200/90 shadow-sm' : 'bg-slate-900/60 border-white/10 text-white'}`}
               >
                 <div>
                   <div className="flex justify-between items-center mb-2.5">
-                    <span className="text-[12px] font-bold px-2.5 py-1 rounded-lg bg-teal-50 text-teal-600">{t(item.category)}</span>
+                    <span className="text-[12px] font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600">{t(item.category)}</span>
                     <span className="text-[12px] text-[#F59E0B] font-bold">{t(item.difficulty)}</span>
                   </div>
                   <div className={`text-[20px] font-extrabold mb-2 ${isLightMode ? 'text-slate-900' : 'text-white'}`}>{t(item.name)}</div>
@@ -173,7 +173,7 @@ export default function Certificates() {
                     ))}
                   </div>
                 </div>
-                <button className={`w-full border-none py-3 rounded-xl text-[14px] font-bold cursor-pointer transition-colors duration-200 ${isLightMode ? 'bg-slate-100 hover:bg-teal-600 text-slate-700 hover:text-white' : 'bg-slate-800 hover:bg-teal-600 text-slate-200 hover:text-white'}`}>
+                <button className={`w-full border-none py-3 rounded-xl text-[14px] font-bold cursor-pointer transition-colors duration-200 ${isLightMode ? 'bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white' : 'bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white'}`}>
                   {t('자세히 보기 & 접수하기 ➔')}
                 </button>
               </div>
@@ -194,39 +194,39 @@ export default function Certificates() {
 
             <div className="flex flex-col gap-4">
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('📝 자격증 개요')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📝 자격증 개요')}</div>
                 <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.description)}</div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('📋 응시 자격 조건')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📋 응시 자격 조건')}</div>
                 <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.eligibility)}</div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('⭐ 난이도')}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('⭐ 난이도')}</div>
                   <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.difficulty)}</div>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('📊 평균 합격률')}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('📊 평균 합격률')}</div>
                   <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.pass_rate)}</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('💰 필기 응시료')}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('💰 필기 응시료')}</div>
                   <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.written_exam_fee)}</div>
                 </div>
                 <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('🛠️ 실기 응시료')}</div>
+                  <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🛠️ 실기 응시료')}</div>
                   <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.practical_exam_fee)}</div>
                 </div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('🏢 우대 및 가산점 반영 기업')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🏢 우대 및 가산점 반영 기업')}</div>
                 <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.advantage_companies || []).map((c: string) => t(c)).join(', ')}</div>
               </div>
               <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-teal-600 mb-1.5">{t('🔗 연계 / 관련 자격증')}</div>
+                <div className="text-[13px] font-bold text-indigo-600 mb-1.5">{t('🔗 연계 / 관련 자격증')}</div>
                 <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.related_certificates || []).map((c: string) => t(c)).join(', ')}</div>
               </div>
             </div>

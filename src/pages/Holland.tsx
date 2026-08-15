@@ -258,7 +258,7 @@ export default function Holland() {
               </div>
 
               <div className="flex flex-col gap-3 mt-8">
-                <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                <Link to="/mypage" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
                   <span>{t('👤 마이페이지로 이동하여 결과 확인하기')}</span>
                 </Link>
                 <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
