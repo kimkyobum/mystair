@@ -45,7 +45,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
   return (
     <div className={`relative z-20 flex flex-col items-center justify-center w-full max-w-3xl mx-auto px-3 sm:px-4 transition-all duration-300 ${isFullscreen ? 'mt-32 sm:mt-48 md:mt-64' : 'mt-6 sm:mt-16 md:mt-28'}`}>
       <h1 className={`text-2xl sm:text-[40px] md:text-[56px] ${isLightMode ? "text-slate-900 drop-shadow-sm" : "text-white"} font-black mb-6 sm:mb-10 tracking-tight text-center leading-tight`}>
-        MyStair <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isLightMode ? "from-indigo-600 via-purple-600 to-pink-600" : "from-indigo-600 via-purple-600 to-purple-600"}`}>{t('성장의 계단')}</span>
+        MyStair <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isLightMode ? "from-teal-500 via-emerald-500 to-teal-600" : "from-teal-400 via-emerald-400 to-teal-300"}`}>{t('성장의 계단')}</span>
       </h1>
       
       <form onSubmit={handleSubmit} className={`w-full ${isLightMode ? "bg-white/90 border-slate-200 shadow-md ring-slate-200/50" : "bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 ring-purple-500/30"} backdrop-blur-xl animate-gradient rounded-2xl p-2 sm:p-2.5 shadow-2xl flex items-center border focus-within:ring-4 transition-all duration-300 relative group min-h-[52px]`}>

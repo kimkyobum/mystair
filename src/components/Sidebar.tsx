@@ -48,7 +48,7 @@ export default function Sidebar() {
   };
 
   const navItems = [
-    { name: 'MyStair AI', path: '/', icon: <Sparkles size={22} className={isLightMode ? "text-indigo-600" : "text-indigo-400"} /> },
+    { name: 'MyStair AI', path: '/', icon: <Sparkles size={22} className={isLightMode ? "text-teal-600" : "text-teal-400"} /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={22} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={22} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={22} /> },
@@ -73,9 +73,9 @@ export default function Sidebar() {
           <a 
             href="/" 
             onClick={handleLogoClick}
-            className={`${isDarkTheme ? 'text-white hover:text-indigo-300' : 'text-slate-900 hover:text-indigo-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}
+            className={`${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}
           >
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-indigo-600' : 'text-indigo-400'} shrink-0 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out`}>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} shrink-0 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out`}>
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
@@ -87,7 +87,7 @@ export default function Sidebar() {
             onClick={handleLogoClick}
             className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-7 leading-none group select-none transition-all duration-300 hover:scale-110`}
           >
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-indigo-600' : 'text-indigo-400'} group-hover:rotate-180 transition-transform duration-500 ease-out`}>
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} group-hover:rotate-180 transition-transform duration-500 ease-out`}>
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>

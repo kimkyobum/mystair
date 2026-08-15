@@ -13,7 +13,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   const navItems = [
-    { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-indigo-400" /> },
+    { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-teal-400" /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={18} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={18} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={18} /> },
@@ -28,11 +28,11 @@ export default function Header() {
       <header className="relative z-20 flex items-center justify-between px-2.5 sm:px-6 py-2.5 sm:py-5 w-full max-w-full sm:max-w-[1600px] mx-auto box-border overflow-x-hidden min-w-0">
         <div className="flex items-center gap-3 shrink-0">
           <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-300'} font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0`}>
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-indigo-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
-            <span className={`transition-colors duration-300 shrink-0 ${isLightMode ? 'group-hover:text-indigo-600' : 'group-hover:text-indigo-300'}`}>Mystair</span>
+            <span className={`transition-colors duration-300 shrink-0 ${isLightMode ? 'group-hover:text-teal-600' : 'group-hover:text-teal-300'}`}>Mystair</span>
           </Link>
 
           {/* Usage Guide Button */}
