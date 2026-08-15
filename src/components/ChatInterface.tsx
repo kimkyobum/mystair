@@ -772,7 +772,11 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         initial={{ opacity: 0, scale: 0.98, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
-        className={`flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 backdrop-blur-md rounded-[24px] sm:rounded-[40px] border min-w-0 ${isLightMode ? "bg-white border-slate-200 shadow-md" : "bg-[#050505]/45 border-white/20"}`}
+        className={`flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 backdrop-blur-xl rounded-[24px] sm:rounded-[40px] border min-w-0 transition-all duration-300 ${
+          isLightMode 
+            ? "bg-white/85 border-slate-200/90 shadow-[0_20px_60px_-15px_rgba(99,102,241,0.12)] ring-1 ring-slate-900/5" 
+            : "bg-[#050505]/45 border-white/20"
+        }`}
       >
         {/* Chat header with control buttons */}
         <div className="flex flex-wrap sm:flex-row gap-2.5 items-center justify-between mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 select-none shrink-0">

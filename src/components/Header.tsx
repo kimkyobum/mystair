@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Globe, Sparkles, HelpCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { createPortal } from 'react-dom';
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
+  const { isLightMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guideModalOpen, setGuideModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -25,19 +27,23 @@ export default function Header() {
     <>
       <header className="relative z-20 flex items-center justify-between px-2.5 sm:px-6 py-2.5 sm:py-5 w-full max-w-full sm:max-w-[1600px] mx-auto box-border overflow-x-hidden min-w-0">
         <div className="flex items-center gap-3 shrink-0">
-          <Link to="/" className="text-white font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0">
+          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'} font-black text-lg sm:text-2xl md:text-[32px] tracking-[-0.06em] cursor-pointer flex items-center gap-1.5 sm:gap-2 leading-none group select-none transition-all duration-300 hover:scale-105 active:scale-95 shrink-0`}>
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out sm:w-[34px] sm:h-[34px] shrink-0">
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
-            <span className="group-hover:text-teal-300 transition-colors duration-300 shrink-0">Mystair</span>
+            <span className={`transition-colors duration-300 shrink-0 ${isLightMode ? 'group-hover:text-teal-600' : 'group-hover:text-teal-300'}`}>Mystair</span>
           </Link>
 
           {/* Usage Guide Button */}
           <button
             onClick={() => setGuideModalOpen(true)}
             title={t('사용방법', 'How to use')}
-            className="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[34px] shrink-0"
+            className={`flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full border text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[34px] shrink-0 ${
+              isLightMode 
+                ? 'bg-white/60 hover:bg-white/80 backdrop-blur-md border-slate-300/70 text-slate-800 shadow-xs' 
+                : 'bg-white/10 hover:bg-white/20 border-white/25 text-white'
+            }`}
           >
             <HelpCircle size={14} className="text-teal-400 shrink-0" />
             <span className="hidden md:inline">{t('사용방법', 'How to use')}</span>
@@ -47,7 +53,7 @@ export default function Header() {
         
         <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
           {navItems.slice(1, -1).map(item => (
-            <Link key={item.name} to={item.path} className="text-white/80 hover:text-white transition-colors text-[15px] font-medium whitespace-nowrap">
+            <Link key={item.name} to={item.path} className={`${isLightMode ? 'text-slate-700 hover:text-slate-950 font-semibold' : 'text-white/80 hover:text-white font-medium'} transition-colors text-[15px] whitespace-nowrap`}>
               {t(item.name)}
             </Link>
           ))}
@@ -61,7 +67,11 @@ export default function Header() {
               window.location.href = '/';
             }}
             title={t('홍보사이트 보기')}
-            className="flex items-center justify-center gap-1 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 border border-teal-500/40 text-teal-300 text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(20,184,166,0.15)] active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0"
+            className={`flex items-center justify-center gap-1 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0 ${
+              isLightMode
+                ? 'bg-teal-50/70 hover:bg-teal-100/90 backdrop-blur-md border-teal-300/80 text-teal-800 shadow-xs'
+                : 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 hover:from-teal-500/30 hover:to-cyan-500/30 border-teal-500/40 text-teal-300 shadow-[0_0_15px_rgba(20,184,166,0.15)]'
+            }`}
           >
             <Globe size={15} className="shrink-0" />
             <span className="hidden sm:inline">{t('홍보사이트 보기')}</span>
@@ -69,13 +79,15 @@ export default function Header() {
           </button>
 
           {/* Language Switcher Compact Toggle Button */}
-          <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-0.5 text-[10px] sm:text-xs shrink-0">
+          <div className={`flex items-center backdrop-blur-md border rounded-full p-0.5 text-[10px] sm:text-xs shrink-0 ${
+            isLightMode ? 'bg-white/50 border-slate-300/70' : 'bg-white/10 border-white/20'
+          }`}>
             <button 
               onClick={() => setLanguage('ko')}
               className={`px-2 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer whitespace-nowrap ${
                 language === 'ko' 
                   ? 'bg-teal-400 text-slate-950 shadow-sm' 
-                  : 'text-white/70 hover:text-white'
+                  : isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-white/70 hover:text-white'
               }`}
             >
               <span className="hidden sm:inline">한국어</span>
@@ -86,7 +98,7 @@ export default function Header() {
               className={`px-2 sm:px-3 py-1 rounded-full font-bold transition-all cursor-pointer whitespace-nowrap ${
                 language === 'en' 
                   ? 'bg-teal-400 text-slate-950 shadow-sm' 
-                  : 'text-white/70 hover:text-white'
+                  : isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-white/70 hover:text-white'
               }`}
             >
               <span className="hidden sm:inline">English</span>
@@ -99,7 +111,9 @@ export default function Header() {
             onClick={() => setMobileMenuOpen(true)}
             aria-label={t('메뉴 열기', 'Open Menu')}
             title={t('메뉴 열기', 'Open Menu')}
-            className="xl:hidden text-white cursor-pointer p-2 rounded-xl hover:bg-white/10 active:bg-white/20 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors shrink-0"
+            className={`xl:hidden cursor-pointer p-2 rounded-xl min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors shrink-0 ${
+              isLightMode ? 'text-slate-900 hover:bg-slate-100 active:bg-slate-200' : 'text-white hover:bg-white/10 active:bg-white/20'
+            }`}
           >
             <Menu size={22} />
           </button>

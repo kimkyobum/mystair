@@ -74,9 +74,27 @@ button, a, label, span, header, nav, p, h1, h2, h3, h4, h5, h6 {
   100% { background-position: 0% 50%; }
 }
 
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(4deg) scale(1.04); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+
 .animate-gradient {
   animation: gradient 10s ease infinite;
   background-size: 300% 300%;
+}
+
+.animate-float-slow {
+  animation: floatSlow 14s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 9s ease-in-out infinite;
 }
 
 /* Beautiful & highly readable dark mode Markdown styling */

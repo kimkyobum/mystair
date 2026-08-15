@@ -16,7 +16,7 @@ export default function TopBanner() {
   ];
   
   return (
-    <div className={`relative z-50 w-full overflow-hidden backdrop-blur-md border-b py-3 flex font-medium text-xs sm:text-sm ${isLightMode ? "bg-white/80 border-slate-200 text-slate-700" : "bg-black/60 border-white/5 text-white/70"}`}>
+    <div className={`relative z-50 w-full overflow-hidden backdrop-blur-md border-b py-3 flex font-medium text-xs sm:text-sm ${isLightMode ? "bg-white/40 border-slate-200/60 text-slate-800" : "bg-black/60 border-white/5 text-white/70"}`}>
       {/* 윗부분의 은은한 보랏빛 네온 라인 효과 */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
       

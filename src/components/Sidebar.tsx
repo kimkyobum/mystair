@@ -61,7 +61,7 @@ export default function Sidebar() {
       className={`fixed top-0 left-0 h-full z-[100] transition-all duration-300 ease-in-out flex flex-col ${
         isDarkTheme 
           ? 'bg-slate-950/50 backdrop-blur-md border-r border-white/10 text-white shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
-          : 'bg-white/70 backdrop-blur-md border-r border-slate-200 text-slate-800 shadow-[0_0_25px_rgba(0,0,0,0.08)]'
+          : 'bg-white/50 backdrop-blur-xl border-r border-slate-200/60 text-slate-800 shadow-[0_0_20px_rgba(0,0,0,0.03)]'
       } ${isHovered ? 'w-64' : 'w-14'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
