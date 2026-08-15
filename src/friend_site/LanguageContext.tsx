@@ -473,6 +473,7 @@ const koToEnMap: Record<string, string> = {
   '홍보 페이지로 이동': 'Go to Promo Page',
   '게스트': 'Guest',
   '마이페이지': 'My Page',
+  '마이페이지 겸 설정': 'My Page & Settings',
   '홈': 'Home',
   '성장다이어리': 'Growth Diary',
   '자격증 가이드': 'Certificate Guide',
@@ -948,6 +949,7 @@ const koToZhMap: Record<string, string> = {
   'MBTI검사': 'MBTI测评',
   '홀랜드 진로적성 검사': '霍兰德职业兴趣测评',
   '마이페이지': '个人主页',
+  '마이페이지 겸 설정': '个人主页及设置',
   '로그아웃': '登出',
   '홍보 페이지로 이동': '前往宣传页面',
   '구글 로그인': '谷歌登录',
@@ -1284,7 +1286,10 @@ const koToZhMap: Record<string, string> = {
   '등록된 주요 사업 정보가 없습니다.': 'No registered main business information.',
   '등록된 조직 문화 정보가 없습니다.': 'No registered organizational culture information.',
   '등록된 커리어 패스 정보가 없습니다.': 'No registered career path information.',
-  '등록된 추천 사유가 없습니다.': 'No registered recommendation reason.'
+  '등록된 추천 사유가 없습니다.': 'No registered recommendation reason.',
+  '오늘의 다이어리 작성': 'Write Today\'s Diary',
+  '나만의 기업찾기 (AI 맞춤 기업 추천)': 'Find My Company (AI Match)',
+  'Mystair 자기소개': 'About Mystair'
 };
 
 const translations = {

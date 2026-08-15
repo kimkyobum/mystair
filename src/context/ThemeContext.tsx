@@ -7,6 +7,8 @@ interface ThemeContextType {
   setIsLightMode: (val: boolean) => void;
   backgroundType: BackgroundType;
   setBackgroundType: (val: BackgroundType) => void;
+  isClickEffectEnabled: boolean;
+  setIsClickEffectEnabled: (val: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -15,8 +17,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isLightMode, setIsLightMode] = useState(() => {
     return localStorage.getItem('mystair_light_mode') === 'true';
   });
+  
   const [backgroundType, setBackgroundType] = useState<BackgroundType>(() => {
     return (localStorage.getItem('mystair_bg_type') as BackgroundType) || 'black';
+  });
+
+  const [isClickEffectEnabled, setIsClickEffectEnabled] = useState(() => {
+    const saved = localStorage.getItem('mystair_click_effect');
+    return saved !== null ? saved === 'true' : true; // Default to true as requested
   });
 
   useEffect(() => {
@@ -32,8 +40,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('mystair_bg_type', backgroundType);
   }, [backgroundType]);
 
+  useEffect(() => {
+    localStorage.setItem('mystair_click_effect', String(isClickEffectEnabled));
+  }, [isClickEffectEnabled]);
+
   return (
-    <ThemeContext.Provider value={{ isLightMode, setIsLightMode, backgroundType, setBackgroundType }}>
+    <ThemeContext.Provider value={{ 
+      isLightMode, setIsLightMode, 
+      backgroundType, setBackgroundType,
+      isClickEffectEnabled, setIsClickEffectEnabled 
+    }}>
       {children}
     </ThemeContext.Provider>
   );

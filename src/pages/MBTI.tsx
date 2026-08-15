@@ -142,7 +142,7 @@ export default function MBTI() {
           <Link to="/" className={`font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
+          <span className="bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
             MBTI 32
           </span>
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-[#334155] pl-4 hidden sm:block">
@@ -151,7 +151,7 @@ export default function MBTI() {
         </div>
       </header>
 
-      <Link to="/" className="hidden sm:flex absolute top-[92px] left-10 w-20 h-[50px] rounded-xl justify-center items-center text-[24px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#6366F1] hover:text-[#6366F1] hover:-translate-y-0.5 transition-all duration-200 z-40">
+      <Link to="/" className="hidden sm:flex absolute top-[92px] left-10 w-20 h-[50px] rounded-xl justify-center items-center text-[24px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40">
         ←
       </Link>
 
@@ -178,10 +178,10 @@ export default function MBTI() {
               <div className="mb-8">
                 <div className="flex justify-between items-center text-[14px] font-bold text-[#0F172A] mb-2.5">
                   <span>{t('문항')} {currentIndex + 1} / {mbtiQuestions.length}</span>
-                  <span className="text-[#6366F1]">{percent}%</span>
+                  <span className="text-[#14b8a6]">{percent}%</span>
                 </div>
                 <div className="w-full h-2.5 bg-[#F1F5F9] rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-br from-[#6366F1] to-[#A855F7] transition-all duration-300 rounded-full" style={{ width: `${percent}%` }}></div>
+                  <div className="h-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] transition-all duration-300 rounded-full" style={{ width: `${percent}%` }}></div>
                 </div>
               </div>
 
@@ -202,8 +202,8 @@ export default function MBTI() {
                     onClick={() => selectOption(opt.val)}
                     className={`bg-white border-2 px-5 py-4 rounded-xl text-left text-[15px] font-semibold transition-all duration-200 flex items-center justify-between
                       ${answers[currentIndex] === opt.val 
-                        ? 'border-[#6366F1] bg-[#EEF2FF] text-[#6366F1]' 
-                        : 'border-[#E2E8F0] text-[#0F172A] hover:border-[#6366F1] hover:bg-[#F8FAFC] hover:translate-x-1'}`}
+                        ? 'border-[#14b8a6] bg-[#EEF2FF] text-[#14b8a6]' 
+                        : 'border-[#E2E8F0] text-[#0F172A] hover:border-[#14b8a6] hover:bg-[#F8FAFC] hover:translate-x-1'}`}
                   >
                     {opt.label}
                   </button>
@@ -225,7 +225,7 @@ export default function MBTI() {
           {screen === 'result' && result && (
             <div>
               <div className="text-center pb-6 mb-6 border-b-2 border-dashed border-[#E2E8F0]">
-                <div className="inline-block bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white px-[18px] py-1.5 rounded-full text-[13px] font-bold mb-3">
+                <div className="inline-block bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white px-[18px] py-1.5 rounded-full text-[13px] font-bold mb-3">
                   {t('진로 적성 진단 결과')}
                 </div>
                 <h2 className="text-[28px] font-extrabold text-[#0F172A] mb-1.5">MBTI: {result.fullType}</h2>
@@ -242,7 +242,7 @@ export default function MBTI() {
                         <span>{item.val}% {t('선호도')}</span>
                       </div>
                       <div className="h-3 bg-[#F1F5F9] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#6366F1] rounded-full transition-all duration-700 ease-out" style={{ width: `${item.val}%` }}></div>
+                        <div className="h-full bg-[#14b8a6] rounded-full transition-all duration-700 ease-out" style={{ width: `${item.val}%` }}></div>
                       </div>
                     </div>
                   );
@@ -274,7 +274,7 @@ export default function MBTI() {
                 <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
                   <span>{t('👤 마이페이지로 이동하여 결과 확인하기')}</span>
                 </Link>
-                <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#6366F1] to-[#A855F7] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
+                <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
                   {t('📋 검사 결과 복사하기')}
                 </button>
                 <button onClick={restartQuiz} className="w-full bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] p-3.5 rounded-xl text-[14px] font-bold cursor-pointer transition-colors hover:bg-[#E2E8F0]">

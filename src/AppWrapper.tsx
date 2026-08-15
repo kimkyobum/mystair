@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Starfield from './components/Starfield';
 import LightBackground from './components/LightBackground';
+import ClickEffect from './components/ClickEffect';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Certificates from './pages/Certificates';
@@ -17,10 +18,11 @@ export default function AppWrapper() {
 
   return (
     <BrowserRouter>
-      <div className={`h-screen ${isLightMode ? 'bg-slate-50 text-slate-900' : (backgroundType === 'black' ? 'bg-black text-white' : 'bg-slate-900 text-white')} font-sans overflow-hidden selection:bg-purple-500/30 flex relative`}>
+      <div className={`h-[100dvh] ${isLightMode ? 'bg-slate-50 text-slate-900' : (backgroundType === 'black' ? 'bg-black text-white' : 'bg-slate-900 text-white')} font-sans overflow-hidden selection:bg-purple-500/30 flex relative`}>
+        <ClickEffect />
         <Sidebar />
         {isLightMode ? <LightBackground /> : (backgroundType === 'black' && <Starfield />)}
-        <div className="flex-1 h-full pl-14 relative z-10 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-1 h-full pl-0 pb-[72px] sm:pb-0 sm:pl-14 relative z-10 flex flex-col min-w-0 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/diary" element={<Diary />} />

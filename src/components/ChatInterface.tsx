@@ -781,14 +781,14 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         {/* Chat header with control buttons */}
         <div className="flex flex-wrap sm:flex-row gap-2.5 items-center justify-between mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 select-none shrink-0">
           <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-indigo-400 animate-pulse shrink-0" />
+            <Sparkles size={16} className="text-teal-500 animate-pulse shrink-0" />
             <span className={`text-xs sm:text-[14px] font-semibold ${isLightMode ? "text-slate-900" : "text-white/80"}`}>{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
-              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 hover:text-slate-900 border-slate-300" : "text-white/90 hover:text-white"} text-xs sm:text-[13px] font-semibold bg-teal-500/15 hover:bg-teal-500/25 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border border-teal-500/30 hover:border-teal-500/50 cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
+              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-teal-50 hover:text-teal-700 border-slate-300 hover:border-teal-300" : "text-white/90 bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/30 hover:border-teal-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
               title={t('이전 질문 기록 보기', 'View previous question history')}
             >
               <History size={14} className="text-teal-400 animate-pulse shrink-0" />
@@ -817,15 +817,15 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             >
               <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-indigo-600 text-white" : "bg-indigo-600/90 text-white"}`}>
+                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-teal-600 text-white" : "bg-teal-600/90 text-white"}`}>
                     {msg.content}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
                     <div className={`${isLightMode ? "text-slate-900" : "text-white"} text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]`}>
                       {msg.isStreaming && !msg.content ? (
-                        <div className={`flex items-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis ${isLightMode ? "text-indigo-600" : "text-teal-300"}`}>
-                          <RefreshCw size={16} className={`animate-spin shrink-0 ${isLightMode ? "text-indigo-600" : "text-teal-400"}`} />
+                        <div className={`flex items-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis ${isLightMode ? "text-teal-600" : "text-teal-300"}`}>
+                          <RefreshCw size={16} className={`animate-spin shrink-0 ${isLightMode ? "text-teal-600" : "text-teal-400"}`} />
                           <span className="truncate">{t('🔍 사용자님의 자격증, 성장 다이어리, MBTI, 진로 적성검사(Holland) 데이터를 분석하여 맞춤형 인사이트를 준비 중입니다...', '🔍 Analyzing your certificates, growth diaries, MBTI, Holland test data to prepare customized insights...')}</span>
                         </div>
                       ) : (
@@ -908,7 +908,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               type="submit" 
               disabled={isLoading || !inputValue.trim()}
               aria-label="질문 제출"
-              className={`p-3 sm:p-3.5 rounded-xl sm:rounded-full transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95 ${isLightMode ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-white hover:bg-slate-200 text-slate-900"}`}
+              className={`p-3 sm:p-3.5 rounded-xl sm:rounded-full transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95 ${isLightMode ? "bg-teal-600 hover:bg-teal-700 text-white" : "bg-white hover:bg-slate-200 text-slate-900"}`}
             >
               <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
             </button>
