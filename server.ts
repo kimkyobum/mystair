@@ -14,6 +14,12 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 // Load companies and link data globally
 let companiesDataJson = "";
 let linkDataJson = "";
+
+let sudoHighschoolCsv = "";
+let meisterHighschoolsCsv = "";
+let geumoTechCsv = "";
+let gumiElectronicCsv = "";
+
 let parsedCompanies: any[] = [];
 let parsedLinks: any[] = [];
 
@@ -57,6 +63,23 @@ try {
 } catch (err) {
   console.error("Error reading link.json", err);
 }
+
+try {
+  const sudoPath = path.join(process.cwd(), "Data", "sudo_highschool_info.csv");
+  if (fs.existsSync(sudoPath)) sudoHighschoolCsv = fs.readFileSync(sudoPath, "utf-8");
+
+  const meisterPath = path.join(process.cwd(), "Data", "meister_highschools (3).csv");
+  if (fs.existsSync(meisterPath)) meisterHighschoolsCsv = fs.readFileSync(meisterPath, "utf-8");
+
+  const geumoPath = path.join(process.cwd(), "Data", "geumo_tech_highschool_info.csv");
+  if (fs.existsSync(geumoPath)) geumoTechCsv = fs.readFileSync(geumoPath, "utf-8");
+
+  const gumiPath = path.join(process.cwd(), "Data", "gumi_electronic_highschool_info.csv");
+  if (fs.existsSync(gumiPath)) gumiElectronicCsv = fs.readFileSync(gumiPath, "utf-8");
+} catch (err) {
+  console.error("Error reading new CSV files", err);
+}
+
 
 function findCompanyUrl(company: any, links: any[]): string | undefined {
   const compRaw = company.company || "";
@@ -1016,6 +1039,22 @@ ${companiesDataJson}
 
 [공식 링크 데이터]:
 ${linkDataJson}
+
+[마이스터고 및 특성화고 학교 정보 데이터]:
+이 데이터는 전국의 마이스터고 및 특성화고 정보, 학과, 수도고, 금오공고, 구미전자공고 등의 세부 정보입니다. 학생들의 학교/전공 질문에 답할 때 적극적으로 활용하세요.
+
+---수도공업고등학교 정보---
+${sudoHighschoolCsv}
+
+---금오공업고등학교 정보---
+${geumoTechCsv}
+
+---구미전자공업고등학교 정보---
+${gumiElectronicCsv}
+
+---기타 마이스터고 정보---
+${meisterHighschoolsCsv}
+
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
