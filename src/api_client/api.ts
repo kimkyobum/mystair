@@ -133,9 +133,10 @@ export const apiService = {
       createdAt: entry.createdAt || new Date().toISOString()
     };
 
-    // Update Local Storage - Replace any existing entry for the exact same date
+    // Update Local Storage - DO NOT replace by date, allow multiple entries per day
     const existing = await this.getDiaries(uid);
-    const filtered = existing.filter(d => d.date !== newEntry.date);
+    // Only replace if ID matches (for updates), otherwise append
+    const filtered = existing.filter(d => d.id !== newEntry.id);
     const updated = [newEntry, ...filtered];
     localStorage.setItem(`mystair_local_diaries_${uid}`, JSON.stringify(updated));
     localStorage.setItem('mystair_diaries', JSON.stringify(updated));

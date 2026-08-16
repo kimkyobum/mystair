@@ -202,6 +202,7 @@ JSON 구조 규격:
 
   // Form Modal for Selected Date / New Entry
   const [showFormModal, setShowFormModal] = useState(false);
+  const [showDayDiariesModal, setShowDayDiariesModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -211,6 +212,14 @@ JSON 구조 규격:
   const [tags, setTags] = useState<string[]>(['성장기록', '자격증']);
 
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const handleCloseFormModal = () => {
+    setShowFormModal(false);
+    const dayEntries = diaries.filter(d => d.date === selectedDate);
+    if (dayEntries.length > 0) {
+      setShowDayDiariesModal(true);
+    }
+  };
 
   const loadDiaryList = async () => {
     setLoading(true);
@@ -299,23 +308,30 @@ JSON 구조 규격:
   };
 
   // Open modal for a specific date cell
-  const handleOpenDayModal = (dateStr: string) => {
+  const handleOpenDayModal = (dateStr: string, entryId?: string) => {
     setSelectedDate(dateStr);
-    const existing = diaries.find(d => d.date === dateStr);
+    const existing = entryId ? diaries.find(d => d.id === entryId) : null;
     if (existing) {
       setEditingId(existing.id || null);
       setTitle(existing.title);
       setContent(existing.content);
       setMood(existing.mood || '🔥');
       setTags(existing.tags || ['성장기록']);
+      setShowFormModal(true);
     } else {
-      setEditingId(null);
-      setTitle('');
-      setContent('');
-      setMood('🔥');
-      setTags(['성장기록']);
+      // Check if there are diaries for this day
+      const dayEntries = diaries.filter(d => d.date === dateStr);
+      if (dayEntries.length > 0) {
+        setShowDayDiariesModal(true);
+      } else {
+        setEditingId(null);
+        setTitle('');
+        setContent('');
+        setMood('🔥');
+        setTags(['성장기록']);
+        setShowFormModal(true);
+      }
     }
-    setShowFormModal(true);
   };
 
   const handleSubmitDiary = async (e: React.FormEvent) => {
@@ -335,7 +351,9 @@ JSON 구조 규격:
       });
       showToast(t('성장 다이어리가 성공적으로 저장되었습니다!'));
       setShowFormModal(false);
-      loadDiaryList();
+      await loadDiaryList();
+      // Reopen or open list modal after saving so they see all diaries
+      setShowDayDiariesModal(true);
     } catch (err) {
       console.error(err);
       showToast(t('저장 중 오류가 발생했습니다.'));
@@ -350,7 +368,12 @@ JSON 구조 규격:
       await deleteDiary(id);
       showToast(t('다이어리 기록이 삭제되었습니다.'));
       setShowFormModal(false);
-      loadDiaryList();
+      await loadDiaryList();
+      // Reopen list modal only if there are other diaries remaining for this day
+      const remaining = diaries.filter(d => d.date === selectedDate && d.id !== id);
+      if (remaining.length > 0) {
+        setShowDayDiariesModal(true);
+      }
     } catch (err) {
       console.error(err);
       showToast(t('삭제 중 오류가 발생했습니다.'));
@@ -730,7 +753,7 @@ JSON 구조 규격:
                 const isToday = fullDateStr === todayStr;
 
                 // Check for Diary entry on this day
-                const diaryEntry = diaries.find(d => d.date === fullDateStr);
+                const diaryEntries = diaries.filter(d => d.date === fullDateStr);
 
                 // Check for Exam on this day
                 const exam = getExamForDate(fullDateStr);
@@ -786,15 +809,23 @@ JSON 구조 규격:
                       )}
 
                       {/* DIARY ENTRY DISPLAY */}
-                      {diaryEntry && (
-                        <div className={`p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[11px] sm:text-xs font-bold truncate shadow-xs text-center border ${isLightMode ? "bg-indigo-50 border-indigo-200 text-indigo-900" : "bg-indigo-500/10 border-indigo-500/25 text-indigo-200"}`}>
-                          <span className="truncate">{t(diaryEntry.title)}</span>
+                      {diaryEntries.length > 0 && (
+                        <div 
+                          onClick={(e) => { e.stopPropagation(); handleOpenDayModal(fullDateStr); }}
+                          className={`p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[10px] sm:text-xs font-bold truncate shadow-xs text-center border transition-colors ${
+                            isLightMode 
+                              ? "bg-indigo-50 border-indigo-200 text-indigo-900 hover:bg-indigo-100 hover:border-indigo-300" 
+                              : "bg-indigo-500/10 border-indigo-500/25 text-indigo-200 hover:bg-indigo-500/20 hover:border-indigo-500/40"
+                          }`}
+                        >
+                          <span className="truncate">
+                            📝 {language === 'ko' ? `다이어리 ${diaryEntries.length}개` : `${diaryEntries.length} Diaries`}
+                          </span>
                         </div>
                       )}
                     </div>
-
                     {/* Hover add prompt if empty */}
-                    {!diaryEntry && !exam && (
+                    {diaryEntries.length === 0 && !exam && (
                       <div className={`opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-center ${isLightMode ? "text-indigo-600" : "text-indigo-500"}`}>
                         + {t('일기 쓰기')}
                       </div>
@@ -802,6 +833,7 @@ JSON 구조 규격:
                   </div>
                 );
               })}
+
             </div>
           </div>
       </main>
@@ -1003,6 +1035,100 @@ JSON 구조 규격:
         </div>
       )}
 
+      {/* DAY DIARIES LIST MODAL */}
+      {showDayDiariesModal && (
+        <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
+          <div className={`border-2 rounded-3xl p-6 max-w-xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-indigo-500/50 text-white"}`}>
+            
+            {/* Header */}
+            <div className={`flex items-center justify-between border-b pb-4 mb-4 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+              <div className="flex items-center gap-2">
+                <CalendarIcon size={20} className="text-indigo-500" />
+                <h3 className="text-lg font-bold">
+                  {language === 'ko' ? `${selectedDate} 성장 다이어리 목록` : `Growth Diary List (${selectedDate})`}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setShowDayDiariesModal(false)}
+                className={`p-1 transition-colors ${isLightMode ? "text-slate-400 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Add Diary Button at the top of list */}
+            <div className="mb-4 flex-none">
+              <button
+                onClick={() => {
+                  setEditingId(null);
+                  setTitle('');
+                  setContent('');
+                  setMood('🔥');
+                  setTags(['성장기록']);
+                  setShowFormModal(true);
+                  setShowDayDiariesModal(false);
+                }}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-md"
+              >
+                <Plus size={16} />
+                <span>{language === 'ko' ? '새 성장 다이어리 추가' : 'Add New Growth Diary'}</span>
+              </button>
+            </div>
+
+            {/* List of diaries */}
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+              {diaries.filter(d => d.date === selectedDate).length === 0 ? (
+                <div className="text-center py-8 text-slate-400 text-sm">
+                  {language === 'ko' ? '기록된 다이어리가 없습니다.' : 'No diaries recorded.'}
+                </div>
+              ) : (
+                diaries.filter(d => d.date === selectedDate).map((entry, idx) => (
+                  <div
+                    key={entry.id || idx}
+                    onClick={() => {
+                      setEditingId(entry.id || null);
+                      setTitle(entry.title);
+                      setContent(entry.content);
+                      setMood(entry.mood || '🔥');
+                      setTags(entry.tags || ['성장기록']);
+                      setShowFormModal(true);
+                      setShowDayDiariesModal(false);
+                    }}
+                    className={`p-4 rounded-2xl border-2 text-left cursor-pointer transition-all ${
+                      isLightMode 
+                        ? "bg-slate-50 border-slate-200/60 hover:border-indigo-400 hover:bg-indigo-50/20 text-slate-800" 
+                        : "bg-slate-800/40 border-slate-700/60 hover:border-indigo-500/50 hover:bg-indigo-500/5 text-slate-200"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4 mb-2">
+                      <h4 className={`text-base font-extrabold leading-snug ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                        {entry.title}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+                        {entry.tags?.map((t, tIdx) => (
+                          <span 
+                            key={tIdx} 
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                              isLightMode ? "bg-indigo-50 text-indigo-700" : "bg-indigo-500/10 text-indigo-300"
+                            }`}
+                          >
+                            #{t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                      {entry.content}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+            
+          </div>
+        </div>
+      )}
+
       {/* DIARY FORM MODAL FOR SELECTED DAY */}
       {showFormModal && (
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
@@ -1017,7 +1143,7 @@ JSON 구조 규격:
               </h3>
               <button 
                 type="button" 
-                onClick={() => setShowFormModal(false)}
+                onClick={handleCloseFormModal}
                 className={`p-1 transition-colors ${isLightMode ? "text-slate-400 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}
               >
                 <X size={20} />
@@ -1096,7 +1222,7 @@ JSON 구조 규격:
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowFormModal(false)}
+                  onClick={handleCloseFormModal}
                   className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer ${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 text-slate-300"}`}
                 >
                   {t('취소')}
