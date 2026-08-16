@@ -714,9 +714,9 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               >
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                   <div className="flex items-center gap-2">
-                    <History size={18} className="text-indigo-400" />
+                    <History size={18} className="text-teal-400" />
                     <span className="text-white text-[15px] font-bold">{t('이전 질문 기록', 'Previous Questions')}</span>
-                    <span className="bg-indigo-400/10 text-indigo-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-indigo-500/10">
+                    <span className="bg-teal-400/10 text-teal-300 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-teal-500/10">
                       {messages.filter(m => m.role === 'user').length}
                     </span>
                   </div>
@@ -745,13 +745,13 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                         }}
                         className="w-full text-left group flex items-start gap-2.5 p-3 rounded-xl hover:bg-white/10 active:bg-white/5 transition-all cursor-pointer border border-transparent hover:border-white/5"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0 group-hover:scale-125 transition-transform" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 shrink-0 group-hover:scale-125 transition-transform" />
                         <div className="flex-1 min-w-0">
                           <div className="text-[13px] text-white/70 group-hover:text-white line-clamp-2 leading-relaxed break-all font-medium transition-colors">
                             {msg.content}
                           </div>
                         </div>
-                        <ArrowRight size={13} className="text-white/20 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all mt-1 shrink-0" />
+                        <ArrowRight size={13} className="text-white/20 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all mt-1 shrink-0" />
                       </button>
                     ))
                   )}
@@ -774,24 +774,24 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
         className={`flex-1 h-full flex flex-col p-3 sm:p-6 md:p-8 relative z-20 backdrop-blur-xl rounded-[24px] sm:rounded-[40px] border min-w-0 transition-all duration-300 ${
           isLightMode 
-            ? "bg-white/85 border-slate-200/90 shadow-[0_20px_60px_-15px_rgba(99,102,241,0.12)] ring-1 ring-slate-900/5" 
-            : "bg-[#050505]/45 border-white/20"
+            ? "bg-white border-slate-200/90 shadow-xl ring-1 ring-slate-900/5" 
+            : "bg-black/20 border-white/10 backdrop-blur-sm"
         }`}
       >
         {/* Chat header with control buttons */}
         <div className="flex flex-wrap sm:flex-row gap-2.5 items-center justify-between mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 select-none shrink-0">
           <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-indigo-500 animate-pulse shrink-0" />
+            <Sparkles size={16} className="text-teal-500 animate-pulse shrink-0" />
             <span className={`text-xs sm:text-[14px] font-semibold ${isLightMode ? "text-slate-900" : "text-white/80"}`}>{t('MyStair AI 대화 분석', 'MyStair AI Chat Analysis')}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
-              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-indigo-50 hover:text-indigo-700 border-slate-300 hover:border-indigo-300" : "text-white/90 bg-indigo-500/15 hover:bg-indigo-500/25 border-indigo-500/30 hover:border-indigo-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
+              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-teal-50 hover:text-indigo-700 border-slate-300 hover:border-teal-300" : "text-white/90 bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/30 hover:border-teal-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
               title={t('이전 질문 기록 보기', 'View previous question history')}
             >
-              <History size={14} className="text-indigo-400 animate-pulse shrink-0" />
+              <History size={14} className="text-teal-400 animate-pulse shrink-0" />
               <span>{t('이전 기록', 'History')} ({messages.filter(m => m.role === 'user').length})</span>
             </button>
             <button 
@@ -817,15 +817,15 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             >
               <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-indigo-600 text-white" : "bg-indigo-600/90 text-white"}`}>
+                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-teal-600 text-white" : "bg-teal-600/90 text-white"}`}>
                     {msg.content}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
                     <div className={`${isLightMode ? "text-slate-900" : "text-white"} text-sm sm:text-[16px] px-1 sm:px-2 py-1 leading-relaxed tracking-wide min-h-[44px]`}>
                       {msg.isStreaming && !msg.content ? (
-                        <div className={`flex items-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis ${isLightMode ? "text-indigo-600" : "text-indigo-300"}`}>
-                          <RefreshCw size={16} className={`animate-spin shrink-0 ${isLightMode ? "text-indigo-600" : "text-indigo-400"}`} />
+                        <div className={`flex items-center gap-2 font-medium text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis ${isLightMode ? "text-teal-600" : "text-teal-300"}`}>
+                          <RefreshCw size={16} className={`animate-spin shrink-0 ${isLightMode ? "text-teal-600" : "text-teal-400"}`} />
                           <span className="truncate">{t('🔍 사용자님의 자격증, 성장 다이어리, MBTI, 진로 적성검사(Holland) 데이터를 분석하여 맞춤형 인사이트를 준비 중입니다...', '🔍 Analyzing your certificates, growth diaries, MBTI, Holland test data to prepare customized insights...')}</span>
                         </div>
                       ) : (
@@ -844,7 +844,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                           <ThumbsDown size={16} />
                         </button>
                         <button onClick={() => handleCopyText(msg.id, msg.content)} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
-                          {copiedId === msg.id ? <Check size={16} className="text-indigo-500" /> : <Copy size={16} />}
+                          {copiedId === msg.id ? <Check size={16} className="text-teal-500" /> : <Copy size={16} />}
                         </button>
                       </motion.div>
                     )}
@@ -858,32 +858,32 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           {messages.length <= 2 && !isLoading && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-1 sm:px-2">
               <span className={`text-xs font-bold flex items-center gap-1.5 ${isLightMode ? "text-slate-700" : "text-white/70"}`}>
-                <Sparkles size={14} className="text-indigo-400" />
+                <Sparkles size={14} className="text-teal-400" />
                 {t('추천 질의 예시', 'Suggested Questions')}
               </span>
               <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
                 <button 
                   onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-300 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-teal-50 hover:bg-indigo-100 border-teal-300" : "text-teal-300 bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40"}`}
                 >
                   <span className="text-sm">✍️</span> 
                   <span>"{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"</span>
                 </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
                 </button>
                 <button 
                   onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/5 hover:bg-white/10 border-white/10"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
                 >
                   "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
                 </button>
@@ -895,20 +895,20 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         </div>
 
         <div className="pt-3 sm:pt-4 mt-auto shrink-0">
-          <form onSubmit={handleSubmit} className={`w-full rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-sm border flex items-center focus-within:ring-2 transition-all duration-300 min-h-[52px] ${isLightMode ? "bg-slate-50 border-slate-300 ring-indigo-500/30" : "bg-slate-900/90 border-white/20 ring-purple-500/30"}`}>
+          <form onSubmit={handleSubmit} className="w-full rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-lg border border-slate-200 bg-white flex items-center focus-within:ring-2 focus-within:ring-teal-500/30 transition-all duration-300 min-h-[52px]">
             <input 
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isLoading}
               placeholder={isLoading ? t("AI 답변을 준비 중입니다...", "AI is preparing your answer...") : t("추가로 궁금한 점을 물어보세요", "Ask any other questions you have")}
-              className={`w-full bg-transparent px-3 sm:px-6 py-2 sm:py-3 outline-none text-sm sm:text-[16px] min-h-[44px] ${isLightMode ? "text-slate-900 placeholder-slate-400" : "text-white placeholder-slate-400"}`}
+              className="w-full bg-transparent px-3 sm:px-6 py-2 sm:py-3 outline-none text-sm sm:text-[16px] min-h-[44px] text-slate-900 placeholder-slate-400"
             />
             <button 
               type="submit" 
               disabled={isLoading || !inputValue.trim()}
               aria-label="질문 제출"
-              className={`p-3 sm:p-3.5 rounded-xl sm:rounded-full transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95 ${isLightMode ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-white hover:bg-slate-200 text-slate-900"}`}
+              className="p-3 sm:p-3.5 rounded-xl sm:rounded-full transition-colors shadow-md flex items-center justify-center shrink-0 ml-1.5 sm:ml-2 group cursor-pointer disabled:opacity-40 min-h-[48px] min-w-[48px] active:scale-95 bg-slate-900 hover:bg-teal-600 text-white"
             >
               <ArrowUp size={20} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
             </button>
