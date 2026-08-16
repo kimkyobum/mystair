@@ -1,20 +1,122 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 📈 MyStair (마이스테어)
+> **하루의 기록이 스펙이 되는 마이스터고 맞춤형 커리어 빌더 & 나만의 전용 AI 컨설턴트**
 
-# Run and deploy your AI Studio app
+MyStair는 마이스터고 학생들이 3년 간 쌓은 실습·대회·자격증 기록을 보존하고, 서비스 내 모든 기능과 상호작용하는 '전용 AI'를 통해 초개인화된 취업 컨설팅을 제공하는 과정 중심의 커리어 빌더입니다.
 
-This contains everything you need to run your app locally.
+## 💡 기획 배경 및 문제점
 
-View your app in AI Studio: https://ai.studio/apps/f424630b-2b6b-4319-8df0-65a17bf3c442
+마이스터고 학생들은 3년 간 현장 중심의 소중한 경험(교내 실습, 프로젝트, 기능경기대회 등)을 쌓지만, 이를 기록하고 활용하는 데 큰 어려움을 겪고 있습니다.
 
-## Run Locally
+*   **고가치 경험의 휘발:** 체계적인 기록 시스템이 없어 취업 시즌(3학년)이 되면 과거의 에피소드와 트러블슈팅 경험을 대부분 잊어버립니다.
+*   **막연한 자소서 작성과 압박 면접의 부담:** 자소서 문항에 어떤 경험을 적어야 할지 몰라 막막함을 느끼며, AI가 지어낸 일반적인 문장을 사용하다가 면접 방어에 실패하는 악순환이 발생합니다.
+*   **검증된 기업 매칭 부재:** 자신의 실무 역량과 자격증으로 지원 가능한 우량 기업을 찾기 어렵고, 기업 측(B2B) 역시 서류상 정량 스펙만으로는 검증된 현장 인재를 채용하는 데 한계가 있습니다.
 
-**Prerequisites:**  Node.js
+## 🔑 핵심 가치 (UVP): 범용 AI를 넘어선 '나만의 전용 AI 컨설턴트'
 
+MyStair는 단순 대화형 AI나 기존 취업 사이트의 한계를 완벽하게 극복했습니다.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+*   **❌ 범용 AI의 한계:** 일반적인 챗봇(ChatGPT 등)은 사용자의 과거 맥락을 모르기 때문에, 뻔하고 표면적인 자소서를 만들어내거나 일반적인 조언만 제공합니다.
+*   **⭕ MyStair 전용 AI 컨설팅:** MyStair의 AI는 서비스 내에 구현된 **다이어리, 자격증, 성향 테스트 등 모든 기능과 유기적으로 연결되어 상호작용**합니다. 3년간 축적된 나의 '진짜 데이터'를 바탕으로 완벽하게 개인화된 자소서 뼈대를 추출하고, 내 역량에 맞는 기업을 매칭하며, 내 상황을 이해하는 진로 상담까지 제공하는 **'나만의 전용 AI 컨설턴트'** 역할을 수행합니다.
+
+## ✨ 주요 기능
+
+*   **[기록] AI 대필 캘린더형 경험 다이어리:** 학생이 오늘 있었던 실습, 대내외 경험, 수상 경험을 AI에게 말하듯 입력하면, AI가 대신 다이어리를 깔끔하게 작성하여 3년 치 포트폴리오로 자동 축적합니다.
+*   **[추출] 초개인화된 STAR 자소서 가이드:** 3년 치 기록과 연동된 AI가 지원 문항 의도에 부합하는 내 실제 에피소드를 탐색하고, S-T-A-R 구조의 자소서 작성 개요를 제공합니다.
+*   **[매칭] 다차원 정밀 기업 및 대기업/공기업 추천:** 학생의 누적 실무 타임라인, 자격증, MBTI, 홀랜드(Holland) 적성 검사를 융합하여 맞춤형 기업을 추천하고, 마이스터고 학생들이 주로 진출하는 대표 대기업 및 공기업 리스트를 뽑아줍니다.
+*   **[가이드] 맞춤형 자격증 가이드:** 목표로 하는 국가기술자격 및 공인 자격증의 취득 난이도와 해당 자격증을 우대하는 관련 기업 정보를 한눈에 제공하여 전략적인 스펙업을 지원합니다.
+*   **[케어] 맥락 기반 AI 멘탈 및 진로 상담:** 사용자의 누적 데이터와 현재 상황을 이해하는 AI가 취업 실패 시 위로와 대안을 제시하고, 진로 방향성을 1:1로 함께 고민합니다.
+
+## 🔄 서비스 작동 원리 (AI Flow)
+
+MyStair의 AI는 시스템 전체의 데이터 파이프라인과 완벽하게 결합하여 동작합니다.
+
+1.  **데이터 수집 (Function Calling):** 학생이 입력한 실습 및 경험 발화를 AI가 인지하고, **Function Calling**을 통해 스스로 데이터베이스(PostgreSQL) 캘린더에 다이어리 형태로 자동 저장합니다.
+2.  **맥락 학습 (In-Context Learning):** 사용자의 이전 다이어리 문체와 성향을 AI가 **In-Context Learning**으로 실시간 학습하여 이질감 없는 대필 및 상담을 진행합니다.
+3.  **의도 파악 및 에피소드 매칭 (RAG 변형):** 자소서 추출 시, **RAG(검색 증강 생성) 변형 기법**을 적용하여 3년 치 누적 다이어리 DB에서 문항 의도와 가장 완벽하게 부합하는 '실제 에피소드'만을 벡터 매칭하여 끌어옵니다.
+4.  **STAR 뼈대 추출 (Prompt Engineering):** 매칭된 팩트 에피소드를 바탕으로 최적화된 **System Instruction Tuning**을 거친 모델이 논리적인 S(상황)-T(과제)-A(행동)-R(결과) 구조로 자소서 가이드를 생성합니다.
+
+## 🏗 시스템 아키텍처
+
+**Client (Frontend / Design)**
+*   **Vercel 기반 프론트엔드 배포 및 호스팅**
+*   실습 및 자격증 기록 업로드 및 AI 다이어리 대필 요청
+*   Spline 기반 3D 인터랙티브 UI 제공
+*   AI 진로 상담 및 자소서 개요 추출 결과 조회
+*   대기업/공기업을 포함한 추천 기업 정보, 채용 연계 및 자격증 가이드 확인
+
+**Server (Backend / Database)**
+*   **Render 기반 PostgreSQL 데이터베이스 구축 및 보존**
+*   사용자 유형별(학생/교사/기업) 권한 및 로그인 세션 관리
+*   학생 개인별 성향 검사 결과 및 스펙 데이터베이스 관리
+
+**AI Pipeline**
+*   **Google AI Studio & Gemini API:** 서비스 코어 AI 엔진 구축 및 관리
+*   **Gemini 3.1 Pro & 2.5 Flash API:** 누적 데이터 딥러닝 분석, 최적 에피소드 매칭(RAG), STAR 자소서 논리 구조화
+*   **Gemini 3.5 Flash-Lite:** 실시간 기록 시맨틱 요약, 키워드 태깅, 멘탈 케어 챗봇 및 빠른 응답 처리
+
+## 🛠 사용 스택
+
+| 분류 | 기술 |
+| :--- | :--- |
+| **Frontend** | Next.js, React, JavaScript, CSS (Vercel 배포) |
+| **Database** | PostgreSQL (Render 배포) |
+| **AI Models** | Gemini 3.1 Pro, Gemini 3.5 Flash-Lite, Gemini 2.5 Flash API, Claude Sonnet 5 |
+| **AI Tech** | RAG 변형, Function Calling, Streaming API, In-Context Learning, Prompt Engineering, System Instruction Tuning, Multi-lingual Dynamic Translation |
+| **Design** | Spline (3D) |
+| **Tools** | GitHub, VS Code, Google AI Studio |
+
+## 🤖 AI 핵심 기술 및 적용 내역
+
+단순 API 연결을 넘어, 서비스와의 완벽한 융합을 위해 다음과 같은 고급 AI 엔지니어링 기술을 적용했습니다.
+
+*   **RAG (Retrieval-Augmented Generation) 변형:** 사용자의 3년 치 다이어리 DB에서 자소서 문항과 일치하는 에피소드를 정밀 추출하여, AI의 환각(Hallucination) 현상을 방지하고 '팩트 기반' 텍스트만 생성합니다.
+*   **Function Calling:** AI 챗봇이 사용자의 대화 의도를 스스로 판단하여, 백엔드 서버의 캘린더 DB를 직접 호출하고 기록을 저장/수정하는 유기적인 상호작용을 구현했습니다.
+*   **Streaming API 적용:** 챗봇 및 자소서 생성 과정에서 응답 대기 시간을 최소화하고, 실시간 타이핑 효과(Streaming)를 주어 사용자에게 자연스러운 컨설팅 UX를 제공합니다.
+*   **System Instruction Tuning & Prompt Engineering:** AI에게 '마이스터고 취업 전문 컨설턴트'라는 페르소나를 강력하게 부여하고, S-T-A-R 기법에 최적화된 프롬프트를 설계하여 결과물의 품질을 극대화했습니다.
+*   **In-Context Learning:** 대화 세션 내에서 사용자의 이전 기록 문체와 감정 상태를 문맥적으로 학습하여, 기계적이지 않은 초개인화된 대필과 멘탈 케어를 수행합니다.
+*   **Multi-lingual Dynamic Translation:** 외국계 기업 정보 탐색이나 글로벌 스펙 관리에 필요한 전문 실무 용어 및 다국어 환경을 동적으로 지원합니다.
+
+## 📑 외부 사용 내역 (AI 모델 · 오픈소스 · 외부 자문)
+본 프로젝트는 대회 규정에 따라 외부 자원 사용 내역을 아래와 같이 투명하게 공개합니다.
+
+**1. AI 모델 및 API**
+*   **Gemini 3.1 Pro & 2.5 Flash API:** 에피소드 매칭(RAG 변형), STAR 자소서 논리 구조화 등 서비스 코어 엔진
+*   **Gemini 3.5 Flash-Lite:** 실시간 시맨틱 요약, 키워드 태깅, 멘탈 케어 챗봇 (Streaming API)
+*   **Claude Sonnet 5 & ChatGPT:** 서비스 기획 고도화, AI 프롬프트 엔지니어링 및 코드 디버깅 보조
+*   **Google AI Studio:** 프롬프트 시스템 인스트럭션 튜닝
+
+**2. 오픈소스 패키지, 라이브러리 및 디자인 에셋**
+*   **Frontend Framework:** Next.js, React
+*   **3D Interactive UI:** 
+    *   `@splinetool/react-spline` 패키지 사용
+    *   3D UI 디자인 에셋 활용 (Spline Design 파일 연동)
+        *   [Main 3D Scene Asset 1](https://app.spline.design/file/0e85d662-485c-4958-89be-8810f8a8c550)
+        *   [Main 3D Scene Asset 2](https://app.spline.design/file/dfd3941c-a389-44a2-a143-411247fd720a)
+*   **Styling:** CSS / Tailwind CSS
+
+**3. 외부 자문**
+*   해당 사항 없음 (Team AMP 자체 기획 및 100% 자체 개발) 
+
+## 🚀 서비스 접속 방법
+MyStair 서비스는 복잡한 로컬 환경 세팅 없이 웹에서 바로 경험하실 수 있도록 배포되어 있습니다.
+
+👉 **웹사이트 바로가기:** https://mystair-henna.vercel.app
+
+> **[심사위원용 테스트 계정]**
+> 회원가입 없이 즉시 핵심 기능을 체험해 보실 수 있습니다.
+> *   **ID:** `test@test.com`
+> *   **PW:** `12345678@`
+
+## 📄 라이선스
+This project is licensed under the **MIT License**.
+
+---
+
+# Team AMP
+> **Amplify Meister Potential - 마이스터고 학생들의 잠재력을 증폭시키다.**
+
+Team AMP(구미전자공업고등학교)는 모든 마이스터고 학생들이 자신의 진정한 가치를 잃어버리지 않고, 기록의 힘을 통해 성공적인 커리어를 밟아나갈 수 있도록 돕습니다.
+
+*   **노현우 (2학년):** 팀장 / 프론트엔드 및 기획
+*   **김교범 (2학년):** 깃허브 관리자 / 프론트엔드
+*   **박영진 (2학년):** 백엔드 및 데이터베이스 설계
