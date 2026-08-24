@@ -447,14 +447,22 @@ export default function MyPage() {
 
               <div>
                 <div className="flex items-center gap-2.5">
-                  <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : ""}`}>
+                  <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
                     {profile.name}
                   </h1>
-                  <span className="bg-indigo-500/30 text-indigo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-500/30">{t('마이스터 인재')}</span>
+                  <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                    isLightMode 
+                      ? "bg-indigo-50 text-indigo-600 border-indigo-200" 
+                      : "bg-indigo-500/20 text-indigo-200 border-indigo-500/30"
+                  }`}>
+                    {t('마이스터 인재')}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-300 font-medium mt-1 flex items-center gap-2">
+                <p className={`text-xs font-medium mt-1 flex items-center gap-2 ${
+                  isLightMode ? "text-slate-600" : "text-slate-300"
+                }`}>
                   <span>{profile.highSchool}</span>
-                  <span className="text-slate-500">•</span>
+                  <span className="text-slate-400">•</span>
                   <span>{profile.major}</span>
                 </p>
               </div>
@@ -465,8 +473,10 @@ export default function MyPage() {
                 onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
                 className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
                   isFullEditing 
-                    ? 'bg-indigo-500 hover:bg-indigo-600 text-white' 
-                    : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
+                    : isLightMode
+                      ? 'bg-slate-50 hover:bg-slate-100 text-slate-900 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
+                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
                 }`}
               >
                 {isFullEditing ? <Check size={16} /> : <Edit3 size={16} />}
@@ -969,8 +979,8 @@ export default function MyPage() {
 
               <div className={`mt-8 pt-6 border-t ${!isLightMode ? "border-white/10" : "border-slate-200"} flex items-center justify-between`}>
                 <div>
-                  <div className={`text-sm font-bold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('터치 이펙트', 'Touch Effect')}</div>
-                  <div className={`text-xs mt-1 ${isLightMode ? "text-slate-500" : "text-white/60"}`}>{t('화면을 터치할 때 나타나는 다채로운 파티클 효과')}</div>
+                  <div className="text-sm font-bold text-slate-900">{t('터치 이펙트', 'Touch Effect')}</div>
+                  <div className="text-xs mt-1 text-slate-500">{t('화면을 터치할 때 나타나는 다채로운 파티클 효과')}</div>
                 </div>
                 <button
                   onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}

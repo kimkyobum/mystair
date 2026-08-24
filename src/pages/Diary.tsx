@@ -659,7 +659,7 @@ JSON 구조 규격:
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b flex-none ${isLightMode ? "border-slate-200" : "border-white/5"}`}>
               <div className="text-center sm:text-left">
                 <h2 className={`text-3xl sm:text-4xl font-black tracking-wider font-sans uppercase ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                  {MONTH_NAMES_EN[currentMonth]}
+                  {language === 'ko' ? `${currentMonth + 1}월` : MONTH_NAMES_EN[currentMonth]}
                 </h2>
                 <div className={`text-sm font-extrabold tracking-widest mt-0.5 ${isLightMode ? "text-indigo-600" : "text-indigo-500/80"}`}>
                   {currentYear}.{monthFormatted}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Users, Activity, CreditCard, ChevronRight, ChevronDown, BookOpen, Rocket, Compass, Calendar, Sparkles, Target, CheckCircle, Flame, FileText, AlertCircle, PenTool, LayoutTemplate, ArrowRight, Cpu, Network } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
+import PrivacyPolicyModal from './PrivacyPolicyModal';
 
 const skills = [
   "진로", "마이스터", "다이어리", "자격증", "직무검사", "기능사"
@@ -44,6 +45,7 @@ const FAQItem = ({ q, a, index }: { q: string, a: string, index: number }) => {
 
 export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: () => void }) {
   const [showCopyrightModal, setShowCopyrightModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const { t } = useLanguage();
 
   const faqData = [
@@ -353,6 +355,12 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-gray-500 text-xs">
                 <span>{t('© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 눈부시고 찬란한 내일을 진심으로 응원합니다.', '© 2026 MyStair Inc. All rights reserved. Sincerely supporting the bright future of vocational high school students.')}</span>
                 <button 
+                  onClick={() => setShowPrivacyModal(true)}
+                  className="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors cursor-pointer pointer-events-auto"
+                >
+                  {t('개인정보처리방침', 'Privacy Policy')}
+                </button>
+                <button 
                   onClick={() => setShowCopyrightModal(true)}
                   className="text-teal-400 hover:text-teal-300 underline font-semibold transition-colors cursor-pointer pointer-events-auto"
                 >
@@ -363,6 +371,12 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           </div>
         </FadeIn>
       </footer>
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
 
       {/* Copyright Modal */}
       {showCopyrightModal && (

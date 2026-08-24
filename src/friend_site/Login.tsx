@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from './LanguageContext';
+import PrivacyPolicyModal from './PrivacyPolicyModal';
 import { 
   auth, 
   createUserWithEmailAndPassword, 
@@ -53,6 +54,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   const [customMockEmail, setCustomMockEmail] = useState('');
   const [customMockName, setCustomMockName] = useState('');
   const [showCustomMockInput, setShowCustomMockInput] = useState(true);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -792,7 +794,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                   </div>
 
                   <p className="text-[12px] text-[#5f6368] leading-relaxed mt-4">
-                    앱을 사용하기 전에 <span className="text-blue-600 font-medium">MyStair</span>의 <span className="text-blue-600 font-medium cursor-pointer hover:underline">개인정보처리방침</span> 및 <span className="text-blue-600 font-medium cursor-pointer hover:underline">서비스 약관</span>을 검토하세요.
+                    앱을 사용하기 전에 <span className="text-blue-600 font-medium">MyStair</span>의 <span onClick={() => setShowPrivacyModal(true)} className="text-blue-600 font-medium cursor-pointer hover:underline">개인정보처리방침</span> 및 <span className="text-blue-600 font-medium cursor-pointer hover:underline">서비스 약관</span>을 검토하세요.
                   </p>
                 </div>
               ) : (
@@ -861,12 +863,18 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
             </div>
             <div className="flex gap-4">
               <span className="hover:text-black cursor-pointer">도움말</span>
-              <span className="hover:text-black cursor-pointer">개인정보처리방침</span>
+              <span onClick={() => setShowPrivacyModal(true)} className="hover:text-black cursor-pointer hover:underline">개인정보처리방침</span>
               <span className="hover:text-black cursor-pointer">약관</span>
             </div>
           </div>
         </div>
       )}
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
     </div>
   );
 }

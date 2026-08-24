@@ -9,30 +9,37 @@
   <style>
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-      background-color: #030712;
-      color: #f3f4f6;
+      background-color: #0B0F19;
+      color: #e2e8f0;
     }
     .glass-card {
-      background: rgba(17, 24, 39, 0.7);
+      background: linear-gradient(180deg, rgba(17, 22, 37, 0.9) 0%, rgba(14, 19, 32, 0.95) 50%, rgba(11, 15, 25, 1) 100%);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     .glass-card:hover {
-      border-color: rgba(45, 212, 191, 0.4);
-      box-shadow: 0 0 25px rgba(45, 212, 191, 0.15);
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 35px rgba(6, 182, 212, 0.2);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(-4px); }
+      50% { transform: translateY(4px); }
+    }
+    .floating-anim {
+      animation: float 4s ease-in-out infinite;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-teal-500/30 selection:text-teal-200">
+<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
 
   <!-- Background Ambient Lights -->
-  <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-[140px] pointer-events-none"></div>
-  <div class="fixed bottom-10 left-10 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-500/10 rounded-full blur-[160px] pointer-events-none"></div>
+  <div class="fixed bottom-10 left-10 w-[450px] h-[450px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none"></div>
 
   <!-- Header / Navigation -->
-  <header class="relative z-10 w-full max-w-6xl mx-auto px-6 py-8 flex items-center justify-between">
+  <header class="relative z-10 w-full max-w-7xl mx-auto px-6 py-8 flex items-center justify-between">
     <a href="/" class="flex items-center gap-3 group text-white text-2xl font-black tracking-tight">
-      <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-teal-400 group-hover:rotate-180 transition-transform duration-500">
+      <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-cyan-400 group-hover:rotate-180 transition-transform duration-500">
         <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(45 50 50)"/>
         <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 50 50)"/>
       </svg>
@@ -42,7 +49,7 @@
     <div class="flex items-center gap-6 text-sm font-medium">
       <a href="/" class="text-slate-300 hover:text-white transition-colors" data-t="nav_home">홈 (홍보사이트)</a>
       <a href="/map.html" class="text-slate-300 hover:text-white transition-colors" data-t="nav_map">마이스터고 지도</a>
-      <a href="/creators.html" class="text-teal-300 font-bold border-b-2 border-teal-400 pb-0.5" data-t="nav_creators">만든 사람들</a>
+      <a href="/creators.html" class="text-cyan-300 font-bold border-b-2 border-cyan-400 pb-0.5" data-t="nav_creators">만든 사람들</a>
       
       <!-- Language Selector -->
       <div class="flex items-center bg-white/5 border border-white/10 rounded-full p-1 text-[11px] select-none">
@@ -67,141 +74,211 @@
   </header>
 
   <!-- Hero Section -->
-  <main class="relative z-10 w-full max-w-6xl mx-auto px-6 py-12 flex-1">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-black tracking-widest uppercase mb-5 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
-        ✨ GUMI ELECTRONIC TECH HIGH SCHOOL
+  <main class="relative z-10 w-full max-w-7xl mx-auto px-6 py-12 pb-32 flex-1">
+    <div class="flex flex-col items-center text-center mb-24">
+      
+      <!-- 3D School Emblem -->
+      <div class="relative flex flex-col items-center justify-center py-6 mb-2">
+        <div class="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center floating-anim">
+          <div class="absolute inset-0 bg-cyan-500/20 rounded-full blur-2xl animate-pulse"></div>
+          <div class="absolute inset-2 bg-indigo-500/25 rounded-full blur-xl"></div>
+          <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-slate-900/90 via-[#10192e]/95 to-slate-950/95 border-2 border-cyan-400/40 shadow-[0_10px_40px_rgba(6,182,212,0.3)] backdrop-blur-md flex flex-col items-center justify-center p-3">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-lg flex items-center justify-center mb-1">
+              <div class="w-full h-full bg-[#0d1322] rounded-[14px] flex items-center justify-center text-cyan-400 text-xl font-bold">
+                🎓
+              </div>
+            </div>
+            <span class="text-[11px] sm:text-xs font-black tracking-tighter text-white uppercase bg-clip-text text-transparent bg-gradient-to-r from-cyan-200 via-white to-cyan-300">
+              구미전자공고
+            </span>
+            <span class="text-[9px] font-bold text-cyan-400 tracking-widest uppercase">
+              EST. 1954
+            </span>
+          </div>
+        </div>
       </div>
-      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight mb-5">
-        <span class="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent" data-t="hero_title">
-          Mystair를 만든 사람들
+
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/5 mb-8">
+        <span class="text-sm font-bold tracking-wide text-cyan-400 uppercase">
+          TEAM AMP &nbsp;&middot;&nbsp; Gumi Electronic Tech High School
         </span>
+      </div>
+
+      <h1 class="text-5xl md:text-6xl font-black text-white tracking-tight mb-6" data-t="hero_title">
+        Mystair를 만든 사람들
       </h1>
-      <p class="text-slate-400 text-base md:text-lg font-normal leading-relaxed max-w-2xl mx-auto" data-t="hero_desc">
-        구미전자공업고등학교 2학년 주역들이 의기투합하여 기획하고 개발한<br class="hidden sm:inline" />
+
+      <p class="text-lg text-gray-400 max-w-2xl leading-relaxed font-medium" data-t="hero_desc">
+        구미전자공업고등학교 2학년 주역들이 의기투합하여 기획하고 개발한<br class="hidden sm:block" />
         전국 마이스터고 학생 맞춤형 AI 커리어·진로 탐색 플랫폼입니다.
       </p>
     </div>
 
+    <!-- Team AMP Story Banner -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#121622] via-[#16142c] to-[#121622] border border-white/5 p-8 md:p-12 mb-24 shadow-2xl">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-500/15 blur-[100px] rounded-full pointer-events-none"></div>
+      
+      <div class="relative z-10 flex flex-col items-center max-w-3xl mx-auto text-center">
+        
+        <!-- Header: Logo and Title -->
+        <div class="flex flex-col items-center mb-10">
+          <div class="mb-6 px-6 py-3 bg-white/95 backdrop-blur-sm rounded-xl shadow-[0_0_40px_rgba(79,70,229,0.15)] inline-flex items-center justify-center min-w-[160px] min-h-[64px]">
+            <span class="text-4xl font-black bg-gradient-to-r from-[#2c3e50] via-[#34495e] to-[#6a4299] bg-clip-text text-transparent tracking-tighter" style="font-family: sans-serif;">
+              AMP
+            </span>
+          </div>
+          
+          <div class="flex items-center justify-center gap-3">
+            <span class="text-xl text-indigo-400">🏆</span>
+            <h2 class="text-lg font-black text-white tracking-widest uppercase">
+              Team AMP
+            </h2>
+          </div>
+        </div>
+
+        <!-- Content: Team Story -->
+        <div class="space-y-6">
+          <p class="text-[15px] md:text-base text-gray-300 leading-relaxed font-medium">
+            저희 Team AMP는 <strong class="text-indigo-400 font-bold">'마이스터고 학생들의 잠재력을 증폭시키다'</strong>라는 비전으로 뭉친 구미전자공업고등학교 2학년 학생들입니다.
+          </p>
+          
+          <p class="text-[15px] md:text-base text-gray-400 leading-relaxed">
+            저희는 현장에서 매일 치열하게 실습과 프로젝트를 소화하지만, 이를 체계적으로 남길 시스템이 없어 취업 시즌마다 자소서 작성에 막막함을 느끼는 선배와 친구들을 누구보다 가까이서 지켜봤습니다.
+          </p>
+
+          <blockquote class="py-4 px-6 my-8 border-l-2 border-indigo-500/50 bg-indigo-500/5 text-indigo-200 font-medium italic rounded-r-lg">
+            "우리의 땀방울이 밴 소중한 경험들이 휘발되지 않고, 합격을 부르는 확실한 스펙이 될 수는 없을까?"
+          </blockquote>
+
+          <p class="text-[15px] md:text-base text-gray-400 leading-relaxed">
+            이 질문에 대한 답을 찾기 위해, 마이스터고 학생들의 페인포인트를 가장 뼈저리게 공감하는 저희가 직접 나섰습니다. 단순한 개발을 넘어, 우리들의 진짜 가치를 되찾아줄 <strong class="text-white font-semibold">'나만의 전용 AI 커리어 빌더, MyStair'</strong>를 통해 특성화고 학생들의 성공적인 취업 여정을 돕겠습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- Team Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
       
       <!-- Creator 1: 김교범 -->
       <div class="glass-card rounded-3xl p-7 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 relative group">
-        <div class="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
+        <div class="absolute top-0 left-7 right-7 h-[2.5px] bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
         <div>
           <div class="flex items-center justify-between mb-6">
-            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.04] border border-white/10 px-3 py-1 rounded-full">
+            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.05] border border-white/10 px-3 py-1 rounded-full font-mono">
               DEV // 01
             </span>
             <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300">
-              GitHub &amp; Main Design
+              Core Developer
             </span>
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator1_name">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors" data-t="creator1_name">
               김교범
             </h3>
-            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 text-xs sm:text-sm font-semibold">
               <span data-t="creator1_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
-          <div class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mb-3">
+          <div class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mb-3.5">
             GitHub &amp; Main Page Design
           </div>
 
           <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator1_bio">
-            프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 담당.
+            프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 및 전체 프론트엔드 통합 설계를 담당했습니다.
           </p>
         </div>
 
         <div>
           <div class="flex flex-wrap gap-1.5 pt-4 border-t border-white/10">
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#GitHub</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Main Page Design</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#UI/UX</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#GitHub CI/CD</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Main Page Design</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#UI/UX</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Frontend</span>
           </div>
         </div>
       </div>
 
       <!-- Creator 2: 박영진 -->
       <div class="glass-card rounded-3xl p-7 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 relative group">
-        <div class="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
+        <div class="absolute top-0 left-7 right-7 h-[2.5px] bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
         <div>
           <div class="flex items-center justify-between mb-6">
-            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.04] border border-white/10 px-3 py-1 rounded-full">
+            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.05] border border-white/10 px-3 py-1 rounded-full font-mono">
               BACKEND // 02
             </span>
             <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300">
-              Backend &amp; Data
+              System Architect
             </span>
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator2_name">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 group-hover:text-purple-300 transition-colors" data-t="creator2_name">
               박영진
             </h3>
-            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 text-xs sm:text-sm font-semibold">
               <span data-t="creator2_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
-          <div class="text-xs font-extrabold uppercase tracking-wider text-purple-400 mb-3">
+          <div class="text-xs font-extrabold uppercase tracking-wider text-purple-400 mb-3.5">
             Backend &amp; Data Collection
           </div>
 
           <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator2_bio">
-            서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 취업 데이터 수집·분석 담당.
+            서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 채용 데이터 수집·분석, 자격증·포트폴리오 데이터베이스 최적화를 담당했습니다.
           </p>
         </div>
 
         <div>
           <div class="flex flex-wrap gap-1.5 pt-4 border-t border-white/10">
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Backend Dev</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Data Collection</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Database</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Backend Dev</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Data Pipeline</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Database</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#AI Matching</span>
           </div>
         </div>
       </div>
 
       <!-- Creator 3: 노현우 -->
       <div class="glass-card rounded-3xl p-7 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 relative group">
-        <div class="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
+        <div class="absolute top-0 left-7 right-7 h-[2.5px] bg-gradient-to-r from-emerald-400 to-teal-600 rounded-full opacity-70 group-hover:opacity-100 transition-opacity"></div>
         <div>
           <div class="flex items-center justify-between mb-6">
-            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.04] border border-white/10 px-3 py-1 rounded-full">
+            <span class="text-[11px] font-black tracking-widest uppercase text-slate-400 bg-white/[0.05] border border-white/10 px-3 py-1 rounded-full font-mono">
               PLAN // 03
             </span>
             <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
-              Planning &amp; Design
+              Product Designer
             </span>
           </div>
 
           <div class="mb-4">
-            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2" data-t="creator3_name">
+            <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2 group-hover:text-emerald-300 transition-colors" data-t="creator3_name">
               노현우
             </h3>
-            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 text-xs sm:text-sm font-bold">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 text-xs sm:text-sm font-semibold">
               <span data-t="creator3_grade">🎓 구미전자공업고등학교 2학년</span>
             </div>
           </div>
 
-          <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 mb-3">
+          <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 mb-3.5">
             Planning &amp; Promo Page Design
           </div>
 
           <p class="text-slate-300 text-sm leading-relaxed mb-6" data-t="creator3_bio">
-            서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.
+            서비스 기획 및 스토리보드 설계, 브랜드 아이덴티티 확립, 공식 홍보페이지 UI/UX 디자인 및 3D 인터랙션 연동을 담당했습니다.
           </p>
         </div>
 
         <div>
           <div class="flex flex-wrap gap-1.5 pt-4 border-t border-white/10">
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Service Planning</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Promo Page Design</span>
-            <span class="text-[11px] font-semibold bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#UI/UX</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Service Planning</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Promo Page Design</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#UI/UX</span>
+            <span class="text-[11px] font-medium bg-white/[0.04] text-slate-400 px-2.5 py-1 rounded-lg border border-white/5">#Brand Identity</span>
           </div>
         </div>
       </div>
@@ -211,9 +288,9 @@
     <!-- Signature Footer Banner -->
     <div class="bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 border border-white/10 rounded-2xl p-6 md:p-8 text-center backdrop-blur-md mb-12">
       <div class="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-300 mb-1">
-        <span>🏆 DEVELOPED BY GUMI ELECTRONIC TECHNICAL HIGH SCHOOL TEAM</span>
+        <span>🏆 DEVELOPED BY GUMI ELECTRONIC TECHNICAL HIGH SCHOOL TEAM AMP</span>
       </div>
-      <p class="text-xs text-slate-500 mt-1" data-t="banner_desc">
+      <p class="text-xs text-slate-400 mt-1" data-t="banner_desc">
         마이스터고 학생들의 열정과 기술력으로 제작된 플랫폼입니다. 꿈을 향한 힘찬 첫걸음을 응원합니다.
       </p>
     </div>
@@ -236,13 +313,13 @@
         hero_desc: "구미전자공업고등학교 2학년 주역들이 의기투합하여 기획하고 개발한<br class=\"hidden sm:inline\" /> 전국 마이스터고 학생 맞춤형 AI 커리어·진로 탐색 플랫폼입니다.",
         creator1_name: "김교범",
         creator1_grade: "🎓 구미전자공업고등학교 2학년",
-        creator1_bio: "프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 담당.",
+        creator1_bio: "프로젝트 깃허브(GitHub) 레포지토리 관리 및 협업 파이프라인 구축, Mystair 메인페이지 UI/UX 디자인 및 전체 프론트엔드 통합 설계를 담당했습니다.",
         creator2_name: "박영진",
         creator2_grade: "🎓 구미전자공업고등학교 2학년",
-        creator2_bio: "서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 취업 데이터 수집·분석 담당.",
+        creator2_bio: "서비스 백엔드 서버 및 API 통신 설계, 전국 마이스터고 및 기업 채용 데이터 수집·분석, 자격증·포트폴리오 데이터베이스 최적화를 담당했습니다.",
         creator3_name: "노현우",
         creator3_grade: "🎓 구미전자공업고등학교 2학년",
-        creator3_bio: "서비스 기획 및 스토리보드 설계, 브랜드 소개를 위한 홍보페이지 UI/UX 디자인 및 인터랙션 담당.",
+        creator3_bio: "서비스 기획 및 스토리보드 설계, 브랜드 아이덴티티 확립, 공식 홍보페이지 UI/UX 디자인 및 3D 인터랙션 연동을 담당했습니다.",
         banner_desc: "마이스터고 학생들의 열정과 기술력으로 제작된 플랫폼입니다. 꿈을 향한 힘찬 첫걸음을 응원합니다."
       },
       en: {
@@ -255,13 +332,13 @@
         hero_desc: "An AI career & vocational guidance platform customized for vocational high school students nationwide,<br class=\"hidden sm:inline\" /> planned and developed together by the brilliant 2nd-grade students of Gumi Electronic Technical High School.",
         creator1_name: "Kim Gyo-beom",
         creator1_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
-        creator1_bio: "In charge of managing the project's GitHub repository, establishing collaboration pipelines, and designing the UI/UX of Mystair's main page.",
+        creator1_bio: "In charge of managing the project's GitHub repository, establishing collaboration pipelines, and designing the UI/UX & frontend architecture of Mystair's main page.",
         creator2_name: "Park Young-jin",
         creator2_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
         creator2_bio: "In charge of server backend architecture, API communication design, and collecting & analyzing employment data of technical schools and enterprises.",
         creator3_name: "Noh Hyun-woo",
         creator3_grade: "🎓 Gumi Electronic Tech High, 2nd Grade",
-        creator3_bio: "In charge of service planning, storyboard blueprinting, and visual UI/UX & interaction design of the brand presentation pages.",
+        creator3_bio: "In charge of service planning, storyboard blueprinting, and visual UI/UX & 3D interaction design of the brand presentation pages.",
         banner_desc: "This platform was built through the passion and technological expertise of vocational high school students. We sincerely cheer for your powerful first step towards your dreams."
       }
     };
@@ -276,15 +353,14 @@
       const lang = localStorage.getItem('language') || 'ko';
       const dict = translations[lang] || translations.ko;
       
-      // Update toggle buttons styling
       const koBtn = document.getElementById('lang-ko-btn');
       const enBtn = document.getElementById('lang-en-btn');
       if (koBtn && enBtn) {
         if (lang === 'ko') {
-          koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-teal-500/20 bg-teal-500/20 text-teal-300";
+          koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-cyan-500/20 bg-cyan-500/20 text-cyan-300";
           enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400";
         } else {
-          enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-teal-500/20 bg-teal-500/20 text-teal-300";
+          enBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-cyan-500/20 bg-cyan-500/20 text-cyan-300";
           koBtn.className = "px-2.5 py-1 rounded-full font-bold transition-all cursor-pointer border border-transparent bg-transparent text-slate-400";
         }
       }
@@ -301,17 +377,14 @@
       });
     }
 
-    // Initialize
     updateLanguage();
 
-    // Listen for storage changes
     window.addEventListener('storage', (e) => {
       if (e.key === 'language') {
         updateLanguage();
       }
     });
     
-    // Polling in case of missing event
     let currentLang = localStorage.getItem('language') || 'ko';
     setInterval(() => {
       const checkLang = localStorage.getItem('language') || 'ko';
