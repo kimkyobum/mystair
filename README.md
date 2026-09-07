@@ -78,8 +78,6 @@ MyStair는 단순 대화형 AI나 기존 취업 사이트의 한계를 완벽하
          │
          ▼
 [AI 실전 압박 모의 면접 (In-Context)] ──> 작성된 자소서 기반 면접관 질문 & 피드백
-'''
-## 🏗 시스템 아키텍처
 
 [ CLIENT ]
     │  Next.js 14 / React (Vercel 배포)
