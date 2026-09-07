@@ -603,6 +603,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           return defaultToday;
         };
 
+        const { currentDateISO } = getKoreaDateTimeInfo();
         // Clean any placeholder anomalies in responseText
         responseText = responseText.replace(/\d{4}-\d{2}-XX/g, currentDateISO);
         responseText = responseText.replace(/2026-26-09/g, currentDateISO);
