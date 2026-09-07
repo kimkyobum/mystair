@@ -41,6 +41,23 @@
   scrollbar-width: thin;
 }
 
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3); /* Slate-400 with opacity */
+  border-radius: 4px;
+}
+textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}
+.light textarea::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+}
+
 html {
   scrollbar-color: #1e293b #090d16; /* For Firefox */
   scrollbar-width: thin;
