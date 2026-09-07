@@ -536,7 +536,13 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         }> = [];
 
         const parseNormalizedDate = (rawDate?: string): string => {
-          const { currentDateISO, year: currentYear, month: currentMonth, day: currentDay } = getKoreaDateTimeInfo();
+          const now = new Date();
+          const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          const kst = new Date(utc + (9 * 3600000));
+          const currentYear = String(kst.getFullYear());
+          const currentMonth = String(kst.getMonth() + 1).padStart(2, '0');
+          const currentDay = String(kst.getDate()).padStart(2, '0');
+          const currentDateISO = `${currentYear}-${currentMonth}-${currentDay}`;
           const defaultToday = currentDateISO;
 
           if (!rawDate || typeof rawDate !== 'string') return defaultToday;
@@ -603,7 +609,17 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           return defaultToday;
         };
 
-        const { currentDateISO } = getKoreaDateTimeInfo();
+        const getKSTDateISO = () => {
+          const now = new Date();
+          const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          const kst = new Date(utc + (9 * 3600000));
+          const y = kst.getFullYear();
+          const m = String(kst.getMonth() + 1).padStart(2, '0');
+          const d = String(kst.getDate()).padStart(2, '0');
+          return `${y}-${m}-${d}`;
+        };
+
+        const currentDateISO = getKSTDateISO();
         // Clean any placeholder anomalies in responseText
         responseText = responseText.replace(/\d{4}-\d{2}-XX/g, currentDateISO);
         responseText = responseText.replace(/2026-26-09/g, currentDateISO);
