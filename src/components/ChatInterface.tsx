@@ -180,15 +180,69 @@ ${d.content || ""}
 `
         : "[성장 다이어리 기록 없음]";
 
-    const todayForPrompt = new Date();
-    const currentDateISO = new Date(todayForPrompt.getTime() - todayForPrompt.getTimezoneOffset() * 60000).toISOString().split('T')[0];
-    const currentDateString = todayForPrompt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    // Helper for accurate Korea Standard Time (KST, UTC+9) date & time calculations
+    const getKoreaDateTimeInfo = () => {
+      const now = new Date();
+      
+      const fullFormatter = new Intl.DateTimeFormat('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+      
+      const timeFormatter = new Intl.DateTimeFormat('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      });
+      
+      const isoFormatter = new Intl.DateTimeFormat('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      
+      const parts = isoFormatter.formatToParts(now);
+      const year = parts.find(p => p.type === 'year')?.value || String(now.getFullYear());
+      const month = parts.find(p => p.type === 'month')?.value || String(now.getMonth() + 1).padStart(2, '0');
+      const day = parts.find(p => p.type === 'day')?.value || String(now.getDate()).padStart(2, '0');
+      
+      const currentDateISO = `${year}-${month}-${day}`;
+      const currentDateString = fullFormatter.format(now);
+      const currentTimeString = timeFormatter.format(now);
+      
+      const enFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      });
+      const currentDateEn = enFormatter.format(now);
 
+      return { currentDateISO, currentDateString, currentTimeString, currentDateEn, year, month, day };
+    };
+
+    const { currentDateISO, currentDateString, currentTimeString, currentDateEn } = getKoreaDateTimeInfo();
 
     const systemInstruction = `
 너는 마이스터고 및 특성화고 학생들을 위한 '나만의 기업찾기' 및 AI 진로·취업 수석 컨설턴트 'MyStair AI'야.
-[현재 시스템 날짜 정보 (매우 중요!)]
-- 오늘 날짜: ${currentDateString} (YYYY-MM-DD 형식: ${currentDateISO})
+[현재 실시간 시스템 날짜 및 시간 정보 (절대적 기준)]
+- 오늘 날짜(한국어): ${currentDateString}
+- 오늘 날짜(YYYY-MM-DD): ${currentDateISO}
+- 현재 시각: ${currentTimeString} (한국 표준시 KST 기준)
+- 오늘 날짜(영문): ${currentDateEn}
+
+[💡 오늘 날짜 / 요일 / 시간 질문에 대한 답변 지침 (필수 준수!)]
+- 사용자가 "오늘 몇 일이야?", "오늘 며칠이야?", "오늘 몇칠인지 알아?", "오늘 날짜 알려줘", "오늘 무슨 요일이야?", "지금 몇 년도야?", "오늘 날짜가 어떻게 돼?", "today's date" 등 오늘 날짜나 요일, 시각에 대해 질문하는 경우:
+  - 반드시 위의 실시간 오늘 날짜(${currentDateString}, ${currentDateISO})를 기준으로 정확하고 명쾌하게 알려줘라!
+  - 예시 답변: "오늘은 **${currentDateString}**입니다! 📅 활기차고 뜻깊은 하루 보내세요!"
+  - 절대로 날짜를 모른다고 하거나 엉뚱한 과거/미래 날짜를 지어내지 마라!
+
 - 사용자가 '오늘' 다이어리/일기를 작성해달라고 하면, 무조건 이 오늘 날짜(${currentDateISO})를 다이어리의 date 필드로 사용해라. 사용자가 기존에 같은 날짜의 일기를 이미 작성했더라도, 추가 일기 작성 요청이라면 똑같이 이 오늘 날짜(${currentDateISO})를 사용하여 여러 개를 추가할 수 있게 해라. 절대로 과거 날짜나 임의의 미래 날짜를 지어내지 마라!
 
 사용자의 학과, MBTI, 홀랜드 적성검사 코드, 그리고 작성해온 성장 다이어리(기록)를 분석하여 학생 개개인에게 가장 잘 어울리고 적합한 맞춤형 추천 기업(대기업, 공공기관, 유망 중견/강소기업 등)을 찾아주고 분석해주는 역할을 담당해.
@@ -872,8 +926,15 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               </span>
               <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
                 <button 
+                  onClick={() => setInputValue(t('오늘 며칠이야?', 'What is today\'s date?'))} 
+                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-teal-800 bg-teal-50 hover:bg-teal-100 border-teal-300" : "text-teal-300 bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40"}`}
+                >
+                  <span className="text-sm">📅</span> 
+                  <span>"{t('오늘 며칠이야?', 'What is today\'s date?')}"</span>
+                </button>
+                <button 
                   onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-teal-50 hover:bg-indigo-100 border-teal-300" : "text-teal-300 bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40"}`}
+                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-300 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
                 >
                   <span className="text-sm">✍️</span> 
                   <span>"{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"</span>
@@ -904,7 +965,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         </div>
 
         <div className="pt-3 sm:pt-4 mt-auto shrink-0">
-          <form onSubmit={handleSubmit} className="w-full rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-lg border border-slate-200 bg-white flex items-center focus-within:ring-2 focus-within:ring-teal-500/30 transition-all duration-300 min-h-[52px]">
+          <form onSubmit={handleSubmit} className="w-full rounded-2xl sm:rounded-[32px] p-1.5 sm:p-2 shadow-lg border border-slate-200 bg-white flex items-center focus-within:ring-2 focus-within:ring-slate-300/60 focus-within:border-slate-300 transition-all duration-300 min-h-[52px]">
             <input 
               type="text"
               value={inputValue}

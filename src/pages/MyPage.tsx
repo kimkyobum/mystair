@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
+import { MEISTER_HIGHSCHOOLS, searchMeisterSchools, MeisterSchool } from '../data/meisterSchools';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { useTheme } from '../context/ThemeContext';
@@ -91,6 +92,7 @@ export default function MyPage() {
   const [tempMajor, setTempMajor] = useState('');
   const [tempMbti, setTempMbti] = useState('');
   const [tempHolland, setTempHolland] = useState('');
+  const [isSchoolDropdownOpen, setIsSchoolDropdownOpen] = useState(false);
 
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [newCompanyInput, setNewCompanyInput] = useState('');
@@ -558,38 +560,133 @@ export default function MyPage() {
               </div>
 
               {isFullEditing || editingField === 'school' ? (
-                <div className="space-y-2 pt-1 animate-in fade-in duration-150">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={isFullEditing ? profile.highSchool : tempSchool}
-                      onChange={e => isFullEditing ? setProfile({ ...profile, highSchool: e.target.value }) : setTempSchool(e.target.value)}
-                      onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('highSchool', tempSchool.trim(), '고등학교')}
-                      className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                      placeholder={t('고등학교 선택 또는 입력')}
-                    />
-                    {!isFullEditing && (
-                      <button
-                        onClick={() => savePartialField('highSchool', tempSchool.trim(), '고등학교')}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
+                <div className="space-y-2 pt-1 animate-in fade-in duration-150 relative">
+                  <div className="relative">
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="text"
+                          value={isFullEditing ? profile.highSchool : tempSchool}
+                          onFocus={() => setIsSchoolDropdownOpen(true)}
+                          onBlur={() => setTimeout(() => setIsSchoolDropdownOpen(false), 200)}
+                          onChange={e => {
+                            const val = e.target.value;
+                            if (isFullEditing) {
+                              setProfile({ ...profile, highSchool: val });
+                            } else {
+                              setTempSchool(val);
+                            }
+                            setIsSchoolDropdownOpen(true);
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              setIsSchoolDropdownOpen(false);
+                              if (!isFullEditing) {
+                                savePartialField('highSchool', tempSchool.trim(), '고등학교');
+                              }
+                            }
+                          }}
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
+                          placeholder={t('학교명 입력 (예: 구, 구미, 구미전자공고 등)')}
+                        />
+                        {(isFullEditing ? profile.highSchool : tempSchool) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (isFullEditing) setProfile({ ...profile, highSchool: '' });
+                              else setTempSchool('');
+                              setIsSchoolDropdownOpen(true);
+                            }}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1"
+                          >
+                            <X size={12} />
+                          </button>
+                        )}
+                      </div>
+
+                      {!isFullEditing && (
+                        <button
+                          onClick={() => {
+                            setIsSchoolDropdownOpen(false);
+                            savePartialField('highSchool', tempSchool.trim(), '고등학교');
+                          }}
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
+                        >
+                          <Check size={14} />
+                          <span>{t('저장')}</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 58개 마이스터고 실시간 자동완성 추천 드롭다운 */}
+                    {isSchoolDropdownOpen && (
+                      <div 
+                        className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 max-h-56 overflow-y-auto divide-y divide-slate-100"
+                        onMouseDown={e => e.preventDefault()} // 인풋 포커스 아웃 방지
                       >
-                        <Check size={14} />
-                        <span>{t('저장')}</span>
-                      </button>
+                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-slate-400 flex items-center justify-between sticky top-0 backdrop-blur-sm z-10">
+                          <span>마이스터고 추천 ({searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).length}개)</span>
+                          <span className="text-[9px] text-indigo-500 font-medium">클릭 시 자동 입력</span>
+                        </div>
+                        {searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).length > 0 ? (
+                          searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).map(sch => (
+                            <button
+                              key={sch.id}
+                              type="button"
+                              onClick={() => {
+                                if (isFullEditing) {
+                                  setProfile({ ...profile, highSchool: sch.name });
+                                } else {
+                                  setTempSchool(sch.name);
+                                }
+                                setIsSchoolDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-3.5 py-2 hover:bg-indigo-50/80 transition-colors flex items-center justify-between group cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
+                                  {sch.name}
+                                </span>
+                                {sch.aliases && sch.aliases.length > 0 && (
+                                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                                    ({sch.aliases[0]})
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1 text-[10px]">
+                                <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">
+                                  {sch.region}
+                                </span>
+                                <span className="bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded font-medium">
+                                  {sch.field}
+                                </span>
+                              </div>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="p-3 text-center text-xs text-slate-400">
+                            일치하는 마이스터고가 없습니다. 직접 입력할 수 있습니다.
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {PRESET_SCHOOLS.slice(0, 4).map(sch => (
+
+                  {/* 추천 단축 태그 (빠른 선택) */}
+                  <div className="flex flex-wrap gap-1 items-center pt-0.5">
+                    <span className="text-[10px] text-slate-400 font-semibold mr-1">인기:</span>
+                    {['구미전자공업고등학교', '수도전기공업고등학교', '서울로봇고등학교', '부산기계공업고등학교'].map(sch => (
                       <button
                         key={sch}
                         type="button"
                         onClick={() => {
                           if (isFullEditing) setProfile({ ...profile, highSchool: sch });
                           else setTempSchool(sch);
+                          setIsSchoolDropdownOpen(false);
                         }}
-                        className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
+                        className="text-[10px] bg-slate-100 hover:bg-indigo-100 hover:text-indigo-700 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
                       >
-                        {sch}
+                        {sch.replace('고등학교', '')}
                       </button>
                     ))}
                   </div>

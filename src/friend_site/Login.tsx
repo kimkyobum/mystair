@@ -304,14 +304,11 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
 
-    // Add 1.5 seconds delay to show polished Google account connecting screen
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowMockAccountChooser(false);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      }
-    }, 1500);
+    setIsLoading(false);
+    setShowMockAccountChooser(false);
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
   };
 
   const handleCustomMockLoginSubmit = (e: React.FormEvent) => {

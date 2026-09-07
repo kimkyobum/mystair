@@ -48,21 +48,29 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
         MyStair <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isLightMode ? "from-teal-500 via-emerald-500 to-teal-600" : "from-teal-400 via-emerald-400 to-teal-300"}`}>{t('성장의 계단')}</span>
       </h1>
       
-      <form onSubmit={handleSubmit} className={`w-full ${isLightMode ? "bg-white/90 border-slate-200 shadow-md ring-slate-200/50" : "bg-slate-900/90 border-white/20 ring-teal-500/20"} backdrop-blur-xl animate-gradient rounded-2xl p-2 sm:p-2.5 shadow-2xl flex items-center border focus-within:ring-4 transition-all duration-300 relative group min-h-[52px]`}>
-        <div className={`absolute -inset-1 bg-gradient-to-r ${isLightMode ? "hidden" : "from-teal-500/20 to-emerald-500/20"} rounded-[20px] blur-xl opacity-20 group-hover:opacity-40 group-focus-within:opacity-60 transition duration-500 -z-10`}></div>
+      <form 
+        onSubmit={handleSubmit} 
+        className={`w-full bg-white rounded-2xl p-2 sm:p-2.5 shadow-xl flex items-center border border-slate-200/80 hover:border-slate-300 focus-within:border-slate-300 transition-all duration-300 relative group min-h-[52px] ${
+          isLightMode 
+            ? "hover:shadow-[0_0_20px_rgba(0,0,0,0.06),0_0_15px_rgba(255,255,255,0.9)] focus-within:shadow-[0_0_20px_rgba(0,0,0,0.06),0_0_15px_rgba(255,255,255,0.9)]" 
+            : "hover:shadow-[0_0_22px_rgba(255,255,255,0.25)] focus-within:shadow-[0_0_22px_rgba(255,255,255,0.25)]"
+        }`}
+      >
+        {/* 무채색(은은한 화이트/그레이) 앰비언트 글로우 - 터치/포커스 시에도 호버와 동일한 밝기 유지 */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-slate-200/40 via-white/50 to-slate-200/40 rounded-[22px] blur-lg opacity-0 group-hover:opacity-40 group-focus-within:opacity-40 transition-opacity duration-300 -z-10 pointer-events-none"></div>
 
         <input 
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={t('나의 전공, 적성, 관심 분야에 맞는 기업을 검색하거나 추천받아보세요!')}
-          className={`w-full bg-transparent px-3 sm:px-4 py-2 outline-none text-sm sm:text-base font-medium min-h-[44px] ${isLightMode ? "text-slate-900 placeholder-slate-400" : "text-white placeholder-slate-400"}`}
+          className="w-full bg-transparent px-3 sm:px-4 py-2 outline-none text-sm sm:text-base font-semibold text-slate-900 placeholder-slate-400 min-h-[44px]"
         />
         
         <button 
           type="submit" 
           aria-label="질문 보내기"
-          className={`${isLightMode ? "bg-slate-800 hover:bg-teal-600" : "bg-black hover:bg-gray-800"} text-white p-3 sm:p-3.5 rounded-xl transition-all shadow-md flex items-center justify-center shrink-0 group/btn ml-1.5 sm:ml-2 cursor-pointer min-h-[48px] min-w-[48px] active:scale-95`}
+          className="bg-black hover:bg-slate-800 text-white p-3 sm:p-3.5 rounded-xl transition-all shadow-md flex items-center justify-center shrink-0 group/btn ml-1.5 sm:ml-2 cursor-pointer min-h-[48px] min-w-[48px] active:scale-95 group-hover:bg-slate-900"
         >
           <ArrowUp size={20} strokeWidth={2.5} className="group-hover/btn:-translate-y-0.5 transition-transform" />
         </button>
