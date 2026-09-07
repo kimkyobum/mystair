@@ -59,44 +59,7 @@ MyStair는 단순 대화형 AI나 기존 취업 사이트의 한계를 완벽하
 
 
 
-## 🔄 서비스 작동 원리 (AI Pipeline)
 
-```text
-[학생의 한 줄 실습 기록] 
-         │
-         ▼
-[AI 세부 꼬리 질문 (Streaming)] ──> "어떤 오류가 발생했고, 어떻게 해결했나요?"
-         │
-         ▼
-[역량 태깅 및 경험 다이어리 적재 (Function Calling)] ──> PostgreSQL 암호화 저장
-         │
-         ▼
-[자소서 문항 매칭 (RAG 변형)] ──> 3년 치 DB 중 문항 의도에 맞는 팩트 에피소드 추출
-         │
-         ▼
-[STAR 자소서 개요 생성] ──> 논리적 S-T-A-R 뼈대 도출
-         │
-         ▼
-[AI 실전 압박 모의 면접 (In-Context)] ──> 작성된 자소서 기반 면접관 질문 & 피드백
-
-[ CLIENT ]
-    │  Next.js 14 / React (Vercel 배포)
-    │  - Spline 기반 3D 인터랙티브 UI
-    │  - 다이어리 입력 및 실시간 스트리밍 대화형 UI
-    │  - AI 모의 면접 시뮬레이션 인터페이스
-    ▼
-[ SERVER (API Layer) ]
-    │  Next.js Route Handlers / Server Actions
-    │  - 개인 식별 정보 비식별화(가명화) 전처리
-    │  - 세부 질문 및 면접관 페르소나 System Instruction 주입
-    ├───────────────────────────────┐
-    ▼                               ▼
-[ EXTERNAL AI PIPELINE ]      [ DATABASE ]
-  Google AI Studio              Render (PostgreSQL)
-  - Gemini 3.5 Flash-Lite        - diaries (실습 기록 및 AI 꼬리 질문 응답)
-    (실시간 꼬리 질문 & 모의 면접)  - interview_logs (모의 면접 Q&A 데이터)
-  - Gemini 3.1 Pro / 2.5 Flash   - users / credentials (암호화 계정 정보)
-    (STAR 자소서 변형 RAG 추출)
 
 
 ## 🏗 시스템 아키텍처
@@ -280,3 +243,41 @@ Team AMP(구미전자공업고등학교)는 모든 마이스터고 학생들이 
 
 *   **박영진 (2학년):** 백엔드 및 데이터베이스 설계
 
+## 🔄 서비스 작동 원리 (AI Pipeline)
+
+```text
+[학생의 한 줄 실습 기록] 
+         │
+         ▼
+[AI 세부 꼬리 질문 (Streaming)] ──> "어떤 오류가 발생했고, 어떻게 해결했나요?"
+         │
+         ▼
+[역량 태깅 및 경험 다이어리 적재 (Function Calling)] ──> PostgreSQL 암호화 저장
+         │
+         ▼
+[자소서 문항 매칭 (RAG 변형)] ──> 3년 치 DB 중 문항 의도에 맞는 팩트 에피소드 추출
+         │
+         ▼
+[STAR 자소서 개요 생성] ──> 논리적 S-T-A-R 뼈대 도출
+         │
+         ▼
+[AI 실전 압박 모의 면접 (In-Context)] ──> 작성된 자소서 기반 면접관 질문 & 피드백
+
+[ CLIENT ]
+    │  Next.js 14 / React (Vercel 배포)
+    │  - Spline 기반 3D 인터랙티브 UI
+    │  - 다이어리 입력 및 실시간 스트리밍 대화형 UI
+    │  - AI 모의 면접 시뮬레이션 인터페이스
+    ▼
+[ SERVER (API Layer) ]
+    │  Next.js Route Handlers / Server Actions
+    │  - 개인 식별 정보 비식별화(가명화) 전처리
+    │  - 세부 질문 및 면접관 페르소나 System Instruction 주입
+    ├───────────────────────────────┐
+    ▼                               ▼
+[ EXTERNAL AI PIPELINE ]      [ DATABASE ]
+  Google AI Studio              Render (PostgreSQL)
+  - Gemini 3.5 Flash-Lite        - diaries (실습 기록 및 AI 꼬리 질문 응답)
+    (실시간 꼬리 질문 & 모의 면접)  - interview_logs (모의 면접 Q&A 데이터)
+  - Gemini 3.1 Pro / 2.5 Flash   - users / credentials (암호화 계정 정보)
+    (STAR 자소서 변형 RAG 추출)
