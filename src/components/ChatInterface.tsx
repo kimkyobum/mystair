@@ -252,29 +252,41 @@ ${d.content || ""}
 - 만약 사용자가 "나 MBTI/홀랜드 안 적어놨는데 뭐야?", "마이페이지 안 적었는데 알고 있네?" 하고 묻는다면:
   "아 미안해! 사용자님의 마이페이지 프로필이 아직 작성되지 않은 미진단/미입력 상태네요! 😅 마이페이지에서 MBTI와 진로 적성검사, 전공을 입력해 주시면 딱 맞는 기업과 자격증을 추천해 드릴게요!" 하고 아는 척했던 오류를 정정하고 솔직하며 친절하게 대답해줘.
 
-[오늘의 성장 다이어리 자동 작성 및 저장 기능 (절대적 준수)]
-- **절대적 날짜 규칙**: 절대로 2026-09-XX, YYYY-MM-DD, XX 같은 가상/와일드카드 날짜나 순서가 바뀐 날짜(2026-26-09 등)를 쓰지 마라! 오늘 날짜는 무조건 **${currentDateISO}** (${currentDateString})이다!
-- 사용자가 "오늘의 다이어리 써줘", "오늘 일기 적어줘", "다이어리에 ~내용 적어줘", "저 내용 정리해서 성장다이어리에 넣어줘", "내용을 성장다이어리에 넣어줘"라고 요청하거나, 자신의 하루 활동/실습/자치활동/공부/경험/사진 등을 공유한 경우:
-  1) 사용자가 오늘 있었던 일의 내용을 전혀 알려주지 않고 대화 기록에도 아무 활동 내용이 없는 상태에서 단지 "오늘의 다이어리 써줘"만 입력한 경우:
-     - **절대 다이어리를 가상으로 지어내어 작성하지 마라! [[DIARY_SAVE:...]] 마커도 절대 생성하지 마라!**
-     - 친근하게 무슨 일이 있었는지 물어봐라:
-       "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '전교 학생회 활동했어', '한화 연수 다녀왔어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 일기에 자동으로 등록해 드릴게요! 😊"
-  2) 사용자가 오늘 또는 특정 날짜의 경험/활동(예: 다독상 수상, 실습, 공부, 대회 등)을 말했거나, 다이어리에 넣어달라고 한 경우:
-     - **성장 다이어리 정리 양식 (필수)**: 아래 구조로 깔끔하게 요약해서 채팅으로 답변해줘:
-       🗓 **${currentDateISO} 오늘의 성장 다이어리: [다독상 수여, 전기기능사 실습 등 사실적이고 구체적인 제목 (추상적인 제목 금지)]**
+[오늘의 성장 다이어리 자동 작성 및 저장 기능 (절대적 준수 규칙)]
+- **일반 대화, 단순 질문, 진로 상담 시 다이어리 저장 절대 금지 (중요!)**:
+  사용자가 단순 질문(자격증, 취업, 기업 정보, 학과 생활 등), 일반 대화, 안부, 고민 상담 등을 하거나 기업 추천을 요청한 경우, **절대로 성장 다이어리 양식으로 작성하거나 [[DIARY_SAVE:...]] 마커를 출력하지 마라!** 질문 의도에 맞춰 일반적이고 전문적인 진로/취업 상담 답변만 제공해라.
 
-       • **오늘의 성장 기록**: [학생의 경험을 학생이 직접 쓴 일기처럼 자연스럽게 1인칭 시점으로 2~3문장 기술]
-       • **핵심 역량**: #태그1 #태그2
-       💬 **MyStair의 조언**: [학생에게 보내는 따뜻한 응원 1~2줄]
+- **다이어리 작성 및 [[DIARY_SAVE:...]] 마커 생성이 허용되는 유일한 조건**:
+  오직 사용자가 다음 중 하나에 명확히 해당하는 경우에만 다이어리 양식으로 요약하고 [[DIARY_SAVE:...]] 마커를 생성해라:
+  1) 사용자가 다이어리/일기 작성을 명시적으로 요구한 경우:
+     - 예: "오늘의 다이어리에 넣어줘", "다이어리에 적어줘", "다이어리에 저장해줘", "성장 다이어리에 넣어줘", "일기에 적어줘", "오늘 일기 써줘", "오늘의 다이어리 써줘", "오늘의 다이어리 작성해줘"
+  2) 사용자가 오늘 한 경험/활동임을 밝히며 기록을 남기고자 하는 경우:
+     - 예: "나 오늘의 경험이나 활동이야: ...", "오늘의 활동이야", "오늘의 경험이야", "오늘 한 거야", "오늘 한 일이야: ..."
+  3) 사용자가 '오늘의 다이어리 작성' 버튼을 눌렀거나, 직전 AI 질문("오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿 ...")에 대해 오늘 있었던 일/활동을 답변한 경우
 
-     - **날짜 구분 규칙**: 사용자가 "오늘의 다이어리에 넣지말고 각 날짜에 넣어줘"라고 하거나 특정 날짜(예: 7/20, 7/21)를 지정한 경우, 요청된 각각의 날짜(date: 'YYYY-MM-DD')별로 개별 다이어리 항목을 만들어 JSON 배열로 마커를 출력해라. 별도 날짜 지정이 없거나 '오늘'인 경우 무조건 **${currentDateISO}**를 사용해라.
-     - **제목 규칙**: 제목은 '지식의 깊이를 더하다' 같은 추상적인 문장이 아니라, '다독상 수여', '회로 설계 실습', '학생회 질서 지도'처럼 팩트 중심의 명사형으로 매우 짧게 작성해라.
-     - **다이어리 내용(content) 규칙**: JSON 마커의 "content" 필드 안에는 활동, 성취, 메시지 등을 항목별로 나누지 마라! 오직 "내가 직접 쓴 일기"처럼 자연스러운 줄글 형태로만 작성해라. (예: "오늘 교내 다독상을 받았다. 꾸준히 책을 읽은 보람이 느껴졌고, 앞으로 전공 지식뿐만 아니라 폭넓은 독서를 통해 더 성장하는 엔지니어가 되어야겠다.")
-     - **자동 저장 JSON 마커 (필수)**: 반드시 답변 제일 마지막 줄에 아래 형태의 JSON 마커를 정확히 출력해야 해! (마커 안의 content는 오직 일기 내용만 들어감)
-       - 단일 날짜 예시:
-         [[DIARY_SAVE: {"date": "${currentDateISO}", "title": "다독상 수여", "content": "오늘 교내 다독상을 받았다. 꾸준한 독서를 통해 얻은 지식을 바탕으로 더 훌륭한 엔지니어가 되어야겠다.", "tags": ["독서", "자기주도학습"], "mood": "🔥"}]]
-       - 다중 날짜 예시:
-         [[DIARY_SAVE: [{"date": "${currentDateISO}", "title": "회로 설계 실습", "content": "오늘은 회로 설계 실습을 진행했다. 처음엔 헷갈렸지만 끝까지 해내서 뿌듯하다.", "tags": ["실습"], "mood": "열정"}]]]
+- **내용 없는 빈 다이어리 요청 처리**:
+  - 사용자가 구체적 활동 내용 없이 단지 "오늘의 다이어리 써줘" 또는 "오늘의 다이어리 작성해줘" 등만 입력한 경우:
+    - **절대 다이어리를 가상으로 지어내어 작성하지 마라! [[DIARY_SAVE:...]] 마커도 절대 생성하지 마라!**
+    - 친근하게 무슨 일이 있었는지 물어봐라:
+      "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '전교 학생회 활동했어', '한화 연수 다녀왔어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 일기에 자동으로 등록해 드릴게요! 😊"
+
+- **다이어리 작성 양식 및 마커 규칙**:
+  - **절대적 날짜 규칙**: 절대로 2026-09-XX, YYYY-MM-DD, XX 같은 가상/와일드카드 날짜나 순서가 바뀐 날짜(2026-26-09 등)를 쓰지 마라! 오늘 날짜는 무조건 **${currentDateISO}** (${currentDateString})이다!
+  - **성장 다이어리 정리 양식 (필수)**: 아래 구조로 깔끔하게 요약해서 채팅으로 답변해줘:
+    🗓 **${currentDateISO} 오늘의 성장 다이어리: [다독상 수여, 전기기능사 실습 등 사실적이고 구체적인 제목 (추상적인 제목 금지)]**
+
+    • **오늘의 성장 기록**: [학생의 경험을 학생이 직접 쓴 일기처럼 자연스럽게 1인칭 시점으로 2~3문장 기술]
+    • **핵심 역량**: #태그1 #태그2
+    💬 **MyStair의 조언**: [학생에게 보내는 따뜻한 응원 1~2줄]
+
+  - **날짜 구분 규칙**: 사용자가 "오늘의 다이어리에 넣지말고 각 날짜에 넣어줘"라고 하거나 특정 날짜(예: 7/20, 7/21)를 지정한 경우, 요청된 각각의 날짜(date: 'YYYY-MM-DD')별로 개별 다이어리 항목을 만들어 JSON 배열로 마커를 출력해라. 별도 날짜 지정이 없거나 '오늘'인 경우 무조건 **${currentDateISO}**를 사용해라.
+  - **제목 규칙**: 제목은 '지식의 깊이를 더하다' 같은 추상적인 문장이 아니라, '다독상 수여', '회로 설계 실습', '학생회 질서 지도'처럼 팩트 중심의 명사형으로 매우 짧게 작성해라.
+  - **다이어리 내용(content) 규칙**: JSON 마커의 "content" 필드 안에는 활동, 성취, 메시지 등을 항목별로 나누지 마라! 오직 "내가 직접 쓴 일기"처럼 자연스러운 줄글 형태로만 작성해라. (예: "오늘 교내 다독상을 받았다. 꾸준히 책을 읽은 보람이 느껴졌고, 앞으로 전공 지식뿐만 아니라 폭넓은 독서를 통해 더 성장하는 엔지니어가 되어야겠다.")
+  - **자동 저장 JSON 마커 (필수)**: 반드시 답변 제일 마지막 줄에 아래 형태의 단일 라인 JSON 마커를 정확히 출력해야 해! (마커 안의 content는 오직 일기 내용만 들어감)
+    - 단일 날짜 예시:
+      [[DIARY_SAVE: {"date": "${currentDateISO}", "title": "다독상 수여", "content": "오늘 교내 다독상을 받았다. 꾸준한 독서를 통해 얻은 지식을 바탕으로 더 훌륭한 엔지니어가 되어야겠다.", "tags": ["독서", "자기주도학습"], "mood": "🔥"}]]
+    - 다중 날짜 예시:
+      [[DIARY_SAVE: [{"date": "${currentDateISO}", "title": "회로 설계 실습", "content": "오늘은 회로 설계 실습을 진행했다. 처음엔 헷갈렸지만 끝까지 해내서 뿌듯하다.", "tags": ["실습"], "mood": "열정"}]]]
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
@@ -624,127 +636,175 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         responseText = responseText.replace(/\d{4}-\d{2}-XX/g, currentDateISO);
         responseText = responseText.replace(/2026-26-09/g, currentDateISO);
 
-        // Stage 1: Check for [[DIARY_SAVE: ...]] JSON marker (Object or Array)
-        if (responseText && responseText.includes('[[DIARY_SAVE:')) {
-          const diaryMatch = responseText.match(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/);
-          if (diaryMatch) {
-            try {
-              const rawJson = diaryMatch[1];
-              const parsedData = JSON.parse(rawJson);
-              const items = Array.isArray(parsedData) ? parsedData : [parsedData];
+        const prevAiMsg = existingMessages.filter(m => m.role === 'ai').slice(-1)[0] || messages.filter(m => m.role === 'ai').slice(-1)[0];
 
-              for (const item of items) {
-                if (item && (item.content || item.title)) {
-                  let dTitle = item.title || '';
-                  let dContent = item.content || '';
-                  let dTags = Array.isArray(item.tags) && item.tags.length > 0 ? item.tags : ['성장일기', 'AI자동작성'];
-                  let dMood = item.mood || '보람참';
-                  let dDate = parseNormalizedDate(item.date);
+        // Strict verification: Check whether the user explicitly intended to create/save a growth diary
+        const isDiarySaveIntent = (userText: string): boolean => {
+          const trimmed = userText.trim();
 
-                  if (!dTitle || dTitle.length > 15) {
-                    dTitle = dTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
-                    if (dTitle.length > 12) dTitle = dTitle.slice(0, 12).trim();
+          // 1. Explicit requests to write or save into diary / growth diary
+          const explicitSavePhrases = [
+            /(?:다이어리|일기|성장\s*다이어리)에\s*(?:넣어|적어|써|저장|기록|등록)/i,
+            /(?:오늘의\s*)?(?:다이어리|일기|성장\s*다이어리)\s*(?:작성|써줘|적어줘|만들어줘|등록해줘|저장해줘)/i,
+            /저\s*내용.*(?:다이어리|일기)에/i,
+            /내용.*(?:다이어리|일기)에\s*(?:넣어|적어|써|저장)/i,
+            /각\s*날짜(?:별로|에)?\s*(?:다이어리|일기)/i,
+          ];
+          const hasExplicitSave = explicitSavePhrases.some(regex => regex.test(trimmed));
+
+          // Exclude read-only/analysis requests like "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘", "다이어리 보여줘"
+          const isAnalysisOrViewOnly = /(?:다이어리|일기)를?\s*(?:분석|조회|검색|보여|확인|삭제|읽어)/i.test(trimmed) &&
+            !/(?:넣어|적어|써|저장|기록|등록|작성)/i.test(trimmed);
+
+          if (hasExplicitSave && !isAnalysisOrViewOnly) {
+            return true;
+          }
+
+          // 2. User explicitly declares: "나 오늘의 경험이나 활동이야", "오늘의 경험이야", "오늘 활동이야", "오늘 한거야", "오늘 한 거야", "오늘 한 일이야", "오늘 있었던 일이야"
+          const explicitActivityDeclaration = [
+            /(?:나\s*)?오늘의?\s*(?:경험|활동)(?:이나\s*활동)?(?:이야|야|입니다|예요|임)?/i,
+            /(?:나\s*)?오늘의?\s*(?:활동|경험)(?:이나\s*경험)?(?:이야|야|입니다|예요|임)?/i,
+            /오늘\s*(?:한\s*거|한거|한\s*일|한일|있었던\s*일)(?:이야|야|입니다|예요|임)?/i,
+            /오늘의?\s*(?:하루\s*기록|성장\s*기록)(?:이야|야|입니다|예요|임)?/i,
+            /오늘\s*활동\s*내용/i,
+          ];
+          if (explicitActivityDeclaration.some(regex => regex.test(trimmed))) {
+            return true;
+          }
+
+          // 3. User clicked '오늘의 다이어리 작성' button or initiated diary flow, and previous AI message specifically asked what they did/learned today
+          const prevWasDiaryPrompt = prevAiMsg && /(?:어떤 일이나 배운 내용|무슨 내용을|말씀해주시면.*다이어리|어떤 경험이 있으셨나요|learning experiences today|neat Growth Diary)/i.test(prevAiMsg.content);
+          if (prevWasDiaryPrompt) {
+            return true;
+          }
+
+          return false;
+        };
+
+        const hasDiarySaveIntent = isDiarySaveIntent(text);
+
+        if (!hasDiarySaveIntent) {
+          // Normal chat or question! Do NOT save to diary under any circumstances.
+          // Strip any marker AI might have accidentally generated
+          responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
+        } else {
+          // User genuinely intended to write/save today's diary
+          // Stage 1: Check for [[DIARY_SAVE: ...]] JSON marker (Object or Array)
+          if (responseText && responseText.includes('[[DIARY_SAVE:')) {
+            const diaryMatch = responseText.match(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/);
+            if (diaryMatch) {
+              try {
+                const rawJson = diaryMatch[1];
+                const parsedData = JSON.parse(rawJson);
+                const items = Array.isArray(parsedData) ? parsedData : [parsedData];
+
+                for (const item of items) {
+                  if (item && (item.content || item.title)) {
+                    let dTitle = item.title || '';
+                    let dContent = item.content || '';
+                    let dTags = Array.isArray(item.tags) && item.tags.length > 0 ? item.tags : ['성장일기', 'AI자동작성'];
+                    let dMood = item.mood || '보람참';
+                    let dDate = parseNormalizedDate(item.date);
+
+                    if (!dTitle || dTitle.length > 15) {
+                      dTitle = dTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
+                      if (dTitle.length > 12) dTitle = dTitle.slice(0, 12).trim();
+                    }
+                    if (!dTitle) dTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+
+                    savedDiaryEntries.push({
+                      title: dTitle,
+                      content: dContent,
+                      date: dDate,
+                      mood: dMood,
+                      tags: dTags
+                    });
                   }
-                  if (!dTitle) dTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
-
-                  savedDiaryEntries.push({
-                    title: dTitle,
-                    content: dContent,
-                    date: dDate,
-                    mood: dMood,
-                    tags: dTags
-                  });
                 }
+
+                if (savedDiaryEntries.length > 0) {
+                  diarySaved = true;
+                }
+                responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
+              } catch (e) {
+                console.error("Failed to parse diary JSON from AI response:", e);
+                responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
+              }
+            }
+          }
+
+          // Stage 2: Fallback parser if JSON marker was omitted, but response has date items
+          const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험이 있으셨나요/i.test(responseText);
+
+          if (!diarySaved && !isAiAskingQuestions && responseText) {
+            // Check if AI output contains date blocks e.g. "📅 7/20: ..." or "📅 7/21: ..." or "7/20:"
+            const dateBlockRegex = /(?:📅|🗓️)?\s*(\d{1,2}[\/.-]\d{1,2}|\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)\s*[:\-]\s*([^\n]+(?:\n(?! (?:📅|🗓️)?\s*\d{1,2}[\/.-]\d{1,2}|\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)[^\n]+)*)/g;
+            let match;
+            let foundBlocks = false;
+
+            while ((match = dateBlockRegex.exec(responseText)) !== null) {
+              foundBlocks = true;
+              const rawDate = match[1];
+              const contentText = match[2].trim();
+              const normDate = parseNormalizedDate(rawDate);
+
+              let blockTitle = contentText.split(/[:\-.]/)[0].slice(0, 10).trim();
+              if (!blockTitle) blockTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+
+              savedDiaryEntries.push({
+                title: blockTitle,
+                content: contentText,
+                date: normDate,
+                mood: '보람참',
+                tags: ['성장일기', '각날짜별기록']
+              });
+            }
+
+            if (foundBlocks && savedDiaryEntries.length > 0) {
+              diarySaved = true;
+            } else {
+              // Single entry fallback
+              const titleMatch = responseText.match(/(?:🗓️?|📅)?\s*(?:\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일|\d{4}-\d{2}-XX)?\s*(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\n]+)/i) ||
+                                 responseText.match(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/) ||
+                                 responseText.match(/(?:제목|Title)\s*[:\-]\s*([^\n]+)/i) ||
+                                 responseText.match(/\[오늘의\s*성장\s*다이어리\]\s*[:\-]?\s*([^\n]+)/);
+
+              let dTitle = titleMatch && titleMatch[1] ? titleMatch[1].replace(/[*_#]/g, '').trim() : '';
+              if (!dTitle || dTitle.length > 20) {
+                dTitle = dTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
+                if (dTitle.length > 12) dTitle = dTitle.slice(0, 12).trim();
               }
 
-              if (savedDiaryEntries.length > 0) {
+              let dTags = ['성장일기', 'AI자동작성'];
+              const tagMatches = responseText.match(/#[가-힣a-zA-Z0-9_]+/g);
+              if (tagMatches && tagMatches.length > 0) dTags = tagMatches.map(t => t.replace('#', ''));
+
+              let dMood = '보람참';
+              const moodMatch = responseText.match(/(?:기분|Mood)\s*[:\-]\s*([^\n📌🗓️🔥!]+)/i);
+              if (moodMatch && moodMatch[1]) dMood = moodMatch[1].trim();
+
+              const userDateMatch = text.match(/(\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)/);
+              const dDate = parseNormalizedDate(userDateMatch ? userDateMatch[1] : undefined);
+
+              let cleanedContent = responseText
+                .split('\n')
+                .filter(line => !line.startsWith('📌') && !line.includes('날짜:') && !line.includes('태그:'))
+                .join('\n')
+                .replace(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/g, '')
+                .replace(/\[오늘의\s*성장\s*다이어리\]/g, '')
+                .trim();
+
+              if (cleanedContent.length > 5) {
+                if (!dTitle) dTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
+                savedDiaryEntries.push({
+                  title: dTitle.slice(0, 12),
+                  content: cleanedContent,
+                  date: dDate,
+                  mood: dMood,
+                  tags: dTags
+                });
                 diarySaved = true;
               }
-              responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
-            } catch (e) {
-              console.error("Failed to parse diary JSON from AI response:", e);
-              responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
-            }
-          }
-        }
-
-        // Stage 2: Fallback parser if JSON marker was omitted, but response has date items (e.g., "📅 7/20: ... 📅 7/21: ...")
-        const userAskedDiary = /다이어리|일기|적어줘|써줘|정리|각 날짜/i.test(text);
-        const hasActivityDetail = /했어|갔어|땄어|배웠어|공부|실습|수상|완료|합격|정리|취득|연수|참석|수료|경험|들었어|지도|통제|부회장|학생회/i.test(text);
-        const prevAiMsg = messages.filter(m => m.role === 'ai').slice(-1)[0];
-        const prevWasDiaryQuestion = prevAiMsg && /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험/i.test(prevAiMsg.content);
-
-        const isDiaryCreationTurn = userAskedDiary || prevWasDiaryQuestion || (hasActivityDetail && text.length >= 5);
-        const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험이 있으셨나요/i.test(responseText);
-
-        if (!diarySaved && isDiaryCreationTurn && !isAiAskingQuestions && responseText) {
-          // Check if AI output contains date blocks e.g. "📅 7/20: ..." or "📅 7/21: ..." or "7/20:"
-          const dateBlockRegex = /(?:📅|🗓️)?\s*(\d{1,2}[\/.-]\d{1,2}|\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)\s*[:\-]\s*([^\n]+(?:\n(?! (?:📅|🗓️)?\s*\d{1,2}[\/.-]\d{1,2}|\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)[^\n]+)*)/g;
-          let match;
-          let foundBlocks = false;
-
-          while ((match = dateBlockRegex.exec(responseText)) !== null) {
-            foundBlocks = true;
-            const rawDate = match[1];
-            const contentText = match[2].trim();
-            const normDate = parseNormalizedDate(rawDate);
-
-            let blockTitle = contentText.split(/[:\-.]/)[0].slice(0, 10).trim();
-            if (!blockTitle) blockTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
-
-            savedDiaryEntries.push({
-              title: blockTitle,
-              content: contentText,
-              date: normDate,
-              mood: '보람참',
-              tags: ['성장일기', '각날짜별기록']
-            });
-          }
-
-          if (foundBlocks && savedDiaryEntries.length > 0) {
-            diarySaved = true;
-          } else {
-            // Single entry fallback
-            const titleMatch = responseText.match(/(?:🗓️?|📅)?\s*(?:\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일|\d{4}-\d{2}-XX)?\s*(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\n]+)/i) ||
-                               responseText.match(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/) ||
-                               responseText.match(/(?:제목|Title)\s*[:\-]\s*([^\n]+)/i) ||
-                               responseText.match(/\[오늘의\s*성장\s*다이어리\]\s*[:\-]?\s*([^\n]+)/);
-
-            let dTitle = titleMatch && titleMatch[1] ? titleMatch[1].replace(/[*_#]/g, '').trim() : '';
-            if (!dTitle || dTitle.length > 20) {
-              dTitle = dTitle.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
-              if (dTitle.length > 12) dTitle = dTitle.slice(0, 12).trim();
-            }
-
-            let dTags = ['성장일기', 'AI자동작성'];
-            const tagMatches = responseText.match(/#[가-힣a-zA-Z0-9_]+/g);
-            if (tagMatches && tagMatches.length > 0) dTags = tagMatches.map(t => t.replace('#', ''));
-
-            let dMood = '보람참';
-            const moodMatch = responseText.match(/(?:기분|Mood)\s*[:\-]\s*([^\n📌🗓️🔥!]+)/i);
-            if (moodMatch && moodMatch[1]) dMood = moodMatch[1].trim();
-
-            const userDateMatch = text.match(/(\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)/);
-            const dDate = parseNormalizedDate(userDateMatch ? userDateMatch[1] : undefined);
-
-            let cleanedContent = responseText
-              .split('\n')
-              .filter(line => !line.startsWith('📌') && !line.includes('날짜:') && !line.includes('태그:'))
-              .join('\n')
-              .replace(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/g, '')
-              .replace(/\[오늘의\s*성장\s*다이어리\]/g, '')
-              .trim();
-
-            if (cleanedContent.length > 5) {
-              if (!dTitle) dTitle = language === 'en' ? "Growth Diary" : "성장 다이어리";
-              savedDiaryEntries.push({
-                title: dTitle.slice(0, 12),
-                content: cleanedContent,
-                date: dDate,
-                mood: dMood,
-                tags: dTags
-              });
-              diarySaved = true;
             }
           }
         }
