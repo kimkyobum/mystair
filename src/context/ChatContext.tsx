@@ -36,7 +36,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [initialMessage, setInitialMessage] = useState<string>('');
-  const [showAliens, setShowAliens] = useState<boolean>(true);
+  const [showAliens, setShowAliens] = useState<boolean>(false);
 
   // Load user-specific data when user changes
   useEffect(() => {
@@ -57,7 +57,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setChatActive(savedActive === 'true');
 
     const savedAliens = localStorage.getItem(`mystair_show_aliens_${user?.uid || 'guest'}`);
-    setShowAliens(savedAliens !== 'false');
+    // 기본값은 숨기기(false). 사용자가 'true'로 설정했을 때만 보이게 함
+    setShowAliens(savedAliens === 'true');
   }, [user?.uid]);
 
   // Save to storage on change

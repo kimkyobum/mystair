@@ -424,10 +424,9 @@ export default function MyPage() {
         <div className="space-y-5">
           
           {/* Top Profile Hero Header Box */}
-          <div className={`backdrop-blur-xs rounded-3xl p-6 sm:p-7 shadow-lg border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
-            {/* Cosmic Ambient Effects */}
-            <div className="absolute -right-20 -top-20 w-48 h-48 bg-purple-100 rounded-full blur-[40px] pointer-events-none" />
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-100 rounded-full blur-[45px] pointer-events-none" />
+          <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
+            {/* Subtle Ambient Glow on Left Avatar Only (no blur bleeding on right side) */}
+            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/80 rounded-full blur-[35px] pointer-events-none" />
 
             <div className="flex items-center gap-5 relative z-10">
               {/* Circular Avatar Container */}
@@ -492,14 +491,14 @@ export default function MyPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2 w-full sm:w-auto relative z-10">
               <button
                 onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
                 className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
                   isFullEditing 
                     ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
                     : isLightMode
-                      ? 'bg-slate-50 hover:bg-slate-100 text-slate-900 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
+                      ? 'bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
                       : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
                 }`}
               >
@@ -816,41 +815,93 @@ export default function MyPage() {
               </div>
 
               {isFullEditing || editingField === 'mbti' ? (
-                <div className="bg-pink-950/40 rounded-xl p-3 border border-pink-500/30 space-y-2 animate-in fade-in duration-150">
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={isFullEditing ? profile.mbti : tempMbti}
-                      onChange={e => {
-                        const val = e.target.value;
-                        if (isFullEditing) setProfile({ ...profile, mbti: val });
-                        else {
-                          setTempMbti(val);
-                          savePartialField('mbti', val, 'MBTI');
-                        }
-                      }}
-                      className="flex-1 bg-white border border-pink-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 outline-none"
-                    >
-                      <option value="">{t('선택 안 함 (미진단)')}</option>
-                      {Object.keys(mbtiMeta).map(type => (
-                        <option key={type} value={type}>
-                          {type} - {mbtiMeta[type].alias}
-                        </option>
-                      ))}
-                    </select>
-                    {!isFullEditing && (
+                <div className="bg-pink-50/70 border border-pink-200 rounded-2xl p-3.5 sm:p-4 space-y-3 animate-in fade-in duration-150">
+                  {/* Selected State & Quick Actions */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs font-bold text-slate-500 shrink-0">{t('선택된 유형')}:</span>
+                      {(isFullEditing ? profile.mbti : tempMbti) ? (
+                        <span className="text-xs sm:text-sm font-black text-pink-600 bg-white border border-pink-300 px-2.5 py-0.5 rounded-lg shadow-2xs truncate">
+                          {(isFullEditing ? profile.mbti : tempMbti)}
+                          {mbtiMeta[(isFullEditing ? profile.mbti : tempMbti)] && (
+                            <span className="ml-1 text-[11px] font-bold text-pink-500">
+                              · {mbtiMeta[(isFullEditing ? profile.mbti : tempMbti)].alias}
+                            </span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
+                          {t('미진단 / 선택 안 함')}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
-                        onClick={() => savePartialField('mbti', tempMbti, 'MBTI')}
-                        className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                        type="button"
+                        onClick={() => {
+                          if (isFullEditing) setProfile({ ...profile, mbti: '' });
+                          else {
+                            setTempMbti('');
+                            savePartialField('mbti', '', 'MBTI');
+                          }
+                        }}
+                        className="text-[11px] font-bold text-slate-500 hover:text-slate-800 bg-white hover:bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg transition cursor-pointer"
                       >
-                        저장
+                        {t('선택 해제')}
                       </button>
-                    )}
+
+                      {!isFullEditing && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            savePartialField('mbti', tempMbti, 'MBTI');
+                            setEditingField(null);
+                          }}
+                          className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
+                        >
+                          <Check size={13} />
+                          <span>{t('저장')}</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 16 MBTI Quick Selection Grid (4x4) */}
+                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                    {Object.keys(mbtiMeta).map(type => {
+                      const isSelected = (isFullEditing ? profile.mbti : tempMbti) === type;
+                      return (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => {
+                            if (isFullEditing) {
+                              setProfile({ ...profile, mbti: type });
+                            } else {
+                              setTempMbti(type);
+                              savePartialField('mbti', type, 'MBTI');
+                            }
+                          }}
+                          className={`p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                            isSelected
+                              ? 'bg-pink-600 text-white border-pink-600 shadow-md font-black ring-2 ring-pink-300 scale-[1.02]'
+                              : 'bg-white hover:bg-pink-50/70 text-slate-800 hover:text-pink-600 border-slate-200 hover:border-pink-300 font-semibold'
+                          }`}
+                        >
+                          <span className="text-xs sm:text-sm font-black tracking-wide leading-tight">{type}</span>
+                          <span className={`text-[10px] mt-0.5 truncate max-w-full font-medium ${isSelected ? 'text-pink-100' : 'text-slate-400'}`}>
+                            {mbtiMeta[type]?.alias?.replace('형', '') || ''}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               ) : profile.mbti ? (
                 <div className="flex items-center justify-between gap-3 pt-1">
                   <div>
-                    <span className="text-xl font-black text-pink-400 tracking-tight">{profile.mbti}</span>
+                    <span className="text-xl font-black text-pink-500 tracking-tight">{profile.mbti}</span>
                     <span className="text-xs font-extrabold text-slate-500 block mt-0.5">
                       {currentMbtiMeta?.alias}
                     </span>
@@ -896,7 +947,7 @@ export default function MyPage() {
                   {editingField !== 'holland' && !isFullEditing && (
                     <button
                       onClick={() => { setTempHolland(profile.hollandCode); setEditingField('holland'); }}
-                      className="text-xs font-bold text-cyan-400 hover:text-cyan-600 flex items-center gap-0.5 cursor-pointer"
+                      className="text-xs font-bold text-cyan-500 hover:text-cyan-700 flex items-center gap-0.5 cursor-pointer"
                     >
                       <Edit3 size={13} />
                       <span>{t('수정')}</span>
@@ -906,7 +957,7 @@ export default function MyPage() {
               </div>
 
               {isFullEditing || editingField === 'holland' ? (
-                <div className="bg-cyan-950/40 rounded-xl p-3 border border-cyan-500/30 space-y-2 animate-in fade-in duration-150">
+                <div className="bg-cyan-50/70 rounded-xl p-3 border border-cyan-200 space-y-2 animate-in fade-in duration-150">
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
@@ -922,7 +973,7 @@ export default function MyPage() {
                     {!isFullEditing && (
                       <button
                         onClick={() => savePartialField('hollandCode', tempHolland.trim(), '홀랜드 코드')}
-                        className="bg-cyan-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                        className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition"
                       >
                         저장
                       </button>
