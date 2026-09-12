@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile data including school, major, MBTI, Holland code, and target companies",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 200 },
+        "avatarUrl": { "type": "string" },
+        "highSchool": { "type": "string", "maxLength": 100 },
+        "major": { "type": "string", "maxLength": 100 },
+        "mbti": { "type": "string", "maxLength": 20 },
+        "hollandCode": { "type": "string", "maxLength": 20 },
+        "hollandNote": { "type": "string", "maxLength": 1000 },
+        "targetCompanies": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid"]
+    },
+    "DiaryEntry": {
+      "title": "DiaryEntry",
+      "description": "Growth diary entries written by students",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "date": { "type": "string" },
+        "mood": { "type": "string" },
+        "tags": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "content", "date"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual student profile documents"
+    },
+    "/diaries/{diaryId}": {
+      "schema": "DiaryEntry",
+      "description": "Diary entries by students"
+    }
+  }
+}

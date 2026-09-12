@@ -20,6 +20,7 @@ export interface UserProfileData {
   major: string;
   mbti: string;
   hollandCode: string;
+  hollandNote?: string;
   targetCompanies: string[];
   createdAt?: string;
   updatedAt?: string;
@@ -124,40 +125,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const loadUserProfile = async (currentUser: FirebaseUser) => {
-    const remoteProfile = await apiService.getProfile(currentUser.uid);
-    if (remoteProfile) {
-      let updated = false;
-      const profileData = { ...remoteProfile } as UserProfileData;
-      if (currentUser.photoURL && (!profileData.avatarUrl || profileData.avatarUrl !== currentUser.photoURL)) {
-        profileData.avatarUrl = currentUser.photoURL;
-        updated = true;
+  const getEffectiveUid = (currentUser?: FirebaseUser | any): string => {
+    if (currentUser?.uid) return currentUser.uid;
+    if (currentUser?.email) return 'user_' + currentUser.email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+    try {
+      const savedMock = localStorage.getItem('mystair_mock_user');
+      if (savedMock) {
+        const parsed = JSON.parse(savedMock);
+        if (parsed?.uid) return parsed.uid;
+        if (parsed?.email) return 'user_' + parsed.email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
       }
-      if (currentUser.displayName && (!profileData.name || profileData.name === '마이스터 인재')) {
-        profileData.name = currentUser.displayName;
-        updated = true;
-      }
-      if (updated) {
-        await apiService.updateProfile(profileData, currentUser.uid);
-      }
-      setUserProfile(profileData);
-      return;
-    }
+    } catch (e) {}
+    return 'local-user';
+  };
 
-    const name = currentUser.displayName || '마이스터 인재';
-    const avatarUrl = currentUser.photoURL || generateInitialsAvatar(name);
+  const loadUserProfile = async (currentUser: FirebaseUser | any) => {
+    const currentUid = getEffectiveUid(currentUser);
 
-    const newProfile: UserProfileData = {
-      ...DEFAULT_PROFILE,
-      uid: currentUser.uid,
-      name: name,
-      email: currentUser.email || 'user@mystair.com',
-      avatarUrl: avatarUrl,
-      createdAt: new Date().toISOString(),
+    // 1. Read existing local caches first
+    let localProfile: any = null;
+    try {
+      const savedMypage = localStorage.getItem(`mystair_mypage_data_${currentUid}`);
+      const savedLocal = localStorage.getItem(`mystair_local_user_profile_${currentUid}`);
+      const savedGeneral = localStorage.getItem(`mystair_user_profile_${currentUid}`);
+      localProfile = savedMypage ? JSON.parse(savedMypage) : (savedLocal ? JSON.parse(savedLocal) : (savedGeneral ? JSON.parse(savedGeneral) : null));
+    } catch (e) {}
+
+    // 2. Fetch remote profile from Firestore & server API
+    const remoteProfile = await apiService.getProfile(currentUid);
+
+    const name = remoteProfile?.name || localProfile?.name || currentUser.displayName || '마이스터 인재';
+    const avatarUrl = remoteProfile?.avatarUrl || localProfile?.avatarUrl || currentUser.photoURL || generateInitialsAvatar(name);
+    const email = remoteProfile?.email || localProfile?.email || currentUser.email || '';
+    const highSchool = remoteProfile?.highSchool || localProfile?.highSchool || '';
+    const major = remoteProfile?.major || localProfile?.major || '';
+    const mbti = remoteProfile?.mbti || localProfile?.mbti || '';
+    const hollandCode = remoteProfile?.hollandCode || localProfile?.hollandCode || '';
+    const hollandNote = remoteProfile?.hollandNote || localProfile?.hollandNote || '';
+    const targetCompanies = (remoteProfile?.targetCompanies && remoteProfile.targetCompanies.length > 0)
+      ? remoteProfile.targetCompanies
+      : (localProfile?.targetCompanies && localProfile.targetCompanies.length > 0 ? localProfile.targetCompanies : []);
+
+    const resolvedProfile: UserProfileData = {
+      uid: currentUid,
+      name,
+      email,
+      avatarUrl,
+      highSchool,
+      major,
+      mbti,
+      hollandCode,
+      targetCompanies,
+      createdAt: remoteProfile?.createdAt || localProfile?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    await apiService.updateProfile(newProfile, currentUser.uid);
-    setUserProfile(newProfile);
+
+    localStorage.setItem(`mystair_mypage_data_${currentUid}`, JSON.stringify(resolvedProfile));
+    localStorage.setItem(`mystair_local_user_profile_${currentUid}`, JSON.stringify(resolvedProfile));
+    localStorage.setItem(`mystair_user_profile_${currentUid}`, JSON.stringify(resolvedProfile));
+
+    setUserProfile(resolvedProfile);
+    await apiService.updateProfile(resolvedProfile, currentUid);
   };
 
   const loginWithGoogle = async () => {
@@ -280,17 +308,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfileInFirestore = async (data: Partial<UserProfileData>) => {
-    const currentUid = user ? user.uid : 'local-user';
+    const currentUid = getEffectiveUid(user);
+    
+    // Read existing local caches to never drop fields
+    let localSaved: any = {};
+    try {
+      const s = localStorage.getItem(`mystair_mypage_data_${currentUid}`) || localStorage.getItem(`mystair_local_user_profile_${currentUid}`);
+      if (s) localSaved = JSON.parse(s);
+    } catch (e) {}
+
     const updated = {
       uid: currentUid,
-      ...DEFAULT_PROFILE,
+      ...localSaved,
       ...userProfile,
       ...data,
       updatedAt: new Date().toISOString()
     } as UserProfileData;
 
+    // Immediately cache locally so no race condition or instant unmount loses data
+    localStorage.setItem(`mystair_mypage_data_${currentUid}`, JSON.stringify(updated));
+    localStorage.setItem(`mystair_local_user_profile_${currentUid}`, JSON.stringify(updated));
+    localStorage.setItem(`mystair_user_profile_${currentUid}`, JSON.stringify(updated));
+
+    setUserProfile(updated);
+
     const savedProfile = await apiService.updateProfile(updated, currentUid);
-    setUserProfile(savedProfile as UserProfileData);
+    if (savedProfile) {
+      setUserProfile(prev => ({ ...prev, ...savedProfile }));
+    }
   };
 
   const fetchDiaries = async (): Promise<DiaryEntry[]> => {

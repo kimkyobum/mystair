@@ -194,20 +194,26 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       const name = user.displayName || user.email?.split('@')[0] || '사용자';
       const avatarUrl = user.photoURL || generateInitialsAvatar(name);
       
-      const profile = {
-        uid: user.uid,
-        name: name,
-        email: user.email || '',
-        avatarUrl: avatarUrl,
-        highSchool: '서울마이스터고등학교',
-        major: '전기전자과',
-        mbti: 'ENTJ',
-        hollandCode: 'RIC',
-        targetCompanies: ['한국전력공사', '삼성전자']
-      };
-      localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
-      localStorage.setItem(`mystair_user_profile_${user.uid}`, JSON.stringify(profile));
-      localStorage.setItem(`mystair_mypage_data_${user.uid}`, JSON.stringify(profile));
+      const existingMypage = localStorage.getItem(`mystair_mypage_data_${user.uid}`);
+      if (!existingMypage) {
+        const profile = {
+          uid: user.uid,
+          name: name,
+          email: user.email || '',
+          avatarUrl: avatarUrl,
+          highSchool: '',
+          major: '',
+          mbti: '',
+          hollandCode: '',
+          targetCompanies: []
+        };
+        localStorage.setItem(`mystair_mypage_data_${user.uid}`, JSON.stringify(profile));
+        localStorage.setItem(`mystair_user_profile_${user.uid}`, JSON.stringify(profile));
+        localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+      } else {
+        localStorage.setItem(`mystair_user_profile_${user.uid}`, existingMypage);
+        localStorage.setItem('mystair_local_user_profile', existingMypage);
+      }
       
       setIsLoading(false);
       if (onLoginSuccess) {
@@ -260,47 +266,62 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
     }
 
     const photoURL = generateInitialsAvatar(resolvedName);
+    const stableUid = 'user_' + selectedEmail.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
     
     const mockUser = {
-      uid: 'mock-google-user-' + Math.random().toString(36).substring(2, 9),
+      uid: stableUid,
       displayName: resolvedName,
       email: selectedEmail,
       photoURL: photoURL
     };
     localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
     
-    let profile = {
-      uid: mockUser.uid,
-      name: mockUser.displayName,
-      email: mockUser.email,
-      avatarUrl: photoURL,
-      highSchool: '서울마이스터고등학교',
-      major: '전기전자과',
-      mbti: 'ENTJ',
-      hollandCode: 'RIC',
-      targetCompanies: ['한국전력공사', '삼성전자']
-    };
+    // Check if user already has saved MyPage data!
+    const existingMypage = localStorage.getItem(`mystair_mypage_data_${stableUid}`);
+    if (existingMypage) {
+      try {
+        const parsed = JSON.parse(existingMypage);
+        localStorage.setItem('mystair_local_user_profile', JSON.stringify(parsed));
+        localStorage.setItem(`mystair_user_profile_${stableUid}`, JSON.stringify(parsed));
+      } catch (e) {}
+    } else {
+      let profile = {
+        uid: stableUid,
+        name: mockUser.displayName,
+        email: mockUser.email,
+        avatarUrl: photoURL,
+        highSchool: '서울마이스터고등학교',
+        major: '전기전자과',
+        mbti: 'ENTJ',
+        hollandCode: 'RIC',
+        targetCompanies: ['한국전력공사', '삼성전자']
+      };
 
-    if (selectedEmail === 'honest20090509@gmail.com') {
-      profile.major = '소프트웨어학과';
-      profile.mbti = 'INFJ';
-      profile.hollandCode = 'IAS';
-      profile.targetCompanies = ['삼성전자', '네이버', '카카오'];
-    } else if (selectedEmail === 'hanwhateam78@gmail.com') {
-      profile.major = '메카트로닉스과';
-      profile.mbti = 'ESTJ';
-      profile.hollandCode = 'RCE';
-      profile.targetCompanies = ['한화에어로스페이스', '현대자동차', '한국전력공사'];
-    } else if (selectedEmail === 'mystair09@gmail.com') {
-      profile.major = '자동화시스템과';
-      profile.mbti = 'INTP';
-      profile.hollandCode = 'IRC';
-      profile.targetCompanies = ['한국동서발전', '포스코DX'];
+      if (selectedEmail === 'honest20090509@gmail.com') {
+        profile.highSchool = '구미전자공업고등학교';
+        profile.major = '소프트웨어학과';
+        profile.mbti = 'INFJ';
+        profile.hollandCode = 'IAS';
+        profile.targetCompanies = ['삼성전자', '네이버', '카카오'];
+      } else if (selectedEmail === 'hanwhateam78@gmail.com') {
+        profile.highSchool = '동아마이스터고등학교';
+        profile.major = '메카트로닉스과';
+        profile.mbti = 'ESTJ';
+        profile.hollandCode = 'RCE';
+        profile.targetCompanies = ['한화에어로스페이스', '현대자동차', '한국전력공사'];
+      } else if (selectedEmail === 'mystair09@gmail.com') {
+        profile.highSchool = '수도전기공업고등학교';
+        profile.major = '자동화시스템과';
+        profile.mbti = 'INTP';
+        profile.hollandCode = 'IRC';
+        profile.targetCompanies = ['한국동서발전', '포스코DX'];
+      }
+
+      localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
+      localStorage.setItem(`mystair_user_profile_${stableUid}`, JSON.stringify(profile));
+      localStorage.setItem(`mystair_mypage_data_${stableUid}`, JSON.stringify(profile));
     }
 
-    localStorage.setItem('mystair_local_user_profile', JSON.stringify(profile));
-    localStorage.setItem(`mystair_user_profile_${mockUser.uid}`, JSON.stringify(profile));
-    localStorage.setItem(`mystair_mypage_data_${mockUser.uid}`, JSON.stringify(profile));
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
 
@@ -401,7 +422,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
       // Always save to LocalStorage registered users so login succeeds reliably
       const newUser = {
-        uid: 'user_' + Math.random().toString(36).substring(2, 11),
+        uid: 'user_' + normEmail.replace(/[^a-z0-9]/g, '_'),
         email: normEmail,
         password: signupPassword,
         displayName: normEmail.split('@')[0]

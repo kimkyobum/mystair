@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   User, 
@@ -113,52 +113,74 @@ export default function MyPage() {
     targetCompanies: []
   });
 
-  // Sync profile from Firestore whenever userProfile updates
+  const getActiveUid = () => {
+    if (user?.uid) return user.uid;
+    if (user?.email) return 'user_' + user.email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+    try {
+      const savedMock = localStorage.getItem('mystair_mock_user');
+      if (savedMock) {
+        const parsed = JSON.parse(savedMock);
+        if (parsed?.uid) return parsed.uid;
+        if (parsed?.email) return 'user_' + parsed.email.toLowerCase().trim().replace(/[^a-z0-9]/g, '_');
+      }
+    } catch (e) {}
+    return 'local-user';
+  };
+
+  const profileRef = useRef(profile);
   useEffect(() => {
-    if (firestoreProfile) {
-      setProfile(prev => ({
-        ...prev,
-        name: firestoreProfile.name !== undefined ? firestoreProfile.name : (prev.name || user?.displayName || ''),
-        email: firestoreProfile.email || prev.email || user?.email || '',
-        avatarUrl: firestoreProfile.avatarUrl || user?.photoURL || prev.avatarUrl,
-        highSchool: firestoreProfile.highSchool !== undefined ? firestoreProfile.highSchool : prev.highSchool,
-        major: firestoreProfile.major !== undefined ? firestoreProfile.major : prev.major,
-        mbti: firestoreProfile.mbti !== undefined ? firestoreProfile.mbti : prev.mbti,
-        hollandCode: firestoreProfile.hollandCode !== undefined ? firestoreProfile.hollandCode : prev.hollandCode,
-        targetCompanies: firestoreProfile.targetCompanies || []
-      }));
-    } else if (user) {
-      setProfile(prev => ({
-        ...prev,
-        name: prev.name || user.displayName || '',
-        email: prev.email || user.email || '',
-        avatarUrl: prev.avatarUrl || user.photoURL || ''
-      }));
+    profileRef.current = profile;
+  }, [profile]);
+
+  useEffect(() => {
+    if (isFullEditing) {
+      const uid = getActiveUid();
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
+      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(profile));
     }
-  }, [firestoreProfile, user]);
+  }, [profile, isFullEditing]);
+
+  // Auto-save on page unmount / navigating away so changes are never lost
+  useEffect(() => {
+    return () => {
+      const uid = getActiveUid();
+      const p = profileRef.current;
+      if (p && (p.name || p.highSchool || p.major || p.mbti || p.hollandCode)) {
+        try {
+          localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(p));
+          localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(p));
+          localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
+            name: p.name,
+            email: p.email,
+            avatarUrl: p.avatarUrl
+          }));
+          updateProfileInFirestore(p);
+        } catch (e) {}
+      }
+    };
+  }, []);
 
   // Stored test results
   const [mbtiResult, setMbtiResult] = useState<any>(null);
   const [hollandResult, setHollandResult] = useState<any>(null);
 
   const loadData = () => {
-    const uid = user?.uid || 'local-user';
+    const uid = getActiveUid();
 
-    // 1. Load basic user profile from localStorage if exists
-    const savedSidebarProfile = localStorage.getItem(`mystair_user_profile_${uid}`);
-    let baseName = user?.displayName || '';
-    let baseEmail = user?.email || '';
+    // 1. Initial values from firestore profile or user
+    let baseName = firestoreProfile?.name || user?.displayName || '';
+    let baseEmail = firestoreProfile?.email || user?.email || '';
     let baseAvatarUrl = firestoreProfile?.avatarUrl || user?.photoURL || '';
 
+    // Check localStorage user_profile cache
+    const savedSidebarProfile = localStorage.getItem(`mystair_user_profile_${uid}`);
     if (savedSidebarProfile) {
       try {
         const parsed = JSON.parse(savedSidebarProfile);
-        if (parsed.name) baseName = parsed.name;
-        if (parsed.email) baseEmail = parsed.email;
-        if (parsed.avatarUrl || parsed.photoURL) baseAvatarUrl = parsed.avatarUrl || parsed.photoURL;
-      } catch (e) {
-        console.error(e);
-      }
+        if (parsed.name && !baseName) baseName = parsed.name;
+        if (parsed.email && !baseEmail) baseEmail = parsed.email;
+        if (parsed.avatarUrl && !baseAvatarUrl) baseAvatarUrl = parsed.avatarUrl;
+      } catch (e) {}
     }
 
     // Check mock user as fallback
@@ -168,24 +190,22 @@ export default function MyPage() {
         const parsedMock = JSON.parse(savedMockUser);
         if (parsedMock.photoURL && !baseAvatarUrl) baseAvatarUrl = parsedMock.photoURL;
         if (parsedMock.displayName && !baseName) baseName = parsedMock.displayName;
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
-    // 2. Load full mypage profile from localStorage
-    let currentProfile = {
+    let currentProfile: MyProfileData = {
       name: baseName,
       email: baseEmail,
       avatarUrl: baseAvatarUrl,
-      highSchool: '',
-      major: '',
-      mbti: '',
-      hollandCode: '',
-      hollandNote: '',
-      targetCompanies: [] as string[]
+      highSchool: firestoreProfile?.highSchool || '',
+      major: firestoreProfile?.major || '',
+      mbti: firestoreProfile?.mbti || '',
+      hollandCode: firestoreProfile?.hollandCode || '',
+      hollandNote: firestoreProfile?.hollandNote || '',
+      targetCompanies: (firestoreProfile?.targetCompanies && firestoreProfile.targetCompanies.length > 0) ? firestoreProfile.targetCompanies : []
     };
 
+    // 2. Merge saved MyPage data from local storage (preserves values that may not be in remote yet)
     const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
     if (savedMyPage) {
       try {
@@ -193,41 +213,40 @@ export default function MyPage() {
         currentProfile = {
           ...currentProfile,
           ...parsed,
-          name: parsed.name !== undefined && parsed.name !== '' ? parsed.name : baseName,
-          email: parsed.email || baseEmail,
-          avatarUrl: parsed.avatarUrl || baseAvatarUrl || currentProfile.avatarUrl
+          name: parsed.name || currentProfile.name,
+          email: parsed.email || currentProfile.email,
+          avatarUrl: parsed.avatarUrl || currentProfile.avatarUrl,
+          highSchool: parsed.highSchool || currentProfile.highSchool,
+          major: parsed.major || currentProfile.major,
+          mbti: parsed.mbti || currentProfile.mbti,
+          hollandCode: parsed.hollandCode || currentProfile.hollandCode,
+          targetCompanies: (parsed.targetCompanies && parsed.targetCompanies.length > 0) ? parsed.targetCompanies : currentProfile.targetCompanies
         };
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
-    // 3. Load saved MBTI test results automatically
+    // 3. Saved MBTI test results
     const savedMbti = localStorage.getItem(`mystair_mbti_result_${uid}`);
     if (savedMbti) {
       try {
         const parsed = JSON.parse(savedMbti);
         setMbtiResult(parsed);
-        if (parsed.baseType) {
+        if (parsed.baseType && !currentProfile.mbti) {
           currentProfile.mbti = parsed.baseType;
         }
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
-    // 4. Load saved Holland test results automatically
+    // 4. Saved Holland test results
     const savedHolland = localStorage.getItem(`mystair_holland_result_${uid}`);
     if (savedHolland) {
       try {
         const parsed = JSON.parse(savedHolland);
         setHollandResult(parsed);
-        if (parsed.topCode) {
+        if (parsed.topCode && !currentProfile.hollandCode) {
           currentProfile.hollandCode = parsed.topCode;
         }
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
     setProfile(currentProfile);
@@ -272,23 +291,25 @@ export default function MyPage() {
   };
 
   const handleFullSave = async () => {
-    const uid = user?.uid || 'local-user';
+    const uid = getActiveUid();
+    const updated: MyProfileData = {
+      ...profile,
+      name: profile.name || tempName.trim(),
+      highSchool: profile.highSchool || tempSchool.trim(),
+      major: profile.major || tempMajor.trim(),
+      mbti: profile.mbti || tempMbti,
+      hollandCode: profile.hollandCode || tempHolland
+    };
+    setProfile(updated);
     try {
-      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(updated));
+      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(updated));
       localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
-        name: profile.name,
-        email: profile.email,
-        avatarUrl: profile.avatarUrl
+        name: updated.name,
+        email: updated.email,
+        avatarUrl: updated.avatarUrl
       }));
-      await updateProfileInFirestore({
-        name: profile.name,
-        highSchool: profile.highSchool,
-        major: profile.major,
-        mbti: profile.mbti,
-        hollandCode: profile.hollandCode,
-        targetCompanies: profile.targetCompanies,
-        avatarUrl: profile.avatarUrl
-      });
+      await updateProfileInFirestore(updated);
       showToast('마이페이지 프로필이 성공적으로 저장되었습니다!');
       setIsFullEditing(false);
       setEditingField(null);
@@ -298,11 +319,12 @@ export default function MyPage() {
   };
 
   const savePartialField = async (key: keyof MyProfileData, val: any, fieldLabel: string) => {
-    const uid = user?.uid || 'local-user';
+    const uid = getActiveUid();
     const updated = { ...profile, [key]: val };
     setProfile(updated);
     try {
       localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(updated));
+      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(updated));
       if (key === 'name' || key === 'email' || key === 'avatarUrl') {
         localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
           name: key === 'name' ? val : profile.name,
@@ -638,6 +660,7 @@ export default function MyPage() {
                                   setProfile({ ...profile, highSchool: sch.name });
                                 } else {
                                   setTempSchool(sch.name);
+                                  savePartialField('highSchool', sch.name, '고등학교');
                                 }
                                 setIsSchoolDropdownOpen(false);
                               }}
@@ -681,7 +704,10 @@ export default function MyPage() {
                         type="button"
                         onClick={() => {
                           if (isFullEditing) setProfile({ ...profile, highSchool: sch });
-                          else setTempSchool(sch);
+                          else {
+                            setTempSchool(sch);
+                            savePartialField('highSchool', sch, '고등학교');
+                          }
                           setIsSchoolDropdownOpen(false);
                         }}
                         className="text-[10px] bg-slate-100 hover:bg-indigo-100 hover:text-indigo-700 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
@@ -747,7 +773,10 @@ export default function MyPage() {
                         type="button"
                         onClick={() => {
                           if (isFullEditing) setProfile({ ...profile, major: maj });
-                          else setTempMajor(maj);
+                          else {
+                            setTempMajor(maj);
+                            savePartialField('major', maj, '전공');
+                          }
                         }}
                         className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
                       >
@@ -791,7 +820,14 @@ export default function MyPage() {
                   <div className="flex items-center gap-2">
                     <select
                       value={isFullEditing ? profile.mbti : tempMbti}
-                      onChange={e => isFullEditing ? setProfile({ ...profile, mbti: e.target.value }) : setTempMbti(e.target.value)}
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (isFullEditing) setProfile({ ...profile, mbti: val });
+                        else {
+                          setTempMbti(val);
+                          savePartialField('mbti', val, 'MBTI');
+                        }
+                      }}
                       className="flex-1 bg-white border border-pink-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 outline-none"
                     >
                       <option value="">{t('선택 안 함 (미진단)')}</option>

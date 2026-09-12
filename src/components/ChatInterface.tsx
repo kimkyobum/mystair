@@ -252,41 +252,46 @@ ${d.content || ""}
 - 만약 사용자가 "나 MBTI/홀랜드 안 적어놨는데 뭐야?", "마이페이지 안 적었는데 알고 있네?" 하고 묻는다면:
   "아 미안해! 사용자님의 마이페이지 프로필이 아직 작성되지 않은 미진단/미입력 상태네요! 😅 마이페이지에서 MBTI와 진로 적성검사, 전공을 입력해 주시면 딱 맞는 기업과 자격증을 추천해 드릴게요!" 하고 아는 척했던 오류를 정정하고 솔직하며 친절하게 대답해줘.
 
-[오늘의 성장 다이어리 자동 작성 및 스마트 하위 질문 기능 (절대적 준수 규칙)]
-- **일반 대화, 단순 질문, 진로 상담 시 다이어리 저장 절대 금지 (중요!)**:
-  사용자가 단순 질문(자격증, 취업, 기업 정보, 학과 생활 등), 일반 대화, 안부, 고민 상담 등을 하거나 기업 추천을 요청한 경우, **절대로 성장 다이어리 양식으로 작성하거나 [[DIARY_SAVE:...]] 마커를 출력하지 마라!** 질문 의도에 맞춰 일반적이고 전문적인 진로/취업 상담 답변만 제공해라.
+[오늘의 성장 다이어리 작성 및 스마트 하위 질문 기능 (절대적 준수 규칙)]
+- 🚫 **일반 대화, 단순 질문, 진로/자격증 상담 시 다이어리 저장 및 하위질문 절대 금지 (최우선 원칙!)**:
+  사용자가 단순 질문(자격증, 취업, 기업 정보, 학과 생활, 날씨 등), 일반 대화, 안부, 고민 상담, 기업 추천 등을 한 경우, **절대로 성장 다이어리 양식으로 작성하거나 [[DIARY_SAVE:...]] 마커를 출력하지 마라!** 질문 의도에 맞춰 일반적이고 전문적인 진로/취업 상담 답변만 제공해라.
 
-- **성장 다이어리 작성 및 하위 질문이 시작되는 조건**:
-  사용자가 다음 중 하나에 해당하는 경우 다이어리 인터랙션이 시작된다:
-  1) 다이어리/일기 작성 명시: "오늘의 다이어리에 넣어줘", "다이어리에 적어줘", "다이어리 써줘", "일기에 적어줘", "오늘의 다이어리 작성해줘" 등
-  2) 오늘의 경험/활동 공유: "나 오늘의 경험이나 활동이야: ...", "오늘 활동이야", "오늘의 경험이야", "오늘 한 거야", "오늘 한 일이야: ..."
-  3) 오늘 있었던 일/경험/수상/활동을 언급: 예: "오늘 경운대 대회 나가서 은상 탔어", "오늘 전기기능사 실습했어", "오늘 다독상 받았어", "오늘 학교 축제 부스 운영했어" 등
+- 🎯 **성장 다이어리 인터랙션이 시작되는 조건 (오직 아래 조건 중 하나에 해당할 때만 시작!)**:
+  1) 사용자가 다이어리 작성을 명시했을 때:
+     - "오늘의 다이어리에 넣어줘", "다이어리에 넣어줘", "다이어리에 적어줘", "다이어리에 써줘", "다이어리에 저장해줘", "다이어리에 기록해줘", "다이어리에 추가해줘", "오늘의 다이어리 작성", "오늘의 다이어리 작성해줘", "오늘의 다이어리 써줘", "오늘 다이어리 작성" 등
+  2) 사용자가 오늘의 경험/활동임을 명시했을 때:
+     - "나 오늘의 경험이나 활동이야: ...", "오늘의 경험이나 활동이야", "나 오늘 활동이야", "오늘 활동이야", "오늘의 경험이야", "나 오늘의 경험이야" 등
+  3) 사용자가 오늘 한 일임을 명시했을 때:
+     - "오늘 한거야", "오늘 한 거야", "오늘 한 일이야", "나 오늘 한 거야: ..." 등
+  4) 이전 대화에서 AI가 다이어리 작성 안내 또는 하위 질문을 하여 사용자가 그에 대해 답변하고 있을 때.
 
-- **2단계 스마트 다이어리 작성 프로세스 (핵심!)**:
+  ⚠️ 위 4가지 조건 중 어느 것에도 해당하지 않는 일반 대화, 단순 질문, 상담 등에서는 절대로 다이어리를 작성하거나 저장하지 않는다.
 
-  ⭐ **[1단계] 스마트 하위 질문 (사용자가 질리거나 부담스럽지 않도록 꼭 필요한 핵심 질문 딱 1~2개만!)**:
-  - 사용자가 오늘 있었던 일(예: "오늘 경운대 대회 나가서 은상 탔어", "오늘 전기기능사 실습했어")을 언급했을 때, 즉시 단편적인 다이어리를 저장하지 마라!
-  - MyStair로서 학생의 성취나 노력에 따뜻하게 공감/축하(1줄)를 건넨 뒤, **다이어리에 더 객관적이고 생생한 경험을 담기 위해 MyStair가 꼭 필요하다고 생각하는 핵심 하위 질문 딱 1~2개만** 질문해라!
-  - ⚠️ **질문 개수 제한**: 사용자가 질리거나 힘들지 않게 **반드시 1~2개의 질문만** 해야 한다. (3개 이상 질문 절대 금지!)
+- 💬 **2단계 스마트 다이어리 작성 프로세스**:
+
+  ⭐ **[1단계: 스마트 하위 질문 (경험을 더 객관적이고 정확하게 기록하기 위한 핵심 질문 1~2개)]**:
+  - 사용자가 위 조건과 함께 오늘 있었던 경험(예: "나 오늘의 경험이나 활동이야 오늘 경운대 대회를 나가서 은상을 탔어", "오늘 한거야: 전기기능사 실습했어", "오늘의 다이어리에 넣어줘: 다독상 받았어")을 전달했을 때, 즉시 성급하게 다이어리를 저장하지 마라!
+  - MyStair로서 학생의 성취나 노력에 따뜻한 축하/공감(1줄)을 전한 뒤, **오늘의 다이어리에 더 정확하고 객관적이며 생생하게 적을 수 있도록 MyStair가 필요하다고 생각하는 핵심 하위 질문 딱 1~2개만** 질문해라!
+  - ⚠️ **질문 개수 제한**: 학생이 질리거나 지치지 않도록 **반드시 1~2개의 핵심 질문만** 할 것! (3개 이상 질문 절대 금지)
   - **하위 질문 추천 주제 (상황에 맞게 1~2개 선택)**:
-    - 역할/구체적 활동: "그 대회/활동에서 어떤 프로젝트나 구체적인 역할을 맡아 진행하셨나요?"
-    - 갈등/문제 해결: "진행하면서 겪었던 기술적 어려움이나 팀원과의 갈등이 있었나요? 어떻게 해결하셨나요?"
+    - 구체적 활동/역할: "그 대회/활동에서 어떤 구체적인 역할이나 프로젝트를 맡아 진행하셨나요?"
+    - 갈등/문제 해결: "준비하거나 진행하면서 어떤 갈등이나 기술적 어려움이 있었고, 어떻게 해결하셨나요?"
     - 배운 점/성장: "이번 경험을 통해 새롭게 배운 점이나 느낀 점은 무엇이었나요?"
   - ⚠️ **1단계 준수사항**:
-    - 질문 끝에 "(답변해 주시면 학생님이 직접 쓴 일기처럼 알찬 성장 다이어리로 완성해서 등록해 드릴게요! 🌿)"라고 안내해라.
+    - 질문 끝에 "(답변해 주시면 학생님이 직접 쓴 일기처럼 멋진 성장 다이어리로 완성해서 등록해 드릴게요! 🌿)"라고 안내한다.
     - **1단계 하위 질문 턴에서는 절대로 [[DIARY_SAVE:...]] 마커를 출력하지 마라!** (사용자의 답변을 기다려야 함)
-    - 예외: 사용자가 이미 첫 메시지에서 역할, 문제해결 과정, 배운점까지 매우 상세하게 모두 적어주었거나 "질문 없이 바로 저장해줘"라고 한 경우에는 1단계를 건너뛰고 바로 2단계로 진행한다.
+    - 예외: 사용자가 첫 메시지에서 이미 역할, 문제해결 과정, 배운 점까지 모두 상세하게 적어주었거나 "질문 없이 바로 저장해줘"라고 한 경우에는 1단계를 건너뛰고 바로 2단계로 진행한다.
 
-  ⭐ **[2단계] 하위 질문 답변을 바탕으로 한 최종 성장 다이어리 완성 및 자동 저장**:
+  ⭐ **[2단계: 하위 질문 답변을 바탕으로 한 최종 성장 다이어리 완성 및 자동 저장]**:
   - 사용자가 하위 질문에 답변하면, 사용자의 최초 경험과 답변 내용을 유기적으로 결합하여 최종 성장 다이어리를 채팅에 작성하고 마지막 줄에 자동 저장 마커를 출력해라!
   - **성장 다이어리 채팅 출력 양식**:
     🗓 **${currentDateISO} 오늘의 성장 다이어리: [다이어리 제목 규칙 준수]**
 
-    • **오늘의 성장 기록**: [사용자가 직접 쓴 일기처럼 자연스러운 1인칭 시점으로, 활동 내용과 겪은 문제 해결/배운 점을 녹여낸 2~4문장의 단일 줄글]
+    • **오늘의 성장 기록**: [사용자가 직접 쓴 일기처럼 자연스러운 1인칭 시점(~했다, ~을 배웠다)으로, 활동 내용과 겪은 문제 해결/배운 점을 녹여낸 2~4문장의 단일 줄글]
     • **핵심 역량**: #태그1 #태그2
     💬 **MyStair의 조언**: [학생을 향한 따뜻한 격려와 향후 진로/취업(자기소개서·면접) 연계 팁 1~2줄]
 
-- **다이어리 제목(Title) 규칙 (사용자 요구사항 엄격 준수)**:
+- 📌 **다이어리 제목(Title) 규칙 (절대적 준수!)**:
   - **수상/상장 관련 경험인 경우**:
     - 만약 '~~상을 받았다', '은상 탔다', '다독상 수상' 등 상을 받은 경험이면:
     - **반드시 '[대회/활동명] [상 종류] 수상'** 형태로 간결하고 명확하게 작성해라!
@@ -297,16 +302,13 @@ ${d.content || ""}
     - 예: "전기기능사 회로 실습", "PLC 시퀀스 제어 실습", "학생회 등교 질서 지도", "한화오션 기업 연수", "축제 체험 부스 운영"
   - ❌ 금지: "지혜의 깊이를 더하다", "오늘의 다이어리", "다독상을 받았다", "회로 실습을 한 경험" 같은 추상적이거나 어색한 문장형 제목 절대 금지!
 
-- **다이어리 내용(content) 규칙**:
-  - JSON 마커의 "content" 필드 안에는 활동, 성취, 메시지 등으로 항목을 나누지 마라!
-  - 오직 **"내가 직접 쓴 일기"처럼 1인칭 시점("~했다", "~을 배웠다")의 자연스러운 단일 줄글 형태**로만 작성해라. 하위 질문에서 답한 내용(역할, 해결과정, 배운점)이 매끄럽게 녹아들어가야 한다.
+- 📝 **다이어리 내용(content) 규칙 (사용자 요구사항)**:
+  - JSON 마커의 "content" 필드 안에는 절대로 활동, 성취, 메시지 등으로 항목을 나누지 마라!
+  - 오직 **"내가 직접 쓴 일기"처럼 1인칭 시점("~했다", "~을 배웠다")의 자연스러운 단일 줄글 형태**로만 작성해라. 너무 많은 것을 억지로 추가하려 하지 말고 적당하고 진솔하게 경험 중심으로 작성할 것.
 
-- **자동 저장 JSON 마커 (필수 - 오직 2단계 완료 시점에만 출력)**:
-  - 반드시 2단계 답변 제일 마지막 줄에 아래 형태의 단일 라인 JSON 마커를 정확히 출력해야 해! (마커 안의 content는 오직 1인칭 일기 내용만 들어감)
-  - 단일 날짜 예시:
-    [[DIARY_SAVE: {"date": "${currentDateISO}", "title": "경운대 대회 은상 수상", "content": "오늘 경운대 대회에 출전하여 은상을 수상했다. 팀에서 모터 제어 코딩을 맡았는데 필터 알고리즘을 보정하여 센서 오작동을 해결했다. 이번 대회를 통해 임베디드 제어에 대한 자신감을 얻었다.", "tags": ["경운대대회", "은상수상", "모터제어"], "mood": "뿌듯함"}]]
-  - 다중 날짜 예시:
-    [[DIARY_SAVE: [{"date": "${currentDateISO}", "title": "회로 설계 실습", "content": "오늘은 회로 설계 실습을 진행했다. 처음엔 헷갈렸지만 끝까지 해내서 뿌듯하다.", "tags": ["실습"], "mood": "열정"}]]]
+- 💾 **자동 저장 JSON 마커 (오직 2단계 완료 시점에만 출력)**:
+  - 반드시 2단계 답변 제일 마지막 줄에 아래 형태의 단일 라인 JSON 마커를 정확히 출력해야 해!
+  [[DIARY_SAVE: {"date": "${currentDateISO}", "title": "경운대 대회 은상 수상", "content": "오늘 경운대 대회에 출전하여 은상을 수상했다. 팀에서 모터 제어 코딩을 맡았는데 필터 알고리즘을 보정하여 센서 오작동을 해결했다. 이번 대회를 통해 임베디드 제어에 대한 자신감을 얻었다.", "tags": ["경운대대회", "은상수상", "모터제어"], "mood": "뿌듯함"}]]
 
 [중요 응답 규칙 - 질문 유형별 답변 분량 및 스타일]
 1. 💬 **일상 대화 / 인사 / 단순 질문 / 가벼운 소통** ("안녕?", "반가워", "너 누구야?", "고마워", "오늘 어때?" 등):
@@ -515,27 +517,30 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
       const isBareDiaryRequest = (userText: string): boolean => {
         const trimmed = userText.trim().replace(/[?!.~]/g, '');
         const barePhrases = [
+          "오늘의 다이어리 작성",
+          "오늘의 다이어리 작성해줘",
           "오늘의 다이어리 써줘",
           "오늘 다이어리 써줘",
+          "오늘 다이어리 작성",
+          "오늘 다이어리 작성해줘",
           "다이어리 써줘",
+          "다이어리 작성",
+          "다이어리 작성해줘",
           "오늘 일기 적어줘",
           "일기 적어줘",
           "일기 써줘",
           "오늘 일기 써줘",
           "성장 다이어리 써줘",
-          "다이어리 작성해줘",
           "일기 작성해줘",
           "다이어리 써줘라",
           "일기 써주세요",
-          "오늘 다이어리 작성해줘",
-          "오늘 다이어리 적어줘",
-          "오늘의 다이어리 작성해줘"
+          "오늘 다이어리 적어줘"
         ];
         if (barePhrases.includes(trimmed)) return true;
 
         const hasDiaryKeyword = /다이어리|일기/i.test(trimmed);
         const hasWriteKeyword = /써줘|적어줘|작성|만들어/i.test(trimmed);
-        const hasActivityDetail = /했어|갔어|땄어|배웠어|공부|실습|수상|완료|합격|정리|취득|저 내용|이 내용|아까|위 내용|내용|경험|사진|첨부/i.test(trimmed);
+        const hasActivityDetail = /했어|갔어|땄어|배웠어|공부|실습|수상|완료|합격|정리|취득|저 내용|이 내용|아까|위 내용|내용|경험|활동|대회|은상|금상|대상|동상|다독상|사진|첨부/i.test(trimmed);
 
         if (hasDiaryKeyword && hasWriteKeyword && !hasActivityDetail && trimmed.length < 22) {
           return true;
@@ -550,11 +555,11 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         responseText = responseText.replace(/\[\[DIARY_SAVE:\s*({[\s\S]*?}|\[[\s\S]*?\])\s*\]\]/g, '').trim();
 
         // Ensure response asks user for experience details politely
-        const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험/i.test(responseText);
+        const isAiAskingQuestions = /어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험|어떤 활동/i.test(responseText);
         if (!isAiAskingQuestions) {
           responseText = language === 'en'
-            ? "Did you have any achievements or learning experiences today? 🌿\n\nIf you tell us briefly, like 'I practiced electrical technician skills today' or 'I won a reading award', we'll refine it into a neat Growth Diary for you! 😊"
-            : "오늘 어떤 일이나 배운 내용이 있으셨나요? 🌿\n\n'오늘 전기기능사 실습했어', '다독상 땄어' 처럼 있었던 일을 간단히 말씀해주시면, 깔끔한 성장 다이어리로 다듬어서 일기에 자동으로 작성해 드릴게요! 😊";
+            ? "Did you have any achievements or learning experiences today? 🌿\n\nIf you share what happened, like 'I won silver at Kyungwoon Univ contest today' or 'I practiced electrical technician skills today', MyStair will ask 1-2 core questions to craft an accurate, neat Growth Diary for you! 😊"
+            : "오늘 어떤 경험이나 활동을 하셨나요? 🌿\n\n'오늘 경운대 대회 나가서 은상 탔어', '오늘 전기기능사 실습했어' 처럼 오늘 있었던 일을 들려주시면, 더 정확하고 객관적인 다이어리를 위해 꼭 필요한 질문을 드린 뒤 멋진 오늘의 성장 다이어리로 등록해 드릴게요! 😊";
         }
       } else {
         // Dual-Stage Automatic Diary Saver (Multi-Date & Specific Date Support)
@@ -658,40 +663,55 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
 
         const prevAiMsg = existingMessages.filter(m => m.role === 'ai').slice(-1)[0] || messages.filter(m => m.role === 'ai').slice(-1)[0];
 
-        // Refined title formatter ensuring:
+        // Refined title formatter strictly adhering to user requirements:
         // 1. Award experiences -> '[대회/활동명] [상 종류] 수상' (e.g. '경운대 대회 은상 수상', '교내 다독상 수상')
-        // 2. Activities/Practice -> minimal concise noun (e.g. '전기기능사 회로 실습', '학생회 등교 질서 지도')
+        // 2. General activities/practice -> minimal concise noun (e.g. '전기기능사 회로 실습', '축제 부스 운영')
         const cleanDiaryTitle = (rawTitle: string): string => {
           if (!rawTitle) return language === 'en' ? "Growth Diary" : "성장 다이어리";
           let t = rawTitle.replace(/[*_#\[\]]/g, '').trim();
           t = t.replace(/^(오늘의|나만의)\s*/, '').replace(/성장\s*다이어리/g, '').replace(/[:\-]/g, '').trim();
 
-          // 1. Award pattern matching
+          // 1. Award pattern matching: e.g. "경운대 대회를 나가서 은상을 탔어" -> "경운대 대회 은상 수상", "다독상을 받았다" -> "다독상 수상"
           const awardPattern = /([가-힣a-zA-Z0-9\s]+?)(?:에서|대회)?\s*([가-힣a-zA-Z0-9]+상|은상|금상|대상|동상|최우수상|우수상|장려상|다독상)(?:\s*(?:을|를)?\s*(?:받았다|탔다|수여|수상)?)?/;
           const matchAward = t.match(awardPattern);
           if (matchAward) {
-            const prefix = matchAward[1].replace(/(에서|나가서|참가하여)$/, '').trim();
+            const prefix = matchAward[1].replace(/(에서|나가서|참가하여|출전하여)$/, '').trim();
             const awardName = matchAward[2].trim();
             if (prefix && prefix !== awardName) {
               return `${prefix} ${awardName} 수상`.replace(/\s+/g, ' ');
             }
             return `${awardName} 수상`;
           }
-          if (/[가-힣a-zA-Z0-9]+상(?:\s*수여|\s*받음|\s*획득)/.test(t)) {
-            return t.replace(/(?:수여|받음|획득)$/, '수상').trim();
+          if (/[가-힣a-zA-Z0-9]+상(?:\s*수여|\s*받음|\s*획득|\s*받았다|\s*탔다)/.test(t)) {
+            return t.replace(/(?:수여|받음|획득|받았다|탔다)$/, '수상').trim();
           }
 
           // 2. Activity/Practice concise noun conversion
           t = t.replace(/을?\s*(?:진행)?(?:했음|했다|하다)$/, '')
                .replace(/의?\s*경험(?:을\s*했다)?$/, '')
+               .replace(/을?\s*경험함$/, '')
                .replace(/을?\s*(?:배웠다|배움)$/, ' 학습')
                .replace(/을?\s*(?:완료했다|마쳤다)$/, ' 완료')
+               .replace(/(?:에\s*대한|에\s*관한)\s*/g, ' ')
                .trim();
 
-          if (t.length > 18) {
-            t = t.slice(0, 18).trim();
+          if (t.length > 20) {
+            t = t.slice(0, 20).trim();
           }
           return t || (language === 'en' ? "Growth Diary" : "성장 다이어리");
+        };
+
+        // Format diary content into a natural single first-person paragraph without separate labels like "활동:", "성취:", "메시지:"
+        const cleanDiaryContent = (rawContent: string): string => {
+          if (!rawContent) return '';
+          let c = rawContent.replace(/\[\[DIARY_SAVE:[\s\S]*?\]\]/g, '').trim();
+          // Remove category headers/bullet headers e.g. "활동:", "성취:", "메시지:", "조언:"
+          c = c.replace(/(?:•|\*|-)?\s*(?:활동|성취|성과|메시지|메세지|조언|MyStair의 조언|성장 기록|오늘의 성장 기록)\s*[:\-]\s*/gi, '');
+          c = c.replace(/^[•*-]\s+/gm, '');
+          const lines = c.split('\n')
+            .map(l => l.trim())
+            .filter(l => l.length > 0 && !l.startsWith('💬') && !l.startsWith('🗓') && !l.startsWith('#') && !l.startsWith('📌') && !l.startsWith('기분:'));
+          return lines.join(' ').replace(/\s+/g, ' ').trim();
         };
 
         // Strict verification: Check whether the user explicitly intended to create/save a growth diary
@@ -700,37 +720,35 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
 
           // 1. Explicit requests to write or save into diary / growth diary
           const explicitSavePhrases = [
-            /(?:다이어리|일기|성장\s*다이어리)에\s*(?:넣어|적어|써|저장|기록|등록)/i,
+            /(?:다이어리|일기|성장\s*다이어리)에\s*(?:넣어|적어|써|저장|기록|등록|추가)/i,
             /(?:오늘의\s*)?(?:다이어리|일기|성장\s*다이어리)\s*(?:작성|써줘|적어줘|만들어줘|등록해줘|저장해줘)/i,
             /저\s*내용.*(?:다이어리|일기)에/i,
-            /내용.*(?:다이어리|일기)에\s*(?:넣어|적어|써|저장)/i,
+            /내용.*(?:다이어리|일기)에\s*(?:넣어|적어|써|저장|추가)/i,
             /각\s*날짜(?:별로|에)?\s*(?:다이어리|일기)/i,
           ];
           const hasExplicitSave = explicitSavePhrases.some(regex => regex.test(trimmed));
 
           // Exclude read-only/analysis requests like "내 성장 다이어리를 분석해서 자소서 경험 뽑아줘", "다이어리 보여줘"
           const isAnalysisOrViewOnly = /(?:다이어리|일기)를?\s*(?:분석|조회|검색|보여|확인|삭제|읽어)/i.test(trimmed) &&
-            !/(?:넣어|적어|써|저장|기록|등록|작성)/i.test(trimmed);
+            !/(?:넣어|적어|써|저장|기록|등록|작성|추가)/i.test(trimmed);
 
           if (hasExplicitSave && !isAnalysisOrViewOnly) {
             return true;
           }
 
           // 2. User explicitly declares today's experience, activity, competition, award, practice
+          // EXACTLY matching user words: "오늘의 다이어리에 넣어줘", "나 오늘의 경험이나 활동이야", "오늘 한거야"
           const explicitActivityDeclaration = [
-            /(?:나\s*)?오늘의?\s*(?:경험|활동)(?:이나\s*활동)?(?:이야|야|입니다|예요|임)?/i,
-            /(?:나\s*)?오늘의?\s*(?:활동|경험)(?:이나\s*경험)?(?:이야|야|입니다|예요|임)?/i,
-            /오늘\s*(?:한\s*거|한거|한\s*일|한일|있었던\s*일)(?:이야|야|입니다|예요|임)?/i,
+            /(?:나\s*)?오늘의?\s*(?:경험|활동)(?:이나\s*(?:활동|경험))?(?:이야|야|입니다|예요|임)?/i,
+            /(?:나\s*)?오늘\s*(?:한\s*거|한거|한\s*일|한일)(?:이야|야|입니다|예요|임)?/i,
             /오늘의?\s*(?:하루\s*기록|성장\s*기록)(?:이야|야|입니다|예요|임)?/i,
-            /오늘\s*활동\s*내용/i,
-            /오늘.*(?:대회|실습|수상|상장|은상|대상|금상|동상|다독상|자격증|합격|연수|프로젝트|축제|봉사).*(?:탔어|받았어|했어|땄어|갔어|나갔어|출전)/i,
           ];
           if (explicitActivityDeclaration.some(regex => regex.test(trimmed))) {
             return true;
           }
 
-          // 3. User answering AI's diary prompt or follow-up sub-questions
-          const prevWasDiaryPrompt = prevAiMsg && /(?:어떤 일이나 배운 내용|무슨 내용을|말씀해주시면.*다이어리|어떤 경험이 있으셨나요|learning experiences today|neat Growth Diary|다이어리로 멋지게|다이어리로 완성|성장 다이어리로|하위 질문|들려주실래요|들려주세요|어떤 역할|어떤 활동|어떤 갈등|어떤 어려움|어떻게 해결|여쭤볼게요)/i.test(prevAiMsg.content);
+          // 3. User answering AI's diary prompt or follow-up sub-questions in ongoing diary dialogue
+          const prevWasDiaryPrompt = prevAiMsg && /(?:오늘 어떤 경험이나 활동|어떤 일이나 배운 내용|무슨 내용을|말씀해주시면.*다이어리|어떤 경험이 있으셨나요|learning experiences today|neat Growth Diary|다이어리로 멋지게|다이어리로 완성|성장 다이어리로|하위 질문|생생한 오늘의 다이어리|MyStair가.*여쭤볼게요|어떤 구체적인 역할|어떤 역할|어떤 활동|어떤 갈등|어떤 어려움|어떻게 해결|여쭤볼게요|답변해 주시면.*성장 다이어리)/i.test(prevAiMsg.content);
           if (prevWasDiaryPrompt) {
             return true;
           }
@@ -741,7 +759,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
         const hasDiarySaveIntent = isDiarySaveIntent(text);
 
         // Check if AI is asking the 1-2 interactive sub-questions (Step 1)
-        const isAiAskingQuestions = /(?:어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험이 있으셨나요|어떤 역할|어떤 활동|어떤 갈등|어떤 어려움|어떤 걸 배웠|어떻게 해결|들려주세요|들려주실래요|여쭤볼게요)/i.test(responseText) ||
+        const isAiAskingQuestions = /(?:오늘 어떤 경험이나 활동|어떤 일이나 배운 내용|무슨 내용을|말씀해주시면|어떤 경험이 있으셨나요|어떤 역할|어떤 활동|어떤 갈등|어떤 어려움|어떤 걸 배웠|어떻게 해결|들려주세요|들려주실래요|여쭤볼게요|하위 질문|답변해 주시면.*다이어리)/i.test(responseText) ||
           /(?:1\..*\?|2\..*\?)/.test(responseText);
 
         if (isAiAskingQuestions) {
@@ -766,7 +784,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                 for (const item of items) {
                   if (item && (item.content || item.title)) {
                     let dTitle = cleanDiaryTitle(item.title || '');
-                    let dContent = item.content || '';
+                    let dContent = cleanDiaryContent(item.content || '');
                     let dTags = Array.isArray(item.tags) && item.tags.length > 0 ? item.tags : ['성장일기', 'AI자동작성'];
                     let dMood = item.mood || '보람참';
                     let dDate = parseNormalizedDate(item.date);
@@ -806,10 +824,11 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               const normDate = parseNormalizedDate(rawDate);
 
               let blockTitle = cleanDiaryTitle(contentText.split(/[:\-.]/)[0].slice(0, 15).trim());
+              let blockContent = cleanDiaryContent(contentText);
 
               savedDiaryEntries.push({
                 title: blockTitle,
-                content: contentText,
+                content: blockContent,
                 date: normDate,
                 mood: '보람참',
                 tags: ['성장일기', '각날짜별기록']
@@ -838,13 +857,14 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               const userDateMatch = text.match(/(\d{4}[-.\/]\d{1,2}[-.\/]\d{1,2}|\d{1,2}[-.\/]\d{1,2}|\d{1,2}월\s*\d{1,2}일)/);
               const dDate = parseNormalizedDate(userDateMatch ? userDateMatch[1] : undefined);
 
-              let cleanedContent = responseText
-                .split('\n')
-                .filter(line => !line.startsWith('📌') && !line.includes('날짜:') && !line.includes('태그:'))
-                .join('\n')
-                .replace(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/g, '')
-                .replace(/\[오늘의\s*성장\s*다이어리\]/g, '')
-                .trim();
+              let cleanedContent = cleanDiaryContent(
+                responseText
+                  .split('\n')
+                  .filter(line => !line.startsWith('📌') && !line.includes('날짜:') && !line.includes('태그:'))
+                  .join('\n')
+                  .replace(/\[(?:오늘의\s*)?성장\s*다이어리\s*[:\-]?\s*([^\]]+)\]/g, '')
+                  .replace(/\[오늘의\s*성장\s*다이어리\]/g, '')
+              );
 
               if (cleanedContent.length > 5) {
                 savedDiaryEntries.push({
@@ -1130,11 +1150,11 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                   <span>"{t('오늘 며칠이야?', 'What is today\'s date?')}"</span>
                 </button>
                 <button 
-                  onClick={() => setInputValue(t('오늘의 다이어리 써줘', 'Write today\'s diary for me'))} 
+                  onClick={() => setInputValue(t('오늘의 다이어리 작성', 'Write today\'s diary'))} 
                   className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-300 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
                 >
                   <span className="text-sm">✍️</span> 
-                  <span>"{t('오늘의 다이어리 써줘', 'Write today\'s diary for me')}"</span>
+                  <span>"{t('오늘의 다이어리 작성', 'Write today\'s diary')}"</span>
                 </button>
                 <button 
                   onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
