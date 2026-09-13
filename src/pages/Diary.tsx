@@ -16,7 +16,9 @@ import {
   X,
   List,
   Edit3,
-  CalendarCheck
+  CalendarCheck,
+  AlertTriangle,
+  ShieldCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
@@ -145,10 +147,14 @@ JSON 구조 규격:
   ]
 }
 
-주의사항:
-1. 다이어리 기록에 해당 카테고리에 해당하는 내용이 없다면 빈 배열 \`[]\`로 설정해줘. 절대 속성을 누락시키지 마.
-2. 날짜("date")는 해당 다이어리 일기 날짜를 참고하여 'YYYY.MM.DD' 또는 '몇월 몇일' 형태로 반드시 한눈에 들어오게 채워줘.
-3. 구체적이고 생생하게 적어주고 전문적인 자소서 가이드의 따뜻한 톤앤매너로 작성해줘.`;
+주의사항 (매우 중요):
+1. 🛡️ [철저한 사실 기반 원칙 (AI 허위 작성 및 과장 절대 금지)]:
+   - 실제 많은 기업들이 **자기소개서 AI 사용 불가 및 표절/대필 검증**을 시행하고 있습니다.
+   - 따라서 AI는 절대로 없는 경험이나 사용하지 않은 기술 스택, 조작된 성과 수치를 지어내거나 부풀려 작성해서는 안 됩니다.
+   - 오직 사용자가 기록한 다이어리 원문의 실제 사실들만을 바탕으로, S-T-A-R(상황-과제-행동-결과) 구조에 맞춰 매끄럽게 연결하고 정돈하는 역할만 수행하세요.
+2. 다이어리 기록에 해당 카테고리에 해당하는 실제 내용이 없다면 억지로 지어내지 말고 빈 배열 \`[]\`로 설정해줘. 절대 속성을 누락시키지 마.
+3. 날짜("date")는 해당 다이어리 일기 날짜를 참고하여 'YYYY.MM.DD' 또는 '몇월 몇일' 형태로 반드시 한눈에 들어오게 채워줘.
+4. 오직 학생이 직접 실천한 객관적 사실 중심의 단정한 어조로 작성해줘.`;
 
     try {
       const res = await fetch('/api/chat', {
@@ -488,6 +494,21 @@ JSON 구조 규격:
 
       {/* Main Container */}
       <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-hidden`}>
+
+        {/* AI 보조 도구 및 자소서 사실 검토 필수 안내 배너 */}
+        <div className={`mb-3 p-3 rounded-2xl border flex items-center justify-between gap-3 text-left transition-all ${isLightMode ? "bg-amber-50/80 border-amber-200 text-amber-950" : "bg-amber-500/10 border-amber-500/25 text-amber-200"}`}>
+          <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5 sm:mt-0" />
+            <p className="text-xs font-semibold leading-relaxed">
+              <span className="font-extrabold text-amber-600 dark:text-amber-400 mr-1.5">{t('자소서 AI 유의사항')}:</span>
+              {t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}
+            </p>
+          </div>
+          <div className="hidden md:flex items-center gap-1 shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-500/20">
+            <ShieldCheck size={12} />
+            <span>{t('사실 검증 필수')}</span>
+          </div>
+        </div>
 
         {/* Exam Schedule Settings Collapsible Box */}
         {showExamSettings && (
@@ -842,7 +863,7 @@ JSON 구조 규격:
       {showSummaryModal && (
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
           <div className={`border-2 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-indigo-500/50 text-white"}`}>
-            <div className={`flex items-center justify-between border-b pb-3 mb-4 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+            <div className={`flex items-center justify-between border-b pb-3 mb-3 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
               <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 <Sparkles size={20} className="text-amber-400 animate-pulse" />
                 <span>{t('AI 자소서 경험 요약 (STAR 공법 분석)')}</span>
@@ -850,6 +871,19 @@ JSON 구조 규격:
               <button onClick={() => setShowSummaryModal(false)} className={`p-1 transition-colors ${isLightMode ? "text-slate-400 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}>
                 <X size={20} />
               </button>
+            </div>
+
+            {/* AI 사실 검토 필수 안내 배너 */}
+            <div className={`p-3 rounded-2xl border flex items-start gap-2.5 text-left mb-3.5 flex-none ${isLightMode ? "bg-amber-50 border-amber-300 text-amber-950" : "bg-amber-500/10 border-amber-500/30 text-amber-200"}`}>
+              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+              <div className="text-xs space-y-0.5 leading-relaxed">
+                <p className="font-extrabold text-amber-600 dark:text-amber-400">
+                  {t('⚠️ 자소서 AI 사용 불가 기업 대비 & 사실 검토 필수')}
+                </p>
+                <p className={isLightMode ? "text-slate-700" : "text-slate-300"}>
+                  {t('많은 기업에서 자소서 AI 대필을 엄격히 금지하며, AI는 오직 기록을 구조화하는 보조 도구입니다. 추출된 내용 중 **본인이 실제로 하지 않은 경험이나 과장된 부분이 있는지 반드시 직접 꼼꼼히 읽고 검토**해 주세요.')}
+                </p>
+              </div>
             </div>
             
             <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar markdown-body">

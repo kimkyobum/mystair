@@ -19,7 +19,11 @@ import {
   RotateCcw,
   Sun,
   Moon,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Settings,
+  ArrowLeft,
+  Sliders,
+  Palette
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
@@ -99,6 +103,9 @@ export default function MyPage() {
 
   // Modal State for detail views ('mbti' | 'holland' | 'companies' | null)
   const [activeModal, setActiveModal] = useState<'mbti' | 'holland' | 'companies' | null>(null);
+
+  // Tab State: 'profile' (main career profile) | 'settings' (aliens, theme, touch effect)
+  const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
 
   // Main Profile State
   const [profile, setProfile] = useState<MyProfileData>({
@@ -387,7 +394,23 @@ export default function MyPage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Settings Tab Toggle Button */}
+          <button
+            onClick={() => setActiveTab(activeTab === 'profile' ? 'settings' : 'profile')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
+              activeTab === 'settings'
+                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm ring-2 ring-indigo-300'
+                : isLightMode
+                  ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
+                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+            }`}
+            title={t('화면 및 환경 설정')}
+          >
+            <Settings size={14} className={activeTab === 'settings' ? 'rotate-90 transition-transform duration-300' : ''} />
+            <span>{activeTab === 'settings' ? t('내 프로필') : t('설정')}</span>
+          </button>
+
           <select 
             value={language}
             onChange={(e) => setLanguage(e.target.value as any)}
@@ -404,112 +427,332 @@ export default function MyPage() {
       {/* Main Container */}
       <main className="flex-1 w-full max-w-[880px] mx-auto px-4 sm:px-8 py-8 space-y-6 relative z-10">
         
-        {/* Editing Banner Alert */}
-        {isFullEditing && (
-          <div className="bg-amber-500/15 border border-amber-500/30 text-amber-200 rounded-2xl p-4 flex items-center justify-between text-sm font-semibold shadow-sm animate-in fade-in duration-200">
-            <span className="flex items-center gap-2">
-              <Sparkles size={16} className="text-amber-400 animate-pulse" />
-              <span>{t('전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.')}</span>
-            </span>
-            <button 
-              onClick={handleFullSave}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shrink-0"
-            >
-              {t('저장 완료')}
-            </button>
-          </div>
-        )}
-
-        {/* ================= INDIVIDUAL PROFILE CARDS (BOXES) ================= */}
-        <div className="space-y-5">
-          
-          {/* Top Profile Hero Header Box */}
-          <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
-            {/* Subtle Ambient Glow on Left Avatar Only (no blur bleeding on right side) */}
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/80 rounded-full blur-[35px] pointer-events-none" />
-
-            <div className="flex items-center gap-5 relative z-10">
-              {/* Circular Avatar Container */}
-              <div className="relative group shrink-0">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] relative overflow-hidden transition-transform duration-300 hover:scale-105">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-pulse" />
-                  
-                  <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
-                    {(profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL) ? (
-                      <img 
-                        src={profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL || ''} 
-                        alt={t('프로필')} 
-                        className="w-full h-full object-cover" 
-                      />
-                    ) : (
-                      <div className="text-indigo-500 flex flex-col items-center justify-center">
-                        <User size={36} className="shrink-0" />
-                      </div>
-                    )}
-
-                    {/* Change profile overlay when editing */}
-                    {isFullEditing && (
-                      <label className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 cursor-pointer text-[10px] text-white font-extrabold transition-opacity duration-200">
-                        <Edit3 size={14} className="text-indigo-600 animate-bounce" />
-                        <span>{t('사진 변경')}</span>
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleAvatarChange} 
-                          className="hidden" 
-                        />
-                      </label>
-                    )}
+        {activeTab === 'settings' ? (
+          /* ================= DEDICATED SETTINGS PAGE VIEW ================= */
+          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {/* Settings Top Hero Card */}
+            <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex items-center justify-between gap-4 ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
+              <div className="flex items-center gap-3.5">
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer flex items-center justify-center shrink-0"
+                  title={t('내 프로필로 돌아가기')}
+                >
+                  <ArrowLeft size={18} />
+                </button>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl sm:text-2xl font-black tracking-tight">
+                      {t('환경 및 테마 설정')}
+                    </h1>
+                    <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">
+                      SETTINGS
+                    </span>
                   </div>
+                  <p className="text-xs text-slate-500 font-medium mt-1">
+                    {t('외계인 캐릭터, 배경 화면 테마, 터치 이펙트를 내 취향에 맞게 설정하세요.')}
+                  </p>
                 </div>
-
-                {/* Sparkling Star Decoration */}
-                <Sparkles size={16} className="absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
-                <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping" />
               </div>
 
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                    {profile.name}
-                  </h1>
-                  <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
-                    isLightMode 
-                      ? "bg-indigo-50 text-indigo-600 border-indigo-200" 
-                      : "bg-indigo-500/20 text-indigo-200 border-indigo-500/30"
-                  }`}>
-                    {t('마이스터 인재')}
-                  </span>
-                </div>
-                <p className={`text-xs font-medium mt-1 flex items-center gap-2 ${
-                  isLightMode ? "text-slate-600" : "text-slate-300"
-                }`}>
-                  <span>{profile.highSchool}</span>
-                  <span className="text-slate-400">•</span>
-                  <span>{profile.major}</span>
-                </p>
-              </div>
+              <button
+                onClick={() => setActiveTab('profile')}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+              >
+                <Check size={15} />
+                <span className="hidden sm:inline">{t('프로필로 돌아가기')}</span>
+              </button>
             </div>
 
-            <div className="flex items-center gap-2 w-full sm:w-auto relative z-10">
+            {/* Settings Cards Stack */}
+            <div className="flex flex-col gap-4">
+
+              {/* Setting 1: 우주 외계인 배경 설정 */}
+              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="p-2 bg-indigo-500/10 text-indigo-600 rounded-xl">
+                      <Sparkles size={18} className="text-indigo-600 animate-pulse" />
+                    </span>
+                    <div>
+                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('배경 캐릭터')}</span>
+                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('우주 외계인 캐릭터 설정')}</h3>
+                    </div>
+                  </div>
+
+                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
+                    showAliens 
+                      ? 'bg-indigo-50 text-indigo-600 border-indigo-200' 
+                      : 'bg-slate-100 text-slate-500 border-slate-200'
+                  }`}>
+                    {showAliens ? t('현재: 보이기') : t('현재: 숨기기')}
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-slate-100">
+                  <div className="flex-1">
+                    <div className="text-sm font-bold text-slate-800">{t('우주 화면을 떠다니는 외계인 커플 캐릭터')}</div>
+                    <div className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
+                      {t('메인 홈(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 결정합니다. 기본값은 숨김 상태입니다.')}
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 self-start sm:self-auto">
+                    <button
+                      onClick={() => setShowAliens(true)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        showAliens 
+                          ? 'bg-indigo-600 text-white shadow-sm' 
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {t('보이기')}
+                    </button>
+                    <button
+                      onClick={() => setShowAliens(false)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        !showAliens 
+                          ? 'bg-slate-700 text-white shadow-sm' 
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {t('숨기기')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Setting 2: 화면 및 배경 테마 설정 */}
+              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-purple-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="p-2 bg-purple-500/10 text-purple-600 rounded-xl">
+                      <Palette size={18} />
+                    </span>
+                    <div>
+                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('테마 & 배경')}</span>
+                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('화면 및 배경 테마 선택')}</h3>
+                    </div>
+                  </div>
+
+                  <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-200">
+                    {isLightMode ? t('라이트 모드') : t('우주 모드')}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                  {/* Light Mode */}
+                  <button
+                    onClick={() => setIsLightMode(true)}
+                    className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all cursor-pointer text-center ${
+                      isLightMode 
+                        ? 'border-amber-500 bg-amber-50/70 text-amber-950 shadow-xs ring-2 ring-amber-300' 
+                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
+                    }`}
+                  >
+                    <Sun size={28} className={isLightMode ? 'text-amber-500 mb-2' : 'text-slate-400 mb-2'} />
+                    <span className="font-extrabold text-sm">{t('라이트 모드 (기본)', 'Light Mode')}</span>
+                    <span className="text-xs mt-1 text-slate-500">{t('깔끔하고 눈이 편안한 화이트 테마', 'Clean white theme')}</span>
+                  </button>
+
+                  {/* Space Mode (Dark) */}
+                  <button
+                    onClick={() => {
+                      setIsLightMode(false);
+                      setBackgroundType('black');
+                    }}
+                    className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all cursor-pointer text-center ${
+                      !isLightMode 
+                        ? 'border-indigo-500 bg-indigo-50/70 text-indigo-950 shadow-xs ring-2 ring-indigo-300' 
+                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
+                    }`}
+                  >
+                    <Moon size={28} className={!isLightMode ? 'text-indigo-600 mb-2' : 'text-slate-400 mb-2'} />
+                    <span className="font-extrabold text-sm">{t('우주 모드', 'Space Mode')}</span>
+                    <span className="text-xs mt-1 text-slate-500">{t('신비롭고 아름다운 밤하늘 별빛 테마', 'Beautiful starlight theme')}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Setting 3: 터치 & 클릭 이펙트 설정 */}
+              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-cyan-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="p-2 bg-cyan-500/10 text-cyan-600 rounded-xl">
+                      <Sliders size={18} />
+                    </span>
+                    <div>
+                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('인터랙션')}</span>
+                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('터치 및 클릭 이펙트')}</h3>
+                    </div>
+                  </div>
+
+                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
+                    isClickEffectEnabled 
+                      ? 'bg-cyan-50 text-cyan-700 border-cyan-200' 
+                      : 'bg-slate-100 text-slate-500 border-slate-200'
+                  }`}>
+                    {isClickEffectEnabled ? t('활성화 (ON)') : t('비활성화 (OFF)')}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-4 pt-2 border-t border-slate-100">
+                  <div className="flex-1">
+                    <div className="text-sm font-bold text-slate-800">{t('화면 클릭 / 터치 시 별빛 파티클')}</div>
+                    <div className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
+                      {t('마우스로 화면을 클릭하거나 화면을 터치할 때 다채로운 별빛 파티클이 톡톡 터지는 효과입니다.')}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
+                    className={`w-14 h-7 rounded-full transition-colors relative cursor-pointer shrink-0 shadow-inner ${
+                      isClickEffectEnabled ? 'bg-indigo-600' : 'bg-slate-300'
+                    }`}
+                  >
+                    <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform shadow-md ${
+                      isClickEffectEnabled ? 'translate-x-7' : 'translate-x-0'
+                    }`} />
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Return Button Footer */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-2xs">
+              <div className="text-xs text-slate-500 font-medium">
+                {t('💡 모든 설정은 변경하는 즉시 자동 저장되어 다음 접속 시에도 그대로 유지됩니다.')}
+              </div>
               <button
-                onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
-                className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
-                  isFullEditing 
-                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
-                    : isLightMode
-                      ? 'bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                }`}
+                onClick={() => setActiveTab('profile')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm w-full sm:w-auto"
               >
-                {isFullEditing ? <Check size={16} /> : <Edit3 size={16} />}
-                <span>{isFullEditing ? t('전체 저장') : t('전체 편집 모드')}</span>
+                <ArrowLeft size={15} />
+                <span>{t('내 프로필로 돌아가기')}</span>
               </button>
             </div>
           </div>
+        ) : (
+          /* ================= MAIN CAREER PROFILE VIEW ================= */
+          <div className="space-y-5 animate-in fade-in duration-200">
+            
+            {/* Editing Banner Alert */}
+            {isFullEditing && (
+              <div className="bg-amber-500/15 border border-amber-500/30 text-amber-200 rounded-2xl p-4 flex items-center justify-between text-sm font-semibold shadow-sm animate-in fade-in duration-200">
+                <span className="flex items-center gap-2">
+                  <Sparkles size={16} className="text-amber-400 animate-pulse" />
+                  <span>{t('전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.')}</span>
+                </span>
+                <button 
+                  onClick={handleFullSave}
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shrink-0"
+                >
+                  {t('저장 완료')}
+                </button>
+              </div>
+            )}
 
-          {/* 6 Individual Vertical Stacked Cards */}
-          <div className="flex flex-col gap-4">
+            {/* Top Profile Hero Header Box */}
+            <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
+              {/* Subtle Ambient Glow on Left Avatar Only */}
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/80 rounded-full blur-[35px] pointer-events-none" />
+
+              <div className="flex items-center gap-5 relative z-10">
+                {/* Circular Avatar Container */}
+                <div className="relative group shrink-0">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] relative overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-pulse" />
+                    
+                    <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
+                      {(profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL) ? (
+                        <img 
+                          src={profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL || ''} 
+                          alt={t('프로필')} 
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <div className="text-indigo-500 flex flex-col items-center justify-center">
+                          <User size={36} className="shrink-0" />
+                        </div>
+                      )}
+
+                      {/* Change profile overlay when editing */}
+                      {isFullEditing && (
+                        <label className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 cursor-pointer text-[10px] text-white font-extrabold transition-opacity duration-200">
+                          <Edit3 size={14} className="text-indigo-600 animate-bounce" />
+                          <span>{t('사진 변경')}</span>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleAvatarChange} 
+                            className="hidden" 
+                          />
+                        </label>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Sparkling Star Decoration */}
+                  <Sparkles size={16} className="absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
+                  <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping" />
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2.5">
+                    <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                      {profile.name}
+                    </h1>
+                    <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
+                      isLightMode 
+                        ? "bg-indigo-50 text-indigo-600 border-indigo-200" 
+                        : "bg-indigo-500/20 text-indigo-200 border-indigo-500/30"
+                    }`}>
+                      {t('마이스터 인재')}
+                    </span>
+                  </div>
+                  <p className={`text-xs font-medium mt-1 flex items-center gap-2 ${
+                    isLightMode ? "text-slate-600" : "text-slate-300"
+                  }`}>
+                    <span>{profile.highSchool}</span>
+                    <span className="text-slate-400">•</span>
+                    <span>{profile.major}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto relative z-10">
+                <button
+                  onClick={() => setActiveTab('settings')}
+                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
+                    isLightMode
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                  }`}
+                  title={t('배경, 외계인, 터치 이펙트 설정')}
+                >
+                  <Settings size={15} />
+                  <span>{t('환경 설정')}</span>
+                </button>
+
+                <button
+                  onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
+                  className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
+                    isFullEditing 
+                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
+                      : isLightMode
+                        ? 'bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
+                        : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                  }`}
+                >
+                  {isFullEditing ? <Check size={16} /> : <Edit3 size={16} />}
+                  <span>{isFullEditing ? t('전체 저장') : t('전체 편집 모드')}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 6 Individual Vertical Stacked Cards */}
+            <div className="flex flex-col gap-4">
 
             {/* Box 1: 이름 (Name) */}
             <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
@@ -1079,102 +1322,40 @@ export default function MyPage() {
               </div>
             </div>
 
-            {/* Box 7: 우주인/외계인 배경 설정 */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-indigo-500/10 text-indigo-600 rounded-lg">
-                    <Sparkles size={16} className="text-indigo-600 animate-pulse" />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('배경 외계인 설정')}</span>
+            {/* Quick Settings Access Card in Profile */}
+            <div 
+              onClick={() => setActiveTab('settings')}
+              className={`rounded-2xl p-5 border transition-all cursor-pointer flex items-center justify-between gap-4 group shadow-sm ${
+                isLightMode 
+                  ? 'bg-slate-50 hover:bg-indigo-50/50 border-slate-200 hover:border-indigo-300' 
+                  : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-indigo-500/50'
+              }`}
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 group-hover:scale-110 transition-transform">
+                  <Settings size={20} className="group-hover:rotate-45 transition-transform duration-300" />
                 </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-4 pt-1">
-                <div className="flex-1">
-                  <div className="text-sm font-extrabold text-slate-950">{t('우주를 떠다니는 외계인 캐릭터')}</div>
-                  <div className="text-xs text-slate-500 mt-0.5 font-medium leading-relaxed">{t('홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.')}</div>
-                </div>
-
-                <div className="shrink-0 flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                  <button
-                    onClick={() => setShowAliens(true)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      showAliens 
-                        ? 'bg-indigo-600 text-white shadow-sm' 
-                        : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    {t('보이기')}
-                  </button>
-                  <button
-                    onClick={() => setShowAliens(false)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      !showAliens 
-                        ? 'bg-slate-600 text-white shadow-sm' 
-                        : 'text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    {t('숨기기')}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Box 8: 화면 테마 설정 */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-purple-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-purple-500/10 text-purple-600 rounded-lg">
-                    <ImageIcon size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('화면 및 배경 설정')}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Light Mode */}
-                <button
-                  onClick={() => setIsLightMode(true)}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                    isLightMode ? 'border-amber-500 bg-amber-50 text-amber-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
-                  }`}
-                >
-                  <Sun size={24} className={isLightMode ? 'text-amber-500 mb-2' : 'mb-2'} />
-                  <span className="font-bold text-sm">{t('라이트 모드 (기본)', 'Light Mode')}</span>
-                  <span className="text-xs mt-1 opacity-70">{t('깔끔한 화이트 테마', 'Clean white theme')}</span>
-                </button>
-
-                {/* Space Mode (Dark) */}
-                <button
-                  onClick={() => {
-                    setIsLightMode(false);
-                    setBackgroundType('black');
-                  }}
-                  className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                    !isLightMode ? 'border-indigo-500 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
-                  }`}
-                >
-                  <Moon size={24} className={!isLightMode ? 'text-indigo-500 mb-2' : 'mb-2'} />
-                  <span className="font-bold text-sm">{t('우주 모드', 'Space Mode')}</span>
-                  <span className="text-xs mt-1 opacity-70">{t('아름다운 별빛 테마', 'Beautiful starlight theme')}</span>
-                </button>
-              </div>
-
-              <div className={`mt-8 pt-6 border-t ${!isLightMode ? "border-white/10" : "border-slate-200"} flex items-center justify-between`}>
                 <div>
-                  <div className="text-sm font-bold text-slate-900">{t('터치 이펙트', 'Touch Effect')}</div>
-                  <div className="text-xs mt-1 text-slate-500">{t('화면을 터치할 때 나타나는 다채로운 파티클 효과')}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                      {t('화면 및 환경 설정')}
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                      {t('설정 페이지')}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                    {t('외계인 캐릭터 표시 여부, 화면 배경 테마(라이트/우주), 터치 효과를 설정합니다.')}
+                  </p>
                 </div>
-                <button
-                  onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer flex-shrink-0 ${isClickEffectEnabled ? 'bg-indigo-500' : 'bg-slate-400'}`}
-                >
-                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${isClickEffectEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
-                </button>
               </div>
 
+              <div className="shrink-0 flex items-center gap-1.5 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition-transform">
+                <span>{t('설정하기')}</span>
+                <Sliders size={14} />
+              </div>
             </div>
+
           </div>
 
           {/* Footer Bar */}
@@ -1195,6 +1376,7 @@ export default function MyPage() {
           </div>
 
         </div>
+      )}
 
       </main>
 
