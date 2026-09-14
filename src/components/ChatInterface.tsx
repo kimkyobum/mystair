@@ -46,6 +46,15 @@ export default function ChatInterface() {
     }
   }, [initialMessage]);
 
+  const cleanNoticeText = (text: string) => {
+    if (!text) return '';
+    return text
+      .replace(/\(?\s*편하게\s*한두\s*줄로[\s\S]*?(?:완성해\s*드릴게요!|성장\s*다이어리로)[\s\S]*?\)?/gi, '')
+      .replace(/\(?\s*답변해\s*주시면\s*학생님이[\s\S]*?완성해\s*드릴게요![\s\S]*?\)?/gi, '')
+      .replace(/\(\s*편하게\s*한두[\s\S]*?\)/gi, '')
+      .trim();
+  };
+
   const getCombinedProfileData = () => {
     let profile = {
       name: firestoreProfile?.name || '',
@@ -290,8 +299,9 @@ ${d.content || ""}
       - **Q2 (느낀 점/기억에 남는 점)**: **Q2. 하면서 가장 뿌듯했거나 기억에 남는 점(혹은 새로 알게 된 점)이 있나요?**
   - 🎨 **질문 시각적 강조 규칙 (반드시 가장 두꺼운 볼드체로 눈에 확 띄게 출력!)**:
     - 질문 텍스트는 질문임을 즉시 인지할 수 있도록 반드시 **Q1. 질문 내용**, **Q2. 질문 내용** 처럼 번호와 함께 **가장 두꺼운 굵은 폰트(**...**)**로 줄바꿈하여 작성해라.
-  - ⚠️ **1단계 안내 문구**:
-    - 질문 바로 아래에 "(편하게 한두 줄로 간단히 말씀해 주셔도, 학생님이 직접 하신 실제 경험을 바탕으로 사실 그대로 깔끔한 성장 다이어리로 완성해 드릴게요! 🌿)"라고 따뜻하게 안내한다.
+  - ⚠️ **불필요한 부가 문구 및 괄호 안내문 절대 금지 (화면 가림 방지)**:
+    - 질문 뒤에 사족, 긴 안내 문구, 또는 괄호 설명(예: '편하게 한두 줄로 간단히 말씀해 주셔도...', '답변해 주시면...')을 절대 덧붙이지 마라!
+    - 오직 따뜻한 공감 1줄과 **Q1, Q2 핵심 질문만** 간결하고 명확하게 출력해야 사용자가 질문을 한눈에 보고 바로 입력할 수 있다.
     - **1단계 하위 질문 턴에서는 절대로 [[DIARY_SAVE:...]] 마커를 출력하지 마라!**
     - 예외: 사용자가 첫 메시지에서 이미 역할, 과정, 배운 점까지 모두 명시했거나 "질문 없이 바로 저장해줘"라고 한 경우에만 1단계를 건너뛰고 바로 2단계로 진행한다.
 
@@ -1163,7 +1173,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                               }
                             }}
                           >
-                            {msg.content}
+                            {cleanNoticeText(msg.content)}
                           </ReactMarkdown>
                         </div>
                       )}
@@ -1177,7 +1187,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                         <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="싫어요">
                           <ThumbsDown size={16} />
                         </button>
-                        <button onClick={() => handleCopyText(msg.id, msg.content)} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
+                        <button onClick={() => handleCopyText(msg.id, cleanNoticeText(msg.content))} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
                           {copiedId === msg.id ? <Check size={16} className="text-teal-500" /> : <Copy size={16} />}
                         </button>
                       </motion.div>
@@ -1188,49 +1198,65 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             </motion.div>
           ))}
 
-          {/* Quick Question Suggestions - Mobile Responsive 48px touch targets */}
-          {messages.length <= 2 && !isLoading && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 mt-3 px-1 sm:px-2">
-              <span className={`text-xs font-bold flex items-center gap-1.5 ${isLightMode ? "text-slate-700" : "text-white/70"}`}>
-                <Sparkles size={14} className="text-teal-400" />
-                {t('추천 질의 예시', 'Suggested Questions')}
-              </span>
-              <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2.5">
-                <button 
-                  onClick={() => setInputValue(t('오늘 며칠이야?', 'What is today\'s date?'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-teal-800 bg-teal-50 hover:bg-teal-100 border-teal-300" : "text-teal-300 bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40"}`}
-                >
-                  <span className="text-sm">📅</span> 
-                  <span>"{t('오늘 며칠이야?', 'What is today\'s date?')}"</span>
-                </button>
-                <button 
-                  onClick={() => setInputValue(t('오늘의 다이어리 작성', 'Write today\'s diary'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs font-semibold px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer flex items-center justify-start sm:justify-center gap-2 shadow-sm min-h-[48px] text-left sm:text-center ${isLightMode ? "text-indigo-800 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-300 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
-                >
-                  <span className="text-sm">✍️</span> 
-                  <span>"{t('오늘의 다이어리 작성', 'Write today\'s diary')}"</span>
-                </button>
-                <button 
-                  onClick={() => setInputValue(t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'What are the employment strategies and required certifications for Meister high school graduates to enter large companies?'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
-                >
-                  "{t('마이스터고 졸업 후 대기업 취업 전략 및 필수 자격증은?', 'Employment strategy for large companies after graduating high school?')}"
-                </button>
-                <button 
-                  onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Analyze my growth diary and extract cover letter experiences'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
-                >
-                  "{t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary')}"
-                </button>
-                <button 
-                  onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Tell me recommended job roles and companies matching my major and MBTI'))} 
-                  className={`w-full sm:w-auto text-xs sm:text-xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-black/40 hover:bg-white/10 border-white/15 backdrop-blur-md"} px-4 py-3 sm:py-2.5 rounded-xl sm:rounded-full transition-all active:scale-98 border cursor-pointer text-left sm:text-center leading-relaxed min-h-[48px]`}
-                >
-                  "{t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommended job roles and companies matching major and MBTI')}"
-                </button>
-              </div>
-            </motion.div>
-          )}
+          {/* Quick Question Suggestions - Sleek Single-Line Horizontal Scroll (Hidden during sub-questions) */}
+          {(() => {
+            const lastAssistantMsg = [...messages].reverse().find(m => m.role === 'ai');
+            const isSubQuestionActive = Boolean(
+              lastAssistantMsg &&
+              (/(?:Q1|Q2|질문\s*[12]|\*\*Q1|\*\*Q2)/i.test(lastAssistantMsg.content) ||
+               /(?:어떤 작업이나 역할을|뿌듯했거나 기억에 남는 점)/i.test(lastAssistantMsg.content)) &&
+              !lastAssistantMsg.content.includes('오늘의 성장 다이어리')
+            );
+            const showSuggestions = messages.length <= 1 && !isLoading && !isSubQuestionActive;
+
+            if (!showSuggestions) return null;
+
+            return (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2 mt-2 px-1 sm:px-2">
+                <span className={`text-xs font-bold flex items-center gap-1.5 ${isLightMode ? "text-slate-700" : "text-white/70"}`}>
+                  <Sparkles size={14} className="text-teal-400" />
+                  {t('추천 질의 예시', 'Suggested Questions')}
+                </span>
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full flex-nowrap">
+                  <button 
+                    onClick={() => setInputValue(t('오늘 며칠이야?', 'What is today\'s date?'))} 
+                    className={`shrink-0 whitespace-nowrap text-xs font-semibold px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-teal-900 bg-teal-50 hover:bg-teal-100 border-teal-300" : "text-teal-200 bg-teal-500/20 hover:bg-teal-500/30 border-teal-500/40"}`}
+                  >
+                    <span>📅</span> 
+                    <span>"{t('오늘 며칠이야?', 'What is today\'s date?')}"</span>
+                  </button>
+                  <button 
+                    onClick={() => setInputValue(t('오늘의 다이어리 작성', 'Write today\'s diary'))} 
+                    className={`shrink-0 whitespace-nowrap text-xs font-semibold px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-indigo-900 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-200 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
+                  >
+                    <span>✍️</span> 
+                    <span>"{t('오늘의 다이어리 작성', 'Write today\'s diary')}"</span>
+                  </button>
+                  <button 
+                    onClick={() => setInputValue(t('마이스터고 대기업 취업 전략 및 필수 자격증', 'Employment strategy for large companies'))} 
+                    className={`shrink-0 whitespace-nowrap text-xs font-medium px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/10 hover:bg-white/15 border-white/15"}`}
+                  >
+                    <span>🎯</span>
+                    <span>"{t('대기업 취업 전략 & 자격증', 'Employment strategy & Certifications')}"</span>
+                  </button>
+                  <button 
+                    onClick={() => setInputValue(t('내 전공과 MBTI에 맞는 추천 직무와 기업 알려줘', 'Recommend job roles and companies matching major and MBTI'))} 
+                    className={`shrink-0 whitespace-nowrap text-xs font-medium px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/10 hover:bg-white/15 border-white/15"}`}
+                  >
+                    <span>🧭</span>
+                    <span>"{t('맞춤 직무·기업 추천', 'Recommend jobs & companies')}"</span>
+                  </button>
+                  <button 
+                    onClick={() => setInputValue(t('내 성장 다이어리를 분석해서 자소서 경험 뽑아줘', 'Extract cover letter experiences from growth diary'))} 
+                    className={`shrink-0 whitespace-nowrap text-xs font-medium px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-slate-800 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/90 bg-white/10 hover:bg-white/15 border-white/15"}`}
+                  >
+                    <span>✨</span>
+                    <span>"{t('다이어리 분석 자소서 소재 추출', 'Extract cover letter materials')}"</span>
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })()}
 
           <div ref={messagesEndRef} />
         </div>
