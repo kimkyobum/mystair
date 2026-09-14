@@ -15,20 +15,29 @@ export interface TourStep {
 }
 
 const TypewriterText = ({ text }: { text: string }) => {
-  const [displayedText, setDisplayedText] = useState("");
+  const [displayedLength, setDisplayedLength] = useState(0);
 
   useEffect(() => {
-    setDisplayedText("");
+    setDisplayedLength(0);
     let i = 0;
     const interval = setInterval(() => {
-      setDisplayedText(text.slice(0, i + 1));
+      setDisplayedLength((prev) => prev + 1);
       i++;
-      if (i === text.length) clearInterval(interval);
+      if (i >= text.length) clearInterval(interval);
     }, 40); // Fast typing speed
     return () => clearInterval(interval);
   }, [text]);
 
-  return <span>{displayedText}</span>;
+  return (
+    <span className="relative inline-block whitespace-pre-wrap">
+      {/* Invisible full text to establish max width/height immediately */}
+      <span className="invisible" aria-hidden="true">{text}</span>
+      {/* Visible typed text positioned absolutely over the invisible one */}
+      <span className="absolute left-0 top-0 w-full h-full text-left overflow-hidden break-words" style={{ clipPath: 'inset(0 0 0 0)' }}>
+        {text.slice(0, displayedLength)}
+      </span>
+    </span>
+  );
 };
 
 const TOUR_STEPS: TourStep[] = [
@@ -446,7 +455,7 @@ export function OnboardingTour() {
           </div>
 
           {/* Bubble */}
-          <div className="bg-white text-slate-900 p-3 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border-2 border-pink-100">
+          <div className="bg-white text-slate-900 p-3 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border-2 border-pink-100 flex-1 min-w-[150px]">
             <TypewriterText text={currentStep.message} />
           </div>
         </motion.div>
