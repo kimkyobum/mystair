@@ -242,10 +242,14 @@ export function OnboardingTour() {
   useEffect(() => {
     const hasSeenGuide = localStorage.getItem('mystair_seen_guide_onboarding');
     const isMockUser = localStorage.getItem('mystair_mock_user');
-    const isLoggedIn = !!isMockUser || !!localStorage.getItem('auth_token'); // Simplified check
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true' || !!isMockUser; 
 
     if (!hasSeenGuide && isLoggedIn && stepIndex === 0 && !isActive) {
-      setIsActive(true);
+      // Small delay to ensure DOM is ready after login redirect
+      const timer = setTimeout(() => {
+        setIsActive(true);
+      }, 300);
+      return () => clearTimeout(timer);
     }
 
     // Event listener for manual trigger
@@ -459,9 +463,9 @@ export function OnboardingTour() {
 
       {/* Outro specific styling */}
       {stepIndex === TOUR_STEPS.length - 1 && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center px-4">
            <div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 pointer-events-auto cursor-pointer"
+            className="flex flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto cursor-pointer"
             onClick={handleNext}
           >
             {/* Giant Character - Flies away on close */}
@@ -471,7 +475,7 @@ export function OnboardingTour() {
                 scale: 0.2,
                 x: windowSize.w / 2, // Fly to top right
                 y: -windowSize.h / 2,
-                rotate: 720,
+                rotate: 1080, // Spin more
                 opacity: 0,
               } : { 
                 opacity: 1, 
@@ -481,9 +485,9 @@ export function OnboardingTour() {
                 rotate: 0
               }}
               transition={{ type: isOutroClosing ? 'tween' : 'spring', duration: isOutroClosing ? 1.0 : 0.6, ease: isOutroClosing ? "easeIn" : undefined }}
-              className="w-32 h-32 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
+              className="w-20 h-20 sm:w-32 sm:h-32 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
             >
-              <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
+              <AlienUFOSvg className="w-20 h-20 sm:w-32 sm:h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
             </motion.div>
 
             {/* Giant Bubble - Disappears immediately on close */}
@@ -493,10 +497,12 @@ export function OnboardingTour() {
                   initial={{ opacity: 0, scale: 0.8, x: -20 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-                  className="bg-white text-slate-900 p-6 rounded-3xl rounded-tl-sm sm:rounded-l-3xl sm:rounded-tr-3xl sm:rounded-bl-sm shadow-2xl font-bold text-xl leading-relaxed border-4 border-pink-200 max-w-md relative"
+                  className="bg-white text-slate-900 p-4 sm:p-6 rounded-3xl rounded-tl-sm shadow-2xl font-bold text-[15px] sm:text-xl leading-relaxed border-4 border-pink-200 max-w-md relative"
                 >
-                  <TypewriterText text={currentStep.message} />
-                  <div className="mt-4 pt-4 border-t border-slate-100 text-sm text-slate-500 font-extrabold flex items-center justify-center gap-2">
+                  <div className="whitespace-nowrap sm:whitespace-normal">
+                    <TypewriterText text={currentStep.message} />
+                  </div>
+                  <div className="mt-3 pt-3 sm:mt-4 sm:pt-4 border-t border-slate-100 text-[11px] sm:text-sm text-slate-500 font-extrabold flex items-center justify-center gap-2">
                     <span>화면을 클릭하여 닫기</span>
                   </div>
                 </motion.div>
@@ -509,7 +515,6 @@ export function OnboardingTour() {
       {/* Tooltip / Speech Bubble */}
       {targetRect && stepIndex !== TOUR_STEPS.length - 1 && (
         <motion.div
-          layout
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ 
             opacity: 1, 
