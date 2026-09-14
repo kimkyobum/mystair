@@ -10,7 +10,9 @@ import {
   LogOut,
   LogIn,
   Sparkles,
-  Users
+  Users,
+  Compass as CompassIcon,
+  HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -95,17 +97,23 @@ export default function Sidebar() {
         )}
       </div>
       
-      <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col items-center sm:items-stretch justify-around sm:justify-start gap-1 sm:gap-1.5 px-2 py-0 sm:py-4 scrollbar-hide">
+        <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col items-center sm:items-stretch justify-around sm:justify-start gap-1 sm:gap-1.5 px-2 py-0 sm:py-4 scrollbar-hide">
         {navItems.map((item, index) => {
           const isActive = (item.path === '/' && index === 0 && location.pathname === '/') || 
                            (item.path !== '/' && location.pathname === item.path);
+          
+          let tourClass = '';
+          if (item.path === '/') tourClass = 'tour-target-nav-home';
+          if (item.path === '/diary') tourClass = 'tour-target-nav-diary';
+          if (item.path === '/certificates') tourClass = 'tour-target-nav-cert';
+          if (item.path === '/company-search') tourClass = 'tour-target-nav-company';
 
           return (
             <Link 
               key={index} 
               to={item.path} 
               title={t(item.name)}
-              className={`flex sm:items-center gap-3.5 px-2.5 py-2 sm:py-3 rounded-xl transition-colors whitespace-nowrap min-h-[48px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${
+              className={`flex sm:items-center gap-3.5 px-2.5 py-2 sm:py-3 rounded-xl transition-colors whitespace-nowrap min-h-[48px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${tourClass} ${
                 isActive 
                   ? (isDarkTheme ? 'text-indigo-300 sm:bg-white/15 sm:text-white font-semibold sm:shadow-sm' : 'text-indigo-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-sm')
                   : (isDarkTheme ? 'text-white/50 hover:text-white sm:text-white/70 sm:hover:bg-white/10 font-medium' : 'text-slate-400 hover:text-slate-800 sm:text-slate-600 sm:hover:bg-slate-50 font-medium')
@@ -120,11 +128,30 @@ export default function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Interactive Experience Guide Tour Button */}
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-tour'))}
+          title={t('서비스 체험 가이드', 'Experience Guide')}
+          className={`hidden sm:flex items-center gap-3.5 px-2.5 py-2.5 sm:py-3 rounded-xl transition-all whitespace-nowrap min-h-[48px] justify-start cursor-pointer group mt-1 ${
+            isDarkTheme 
+              ? 'text-teal-400 hover:text-white hover:bg-teal-500/20 bg-teal-500/10 border border-teal-500/20' 
+              : 'text-teal-700 hover:text-teal-900 hover:bg-teal-50 bg-teal-50/70 border border-teal-200/60'
+          }`}
+        >
+          <div className="shrink-0 flex items-center justify-center w-6 h-6 sm:w-5 sm:h-5">
+            <HelpCircle size={22} className="text-teal-400 group-hover:scale-110 transition-transform" />
+          </div>
+          <span className={`text-[13px] font-bold transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            {t('서비스 사용 가이드', 'Product Experience')}
+          </span>
+        </button>
+
         {/* Mobile MyPage icon */}
         <Link 
           to="/mypage" 
           title={t('마이페이지 겸 설정')}
-          className={`flex sm:hidden flex-col items-center justify-center gap-1 flex-1 py-2 rounded-xl transition-colors min-h-[48px] ${
+          className={`flex sm:hidden flex-col items-center justify-center gap-1 flex-1 py-2 rounded-xl transition-colors min-h-[48px] tour-target-nav-mypage-mobile ${
             location.pathname === '/mypage' 
               ? (isDarkTheme ? 'text-indigo-300 font-semibold' : 'text-indigo-700 font-bold')
               : (isDarkTheme ? 'text-white/50 hover:text-white font-medium' : 'text-slate-400 hover:text-slate-800 font-medium')
@@ -153,7 +180,7 @@ export default function Sidebar() {
           <Link 
             to="/mypage" 
             title={t('마이페이지 겸 설정', 'My Page & Settings')}
-            className="flex items-center gap-3 cursor-pointer group flex-1 min-w-0"
+            className="flex items-center gap-3 cursor-pointer group flex-1 min-w-0 tour-target-nav-mypage-desktop"
           >
             {userProfile?.avatarUrl || user?.photoURL ? (
               <img 

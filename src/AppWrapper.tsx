@@ -12,6 +12,7 @@ import Diary from './pages/Diary';
 import CompanySearch from './pages/CompanySearch';
 import Creators from './pages/Creators';
 import { useTheme } from './context/ThemeContext';
+import { OnboardingTour } from './components/OnboardingTour';
 
 export default function AppWrapper() {
   const { isLightMode, backgroundType } = useTheme();
@@ -35,6 +36,7 @@ export default function AppWrapper() {
             <Route path="/creators" element={<Creators />} />
           </Routes>
         </div>
+        <OnboardingTour />
       </div>
     </BrowserRouter>
   );

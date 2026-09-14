@@ -143,6 +143,32 @@ export default function Header() {
             </div>
 
             <div className="space-y-6 text-sm text-slate-300">
+              {/* Interactive Product Experience Tour Trigger Banner */}
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-emerald-500/20 to-teal-500/10 border border-teal-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-teal-500/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/30 border border-teal-400/50 flex items-center justify-center text-teal-300 shrink-0">
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm sm:text-base font-extrabold text-white">
+                      {t('인터랙티브 화면 체험 가이드', 'Interactive Product Tour')}
+                    </h4>
+                    <p className="text-xs text-teal-200/90">
+                      {t('말풍선과 핫스팟을 직접 누르며 MyStair의 핵심 기능을 한눈에 둘러보세요!', 'Click callouts & hotspots to tour key MyStair features interactively!')}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setGuideModalOpen(false);
+                    window.dispatchEvent(new CustomEvent('open-onboarding-tour'));
+                  }}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 hover:from-teal-400 hover:to-emerald-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md shadow-teal-500/30 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+                >
+                  <span>{t('가이드 체험 시작 👆', 'Start Tour 👆')}</span>
+                </button>
+              </div>
+
               <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
                 <h4 className="font-bold text-indigo-300 flex items-center gap-2">
                   <span>🏢 1. 나만의 기업찾기 사용법</span>

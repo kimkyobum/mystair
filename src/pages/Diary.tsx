@@ -465,7 +465,7 @@ JSON 구조 규격:
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowExamSettings(!showExamSettings)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border ${isLightMode ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300" : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40"}`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border tour-target-exam-schedule ${isLightMode ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300" : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40"}`}
           >
             <Settings size={15} />
             <span className="hidden sm:inline">{t('시험 일정 설정')}</span>
@@ -483,7 +483,7 @@ JSON 구조 규격:
             </button>
             <button
               onClick={() => handleSummarizeDiaries()}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${isLightMode ? "text-slate-600 hover:text-slate-900 hover:bg-slate-200" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer tour-target-resume-summary ${isLightMode ? "text-slate-600 hover:text-slate-900 hover:bg-slate-200" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
             >
               <Sparkles size={14} className="text-amber-400" />
               <span>{t('자소서 요약')}</span>
@@ -797,7 +797,7 @@ JSON 구조 규격:
                   <div
                     key={fullDateStr}
                     onClick={() => handleOpenDayModal(fullDateStr)}
-                    className={`rounded-xl border-2 transition-all p-1.5 sm:p-2 flex flex-col justify-between min-h-0 cursor-pointer relative group ${
+                    className={`rounded-xl border-2 transition-all p-1.5 sm:p-2 flex flex-col justify-between min-h-0 cursor-pointer relative group ${isToday ? 'tour-target-diary-today' : ''} ${
                       isToday 
                         ? (isLightMode ? 'bg-indigo-50/90 border-indigo-500 ring-2 ring-indigo-500/20 shadow-md hover:border-indigo-600' : 'bg-indigo-950/45 border-indigo-500 ring-1 ring-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.25)] hover:border-indigo-500') 
                         : (isLightMode ? 'bg-white hover:bg-indigo-50/30 border-slate-200 hover:border-indigo-300 shadow-xs' : 'bg-slate-900/55 hover:bg-slate-800/85 border-white/15 hover:border-white/35 shadow-md hover:shadow-[0_4px_16px_rgba(255,255,255,0.05)]')
@@ -1178,7 +1178,7 @@ JSON 구조 규격:
               <button 
                 type="button" 
                 onClick={handleCloseFormModal}
-                className={`p-1 transition-colors ${isLightMode ? "text-slate-400 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}
+                className={`p-1 transition-colors tour-target-close-modal ${isLightMode ? "text-slate-400 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}
               >
                 <X size={20} />
               </button>
@@ -1188,11 +1188,12 @@ JSON 구조 규격:
               <div className="space-y-1">
                 <label className={`text-xs font-bold ${isLightMode ? "text-slate-600" : "text-slate-400"}`}>{t('제목')}</label>
                 <input 
+                  id="diary-title-input"
                   type="text" 
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
                   placeholder={t('예: 전기기능사 회로 실습 성공 기록')}
-                  className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
+                  className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors tour-target-diary-title ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
                   required
                 />
               </div>
@@ -1210,7 +1211,7 @@ JSON 구조 규격:
 
                 <div className="space-y-1">
                   <label className={`text-xs font-bold ${isLightMode ? "text-slate-600" : "text-slate-400"}`}>{t('오늘의 기분')}</label>
-                  <div className={`flex items-center justify-between p-1.5 rounded-xl border h-[46px] ${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800 border-slate-700"}`}>
+                  <div id="diary-mood-input" className={`flex items-center justify-between p-1.5 rounded-xl border h-[46px] tour-target-diary-mood ${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800 border-slate-700"}`}>
                     {MOOD_OPTIONS.map(m => (
                       <button
                         key={m.emoji}
@@ -1232,11 +1233,12 @@ JSON 구조 규격:
             <div className="space-y-1">
               <label className={`text-xs font-bold font-sans ${isLightMode ? "text-slate-600" : "text-slate-400"}`}>{t('오늘의 성장 기록 및 일기 내용')}</label>
               <textarea 
+                id="diary-content-input"
                 rows={5}
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 placeholder={t('오늘 배운 실무 기술, 시험 공부 분량, 느낀 점을 자유롭게 기록해보세요...')}
-                className={`w-full border rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
+                className={`w-full border rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-colors tour-target-diary-content ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-indigo-500" : "bg-slate-800 border-slate-700 text-white placeholder-slate-500 focus:border-indigo-500"}`}
                 required
               />
             </div>

@@ -737,7 +737,7 @@ export default function MyPage() {
 
                 <button
                   onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
-                  className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
+                  className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm tour-target-edit-mode ${
                     isFullEditing 
                       ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
                       : isLightMode
@@ -755,7 +755,7 @@ export default function MyPage() {
             <div className="flex flex-col gap-4">
 
             {/* Box 1: 이름 (Name) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-name">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
@@ -803,7 +803,7 @@ export default function MyPage() {
             </div>
 
             {/* Box 2: 고등학교 (High School) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-blue-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-blue-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-school">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
@@ -966,8 +966,8 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* Box 3: 전공 (Major) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-purple-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            {/* Box 3: */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-blue-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-major">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-purple-100 text-purple-600 rounded-lg">
@@ -1034,8 +1034,8 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* Box 4: MBTI 성격 진단 (결과만 뜨고 상세분석 버튼 제공) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-pink-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            {/* Box 4: */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-pink-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-mbti">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-pink-100 text-pink-600 rounded-lg">
@@ -1176,8 +1176,8 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* Box 5: 홀랜드 직업 적성 (결과만 뜨고 상세분석 버튼 제공) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-cyan-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            {/* Box 5: */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-violet-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-holland">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-cyan-100 text-cyan-600 rounded-lg">
@@ -1258,8 +1258,8 @@ export default function MyPage() {
               )}
             </div>
 
-            {/* Box 6: 희망 기업 */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md">
+            {/* Box 6: */}
+            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-company">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
