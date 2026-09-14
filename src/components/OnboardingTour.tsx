@@ -20,22 +20,45 @@ const TypewriterText = ({ text }: { text: string }) => {
   useEffect(() => {
     setDisplayedLength(0);
     let i = 0;
+    // Strip markdown formatting characters to count raw text length
+    const rawTextLength = text.replace(/\*\*/g, '').length;
     const interval = setInterval(() => {
       setDisplayedLength((prev) => prev + 1);
       i++;
-      if (i >= text.length) clearInterval(interval);
+      if (i >= rawTextLength) clearInterval(interval);
     }, 40); // Fast typing speed
     return () => clearInterval(interval);
   }, [text]);
 
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  let charIndex = 0;
+
   return (
-    <span className="relative inline-block whitespace-pre-wrap">
-      {/* Invisible full text to establish max width/height immediately */}
-      <span className="invisible" aria-hidden="true">{text}</span>
-      {/* Visible typed text positioned absolutely over the invisible one */}
-      <span className="absolute left-0 top-0 w-full h-full text-left overflow-hidden break-words" style={{ clipPath: 'inset(0 0 0 0)' }}>
-        {text.slice(0, displayedLength)}
-      </span>
+    <span className="whitespace-pre-wrap" style={{ wordBreak: 'keep-all' }}>
+      {parts.map((part, partIndex) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          const content = part.slice(2, -2);
+          return (
+            <strong key={partIndex} className="text-teal-400 font-black">
+              {content.split('').map((char, i) => {
+                const isVisible = charIndex < displayedLength;
+                charIndex++;
+                return <span key={i} className={isVisible ? '' : 'opacity-0'}>{char}</span>;
+              })}
+            </strong>
+          );
+        } else {
+          return (
+            <span key={partIndex}>
+              {part.split('').map((char, i) => {
+                const isVisible = charIndex < displayedLength;
+                charIndex++;
+                return <span key={i} className={isVisible ? '' : 'opacity-0'}>{char}</span>;
+              })}
+            </span>
+          );
+        }
+      })}
     </span>
   );
 };
@@ -189,9 +212,16 @@ const TOUR_STEPS: TourStep[] = [
     onNext: (nav) => nav('/'),
   },
   {
+    id: 'home-diary-btn',
+    target: '.tour-target-home-diary-btn',
+    message: '오늘의 다이어리 작성을 눌러 간편하게 일기를 시작할 수도 있어요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
     id: 'outro',
-    target: '.tour-target-nav-home',
-    message: '이제 MyStair와 함께 꿈에 한 발자국 더 나아가 봐요!',
+    target: 'body',
+    message: '이제 **MyStair**와 함께 꿈에 한 발자국 더 나아가 봐요!',
     action: 'click_anywhere',
   }
 ];
@@ -201,7 +231,8 @@ export function OnboardingTour() {
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const [windowSize, setWindowSize] = useState({ w: window.innerWidth, h: window.innerHeight });
-  
+  const [isOutroClosing, setIsOutroClosing] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLanguage();
@@ -214,16 +245,14 @@ export function OnboardingTour() {
     const isLoggedIn = !!isMockUser || !!localStorage.getItem('auth_token'); // Simplified check
 
     if (!hasSeenGuide && isLoggedIn && stepIndex === 0 && !isActive) {
-      // Small delay to ensure app is mounted
-      setTimeout(() => {
-        setIsActive(true);
-      }, 500);
+      setIsActive(true);
     }
 
     // Event listener for manual trigger
     const handleOpen = () => {
       setStepIndex(0);
       setIsActive(true);
+      setIsOutroClosing(false);
     };
     window.addEventListener('open-onboarding-tour', handleOpen);
     return () => window.removeEventListener('open-onboarding-tour', handleOpen);
@@ -293,6 +322,8 @@ export function OnboardingTour() {
   }, []);
 
   const handleNext = () => {
+    if (isOutroClosing) return;
+
     const step = TOUR_STEPS[stepIndex];
     if (step.onNext) {
       step.onNext(navigate);
@@ -301,14 +332,23 @@ export function OnboardingTour() {
     if (stepIndex < TOUR_STEPS.length - 1) {
       setStepIndex(prev => prev + 1);
     } else {
-      endTour();
+      handleOutroClose();
     }
+  };
+
+  const handleOutroClose = () => {
+    setIsOutroClosing(true);
+    // Wait for the fly-away animation to finish
+    setTimeout(() => {
+      endTour();
+    }, 1000);
   };
 
   const endTour = () => {
     localStorage.setItem('mystair_seen_guide_onboarding', 'true');
     setIsActive(false);
     setStepIndex(0);
+    setIsOutroClosing(false);
     navigate('/');
   };
 
@@ -319,7 +359,7 @@ export function OnboardingTour() {
   // Intro Screen (Step 0)
   if (stepIndex === 0) {
     return (
-      <div className="fixed inset-0 z-[99999] bg-black flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-500">
+      <div className="fixed inset-0 z-[99999] bg-black flex items-center justify-center p-6 text-white font-sans">
         <div className="max-w-md w-full text-center space-y-8">
           <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto overflow-hidden">
             <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
@@ -359,7 +399,7 @@ export function OnboardingTour() {
       
       {/* Background Mask */}
       <svg width="100%" height="100%" className="absolute inset-0 pointer-events-auto" onClick={() => {
-        if (currentStep.action === 'click_anywhere' || currentStep.allowAnywhereClick) {
+        if (currentStep.action === 'click_anywhere' || currentStep.allowAnywhereClick || stepIndex === TOUR_STEPS.length - 1) {
           handleNext();
         }
       }}>
@@ -420,18 +460,49 @@ export function OnboardingTour() {
       {/* Outro specific styling */}
       {stepIndex === TOUR_STEPS.length - 1 && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-slate-900 border border-teal-500/30 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4 max-w-sm pointer-events-auto cursor-pointer"
-            onClick={endTour}
+           <div 
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 pointer-events-auto cursor-pointer"
+            onClick={handleNext}
           >
-            <div className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden">
-              <AlienUFOSvg className="w-20 h-20 drop-shadow-[0_0_10px_rgba(236,72,153,0.3)]" />
-            </div>
-            <p className="text-white font-bold text-center text-lg"><TypewriterText text={currentStep.message} /></p>
-            <p className="text-slate-400 text-sm mt-2 font-medium">화면을 클릭하여 닫기</p>
-          </motion.div>
+            {/* Giant Character - Flies away on close */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: 50 }}
+              animate={isOutroClosing ? {
+                scale: 0.2,
+                x: windowSize.w / 2, // Fly to top right
+                y: -windowSize.h / 2,
+                rotate: 720,
+                opacity: 0,
+              } : { 
+                opacity: 1, 
+                scale: 1, 
+                x: 0,
+                y: 0,
+                rotate: 0
+              }}
+              transition={{ type: isOutroClosing ? 'tween' : 'spring', duration: isOutroClosing ? 1.0 : 0.6, ease: isOutroClosing ? "easeIn" : undefined }}
+              className="w-32 h-32 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
+            >
+              <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
+            </motion.div>
+
+            {/* Giant Bubble - Disappears immediately on close */}
+            <AnimatePresence>
+              {!isOutroClosing && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8, x: -20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                  className="bg-white text-slate-900 p-6 rounded-3xl rounded-tl-sm sm:rounded-l-3xl sm:rounded-tr-3xl sm:rounded-bl-sm shadow-2xl font-bold text-xl leading-relaxed border-4 border-pink-200 max-w-md relative"
+                >
+                  <TypewriterText text={currentStep.message} />
+                  <div className="mt-4 pt-4 border-t border-slate-100 text-sm text-slate-500 font-extrabold flex items-center justify-center gap-2">
+                    <span>화면을 클릭하여 닫기</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       )}
 

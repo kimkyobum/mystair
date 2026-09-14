@@ -80,7 +80,7 @@ export default function ChatInput({ onStartChat }: { onStartChat?: (msg: string)
       <div className="w-full flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-2 mt-6 sm:mt-8 max-w-4xl mx-auto px-2">
         <button 
           onClick={() => onStartChat?.('오늘의 다이어리 작성해줘')} 
-          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border ${isLightMode ? "border-slate-300/80 text-slate-700 bg-white/80 hover:bg-teal-50 hover:text-teal-800 hover:border-teal-300 shadow-sm" : "border-teal-500/30 text-teal-300 bg-teal-500/10 hover:bg-teal-500/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-98`}
+          className={`whitespace-nowrap flex-1 sm:flex-none justify-center min-h-[44px] px-4 py-2.5 rounded-xl sm:rounded-full border tour-target-home-diary-btn ${isLightMode ? "border-slate-300/80 text-slate-700 bg-white/80 hover:bg-teal-50 hover:text-teal-800 hover:border-teal-300 shadow-sm" : "border-teal-500/30 text-teal-300 bg-teal-500/10 hover:bg-teal-500/20"} text-[13px] sm:text-sm transition-all backdrop-blur-md font-semibold cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-98`}
         >
           <span className="text-sm">✍️</span> 
           <span>{t('오늘의 다이어리 작성')}</span>
