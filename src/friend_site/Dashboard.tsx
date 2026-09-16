@@ -351,7 +351,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           <div className="flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
             <div className="w-full">
               <h2 className="text-2xl font-bold mb-2 text-white">MyStair</h2>
-              <p className="text-gray-400 text-sm mb-4">{t('구미전자공고 학생들이 만든 웹사이트입니다', 'A website built by students of Gumi Electronic Technical High School')}</p>
+              <p className="text-gray-400 text-sm mb-4">{t('구미전자공업고등학교 학생들이 만든 웹사이트입니다', 'A website built by students of Gumi Electronic Technical High School')}</p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-gray-500 text-xs">
                 <span>{t('© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 눈부시고 찬란한 내일을 진심으로 응원합니다.', '© 2026 MyStair Inc. All rights reserved. Sincerely supporting the bright future of vocational high school students.')}</span>
                 <button 
