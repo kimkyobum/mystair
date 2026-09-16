@@ -58,12 +58,6 @@ export default function App({
           </span>
         </div>
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-tour'))}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 hover:text-white border border-teal-500/40 text-xs font-bold transition-all cursor-pointer shadow-sm"
-          >
-            <span>🚀 {t('사용 가이드 체험', 'Experience Guide')}</span>
-          </button>
           <a href="/map.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors whitespace-nowrap">{t('nav.map')}</a>
           <a href="/creators.html" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors whitespace-nowrap">{t('nav.creators')}</a>
         </div>
