@@ -333,7 +333,7 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[3rem] p-16 md:p-24 text-center relative overflow-hidden group pointer-events-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-teal-400/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight relative z-20 text-white">
-              {t('경험이 스펙이 되는 첫걸음', 'The First Step Where Experience Becomes Merit')}
+              {t('당신의 모든 기록이 빛나는 스펙이 됩니다', 'All your records become a shining merit')}
             </h2>
             <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto relative z-20">
               {t('더 이상 자소서 소재 고갈로 막막해하지 마세요. MyStair와 함께 당신의 노력 일수를 증명하세요.', 'Prove your effort days with MyStair and never worry about running out of topic ideas.')}
