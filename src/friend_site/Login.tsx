@@ -592,19 +592,6 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 <span>Google로 로그인</span>
               </button>
 
-              <div className="text-center pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMockAccountChooser(true);
-                    setShowCustomMockInput(true);
-                  }}
-                  className="text-xs text-gray-500 hover:text-indigo-600 transition-colors underline cursor-pointer"
-                >
-                  💡 Firebase 설정 전 체험용 데모 계정으로 둘러보기
-                </button>
-              </div>
-
               <div className="mt-6 text-center text-sm text-gray-500">
                 {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>
               </div>
