@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
+import { AlienUFOSvg } from './FloatingAliens';
 
 export interface TourStep {
   id: string;
@@ -505,9 +506,9 @@ export function OnboardingTour() {
                 rotate: 0
               }}
               transition={{ type: isOutroClosing ? 'tween' : 'spring', duration: isOutroClosing ? 1.0 : 0.6, ease: isOutroClosing ? "easeIn" : undefined }}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 z-10 shadow-lg text-indigo-600"
+              className="w-20 h-20 sm:w-28 sm:h-28 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
             >
-              <CheckCircle2 className="w-9 h-9 sm:w-11 sm:h-11 text-indigo-600" />
+              <AlienUFOSvg className="w-20 h-20 sm:w-28 sm:h-28 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
             </motion.div>
 
             {/* Giant Bubble - Disappears immediately on close */}
@@ -552,9 +553,9 @@ export function OnboardingTour() {
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[320px]"
         >
-          {/* Guide Badge */}
-          <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/25 shrink-0 mt-0.5 border border-indigo-500/30">
-            <Sparkles className="w-4 h-4 text-white" />
+          {/* Character */}
+          <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+            <AlienUFOSvg className="w-12 h-12 drop-shadow-[0_0_8px_rgba(236,72,153,0.3)]" />
           </div>
 
           {/* Bubble */}
