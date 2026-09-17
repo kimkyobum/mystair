@@ -479,11 +479,13 @@ export function OnboardingTour() {
               <div className="absolute inset-0 rounded-xl border-2 border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.45)] pointer-events-none animate-pulse" />
               <div className="absolute inset-0 rounded-xl border border-indigo-400/50 pointer-events-none animate-ping opacity-30" />
               
-              {/* Refined Click / Tap Badge Indicator */}
-              <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/40 border border-indigo-300/40 animate-bounce`}>
-                <MousePointerClick className="w-3.5 h-3.5 text-indigo-100" />
-                <span className="text-[11px] font-bold tracking-tight">클릭</span>
-              </div>
+              {/* Refined Click / Tap Badge Indicator (Hide when target is on the left) */}
+              {targetRect.x >= 120 && (
+                <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/40 border border-indigo-300/40 animate-bounce whitespace-nowrap`}>
+                  <MousePointerClick className="w-3.5 h-3.5 text-indigo-100 shrink-0" />
+                  <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">클릭</span>
+                </div>
+              )}
             </>
           )}
         </div>
