@@ -403,12 +403,69 @@ export function OnboardingTour() {
 
   const currentStep = TOUR_STEPS[stepIndex];
 
+  // Check if current target is near the top-right corner to avoid colliding with the skip button
+  const isTargetTopRight = Boolean(
+    targetRect && 
+    targetRect.y < 130 && 
+    (targetRect.x + targetRect.width > windowSize.w - 380)
+  );
+
+  const getBubblePosition = () => {
+    if (!targetRect) return { left: 16, top: 16 };
+    
+    const bubbleWidth = windowSize.w < 640 ? 290 : 320;
+    const isNearTop = targetRect.y < 120;
+    const isNearBottom = targetRect.y + 130 > windowSize.h;
+    const isRightSide = (targetRect.x + targetRect.width + bubbleWidth + 20 > windowSize.w);
+
+    let left = targetRect.x + targetRect.width + 20;
+    let top = targetRect.y;
+
+    if (windowSize.w < 640) {
+      left = Math.max(12, Math.min(windowSize.w - bubbleWidth - 12, targetRect.x - 20));
+      if (isNearTop) {
+        top = targetRect.y + targetRect.height + 16;
+      } else if (isNearBottom) {
+        top = Math.max(16, targetRect.y - 95);
+      }
+    } else {
+      if (isNearTop) {
+        // Place below target to avoid colliding with top navigation bar and header buttons
+        top = targetRect.y + targetRect.height + 16;
+        if (isRightSide) {
+          left = Math.max(16, Math.min(windowSize.w - bubbleWidth - 20, targetRect.x + targetRect.width - bubbleWidth + 20));
+        } else {
+          left = Math.max(16, targetRect.x);
+        }
+      } else if (isNearBottom) {
+        top = Math.max(16, targetRect.y - 95);
+        if (isRightSide) {
+          left = Math.max(16, targetRect.x - bubbleWidth - 10);
+        }
+      } else {
+        if (isRightSide) {
+          left = Math.max(16, targetRect.x - bubbleWidth - 10);
+        }
+      }
+    }
+
+    // Viewport bounds clamp
+    left = Math.max(12, Math.min(windowSize.w - bubbleWidth - 12, left));
+    top = Math.max(12, Math.min(windowSize.h - 110, top));
+
+    return { left, top };
+  };
+
   // Active Tour Overlay
   return (
     <div className="fixed inset-0 z-[99999] pointer-events-none">
       
-      {/* Top Controls: Step progress and skip button */}
-      <div className="absolute top-4 right-4 z-[100002] pointer-events-auto flex items-center gap-2">
+      {/* Controls: Step progress and skip button (smoothly relocates if target is in the top-right) */}
+      <div 
+        className={`fixed z-[100002] pointer-events-auto flex items-center gap-2 transition-all duration-300 ${
+          isTargetTopRight ? 'bottom-6 right-6' : 'top-4 right-4'
+        }`}
+      >
         <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 text-indigo-300 border border-indigo-500/30 backdrop-blur-md shadow-lg">
           {stepIndex} / {TOUR_STEPS.length - 1}
         </span>
@@ -550,14 +607,8 @@ export function OnboardingTour() {
           animate={{ 
             opacity: 1, 
             scale: 1,
-            left: windowSize.w < 640 
-              ? Math.max(12, Math.min(windowSize.w - 300, targetRect.x - 20))
-              : (targetRect.x + targetRect.width + 320 > windowSize.w)
-                ? Math.max(16, targetRect.x - 310)
-                : targetRect.x + targetRect.width + 20,
-            top: (targetRect.y + 110 > windowSize.h) 
-              ? Math.max(16, targetRect.y - 95) 
-              : Math.max(16, targetRect.y),
+            left: getBubblePosition().left,
+            top: getBubblePosition().top,
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[320px]"
