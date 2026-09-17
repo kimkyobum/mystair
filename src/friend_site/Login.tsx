@@ -215,40 +215,40 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         localStorage.setItem('mystair_local_user_profile', existingMypage);
       }
       
+      localStorage.removeItem('mystair_mock_user');
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('viewingPromo', 'false');
+      
       setIsLoading(false);
       if (onLoginSuccess) {
         onLoginSuccess();
       }
     } catch (error: any) {
       console.error('Google login failed:', error);
-      if (
-        error?.message?.includes('api-key-not-valid') || 
-        error?.code?.includes('api-key-not-valid') || 
-        error?.message?.includes('API key')
-      ) {
-        console.warn('Firebase key invalid, falling back to mock Google login.');
-        setShowMockAccountChooser(true);
-        setIsLoading(false);
-        return;
-      }
-      
-      if (
-        error?.code === 'auth/unauthorized-domain' ||
-        error?.code === 'auth/popup-blocked' ||
-        error?.code === 'auth/operation-not-allowed' ||
-        error?.code === 'auth/internal-error'
-      ) {
-        console.warn('Domain restriction or popup blocked in preview environment. Switching to Google account entry mode.');
-        setShowMockAccountChooser(true);
-        setShowCustomMockInput(true);
-        setIsLoading(false);
-        return;
-      } else if (error?.code === 'auth/popup-closed-by-user') {
-        setServerError('구글 로그인 창이 닫혔습니다.');
-      } else {
-        setServerError(error?.message || '구글 로그인 중 오류가 발생했습니다.');
-      }
       setIsLoading(false);
+
+      if (error?.code === 'auth/popup-closed-by-user') {
+        setServerError('구글 로그인 창이 닫혔습니다.');
+        return;
+      }
+
+      if (error?.code === 'auth/operation-not-allowed') {
+        setServerError('Firebase 콘솔에서 Google 로그인이 활성화되지 않았습니다. [Authentication > 로그인 방법(Sign-in method)]에서 "Google"을 "사용 설정"해주세요.');
+        return;
+      }
+
+      if (error?.code === 'auth/unauthorized-domain') {
+        const currentHost = window.location.hostname;
+        setServerError(`Firebase 미승인 도메인 오류: 현재 접속 도메인('${currentHost}')이 Firebase에 등록되지 않았습니다. Firebase 콘솔 [Authentication > 설정 > 승인된 도메인]에 '${currentHost}'를 추가해주세요.`);
+        return;
+      }
+
+      if (error?.code === 'auth/popup-blocked') {
+        setServerError('브라우저에서 팝업창이 차단되었습니다. 팝업 차단을 해제하거나 우측 상단 새 창으로 열기를 이용해주세요.');
+        return;
+      }
+
+      setServerError(error?.message || '구글 로그인 중 오류가 발생했습니다.');
     }
   };
 
@@ -591,6 +591,19 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                 </svg>
                 <span>Google로 로그인</span>
               </button>
+
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowMockAccountChooser(true);
+                    setShowCustomMockInput(true);
+                  }}
+                  className="text-xs text-gray-500 hover:text-indigo-600 transition-colors underline cursor-pointer"
+                >
+                  💡 Firebase 설정 전 체험용 데모 계정으로 둘러보기
+                </button>
+              </div>
 
               <div className="mt-6 text-center text-sm text-gray-500">
                 {t('login.no_account')} <button type="button" onClick={() => setStep('signup')} className="text-[#5C55FA] hover:underline font-medium">{t('login.button.signup')}</button>

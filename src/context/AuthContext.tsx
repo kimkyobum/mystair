@@ -41,6 +41,8 @@ interface AuthContextType {
   user: FirebaseUser | null;
   userProfile: UserProfileData | null;
   loading: boolean;
+  authError: string | null;
+  clearAuthError: () => void;
   loginWithGoogle: () => Promise<void>;
   loginAnonymously: () => Promise<void>;
   logout: () => Promise<void>;
@@ -84,6 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const clearAuthError = () => setAuthError(null);
 
   useEffect(() => {
     // Check if we have a saved mock user from previous fallback login
@@ -189,69 +194,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithGoogle = async () => {
-    // Pre-emptively detect dummy/invalid key to bypass Firebase Auth popups that will fail
-    const currentApiKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY;
-    const isDummyKey = !currentApiKey || currentApiKey === "AIzaSyDummyKeyForLocalDevOnly";
-    if (isDummyKey) {
-      console.warn('Using graceful mock Google login since real Firebase credentials are not provided.');
-      const displayName = '마이스터 구글 인재';
-      const mockUser = {
-        uid: 'mock-google-user-123',
-        displayName: displayName,
-        email: 'meister_google@mystair.com',
-        photoURL: generateInitialsAvatar(displayName)
-      };
-      localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
-      setUser(mockUser as any);
-      await loadUserProfile(mockUser as any);
-      return;
-    }
-
+    setAuthError(null);
     try {
       await signInWithPopup(auth, googleProvider);
+      localStorage.removeItem('mystair_mock_user');
     } catch (error: any) {
       console.error('Google login failed:', error);
-      // If the error indicates invalid key, use fallback
-      if (
-        error?.message?.includes('api-key-not-valid') || 
-        error?.code?.includes('api-key-not-valid') || 
-        error?.message?.includes('API key')
-      ) {
-        console.warn('Firebase key invalid, falling back to mock Google login.');
-        const displayName = '마이스터 구글 인재';
-        const mockUser = {
-          uid: 'mock-google-user-123',
-          displayName: displayName,
-          email: 'meister_google@mystair.com',
-          photoURL: generateInitialsAvatar(displayName)
-        };
-        localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
-        setUser(mockUser as any);
-        await loadUserProfile(mockUser as any);
+
+      if (error?.code === 'auth/popup-closed-by-user') {
         return;
       }
 
-      if (
-        error?.code === 'auth/unauthorized-domain' ||
-        error?.code === 'auth/popup-blocked' ||
-        error?.code === 'auth/operation-not-allowed'
-      ) {
-        console.warn('Firebase domain restriction or popup blocked, falling back to mock Google user.');
-        const displayName = '구글 사용자';
-        const mockUser = {
-          uid: 'mock-google-user-' + Math.random().toString(36).substring(2, 9),
-          displayName: displayName,
-          email: 'google_user@gmail.com',
-          photoURL: generateInitialsAvatar(displayName)
-        };
-        localStorage.setItem('mystair_mock_user', JSON.stringify(mockUser));
-        setUser(mockUser as any);
-        await loadUserProfile(mockUser as any);
+      if (error?.code === 'auth/operation-not-allowed') {
+        const msg = 'Firebase 콘솔에서 Google 로그인이 활성화되지 않았습니다.\nFirebase 콘솔 [Authentication > 로그인 방법(Sign-in method)]에서 "Google"을 "사용 설정"해주세요.';
+        setAuthError(msg);
         return;
-      } else if (error?.code === 'auth/popup-closed-by-user') {
-        throw new Error('구글 로그인 창이 닫혔습니다.');
       }
-      throw new Error(error?.message || '구글 로그인 중 오류가 발생했습니다.');
+
+      if (error?.code === 'auth/unauthorized-domain') {
+        const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+        const msg = `승인되지 않은 도메인입니다.\nFirebase 콘솔 [Authentication > 설정 > 승인된 도메인]에 현재 도메인('${currentHost}')을 추가해주세요.`;
+        setAuthError(msg);
+        return;
+      }
+
+      if (error?.code === 'auth/popup-blocked') {
+        const msg = '브라우저에서 로그인 팝업창이 차단되었습니다.\n주소창에서 팝업 차단을 해제하거나 우측 상단의 "새 탭에서 열기" 버튼을 이용해주세요.';
+        setAuthError(msg);
+        return;
+      }
+
+      const generalMsg = error?.message || '구글 로그인 중 오류가 발생했습니다.';
+      setAuthError(generalMsg);
     }
   };
 
@@ -360,6 +334,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       userProfile,
       loading,
+      authError,
+      clearAuthError,
       loginWithGoogle,
       loginAnonymously,
       logout,
@@ -368,6 +344,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       saveDiary,
       deleteDiary
     }}>
+      {authError && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] max-w-lg w-[92%] bg-slate-900 border border-red-500/60 text-white p-4 rounded-xl shadow-2xl flex items-start justify-between gap-3 text-sm animate-in fade-in slide-in-from-top duration-300">
+          <div className="flex-1 space-y-2">
+            <div className="font-bold text-red-400 flex items-center gap-2">
+              <span className="text-base">⚠️</span>
+              <span>Firebase 설정 안내</span>
+            </div>
+            <p className="text-slate-200 text-xs sm:text-sm whitespace-pre-line leading-relaxed">{authError}</p>
+            {authError.includes('승인된 도메인') && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  if (typeof window !== 'undefined') {
+                    navigator.clipboard.writeText(window.location.hostname);
+                    const btn = e.currentTarget;
+                    btn.innerText = '✓ 도메인 주소 복사 완료!';
+                    setTimeout(() => {
+                      btn.innerText = '📋 현재 도메인(' + window.location.hostname + ') 복사하기';
+                    }, 2500);
+                  }
+                }}
+                className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-3 py-1.5 rounded-lg border border-indigo-400/40 transition-colors shadow cursor-pointer inline-block"
+              >
+                📋 현재 도메인({typeof window !== 'undefined' ? window.location.hostname : ''}) 복사하기
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setAuthError(null)}
+            className="text-slate-400 hover:text-white p-1 text-base transition-colors cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       {children}
     </AuthContext.Provider>
   );

@@ -21,12 +21,16 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfigJson.storageBucket || "",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfigJson.messagingSenderId || "",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || firebaseConfigJson.appId || "1:123456789:web:abcdef",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || firebaseConfigJson.measurementId || undefined
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
-export const db = getFirestore(app, firebaseConfigJson.firestoreDatabaseId);
+const customDbId = firebaseConfigJson.firestoreDatabaseId;
+export const db = (customDbId && customDbId !== '(default)' && customDbId.trim() !== '')
+  ? getFirestore(app, customDbId)
+  : getFirestore(app);
 
 export enum OperationType {
   CREATE = 'create',
