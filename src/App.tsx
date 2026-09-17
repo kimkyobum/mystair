@@ -20,6 +20,7 @@ export default function App() {
   const handleLoginSuccess = () => {
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
+    sessionStorage.setItem('mystair_auto_start_tour', 'true');
     setIsLoggedIn(true);
     setViewingPromo(false);
   };

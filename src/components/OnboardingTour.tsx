@@ -65,15 +65,9 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 const TOUR_STEPS: TourStep[] = [
   {
-    id: 'intro',
-    target: 'body',
-    message: '가이드를 시작하시겠습니까?',
-    action: 'click_anywhere', // Handled specially in render
-  },
-  {
     id: 'nav-mypage',
     target: '.tour-target-nav-mypage-desktop, .tour-target-nav-mypage-mobile',
-    message: '먼저 마이페이지를 들어가 주세요.',
+    message: '✨ **MyStair에 오신 것을 환영합니다!**\n먼저 **마이페이지**를 눌러 시작해 볼까요?',
     action: 'click_target',
     onNext: (nav) => nav('/mypage'),
   },
@@ -240,15 +234,21 @@ export function OnboardingTour() {
 
   // Check if we need to start
   useEffect(() => {
+    const shouldAutoStart = sessionStorage.getItem('mystair_auto_start_tour') === 'true';
     const hasSeenGuide = localStorage.getItem('mystair_seen_guide_onboarding');
     const isMockUser = localStorage.getItem('mystair_mock_user');
     const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true' || !!isMockUser; 
 
-    if (!hasSeenGuide && isLoggedIn && stepIndex === 0 && !isActive) {
+    if ((shouldAutoStart || !hasSeenGuide) && isLoggedIn && !isActive) {
+      if (shouldAutoStart) {
+        sessionStorage.removeItem('mystair_auto_start_tour');
+      }
+      setStepIndex(0);
+      setIsOutroClosing(false);
       // Small delay to ensure DOM is ready after login redirect
       const timer = setTimeout(() => {
         setIsActive(true);
-      }, 300);
+      }, 350);
       return () => clearTimeout(timer);
     }
 
@@ -260,11 +260,11 @@ export function OnboardingTour() {
     };
     window.addEventListener('open-onboarding-tour', handleOpen);
     return () => window.removeEventListener('open-onboarding-tour', handleOpen);
-  }, [isActive, stepIndex]);
+  }, [isActive]);
 
   // Update target rect
   useEffect(() => {
-    if (!isActive || stepIndex === 0) return;
+    if (!isActive) return;
 
     let raf: number;
     const updateRect = () => {
@@ -298,7 +298,7 @@ export function OnboardingTour() {
 
   // Handle scrolling when step changes
   useEffect(() => {
-    if (!isActive || stepIndex === 0) return;
+    if (!isActive) return;
     const step = TOUR_STEPS[stepIndex];
     if (step && step.target !== 'body') {
       setTimeout(() => {
@@ -345,61 +345,40 @@ export function OnboardingTour() {
     // Wait for the fly-away animation to finish
     setTimeout(() => {
       endTour();
+      navigate('/');
     }, 1000);
   };
 
   const endTour = () => {
     localStorage.setItem('mystair_seen_guide_onboarding', 'true');
+    sessionStorage.removeItem('mystair_auto_start_tour');
     setIsActive(false);
     setStepIndex(0);
     setIsOutroClosing(false);
-    navigate('/');
   };
 
   if (!isActive) return null;
 
   const currentStep = TOUR_STEPS[stepIndex];
 
-  // Intro Screen (Step 0)
-  if (stepIndex === 0) {
-    return (
-      <div className="fixed inset-0 z-[99999] bg-black flex items-center justify-center p-6 text-white font-sans">
-        <div className="max-w-md w-full text-center space-y-8">
-          <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto overflow-hidden">
-            <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
-          </div>
-          
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black tracking-tight text-white">
-              MyStair에 오신 것을 환영합니다!
-            </h2>
-            <p className="text-slate-400 font-medium leading-relaxed">
-              가이드를 시작할까요?
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <button 
-              onClick={handleNext}
-              className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 shadow-[0_0_20px_rgba(236,72,153,0.3)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02]"
-            >
-              네, 가이드 시작하기
-            </button>
-            <button 
-              onClick={endTour}
-              className="w-full bg-white/5 hover:bg-white/10 text-slate-300 py-4 rounded-xl font-bold text-lg transition-colors cursor-pointer border border-white/10"
-            >
-              아니요, 바로 시작할게요
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Active Tour Overlay
   return (
     <div className="fixed inset-0 z-[99999] pointer-events-none">
+      
+      {/* Top Controls: Step progress and skip button */}
+      <div className="absolute top-4 right-4 z-[100002] pointer-events-auto flex items-center gap-2">
+        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/85 text-teal-300 border border-teal-500/30 backdrop-blur-md shadow-lg">
+          {stepIndex + 1} / {TOUR_STEPS.length}
+        </span>
+        <button 
+          onClick={endTour}
+          className="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-900/85 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/20 hover:border-white/40 transition-all flex items-center gap-1.5 cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+          title="가이드 건너뛰기"
+        >
+          <span>가이드 건너뛰기</span>
+          <span className="text-slate-400">✕</span>
+        </button>
+      </div>
       
       {/* Background Mask */}
       <svg width="100%" height="100%" className="absolute inset-0 pointer-events-auto" onClick={() => {
@@ -519,11 +498,17 @@ export function OnboardingTour() {
           animate={{ 
             opacity: 1, 
             scale: 1,
-            left: (targetRect.x + targetRect.width + 300 > windowSize.w) ? Math.max(10, targetRect.x - 290) : targetRect.x + targetRect.width + 20,
-            top: (targetRect.y + 100 > windowSize.h) ? Math.max(10, targetRect.y - 80) : targetRect.y,
+            left: windowSize.w < 640 
+              ? Math.max(12, Math.min(windowSize.w - 300, targetRect.x - 20))
+              : (targetRect.x + targetRect.width + 320 > windowSize.w)
+                ? Math.max(16, targetRect.x - 310)
+                : targetRect.x + targetRect.width + 20,
+            top: (targetRect.y + 110 > windowSize.h) 
+              ? Math.max(16, targetRect.y - 95) 
+              : Math.max(16, targetRect.y),
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[280px]"
+          className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[320px]"
         >
           {/* Character */}
           <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden shrink-0">
@@ -531,7 +516,7 @@ export function OnboardingTour() {
           </div>
 
           {/* Bubble */}
-          <div className="bg-white text-slate-900 p-3 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border-2 border-pink-100 flex-1 min-w-[150px]">
+          <div className="bg-white text-slate-900 p-3.5 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border-2 border-pink-100 flex-1 min-w-[160px]">
             <TypewriterText text={currentStep.message} />
           </div>
         </motion.div>

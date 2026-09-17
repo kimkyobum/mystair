@@ -198,6 +198,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInWithPopup(auth, googleProvider);
       localStorage.removeItem('mystair_mock_user');
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('viewingPromo', 'false');
+      sessionStorage.setItem('mystair_auto_start_tour', 'true');
+      window.dispatchEvent(new CustomEvent('open-onboarding-tour'));
     } catch (error: any) {
       console.error('Google login failed:', error);
 

@@ -158,6 +158,9 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
       if (loggedInUser) {
         localStorage.setItem('mystair_mock_user', JSON.stringify(loggedInUser));
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('viewingPromo', 'false');
+        sessionStorage.setItem('mystair_auto_start_tour', 'true');
 
         if (onLoginSuccess) {
           onLoginSuccess();
@@ -218,6 +221,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       localStorage.removeItem('mystair_mock_user');
       sessionStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('viewingPromo', 'false');
+      sessionStorage.setItem('mystair_auto_start_tour', 'true');
       
       setIsLoading(false);
       if (onLoginSuccess) {
@@ -324,6 +328,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
+    sessionStorage.setItem('mystair_auto_start_tour', 'true');
 
     setIsLoading(false);
     setShowMockAccountChooser(false);
