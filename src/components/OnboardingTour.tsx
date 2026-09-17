@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, MousePointerClick } from 'lucide-react';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { AlienUFOSvg } from './FloatingAliens';
@@ -472,12 +472,19 @@ export function OnboardingTour() {
             }
           }}
         >
-          {/* Pulse Effect */}
+          {/* Target Highlight & Touch Guidance Effect */}
           {currentStep.action === 'click_target' && (
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-8 w-8 bg-indigo-600/50 border border-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.6)]"></span>
-            </span>
+            <>
+              {/* Highlight Focus Frame */}
+              <div className="absolute inset-0 rounded-xl border-2 border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.45)] pointer-events-none animate-pulse" />
+              <div className="absolute inset-0 rounded-xl border border-indigo-400/50 pointer-events-none animate-ping opacity-30" />
+              
+              {/* Refined Click / Tap Badge Indicator */}
+              <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/40 border border-indigo-300/40 animate-bounce`}>
+                <MousePointerClick className="w-3.5 h-3.5 text-indigo-100" />
+                <span className="text-[11px] font-bold tracking-tight">클릭</span>
+              </div>
+            </>
           )}
         </div>
       )}
