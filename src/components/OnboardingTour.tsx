@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Compass, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -368,38 +368,29 @@ export function OnboardingTour() {
   // Intro Screen (Step 0) - 검은색 창과 가이드 시작 질문 화면
   if (stepIndex === 0) {
     return (
-      <div className="fixed inset-0 z-[99999] bg-slate-950/90 sm:bg-black/95 backdrop-blur-md flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
-        <div className="max-w-md w-full text-center space-y-7">
-          <div className="w-20 h-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto shadow-2xl shadow-indigo-500/10">
-            <Compass className="w-10 h-10 text-indigo-400" />
-          </div>
-          
-          <div className="space-y-2.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>서비스 둘러보기</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+      <div className="fixed inset-0 z-[99999] bg-black/95 sm:bg-black/90 backdrop-blur-md flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
+        <div className="max-w-md w-full text-center space-y-8">
+          <div className="space-y-3">
+            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white leading-tight">
               MyStair에 오신 것을 환영합니다!
             </h2>
-            <p className="text-slate-400 font-medium text-sm sm:text-base leading-relaxed">
-              주요 기능과 화면 구성을 둘러보시겠습니까?
+            <p className="text-slate-400 font-medium text-base sm:text-lg leading-relaxed">
+              가이드를 시작할까요?
             </p>
           </div>
 
-          <div className="flex flex-col gap-2.5 pt-2">
+          <div className="flex flex-col gap-3 pt-2">
             <button 
               type="button"
               onClick={handleNext}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-base transition-all cursor-pointer shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 active:scale-98"
+              className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 shadow-[0_0_25px_rgba(236,72,153,0.35)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-98"
             >
-              <span>네, 가이드 시작하기</span>
-              <ArrowRight className="w-4 h-4" />
+              네, 가이드 시작하기
             </button>
             <button 
               type="button"
               onClick={endTour}
-              className="w-full bg-slate-900/90 hover:bg-slate-800 text-slate-400 hover:text-slate-200 py-3 rounded-xl font-semibold text-sm transition-colors cursor-pointer border border-slate-800"
+              className="w-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3.5 rounded-xl font-semibold text-base transition-colors cursor-pointer border border-white/10 active:scale-98"
             >
               아니요, 바로 시작할게요
             </button>
