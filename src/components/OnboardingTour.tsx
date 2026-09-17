@@ -65,9 +65,15 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 const TOUR_STEPS: TourStep[] = [
   {
+    id: 'intro',
+    target: 'body',
+    message: '가이드를 시작하시겠습니까?',
+    action: 'click_anywhere', // Handled specially in render
+  },
+  {
     id: 'nav-mypage',
     target: '.tour-target-nav-mypage-desktop, .tour-target-nav-mypage-mobile',
-    message: '✨ **MyStair에 오신 것을 환영합니다!**\n먼저 **마이페이지**를 눌러 시작해 볼까요?',
+    message: '먼저 **마이페이지**를 눌러 시작해 볼까요?',
     action: 'click_target',
     onNext: (nav) => nav('/mypage'),
   },
@@ -264,7 +270,7 @@ export function OnboardingTour() {
 
   // Update target rect
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || stepIndex === 0) return;
 
     let raf: number;
     const updateRect = () => {
@@ -298,7 +304,7 @@ export function OnboardingTour() {
 
   // Handle scrolling when step changes
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || stepIndex === 0) return;
     const step = TOUR_STEPS[stepIndex];
     if (step && step.target !== 'body') {
       setTimeout(() => {
@@ -359,6 +365,45 @@ export function OnboardingTour() {
 
   if (!isActive) return null;
 
+  // Intro Screen (Step 0) - 검은색 창과 가이드 시작 질문 화면
+  if (stepIndex === 0) {
+    return (
+      <div className="fixed inset-0 z-[99999] bg-black flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
+        <div className="max-w-md w-full text-center space-y-8">
+          <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto overflow-hidden">
+            <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.6)]" />
+          </div>
+          
+          <div className="space-y-4">
+            <h2 className="text-3xl font-black tracking-tight text-white">
+              MyStair에 오신 것을 환영합니다!
+            </h2>
+            <p className="text-slate-400 font-medium leading-relaxed">
+              가이드를 시작할까요?
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <button 
+              type="button"
+              onClick={handleNext}
+              className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 shadow-[0_0_20px_rgba(236,72,153,0.3)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-98"
+            >
+              네, 가이드 시작하기
+            </button>
+            <button 
+              type="button"
+              onClick={endTour}
+              className="w-full bg-white/5 hover:bg-white/10 text-slate-300 py-4 rounded-xl font-bold text-lg transition-colors cursor-pointer border border-white/10"
+            >
+              아니요, 바로 시작할게요
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const currentStep = TOUR_STEPS[stepIndex];
 
   // Active Tour Overlay
@@ -368,7 +413,7 @@ export function OnboardingTour() {
       {/* Top Controls: Step progress and skip button */}
       <div className="absolute top-4 right-4 z-[100002] pointer-events-auto flex items-center gap-2">
         <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/85 text-teal-300 border border-teal-500/30 backdrop-blur-md shadow-lg">
-          {stepIndex + 1} / {TOUR_STEPS.length}
+          {stepIndex} / {TOUR_STEPS.length - 1}
         </span>
         <button 
           onClick={endTour}
