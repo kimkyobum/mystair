@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, Compass, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
-import { AlienUFOSvg } from './FloatingAliens';
 
 export interface TourStep {
   id: string;
@@ -39,7 +39,7 @@ const TypewriterText = ({ text }: { text: string }) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           const content = part.slice(2, -2);
           return (
-            <strong key={partIndex} className="text-teal-400 font-black">
+            <strong key={partIndex} className="text-indigo-600 font-extrabold">
               {content.split('').map((char, i) => {
                 const isVisible = charIndex < displayedLength;
                 charIndex++;
@@ -368,33 +368,38 @@ export function OnboardingTour() {
   // Intro Screen (Step 0) - 검은색 창과 가이드 시작 질문 화면
   if (stepIndex === 0) {
     return (
-      <div className="fixed inset-0 z-[99999] bg-black flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
-        <div className="max-w-md w-full text-center space-y-8">
-          <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto overflow-hidden">
-            <AlienUFOSvg className="w-32 h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.6)]" />
+      <div className="fixed inset-0 z-[99999] bg-slate-950/90 sm:bg-black/95 backdrop-blur-md flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
+        <div className="max-w-md w-full text-center space-y-7">
+          <div className="w-20 h-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto shadow-2xl shadow-indigo-500/10">
+            <Compass className="w-10 h-10 text-indigo-400" />
           </div>
           
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black tracking-tight text-white">
+          <div className="space-y-2.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+              <span>서비스 둘러보기</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
               MyStair에 오신 것을 환영합니다!
             </h2>
-            <p className="text-slate-400 font-medium leading-relaxed">
-              가이드를 시작할까요?
+            <p className="text-slate-400 font-medium text-sm sm:text-base leading-relaxed">
+              주요 기능과 화면 구성을 둘러보시겠습니까?
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5 pt-2">
             <button 
               type="button"
               onClick={handleNext}
-              className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 shadow-[0_0_20px_rgba(236,72,153,0.3)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-98"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-base transition-all cursor-pointer shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 active:scale-98"
             >
-              네, 가이드 시작하기
+              <span>네, 가이드 시작하기</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
             <button 
               type="button"
               onClick={endTour}
-              className="w-full bg-white/5 hover:bg-white/10 text-slate-300 py-4 rounded-xl font-bold text-lg transition-colors cursor-pointer border border-white/10"
+              className="w-full bg-slate-900/90 hover:bg-slate-800 text-slate-400 hover:text-slate-200 py-3 rounded-xl font-semibold text-sm transition-colors cursor-pointer border border-slate-800"
             >
               아니요, 바로 시작할게요
             </button>
@@ -412,7 +417,7 @@ export function OnboardingTour() {
       
       {/* Top Controls: Step progress and skip button */}
       <div className="absolute top-4 right-4 z-[100002] pointer-events-auto flex items-center gap-2">
-        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/85 text-teal-300 border border-teal-500/30 backdrop-blur-md shadow-lg">
+        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 text-indigo-300 border border-indigo-500/30 backdrop-blur-md shadow-lg">
           {stepIndex} / {TOUR_STEPS.length - 1}
         </span>
         <button 
@@ -478,8 +483,8 @@ export function OnboardingTour() {
           {/* Pulse Effect */}
           {currentStep.action === 'click_target' && (
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-8 w-8 bg-teal-500/50 border border-teal-300 shadow-[0_0_15px_rgba(45,212,191,0.5)]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-8 w-8 bg-indigo-600/50 border border-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.6)]"></span>
             </span>
           )}
         </div>
@@ -509,9 +514,9 @@ export function OnboardingTour() {
                 rotate: 0
               }}
               transition={{ type: isOutroClosing ? 'tween' : 'spring', duration: isOutroClosing ? 1.0 : 0.6, ease: isOutroClosing ? "easeIn" : undefined }}
-              className="w-20 h-20 sm:w-32 sm:h-32 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0 z-10 shadow-lg text-indigo-600"
             >
-              <AlienUFOSvg className="w-20 h-20 sm:w-32 sm:h-32 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
+              <CheckCircle2 className="w-9 h-9 sm:w-11 sm:h-11 text-indigo-600" />
             </motion.div>
 
             {/* Giant Bubble - Disappears immediately on close */}
@@ -521,13 +526,14 @@ export function OnboardingTour() {
                   initial={{ opacity: 0, scale: 0.8, x: -20 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-                  className="bg-white text-slate-900 p-4 sm:p-6 rounded-3xl rounded-tl-sm shadow-2xl font-bold text-[15px] sm:text-xl leading-relaxed border-4 border-pink-200 max-w-md relative"
+                  className="bg-white text-slate-900 p-5 sm:p-7 rounded-3xl shadow-2xl font-bold text-[15px] sm:text-lg leading-relaxed border border-slate-200 max-w-md relative"
                 >
                   <div className="whitespace-nowrap sm:whitespace-normal">
                     <TypewriterText text={currentStep.message} />
                   </div>
-                  <div className="mt-3 pt-3 sm:mt-4 sm:pt-4 border-t border-slate-100 text-[11px] sm:text-sm text-slate-500 font-extrabold flex items-center justify-center gap-2">
-                    <span>화면을 클릭하여 닫기</span>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm text-slate-500 font-semibold">
+                    <span>가이드가 완료되었습니다</span>
+                    <span className="text-indigo-600 font-bold flex items-center gap-1">시작하기 →</span>
                   </div>
                 </motion.div>
               )}
@@ -555,13 +561,13 @@ export function OnboardingTour() {
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[320px]"
         >
-          {/* Character */}
-          <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden shrink-0">
-            <AlienUFOSvg className="w-12 h-12 drop-shadow-[0_0_8px_rgba(236,72,153,0.3)]" />
+          {/* Guide Badge */}
+          <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/25 shrink-0 mt-0.5 border border-indigo-500/30">
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
 
           {/* Bubble */}
-          <div className="bg-white text-slate-900 p-3.5 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border-2 border-pink-100 flex-1 min-w-[160px]">
+          <div className="bg-white text-slate-900 p-3.5 rounded-2xl rounded-tl-sm shadow-xl font-bold text-[13px] leading-relaxed border border-slate-200 flex-1 min-w-[160px]">
             <TypewriterText text={currentStep.message} />
           </div>
         </motion.div>
