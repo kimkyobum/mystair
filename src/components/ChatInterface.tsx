@@ -1121,8 +1121,16 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
             >
               <div className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className={`px-4 py-3 sm:px-6 sm:py-3.5 rounded-[20px] sm:rounded-[24px] rounded-tr-sm text-sm sm:text-[16px] shadow-sm max-w-[90%] sm:max-w-[80%] tracking-wide leading-relaxed font-medium ${isLightMode ? "bg-teal-600 text-white" : "bg-teal-600/90 text-white"}`}>
-                    {msg.content}
+                  <div className="flex flex-col items-end max-w-[88%] sm:max-w-[78%] group">
+                    <div 
+                      className={`relative px-4 py-3 sm:px-6 sm:py-3.5 rounded-[22px] sm:rounded-[26px] rounded-tr-[5px] text-sm sm:text-[15.5px] font-medium tracking-normal leading-relaxed select-text break-words whitespace-pre-wrap transition-all duration-200 ${
+                        isLightMode 
+                          ? "bg-gradient-to-br from-indigo-600 via-indigo-600 to-purple-600 text-white border border-indigo-400/30 shadow-[0_6px_20px_-2px_rgba(79,70,229,0.32),0_2px_6px_rgba(15,23,42,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.35),inset_0_-1px_2px_0_rgba(0,0,0,0.18)]" 
+                          : "bg-gradient-to-br from-indigo-500/95 via-indigo-600/95 to-purple-600/95 text-white border border-white/20 backdrop-blur-md shadow-[0_8px_25px_-4px_rgba(99,102,241,0.45),0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.45),inset_0_-1px_2px_0_rgba(0,0,0,0.22)]"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2.5 max-w-[95%] sm:max-w-[85%]">
