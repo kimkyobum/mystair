@@ -50,17 +50,19 @@ export default function MBTI() {
     let scores = { EI: 0, SN: 0, TF: 0, JP: 0, AT: 0 };
     
     currentAnswers.forEach((ans, idx) => {
-      if (ans !== null) {
-        const type = mbtiQuestions[idx].type as keyof typeof scores;
-        scores[type] += ans;
+      if (ans !== null && mbtiQuestions[idx]) {
+        const q = mbtiQuestions[idx];
+        const val = q.reverse ? (6 - ans) : ans;
+        const type = q.type as keyof typeof scores;
+        scores[type] += val;
       }
     });
 
-    const eiRatio = Math.round(((scores.EI - 12) / 48) * 100);
-    const snRatio = Math.round(((scores.SN - 12) / 48) * 100);
-    const tfRatio = Math.round(((scores.TF - 12) / 48) * 100);
-    const jpRatio = Math.round(((scores.JP - 12) / 48) * 100);
-    const atRatio = Math.round(((scores.AT - 12) / 48) * 100);
+    const eiRatio = Math.max(0, Math.min(100, Math.round(((scores.EI - 12) / 48) * 100)));
+    const snRatio = Math.max(0, Math.min(100, Math.round(((scores.SN - 12) / 48) * 100)));
+    const tfRatio = Math.max(0, Math.min(100, Math.round(((scores.TF - 12) / 48) * 100)));
+    const jpRatio = Math.max(0, Math.min(100, Math.round(((scores.JP - 12) / 48) * 100)));
+    const atRatio = Math.max(0, Math.min(100, Math.round(((scores.AT - 12) / 48) * 100)));
 
     const typeE = eiRatio >= 50 ? 'E' : 'I';
     const typeN = snRatio >= 50 ? 'N' : 'S';
