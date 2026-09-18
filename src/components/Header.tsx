@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Globe, Sparkles, HelpCircle } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Sparkles, HelpCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -60,24 +60,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
-          {/* Promo Site Button (Icon & mini label on mobile, full label on tablet/desktop) */}
-          <button
-            onClick={() => {
-              sessionStorage.setItem('viewingPromo', 'true');
-              window.location.href = '/';
-            }}
-            title={t('홍보사이트 보기')}
-            className={`flex items-center justify-center gap-1 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full border text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[36px] sm:min-h-[38px] shrink-0 ${
-              isLightMode
-                ? 'bg-indigo-50/70 hover:bg-indigo-100/90 backdrop-blur-md border-indigo-300/80 text-indigo-800 shadow-xs'
-                : 'bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border-indigo-500/40 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.15)]'
-            }`}
-          >
-            <Globe size={15} className="shrink-0" />
-            <span className="hidden sm:inline">{t('홍보사이트 보기')}</span>
-            <span className="inline sm:hidden">{t('홍보')}</span>
-          </button>
-
           {/* Language Switcher Compact Toggle Button */}
           <div className={`flex items-center backdrop-blur-md border rounded-full p-0.5 text-[10px] sm:text-xs shrink-0 ${
             isLightMode ? 'bg-white/50 border-slate-300/70' : 'bg-white/10 border-white/20'
@@ -283,17 +265,6 @@ export default function Header() {
               >
                 <HelpCircle size={16} className="text-indigo-400 shrink-0" />
                 <span>{t('사용방법', 'How to use')}</span>
-              </button>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  sessionStorage.setItem('viewingPromo', 'true');
-                  window.location.href = '/';
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
-              >
-                <Globe size={16} className="shrink-0" />
-                <span>{t('홍보사이트 보기')}</span>
               </button>
             </div>
           </div>
