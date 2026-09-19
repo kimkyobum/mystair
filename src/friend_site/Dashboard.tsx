@@ -179,16 +179,16 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <FadeIn delay={0.1}>
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:border-blue-500/50 transition-all duration-300 pointer-events-auto relative overflow-hidden group">
-              <div className="absolute -right-10 -top-10 bg-blue-500/10 w-40 h-40 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-colors"></div>
-              <div className="inline-block mb-6 w-16 h-16 relative transform group-hover:-translate-y-2 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:border-teal-500/50 transition-all duration-300 pointer-events-auto relative overflow-hidden group">
+              <div className="absolute -right-10 -top-10 bg-teal-500/10 w-40 h-40 rounded-full blur-3xl group-hover:bg-teal-500/20 transition-colors"></div>
+              <div className="inline-block mb-6 w-16 h-16 relative transform group-hover:-translate-y-2 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_20px_rgba(20,184,166,0.3)]">
                 <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Office%20building/3D/office_building_3d.png" alt="Office building" className="w-full h-full object-contain drop-shadow-2xl" />
               </div>
               <h3 className="text-xl font-bold mb-4">{t('나의 맞춤 기업 찾기')}</h3>
               <p className="text-gray-400 leading-relaxed text-sm mb-8 relative z-10">
                 {t('나의 전공학과, 성향(MBTI/홀랜드), 성장 기록을 바탕으로 나에게 가장 잘 어울리는 꿈의 기업을 AI가 매칭해 줍니다.')}
               </p>
-              <div className="flex items-center gap-2 text-xs font-semibold text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-full w-fit mt-auto border border-blue-500/20">
+              <div className="flex items-center gap-2 text-xs font-semibold text-teal-400 bg-teal-500/10 px-3 py-1.5 rounded-full w-fit mt-auto border border-teal-500/20">
                 <Compass className="w-3 h-3 animate-pulse" /> {t('맞춤 추천 기업 탐색')}
               </div>
             </div>
@@ -285,8 +285,8 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
           {/* 학생 */}
           <FadeIn delay={0.1}>
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full flex flex-col hover:bg-white/10 hover:-translate-y-2 transition-all duration-300 pointer-events-auto">
-              <div className="bg-indigo-500/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 border border-indigo-500/30">
-                <Users className="w-8 h-8 text-indigo-400" />
+              <div className="bg-teal-500/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-6 border border-teal-500/30">
+                <Users className="w-8 h-8 text-teal-400" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-white">{t('학생 관점', 'Student Perspective')}</h3>
               <p className="text-gray-400 leading-relaxed">

@@ -18,7 +18,7 @@ export default function Creators() {
     <div className="h-full flex-1 overflow-y-auto min-h-screen bg-[#0B0F19] text-slate-200 font-sans selection:bg-cyan-500/30 relative">
       {/* Background Ambient Glows */}
       <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-500/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed bottom-10 left-10 w-[450px] h-[450px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-10 left-10 w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
 
       <main className="max-w-7xl mx-auto px-6 py-12 md:py-16 pb-32 relative z-10">
         
@@ -94,7 +94,7 @@ export default function Creators() {
           className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#121622] via-[#16142c] to-[#121622] border border-white/5 p-8 md:p-12 mb-24 shadow-2xl"
         >
           {/* Subtle background glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-500/15 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-teal-500/15 blur-[100px] rounded-full pointer-events-none" />
           
           <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto text-center">
             
@@ -119,7 +119,7 @@ export default function Creators() {
               </div>
               
               <div className="flex items-center justify-center gap-3">
-                <Trophy className="w-5 h-5 text-indigo-400" />
+                <Trophy className="w-5 h-5 text-teal-400" />
                 <h2 className="text-lg font-black text-white tracking-widest uppercase">
                   Team AMP
                 </h2>
@@ -129,14 +129,14 @@ export default function Creators() {
             {/* Content: Team Story */}
             <div className="space-y-6">
               <p className="text-[15px] md:text-base text-gray-300 leading-relaxed font-medium">
-                저희 Team AMP는 <strong className="text-indigo-400 font-bold">'마이스터고 학생들의 잠재력을 증폭시키다'</strong>라는 비전으로 뭉친 구미전자공업고등학교 2학년 학생들입니다.
+                저희 Team AMP는 <strong className="text-teal-400 font-bold">'마이스터고 학생들의 잠재력을 증폭시키다'</strong>라는 비전으로 뭉친 구미전자공업고등학교 2학년 학생들입니다.
               </p>
               
               <p className="text-[15px] md:text-base text-gray-400 leading-relaxed">
                 저희는 현장에서 매일 치열하게 실습과 프로젝트를 소화하지만, 이를 체계적으로 남길 시스템이 없어 취업 시즌마다 자소서 작성에 막막함을 느끼는 선배와 친구들을 누구보다 가까이서 지켜봤습니다.
               </p>
 
-              <blockquote className="py-4 px-6 my-8 border-l-2 border-indigo-500/50 bg-indigo-500/5 text-indigo-200 font-medium italic rounded-r-lg">
+              <blockquote className="py-4 px-6 my-8 border-l-2 border-teal-500/50 bg-teal-500/5 text-teal-200 font-medium italic rounded-r-lg">
                 "우리의 땀방울이 밴 소중한 경험들이 휘발되지 않고, 합격을 부르는 확실한 스펙이 될 수는 없을까?"
               </blockquote>
 
@@ -155,7 +155,7 @@ export default function Creators() {
         </div>
 
         {/* Signature Footer Banner */}
-        <div className="border border-white/10 rounded-2xl p-6 md:p-8 text-center bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 backdrop-blur-md">
+        <div className="border border-white/10 rounded-2xl p-6 md:p-8 text-center bg-gradient-to-r from-cyan-500/10 via-emerald-500/10 to-teal-500/10 backdrop-blur-md">
           <div className="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-300 mb-1">
             <Award size={18} className="text-cyan-400" />
             <span>DEVELOPED BY GUMI ELECTRONIC TECHNICAL HIGH SCHOOL TEAM AMP</span>

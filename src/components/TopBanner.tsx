@@ -17,8 +17,8 @@ export default function TopBanner() {
   
   return (
     <div className={`relative z-50 w-full overflow-hidden backdrop-blur-md border-b py-3 flex font-medium text-xs sm:text-sm ${isLightMode ? "bg-white/40 border-slate-200/60 text-slate-800" : "bg-black/60 border-white/5 text-white/70"}`}>
-      {/* 윗부분의 은은한 보랏빛 네온 라인 효과 */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
+      {/* 윗부분의 은은한 에메랄드 네온 라인 효과 */}
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
       
       <motion.div
         className="flex whitespace-nowrap items-center"
@@ -29,8 +29,8 @@ export default function TopBanner() {
           {phrases.map((item, index) => (
             <div key={`first-${index}`} className="flex items-center">
               <span className={`tracking-wide transition-colors cursor-default ${isLightMode ? "hover:text-slate-900" : "hover:text-white"}`}>{t(item)}</span>
-              {/* 이모지 대신 우주/별빛 컨셉에 맞는 빛나는 점(Dot)을 구분자로 사용 */}
-              <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
+              {/* 이모지 대신 에메랄드/그린 빛나는 점(Dot)을 구분자로 사용 */}
+              <div className="mx-12 w-1 h-1 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"></div>
             </div>
           ))}
         </div>
@@ -38,7 +38,7 @@ export default function TopBanner() {
           {phrases.map((item, index) => (
             <div key={`second-${index}`} className="flex items-center">
               <span className={`tracking-wide transition-colors cursor-default ${isLightMode ? "hover:text-slate-900" : "hover:text-white"}`}>{t(item)}</span>
-              <div className="mx-12 w-1 h-1 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(192,132,252,0.9)]"></div>
+              <div className="mx-12 w-1 h-1 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"></div>
             </div>
           ))}
         </div>

@@ -21,7 +21,7 @@ export function SchoolLogo3D() {
       >
         {/* Ambient Glows */}
         <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-2xl animate-pulse" />
-        <div className="absolute inset-2 bg-indigo-500/25 rounded-full blur-xl" />
+        <div className="absolute inset-2 bg-teal-500/25 rounded-full blur-xl" />
 
         {/* Rotating Outer Tech Ring */}
         <motion.div 
@@ -32,7 +32,7 @@ export function SchoolLogo3D() {
 
         {/* Counter Rotating Ring */}
         <motion.div 
-          className="absolute inset-2 rounded-full border border-dotted border-indigo-400/50"
+          className="absolute inset-2 rounded-full border border-dotted border-teal-400/50"
           animate={{ rotate: -360 }}
           transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
         />
@@ -51,7 +51,7 @@ export function SchoolLogo3D() {
           {/* Central School Icon & Crest */}
           <div className="relative z-10 flex flex-col items-center justify-center">
             <div className="relative mb-1">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-lg flex items-center justify-center">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-600 p-0.5 shadow-lg flex items-center justify-center">
                 <div className="w-full h-full bg-[#0d1322] rounded-[14px] flex items-center justify-center text-cyan-400">
                   <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-cyan-300" />
                 </div>

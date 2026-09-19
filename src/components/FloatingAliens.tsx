@@ -224,7 +224,7 @@ export default function FloatingAliens() {
           className="relative group"
         >
           {/* Subtle Space Glow behind alien */}
-          <div className="absolute -inset-2 bg-indigo-500/20 rounded-full blur-md" />
+          <div className="absolute -inset-2 bg-teal-500/20 rounded-full blur-md" />
           
           {/* Main UFO Green Alien SVG */}
           <AlienUFOSvg className="w-13 h-13 sm:w-15 sm:h-15 drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]" />

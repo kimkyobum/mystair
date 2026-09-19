@@ -369,7 +369,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     }, 2500);
                   }
                 }}
-                className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-3 py-1.5 rounded-lg border border-indigo-400/40 transition-colors shadow cursor-pointer inline-block"
+                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-1.5 rounded-lg border border-emerald-400/40 transition-colors shadow cursor-pointer inline-block"
               >
                 📋 현재 도메인({typeof window !== 'undefined' ? window.location.hostname : ''}) 복사하기
               </button>

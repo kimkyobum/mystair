@@ -507,7 +507,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
                   placeholder={t('login.placeholder.email')} 
-                  className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900" 
+                  className="w-full border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900" 
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -522,7 +522,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                   }}
                   placeholder={t('login.placeholder.password.create')} 
                   className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
-                    signupPasswordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+                    signupPasswordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'
                   }`} 
                 />
                 {signupPasswordError && <p className="text-red-500 text-xs">{signupPasswordError}</p>}
@@ -539,7 +539,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                   }}
                   placeholder={t('login.placeholder.password.confirm')} 
                   className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
-                    signupConfirmPasswordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+                    signupConfirmPasswordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'
                   }`} 
                 />
                 {signupConfirmPasswordError && <p className="text-red-500 text-xs">{signupConfirmPasswordError}</p>}
@@ -620,7 +620,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 ${
                       emailError 
                         ? 'border-red-500 focus:ring-red-500 text-red-900' 
-                        : 'border-gray-300 focus:ring-indigo-500'
+                        : 'border-gray-300 focus:ring-emerald-500'
                     }`}
                   />
                 </div>
@@ -642,7 +642,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
                     }}
                     placeholder={t('login.placeholder.password.enter')} 
                     className={`w-full border rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 pr-10 ${
-                      passwordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'
+                      passwordError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'
                     }`}
                   />
                   <button 

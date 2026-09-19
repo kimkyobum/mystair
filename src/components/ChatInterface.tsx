@@ -1092,7 +1092,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setShowHistory(true)}
-              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-teal-50 hover:text-indigo-700 border-slate-300 hover:border-teal-300" : "text-white/90 bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/30 hover:border-teal-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
+              className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-teal-50 hover:text-emerald-700 border-slate-300 hover:border-teal-300" : "text-white/90 bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/30 hover:border-teal-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
               title={t('이전 질문 기록 보기', 'View previous question history')}
             >
               <History size={14} className="text-teal-400 animate-pulse shrink-0" />
@@ -1123,10 +1123,10 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                 {msg.role === 'user' ? (
                   <div className="flex flex-col items-end max-w-[88%] sm:max-w-[78%] group">
                     <div 
-                      className={`relative px-4 py-3 sm:px-6 sm:py-3.5 rounded-[22px] sm:rounded-[26px] rounded-tr-[5px] text-sm sm:text-[15.5px] font-medium tracking-normal leading-relaxed select-text break-words whitespace-pre-wrap transition-all duration-200 ${
+                      className={`relative px-4 py-3 sm:px-5 sm:py-3.5 rounded-[22px] sm:rounded-[24px] rounded-tr-[6px] text-sm sm:text-[15px] font-medium tracking-normal leading-relaxed select-text break-words whitespace-pre-wrap transition-all duration-200 ${
                         isLightMode 
-                          ? "bg-gradient-to-br from-indigo-600 via-indigo-600 to-purple-600 text-white border border-indigo-400/30 shadow-[0_6px_20px_-2px_rgba(79,70,229,0.32),0_2px_6px_rgba(15,23,42,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.35),inset_0_-1px_2px_0_rgba(0,0,0,0.18)]" 
-                          : "bg-gradient-to-br from-indigo-500/95 via-indigo-600/95 to-purple-600/95 text-white border border-white/20 backdrop-blur-md shadow-[0_8px_25px_-4px_rgba(99,102,241,0.45),0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_1px_0_rgba(255,255,255,0.45),inset_0_-1px_2px_0_rgba(0,0,0,0.22)]"
+                          ? "bg-gradient-to-br from-emerald-600 via-emerald-600 to-teal-700 text-white border border-emerald-500/40 shadow-[0_4px_16px_-2px_rgba(16,185,129,0.28),inset_0_1px_1px_rgba(255,255,255,0.25)]" 
+                          : "bg-gradient-to-br from-emerald-600/95 via-[#0d9488]/95 to-[#047857]/95 text-white border border-emerald-400/25 shadow-[0_6px_20px_-3px_rgba(5,150,105,0.35),0_1px_3px_rgba(0,0,0,0.4),inset_0_1px_1px_0_rgba(255,255,255,0.25),inset_0_-1px_1px_0_rgba(0,0,0,0.2)]"
                       }`}
                     >
                       {msg.content}
@@ -1235,7 +1235,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                   </button>
                   <button 
                     onClick={() => setInputValue(t('오늘의 다이어리 작성', 'Write today\'s diary'))} 
-                    className={`shrink-0 whitespace-nowrap text-xs font-semibold px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-indigo-900 bg-indigo-50 hover:bg-indigo-100 border-indigo-300" : "text-indigo-200 bg-indigo-500/20 hover:bg-indigo-500/30 border-indigo-500/40"}`}
+                    className={`shrink-0 whitespace-nowrap text-xs font-semibold px-3.5 py-2 rounded-full transition-all active:scale-95 border cursor-pointer flex items-center gap-1.5 shadow-2xs ${isLightMode ? "text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border-emerald-300" : "text-emerald-200 bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/40"}`}
                   >
                     <span>✍️</span> 
                     <span>"{t('오늘의 다이어리 작성', 'Write today\'s diary')}"</span>

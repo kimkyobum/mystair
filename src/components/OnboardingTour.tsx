@@ -40,7 +40,7 @@ const TypewriterText = ({ text }: { text: string }) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           const content = part.slice(2, -2);
           return (
-            <strong key={partIndex} className="text-indigo-600 font-extrabold">
+            <strong key={partIndex} className="text-teal-400 font-extrabold">
               {content.split('').map((char, i) => {
                 const isVisible = charIndex < displayedLength;
                 charIndex++;
@@ -384,7 +384,7 @@ export function OnboardingTour() {
             <button 
               type="button"
               onClick={handleNext}
-              className="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-400 hover:to-indigo-400 shadow-[0_0_25px_rgba(236,72,153,0.35)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-98"
+              className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] text-white py-4 rounded-xl font-bold text-lg transition-all cursor-pointer transform hover:scale-[1.02] active:scale-98"
             >
               네, 가이드 시작하기
             </button>
@@ -466,7 +466,7 @@ export function OnboardingTour() {
           isTargetTopRight ? 'bottom-6 right-6' : 'top-4 right-4'
         }`}
       >
-        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 text-indigo-300 border border-indigo-500/30 backdrop-blur-md shadow-lg">
+        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 text-teal-300 border border-teal-500/30 backdrop-blur-md shadow-lg">
           {stepIndex} / {TOUR_STEPS.length - 1}
         </span>
         <button 
@@ -533,13 +533,13 @@ export function OnboardingTour() {
           {currentStep.action === 'click_target' && (
             <>
               {/* Highlight Focus Frame */}
-              <div className="absolute inset-0 rounded-xl border-2 border-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.45)] pointer-events-none animate-pulse" />
-              <div className="absolute inset-0 rounded-xl border border-indigo-400/50 pointer-events-none animate-ping opacity-30" />
+              <div className="absolute inset-0 rounded-xl border-2 border-teal-400 shadow-[0_0_20px_rgba(20,184,166,0.45)] pointer-events-none animate-pulse" />
+              <div className="absolute inset-0 rounded-xl border border-teal-400/50 pointer-events-none animate-ping opacity-30" />
               
               {/* Refined Click / Tap Badge Indicator (Hide when target is on the left) */}
               {targetRect.x >= 120 && (
-                <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold shadow-lg shadow-indigo-600/40 border border-indigo-300/40 animate-bounce whitespace-nowrap`}>
-                  <MousePointerClick className="w-3.5 h-3.5 text-indigo-100 shrink-0" />
+                <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-600 text-white text-xs font-bold shadow-lg shadow-teal-600/40 border border-teal-300/40 animate-bounce whitespace-nowrap`}>
+                  <MousePointerClick className="w-3.5 h-3.5 text-teal-100 shrink-0" />
                   <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">클릭</span>
                 </div>
               )}
@@ -591,7 +591,7 @@ export function OnboardingTour() {
                   </div>
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm text-slate-500 font-semibold">
                     <span>가이드가 완료되었습니다</span>
-                    <span className="text-indigo-600 font-bold flex items-center gap-1">시작하기 →</span>
+                    <span className="text-teal-400 font-bold flex items-center gap-1">시작하기 →</span>
                   </div>
                 </motion.div>
               )}

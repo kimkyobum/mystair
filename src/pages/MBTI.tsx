@@ -204,7 +204,7 @@ export default function MBTI() {
                     onClick={() => selectOption(opt.val)}
                     className={`bg-white border-2 px-5 py-4 rounded-xl text-left text-[15px] font-semibold transition-all duration-200 flex items-center justify-between
                       ${answers[currentIndex] === opt.val 
-                        ? 'border-[#14b8a6] bg-[#EEF2FF] text-[#14b8a6]' 
+                        ? 'border-[#14b8a6] bg-[#f0fdfa] text-teal-800' 
                         : 'border-[#E2E8F0] text-[#0F172A] hover:border-[#14b8a6] hover:bg-[#F8FAFC] hover:translate-x-1'}`}
                   >
                     {opt.label}
@@ -273,10 +273,10 @@ export default function MBTI() {
               </div>
 
               <div className="flex flex-col gap-3 mt-8">
-                <Link to="/mypage" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
                   <span>{t('👤 마이페이지로 이동하여 결과 확인하기')}</span>
                 </Link>
-                <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
+                <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
                   {t('📋 검사 결과 복사하기')}
                 </button>
                 <button onClick={restartQuiz} className="w-full bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] p-3.5 rounded-xl text-[14px] font-bold cursor-pointer transition-colors hover:bg-[#E2E8F0]">

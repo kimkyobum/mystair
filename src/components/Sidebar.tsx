@@ -115,7 +115,7 @@ export default function Sidebar() {
               title={t(item.name)}
               className={`flex sm:items-center gap-3.5 px-2.5 py-2 sm:py-3 rounded-xl transition-colors whitespace-nowrap min-h-[48px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${tourClass} ${
                 isActive 
-                  ? (isDarkTheme ? 'text-indigo-300 sm:bg-white/15 sm:text-white font-semibold sm:shadow-sm' : 'text-indigo-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-sm')
+                  ? (isDarkTheme ? 'text-teal-300 sm:bg-white/15 sm:text-white font-semibold sm:shadow-sm' : 'text-teal-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-sm')
                   : (isDarkTheme ? 'text-white/50 hover:text-white sm:text-white/70 sm:hover:bg-white/10 font-medium' : 'text-slate-400 hover:text-slate-800 sm:text-slate-600 sm:hover:bg-slate-50 font-medium')
               }`}
             >
@@ -153,7 +153,7 @@ export default function Sidebar() {
           title={t('마이페이지 겸 설정')}
           className={`flex sm:hidden flex-col items-center justify-center gap-1 flex-1 py-2 rounded-xl transition-colors min-h-[48px] tour-target-nav-mypage-mobile ${
             location.pathname === '/mypage' 
-              ? (isDarkTheme ? 'text-indigo-300 font-semibold' : 'text-indigo-700 font-bold')
+              ? (isDarkTheme ? 'text-teal-300 font-semibold' : 'text-teal-700 font-bold')
               : (isDarkTheme ? 'text-white/50 hover:text-white font-medium' : 'text-slate-400 hover:text-slate-800 font-medium')
           }`}
         >
@@ -190,16 +190,16 @@ export default function Sidebar() {
               />
             ) : (
               <div className={`w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${
-                isLightMode ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm' : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-sm'
+                isLightMode ? 'bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm' : 'bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm'
               }`}>
                 <User size={14} className="shrink-0" />
               </div>
             )}
             <div className={`flex flex-col transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} overflow-hidden min-w-0`}>
-              <span className={`text-[13px] font-bold leading-tight truncate group-hover:text-indigo-500 transition-colors ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
+              <span className={`text-[13px] font-bold leading-tight truncate group-hover:text-teal-400 transition-colors ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
                 {displayName}
               </span>
-              <span className={`text-[11px] truncate font-medium ${isDarkTheme ? 'text-indigo-300' : 'text-indigo-600'}`}>
+              <span className={`text-[11px] truncate font-medium ${isDarkTheme ? 'text-teal-300' : 'text-teal-600'}`}>
                 {t('마이페이지 겸 설정', 'My Page & Settings')}
               </span>
             </div>
@@ -212,7 +212,7 @@ export default function Sidebar() {
                   onClick={() => loginWithGoogle()}
                   title={t('구글 로그인')}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    isDarkTheme ? 'hover:bg-white/10 text-indigo-300 hover:text-white' : 'hover:bg-slate-200 text-indigo-600 hover:text-indigo-800'
+                    isDarkTheme ? 'hover:bg-white/10 text-teal-300 hover:text-white' : 'hover:bg-slate-200 text-teal-600 hover:text-teal-800'
                   }`}
                 >
                   <LogIn size={14} />

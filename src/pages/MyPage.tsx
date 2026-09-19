@@ -354,7 +354,7 @@ export default function MyPage() {
             MyStair
           </Link>
           <span className="text-slate-400 font-light">/</span>
-          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300">
+          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300">
             {t('마이페이지')}
           </span>
         </div>
@@ -425,7 +425,7 @@ export default function MyPage() {
                   <h1 className="text-xl sm:text-2xl font-black tracking-tight truncate tour-target-profile-name">
                     {profile.name || t('마이스터 학생')}
                   </h1>
-                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300">
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300">
                     {t('마이스터 인재')}
                   </span>
                 </div>
@@ -460,7 +460,7 @@ export default function MyPage() {
                 }}
                 className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs tour-target-edit-mode ${
                   isFullEditing
-                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                     : isLightMode
                       ? "bg-slate-900 hover:bg-slate-800 text-white"
                       : "bg-white hover:bg-slate-100 text-slate-900"
@@ -474,7 +474,7 @@ export default function MyPage() {
                 onClick={() => setActiveTab('settings')}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
                   activeTab === 'settings'
-                    ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950/60 dark:border-indigo-700 dark:text-indigo-300"
+                    ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950/60 dark:border-emerald-700 dark:text-emerald-300"
                     : isLightMode
                       ? "bg-white hover:bg-slate-50 text-slate-700 border-slate-300"
                       : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
@@ -556,7 +556,7 @@ export default function MyPage() {
             onClick={() => setActiveTab('profile')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'profile'
-                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
             }`}
           >
@@ -568,14 +568,14 @@ export default function MyPage() {
             onClick={() => setActiveTab('aptitude')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'aptitude'
-                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
             }`}
           >
             <Brain size={15} />
             <span>{t('진로 적성 진단')}</span>
             {(profile.mbti || profile.hollandCode) && (
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             )}
           </button>
 
@@ -583,14 +583,14 @@ export default function MyPage() {
             onClick={() => setActiveTab('companies')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'companies'
-                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
             }`}
           >
             <Building2 size={15} />
             <span>{t('희망 목표 기업')}</span>
             <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
-              activeTab === 'companies' ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+              activeTab === 'companies' ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
             }`}>
               {profile.targetCompanies.length}
             </span>
@@ -600,7 +600,7 @@ export default function MyPage() {
             onClick={() => setActiveTab('settings')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'settings'
-                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
             }`}
           >
@@ -615,14 +615,14 @@ export default function MyPage() {
             
             {/* Edit Banner Alert */}
             {isFullEditing && (
-              <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/80 dark:bg-indigo-950/40 dark:border-indigo-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-indigo-900 dark:text-indigo-200">
+              <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/80 dark:bg-emerald-950/40 dark:border-emerald-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-emerald-900 dark:text-emerald-200">
                 <span className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-indigo-600 dark:text-indigo-400" />
+                  <Sparkles size={16} className="text-emerald-600 dark:text-emerald-400" />
                   <span>{t('프로필 편집 모드입니다. 수정 후 우측 [저장]을 눌러주세요.')}</span>
                 </span>
                 <button
                   onClick={handleSaveProfile}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0"
                 >
                   {t('저장')}
                 </button>
@@ -636,7 +636,7 @@ export default function MyPage() {
               
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
                 <div className="flex items-center gap-2">
-                  <School size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  <School size={18} className="text-emerald-600 dark:text-emerald-400" />
                   <h2 className="text-base font-bold text-slate-900 dark:text-white">
                     {t('학적 및 기본 프로필')}
                   </h2>
@@ -650,7 +650,7 @@ export default function MyPage() {
                       setTempMajor(profile.major);
                       setIsFullEditing(true);
                     }}
-                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Edit3 size={13} />
                     <span>{t('수정하기')}</span>
@@ -673,8 +673,8 @@ export default function MyPage() {
                       placeholder={t('이름 입력')}
                       className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
                         isLightMode 
-                          ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
-                          : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
                       }`}
                     />
                   ) : (
@@ -721,8 +721,8 @@ export default function MyPage() {
                         placeholder={t('학교명을 입력하세요 (예: 구미전자공고, 수도전기, 로봇 등)')}
                         className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
                           isLightMode 
-                            ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
-                            : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                            ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                            : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
                         }`}
                       />
 
@@ -738,7 +738,7 @@ export default function MyPage() {
                             isLightMode ? "bg-slate-50 text-slate-500" : "bg-slate-800 text-slate-400"
                           }`}>
                             <span>{t('마이스터고 목록')} ({searchMeisterSchools(tempSchool).length}개)</span>
-                            <span className="text-[10px] text-indigo-500">{t('선택 시 자동 입력')}</span>
+                            <span className="text-[10px] text-emerald-500">{t('선택 시 자동 입력')}</span>
                           </div>
 
                           {searchMeisterSchools(tempSchool).length > 0 ? (
@@ -751,7 +751,7 @@ export default function MyPage() {
                                   setIsSchoolDropdownOpen(false);
                                 }}
                                 className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition cursor-pointer ${
-                                  isLightMode ? "hover:bg-indigo-50/70" : "hover:bg-slate-800"
+                                  isLightMode ? "hover:bg-emerald-50/70" : "hover:bg-slate-800"
                                 }`}
                               >
                                 <span className="font-bold">{sch.name}</span>
@@ -759,7 +759,7 @@ export default function MyPage() {
                                   <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
                                     {sch.region}
                                   </span>
-                                  <span className="px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-medium">
+                                  <span className="px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 font-medium">
                                     {sch.field}
                                   </span>
                                 </div>
@@ -786,7 +786,7 @@ export default function MyPage() {
                             }}
                             className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
                               tempSchool === sch 
-                                ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-700 dark:text-indigo-300"
+                                ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-700 dark:text-emerald-300"
                                 : isLightMode 
                                   ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
                                   : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
@@ -819,8 +819,8 @@ export default function MyPage() {
                         placeholder={t('전공 학과명을 입력하세요 (예: 전자제어과, 소프트웨어과)')}
                         className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
                           isLightMode 
-                            ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
-                            : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                            ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                            : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
                         }`}
                       />
 
@@ -834,7 +834,7 @@ export default function MyPage() {
                             onClick={() => setTempMajor(maj)}
                             className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
                               tempMajor === maj 
-                                ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-700 dark:text-indigo-300"
+                                ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-700 dark:text-emerald-300"
                                 : isLightMode 
                                   ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
                                   : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
@@ -874,7 +874,7 @@ export default function MyPage() {
                   <button
                     type="button"
                     onClick={handleSaveProfile}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
                   >
                     {t('변경사항 저장')}
                   </button>
@@ -898,7 +898,7 @@ export default function MyPage() {
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
                     <div className="flex items-center gap-2">
-                      <Brain size={18} className="text-indigo-600 dark:text-indigo-400" />
+                      <Brain size={18} className="text-emerald-600 dark:text-emerald-400" />
                       <h3 className="text-base font-bold text-slate-900 dark:text-white">
                         {t('MBTI 성격 유형 진단')}
                       </h3>
@@ -912,7 +912,7 @@ export default function MyPage() {
                   {profile.mbti ? (
                     <div className="mt-4 space-y-4">
                       <div>
-                        <div className="text-2xl font-black tracking-tight text-indigo-600 dark:text-indigo-400">
+                        <div className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
                           {profile.mbti}
                         </div>
                         <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
@@ -940,7 +940,7 @@ export default function MyPage() {
                                   </div>
                                   <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div 
-                                      className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all"
+                                      className="h-full bg-emerald-600 dark:bg-emerald-500 rounded-full transition-all"
                                       style={{ width: `${item.val}%` }}
                                     />
                                   </div>
@@ -986,7 +986,7 @@ export default function MyPage() {
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/mbti"
-                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
                   >
                     <span>{profile.mbti ? t('검사 다시하기') : t('검사 진행하기')}</span>
                     <ExternalLink size={12} />
@@ -1012,7 +1012,7 @@ export default function MyPage() {
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
                     <div className="flex items-center gap-2">
-                      <Compass size={18} className="text-indigo-600 dark:text-indigo-400" />
+                      <Compass size={18} className="text-emerald-600 dark:text-emerald-400" />
                       <h3 className="text-base font-bold text-slate-900 dark:text-white">
                         {t('홀랜드 직업 적성 검사')}
                       </h3>
@@ -1026,7 +1026,7 @@ export default function MyPage() {
                   {profile.hollandCode ? (
                     <div className="mt-4 space-y-4">
                       <div>
-                        <div className="text-2xl font-black tracking-tight text-indigo-600 dark:text-indigo-400">
+                        <div className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
                           {profile.hollandCode}형
                         </div>
                         <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
@@ -1069,8 +1069,8 @@ export default function MyPage() {
                           placeholder={t('진로 관련 메모나 목표를 기록하세요.')}
                           className={`w-full border rounded-xl p-2.5 text-xs font-medium outline-none transition ${
                             isLightMode 
-                              ? "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-indigo-600" 
-                              : "bg-slate-800/80 border-slate-700 text-slate-200 focus:border-indigo-400"
+                              ? "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-emerald-600" 
+                              : "bg-slate-800/80 border-slate-700 text-slate-200 focus:border-emerald-400"
                           }`}
                         />
                       </div>
@@ -1091,7 +1091,7 @@ export default function MyPage() {
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/holland"
-                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
                   >
                     <span>{profile.hollandCode ? t('검사 다시하기') : t('검사 진행하기')}</span>
                     <ExternalLink size={12} />
@@ -1125,7 +1125,7 @@ export default function MyPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
                   <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Building2 size={18} className="text-indigo-600 dark:text-indigo-400" />
+                    <Building2 size={18} className="text-emerald-600 dark:text-emerald-400" />
                     <span>{t('희망 목표 기업 관리')}</span>
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -1133,7 +1133,7 @@ export default function MyPage() {
                   </p>
                 </div>
 
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300 self-start sm:self-auto">
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300 self-start sm:self-auto">
                   {profile.targetCompanies.length}{t('개 등록됨')}
                 </span>
               </div>
@@ -1152,14 +1152,14 @@ export default function MyPage() {
                     placeholder={t('기업명을 입력하세요 (예: 삼성전자, 한국전력공사, NAVER)')}
                     className={`flex-1 border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
                       isLightMode 
-                        ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
-                        : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                        ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                        : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => handleAddCompany()}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
                   >
                     <Plus size={15} />
                     <span>{t('추가')}</span>
@@ -1190,7 +1190,7 @@ export default function MyPage() {
                             : "bg-slate-800 text-slate-200 border-slate-700"
                         }`}
                       >
-                        <Building2 size={13} className="text-indigo-500" />
+                        <Building2 size={13} className="text-emerald-500" />
                         <span>{comp}</span>
                         <button
                           type="button"
@@ -1227,13 +1227,13 @@ export default function MyPage() {
                         onClick={() => isAdded ? handleRemoveCompany(comp) : handleAddCompany(comp)}
                         className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
                           isAdded
-                            ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950/80 dark:border-indigo-700 dark:text-indigo-300"
+                            ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950/80 dark:border-emerald-700 dark:text-emerald-300"
                             : isLightMode
                               ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700"
                               : "bg-slate-800/80 hover:bg-slate-800 border-slate-700 text-slate-300"
                         }`}
                       >
-                        {isAdded ? <Check size={12} className="text-indigo-600 dark:text-indigo-400" /> : <Plus size={12} className="text-slate-400" />}
+                        {isAdded ? <Check size={12} className="text-emerald-600 dark:text-emerald-400" /> : <Plus size={12} className="text-slate-400" />}
                         <span>{comp}</span>
                       </button>
                     );
@@ -1254,7 +1254,7 @@ export default function MyPage() {
               
               <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
                 <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Palette size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  <Palette size={18} className="text-emerald-600 dark:text-emerald-400" />
                   <span>{t('화면 및 인터랙션 환경 설정')}</span>
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -1275,11 +1275,11 @@ export default function MyPage() {
                     onClick={() => setIsLightMode(true)}
                     className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
                       isLightMode 
-                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-950 ring-1 ring-indigo-600 dark:bg-indigo-950/40 dark:text-white" 
+                        ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 ring-1 ring-emerald-600 dark:bg-emerald-950/40 dark:text-white" 
                         : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                     }`}
                   >
-                    <div className={`p-2.5 rounded-lg shrink-0 ${isLightMode ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
+                    <div className={`p-2.5 rounded-lg shrink-0 ${isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
                       <Sun size={20} />
                     </div>
                     <div>
@@ -1297,11 +1297,11 @@ export default function MyPage() {
                     }}
                     className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
                       !isLightMode 
-                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-950 ring-1 ring-indigo-600 dark:bg-indigo-950/40 dark:text-white" 
+                        ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 ring-1 ring-emerald-600 dark:bg-emerald-950/40 dark:text-white" 
                         : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
                     }`}
                   >
-                    <div className={`p-2.5 rounded-lg shrink-0 ${!isLightMode ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
+                    <div className={`p-2.5 rounded-lg shrink-0 ${!isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
                       <Moon size={20} />
                     </div>
                     <div>
@@ -1327,7 +1327,7 @@ export default function MyPage() {
                     onClick={() => setShowAliens(true)}
                     className={`px-3 py-1 rounded-md text-xs font-bold transition cursor-pointer ${
                       showAliens 
-                        ? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-2xs" 
+                        ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-300 shadow-2xs" 
                         : "text-slate-500 hover:text-slate-800 dark:text-slate-400"
                     }`}
                   >
@@ -1360,7 +1360,7 @@ export default function MyPage() {
                   type="button"
                   onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
                   className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
-                    isClickEffectEnabled ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-700"
+                    isClickEffectEnabled ? "bg-emerald-600" : "bg-slate-300 dark:bg-slate-700"
                   }`}
                 >
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-2xs ${
@@ -1389,7 +1389,7 @@ export default function MyPage() {
             </button>
 
             <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+              <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
                 <Brain size={22} />
               </div>
               <div>
@@ -1402,7 +1402,7 @@ export default function MyPage() {
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                    <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
                       {profile.mbti || 'ISTJ'}
                     </span>
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
@@ -1445,7 +1445,7 @@ export default function MyPage() {
                           </div>
                           <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full"
+                              className="h-full bg-emerald-600 dark:bg-emerald-500 rounded-full"
                               style={{ width: `${item.val}%` }}
                             />
                           </div>
@@ -1475,7 +1475,7 @@ export default function MyPage() {
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <Link
                 to="/mbti"
-                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
               >
                 <span>{t('검사 다시하기')}</span>
                 <ExternalLink size={12} />
@@ -1507,7 +1507,7 @@ export default function MyPage() {
             </button>
 
             <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+              <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
                 <Compass size={22} />
               </div>
               <div>
@@ -1519,7 +1519,7 @@ export default function MyPage() {
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                  <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
                     {profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}
                   </div>
                   <span className="text-xs font-semibold text-slate-500">
@@ -1529,7 +1529,7 @@ export default function MyPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
                   <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">1순위: {modalPrimaryHollandMeta.name}</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5">1순위: {modalPrimaryHollandMeta.name}</span>
                     <p className="text-slate-600 dark:text-slate-300">{modalPrimaryHollandMeta.desc}</p>
                   </div>
                   <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
@@ -1549,7 +1549,7 @@ export default function MyPage() {
                       return (
                         <div key={k} className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-center">
                           <span className="font-bold text-slate-500 block">{k}</span>
-                          <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{val}%</span>
+                          <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{val}%</span>
                         </div>
                       );
                     })}
@@ -1575,7 +1575,7 @@ export default function MyPage() {
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <Link
                 to="/holland"
-                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
               >
                 <span>{t('검사 다시하기')}</span>
                 <ExternalLink size={12} />
@@ -1587,7 +1587,7 @@ export default function MyPage() {
                   setActiveModal(null);
                   showToast(t('소견 메모가 저장되었습니다.'));
                 }}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer"
               >
                 {t('저장 후 닫기')}
               </button>
@@ -1599,7 +1599,7 @@ export default function MyPage() {
       {/* Toast Feedback */}
       {toastMsg && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xl z-[200] border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-150">
-          <CheckCircle2 size={15} className="text-indigo-400" />
+          <CheckCircle2 size={15} className="text-emerald-400" />
           <span>{toastMsg}</span>
         </div>
       )}
