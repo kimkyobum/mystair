@@ -493,7 +493,7 @@ JSON 구조 규격:
       </header>
 
       {/* Main Container */}
-      <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-hidden`}>
+      <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-y-auto custom-scrollbar`}>
 
         {/* AI 보조 도구 사실 검토 안내 (소형 빨간색 텍스트) */}
         <div className="mb-2.5 px-0.5 flex items-center gap-1.5 text-[11px] sm:text-xs text-rose-500 dark:text-rose-400 font-medium leading-relaxed">
@@ -501,171 +501,180 @@ JSON 구조 규격:
           <span>{t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}</span>
         </div>
 
-        {/* Exam Schedule Settings Collapsible Box */}
+        {/* Exam Schedule Settings Modal (Popup Overlay to prevent calendar squeezing) */}
         {showExamSettings && (
-          <form onSubmit={handleSaveExamSchedule} className={`rounded-3xl p-6 shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar fade-in duration-200 border ${isLightMode ? "bg-white border-emerald-300 text-slate-900 shadow-xl shadow-emerald-600/5" : "bg-slate-900/95 border-emerald-500/40 text-white"}`}>
-            <div className={`flex items-center justify-between border-b pb-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
-              <h3 className={`text-base font-bold flex items-center gap-2 ${isLightMode ? "text-emerald-800" : "text-emerald-300"}`}>
-                <GraduationCap size={20} className="text-emerald-500" />
-                <span>{t('1·2학기 중간 / 기말고사 시험 일정 설정')}</span>
-              </h3>
-              <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-slate-200 transition-colors">
-                <X size={18} />
-              </button>
-            </div>
+          <div 
+            className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}
+            onClick={() => setShowExamSettings(false)}
+          >
+            <form 
+              onSubmit={handleSaveExamSchedule} 
+              onClick={e => e.stopPropagation()}
+              className={`max-w-2xl w-full rounded-3xl p-6 sm:p-7 shadow-2xl space-y-4 animate-in zoom-in-95 max-h-[90vh] overflow-y-auto custom-scrollbar fade-in duration-200 border ${isLightMode ? "bg-white border-emerald-300 text-slate-900 shadow-2xl shadow-emerald-600/10" : "bg-slate-900 border-emerald-500/40 text-white"}`}
+            >
+              <div className={`flex items-center justify-between border-b pb-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+                <h3 className={`text-base font-bold flex items-center gap-2 ${isLightMode ? "text-emerald-800" : "text-emerald-300"}`}>
+                  <GraduationCap size={20} className="text-emerald-500" />
+                  <span>{t('1·2학기 중간 / 기말고사 시험 일정 설정')}</span>
+                </h3>
+                <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-slate-200 transition-colors p-1">
+                  <X size={18} />
+                </button>
+              </div>
 
-            <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
-              {t('시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.')}
-            </p>
+              <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
+                {t('시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.')}
+              </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* 1학기 중간고사 */}
-              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
-                <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <span>📝 {t('1학기 중간고사')}</span>
-                </label>
-                <div className="flex items-center gap-2 text-xs">
-                  <input
-                    type="date"
-                    value={examSchedule.firstMid.start}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      firstMid: { ...examSchedule.firstMid, start: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                  <input
-                    type="date"
-                    value={examSchedule.firstMid.end}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      firstMid: { ...examSchedule.firstMid, end: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* 1학기 중간고사 */}
+                <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                  <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <span>📝 {t('1학기 중간고사')}</span>
+                  </label>
+                  <div className="flex items-center gap-2 text-xs">
+                    <input
+                      type="date"
+                      value={examSchedule.firstMid.start}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        firstMid: { ...examSchedule.firstMid, start: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                    <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
+                    <input
+                      type="date"
+                      value={examSchedule.firstMid.end}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        firstMid: { ...examSchedule.firstMid, end: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                  </div>
+                </div>
+
+                {/* 1학기 기말고사 */}
+                <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                  <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                    <span>💯 {t('1학기 기말고사')}</span>
+                  </label>
+                  <div className="flex items-center gap-2 text-xs">
+                    <input
+                      type="date"
+                      value={examSchedule.firstFinal.start}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        firstFinal: { ...examSchedule.firstFinal, start: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                    <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
+                    <input
+                      type="date"
+                      value={examSchedule.firstFinal.end}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        firstFinal: { ...examSchedule.firstFinal, end: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                  </div>
+                </div>
+
+                {/* 2학기 중간고사 */}
+                <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                  <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <span>📝 {t('2학기 중간고사')}</span>
+                  </label>
+                  <div className="flex items-center gap-2 text-xs">
+                    <input
+                      type="date"
+                      value={examSchedule.secondMid.start}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        secondMid: { ...examSchedule.secondMid, start: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                    <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
+                    <input
+                      type="date"
+                      value={examSchedule.secondMid.end}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        secondMid: { ...examSchedule.secondMid, end: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                  </div>
+                </div>
+
+                {/* 2학기 기말고사 */}
+                <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                  <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                    <span>🎓 {t('2학기 기말고사')}</span>
+                  </label>
+                  <div className="flex items-center gap-2 text-xs">
+                    <input
+                      type="date"
+                      value={examSchedule.secondFinal.start}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        secondFinal: { ...examSchedule.secondFinal, start: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                    <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
+                    <input
+                      type="date"
+                      value={examSchedule.secondFinal.end}
+                      onChange={e => setExamSchedule({
+                        ...examSchedule,
+                        secondFinal: { ...examSchedule.secondFinal, end: e.target.value }
+                      })}
+                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* 1학기 기말고사 */}
-              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
-                <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                  <span>💯 {t('1학기 기말고사')}</span>
-                </label>
-                <div className="flex items-center gap-2 text-xs">
-                  <input
-                    type="date"
-                    value={examSchedule.firstFinal.start}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      firstFinal: { ...examSchedule.firstFinal, start: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                  <input
-                    type="date"
-                    value={examSchedule.firstFinal.end}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      firstFinal: { ...examSchedule.firstFinal, end: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExamSchedule(DEFAULT_EXAM_SCHEDULE);
+                    showToast(t('모든 일정을 비웠습니다.'));
+                  }}
+                  className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
+                >
+                  {t('일정 모두 비우기')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExamSchedule(SAMPLE_EXAM_SCHEDULE);
+                    showToast(t('샘플 시험 일정이 적용되었습니다.'));
+                  }}
+                  className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
+                >
+                  {t('샘플 일정 채우기')}
+                </button>
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/20 transition-all active:scale-95"
+                >
+                  <Check size={16} />
+                  <span>{t('시험 일정 저장')}</span>
+                </button>
               </div>
-
-              {/* 2학기 중간고사 */}
-              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
-                <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <span>📝 {t('2학기 중간고사')}</span>
-                </label>
-                <div className="flex items-center gap-2 text-xs">
-                  <input
-                    type="date"
-                    value={examSchedule.secondMid.start}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      secondMid: { ...examSchedule.secondMid, start: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                  <input
-                    type="date"
-                    value={examSchedule.secondMid.end}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      secondMid: { ...examSchedule.secondMid, end: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                </div>
-              </div>
-
-              {/* 2학기 기말고사 */}
-              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
-                <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                  <span>🎓 {t('2학기 기말고사')}</span>
-                </label>
-                <div className="flex items-center gap-2 text-xs">
-                  <input
-                    type="date"
-                    value={examSchedule.secondFinal.start}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      secondFinal: { ...examSchedule.secondFinal, start: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                  <input
-                    type="date"
-                    value={examSchedule.secondFinal.end}
-                    onChange={e => setExamSchedule({
-                      ...examSchedule,
-                      secondFinal: { ...examSchedule.secondFinal, end: e.target.value }
-                    })}
-                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setExamSchedule(DEFAULT_EXAM_SCHEDULE);
-                  showToast(t('모든 일정을 비웠습니다.'));
-                }}
-                className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
-              >
-                {t('일정 모두 비우기')}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setExamSchedule(SAMPLE_EXAM_SCHEDULE);
-                  showToast(t('샘플 시험 일정이 적용되었습니다.'));
-                }}
-                className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
-              >
-                {t('샘플 일정 채우기')}
-              </button>
-              <button
-                type="submit"
-                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/20 transition-all active:scale-95"
-              >
-                <Check size={16} />
-                <span>{t('시험 일정 저장')}</span>
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         )}
 
         {/* CALENDAR VIEW (Sleek Cosmic Theme matching starry sky environment) */}
-        <div className={`flex-1 min-h-0 backdrop-blur-md rounded-3xl p-4 sm:p-5 border-2 flex flex-col justify-between relative z-10 transition-colors duration-200 ${isLightMode ? "bg-white/85 border-slate-200/90 text-slate-900 shadow-xl shadow-slate-200/50" : "bg-slate-900/40 border-white/15 text-white shadow-[0_12px_40px_-12px_rgba(16,185,129,0.25)]"}`}>
+        <div className={`flex-1 min-h-[480px] backdrop-blur-md rounded-3xl p-4 sm:p-5 border-2 flex flex-col justify-between relative z-10 transition-colors duration-200 ${isLightMode ? "bg-white/85 border-slate-200/90 text-slate-900 shadow-xl shadow-slate-200/50" : "bg-slate-900/40 border-white/15 text-white shadow-[0_12px_40px_-12px_rgba(16,185,129,0.25)]"}`}>
             
             {/* Header: Month title, Year subtitle, & Navigation controls */}
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b flex-none ${isLightMode ? "border-slate-200" : "border-white/5"}`}>
