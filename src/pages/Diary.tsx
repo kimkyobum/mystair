@@ -465,7 +465,7 @@ JSON 구조 규격:
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowExamSettings(!showExamSettings)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border tour-target-exam-schedule ${isLightMode ? "bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300" : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40"}`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border tour-target-exam-schedule ${isLightMode ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30"}`}
           >
             <Settings size={15} />
             <span className="hidden sm:inline">{t('시험 일정 설정')}</span>
@@ -495,42 +495,33 @@ JSON 구조 규격:
       {/* Main Container */}
       <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-hidden`}>
 
-        {/* AI 보조 도구 및 자소서 사실 검토 필수 안내 배너 */}
-        <div className={`mb-3 p-3 rounded-2xl border flex items-center justify-between gap-3 text-left transition-all ${isLightMode ? "bg-amber-50/80 border-amber-200 text-amber-950" : "bg-amber-500/10 border-amber-500/25 text-amber-200"}`}>
-          <div className="flex items-start sm:items-center gap-2.5 min-w-0">
-            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5 sm:mt-0" />
-            <p className="text-xs font-semibold leading-relaxed">
-              <span className="font-extrabold text-amber-600 dark:text-amber-400 mr-1.5">{t('자소서 AI 유의사항')}:</span>
-              {t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}
-            </p>
-          </div>
-          <div className="hidden md:flex items-center gap-1 shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-300 border border-amber-500/20">
-            <ShieldCheck size={12} />
-            <span>{t('사실 검증 필수')}</span>
-          </div>
+        {/* AI 보조 도구 사실 검토 안내 (소형 빨간색 텍스트) */}
+        <div className="mb-2.5 px-0.5 flex items-center gap-1.5 text-[11px] sm:text-xs text-rose-500 dark:text-rose-400 font-medium leading-relaxed">
+          <AlertTriangle size={13} className="shrink-0 text-rose-500 dark:text-rose-400" />
+          <span>{t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}</span>
         </div>
 
         {/* Exam Schedule Settings Collapsible Box */}
         {showExamSettings && (
-          <form onSubmit={handleSaveExamSchedule} className={`rounded-3xl p-6 shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar fade-in duration-200 border-2 ${isLightMode ? "bg-white border-amber-400/80 text-slate-900 shadow-amber-500/10" : "bg-slate-900/90 border-amber-500/50 text-white"}`}>
+          <form onSubmit={handleSaveExamSchedule} className={`rounded-3xl p-6 shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar fade-in duration-200 border ${isLightMode ? "bg-white border-emerald-300 text-slate-900 shadow-xl shadow-emerald-600/5" : "bg-slate-900/95 border-emerald-500/40 text-white"}`}>
             <div className={`flex items-center justify-between border-b pb-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
-              <h3 className={`text-base font-bold flex items-center gap-2 ${isLightMode ? "text-amber-700" : "text-amber-300"}`}>
-                <GraduationCap size={20} className="text-amber-400" />
+              <h3 className={`text-base font-bold flex items-center gap-2 ${isLightMode ? "text-emerald-800" : "text-emerald-300"}`}>
+                <GraduationCap size={20} className="text-emerald-500" />
                 <span>{t('1·2학기 중간 / 기말고사 시험 일정 설정')}</span>
               </h3>
-              <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-white">
+              <button type="button" onClick={() => setShowExamSettings(false)} className="text-slate-400 hover:text-slate-200 transition-colors">
                 <X size={18} />
               </button>
             </div>
 
-            <p className={`text-xs ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
+            <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
               {t('시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.')}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* 1학기 중간고사 */}
-              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
-                <label className="text-xs font-extrabold text-amber-400 flex items-center gap-1">
+              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <span>📝 {t('1학기 중간고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
@@ -541,9 +532,9 @@ JSON 구조 규격:
                       ...examSchedule,
                       firstMid: { ...examSchedule.firstMid, start: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
-                  <span>~</span>
+                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
                   <input
                     type="date"
                     value={examSchedule.firstMid.end}
@@ -551,14 +542,14 @@ JSON 구조 규격:
                       ...examSchedule,
                       firstMid: { ...examSchedule.firstMid, end: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
                 </div>
               </div>
 
               {/* 1학기 기말고사 */}
-              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
-                <label className="text-xs font-extrabold text-rose-400 flex items-center gap-1">
+              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
                   <span>💯 {t('1학기 기말고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
@@ -569,9 +560,9 @@ JSON 구조 규격:
                       ...examSchedule,
                       firstFinal: { ...examSchedule.firstFinal, start: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
-                  <span>~</span>
+                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
                   <input
                     type="date"
                     value={examSchedule.firstFinal.end}
@@ -579,14 +570,14 @@ JSON 구조 규격:
                       ...examSchedule,
                       firstFinal: { ...examSchedule.firstFinal, end: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
                 </div>
               </div>
 
               {/* 2학기 중간고사 */}
-              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
-                <label className="text-xs font-extrabold text-emerald-500 flex items-center gap-1">
+              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                <label className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <span>📝 {t('2학기 중간고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
@@ -597,9 +588,9 @@ JSON 구조 규격:
                       ...examSchedule,
                       secondMid: { ...examSchedule.secondMid, start: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
-                  <span>~</span>
+                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
                   <input
                     type="date"
                     value={examSchedule.secondMid.end}
@@ -607,14 +598,14 @@ JSON 구조 규격:
                       ...examSchedule,
                       secondMid: { ...examSchedule.secondMid, end: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
                 </div>
               </div>
 
               {/* 2학기 기말고사 */}
-              <div className="bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700 space-y-2">
-                <label className="text-xs font-extrabold text-teal-400 flex items-center gap-1">
+              <div className={`${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/70 border-slate-700/80"} p-3.5 rounded-2xl border space-y-2`}>
+                <label className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
                   <span>🎓 {t('2학기 기말고사')}</span>
                 </label>
                 <div className="flex items-center gap-2 text-xs">
@@ -625,9 +616,9 @@ JSON 구조 규격:
                       ...examSchedule,
                       secondFinal: { ...examSchedule.secondFinal, start: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
-                  <span>~</span>
+                  <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
                   <input
                     type="date"
                     value={examSchedule.secondFinal.end}
@@ -635,7 +626,7 @@ JSON 구조 규격:
                       ...examSchedule,
                       secondFinal: { ...examSchedule.secondFinal, end: e.target.value }
                     })}
-                    className="bg-slate-900 border border-slate-700 rounded-lg p-2 text-white outline-none w-full"
+                    className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
                   />
                 </div>
               </div>
@@ -648,7 +639,7 @@ JSON 구조 규격:
                   setExamSchedule(DEFAULT_EXAM_SCHEDULE);
                   showToast(t('모든 일정을 비웠습니다.'));
                 }}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
+                className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
               >
                 {t('일정 모두 비우기')}
               </button>
@@ -658,13 +649,13 @@ JSON 구조 규격:
                   setExamSchedule(SAMPLE_EXAM_SCHEDULE);
                   showToast(t('샘플 시험 일정이 적용되었습니다.'));
                 }}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer"
+                className={`${isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"} border px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer`}
               >
                 {t('샘플 일정 채우기')}
               </button>
               <button
                 type="submit"
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer shadow-md"
+                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md shadow-emerald-500/20 transition-all active:scale-95"
               >
                 <Check size={16} />
                 <span>{t('시험 일정 저장')}</span>
@@ -779,17 +770,17 @@ JSON 구조 규격:
                 // Check for Exam on this day
                 const exam = getExamForDate(fullDateStr);
 
-                // Make exam badges dark, glowing, cosmic
-                let examBadgeClass = isLightMode ? "bg-amber-100 text-amber-900 border-amber-300" : "bg-amber-500/10 text-amber-300 border-amber-500/30";
+                // Make exam badges modern emerald/teal styled
+                let examBadgeClass = isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
                 if (exam) {
                   if (exam.name.includes("기말고사")) {
                     examBadgeClass = exam.name.includes("1학기") 
-                      ? (isLightMode ? "bg-rose-100 text-rose-900 border-rose-300" : "bg-rose-500/10 text-rose-300 border-rose-500/25")
-                      : (isLightMode ? "bg-purple-100 text-purple-900 border-purple-300" : "bg-teal-500/10 text-purple-300 border-purple-500/25");
+                      ? (isLightMode ? "bg-teal-100 text-teal-900 border-teal-300" : "bg-teal-500/15 text-teal-300 border-teal-500/25")
+                      : (isLightMode ? "bg-cyan-100 text-cyan-900 border-cyan-300" : "bg-cyan-500/15 text-cyan-300 border-cyan-500/25");
                   } else {
                     examBadgeClass = exam.name.includes("1학기")
-                      ? (isLightMode ? "bg-amber-100 text-amber-900 border-amber-300" : "bg-amber-500/10 text-amber-300 border-amber-500/25")
-                      : (isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/10 text-emerald-300 border-emerald-500/25");
+                      ? (isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/15 text-emerald-300 border-emerald-500/25")
+                      : (isLightMode ? "bg-teal-100 text-teal-900 border-teal-300" : "bg-teal-500/15 text-teal-300 border-teal-500/25");
                   }
                 }
 
@@ -873,17 +864,12 @@ JSON 구조 규격:
               </button>
             </div>
 
-            {/* AI 사실 검토 필수 안내 배너 */}
-            <div className={`p-3 rounded-2xl border flex items-start gap-2.5 text-left mb-3.5 flex-none ${isLightMode ? "bg-amber-50 border-amber-300 text-amber-950" : "bg-amber-500/10 border-amber-500/30 text-amber-200"}`}>
-              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              <div className="text-xs space-y-0.5 leading-relaxed">
-                <p className="font-extrabold text-amber-600 dark:text-amber-400">
-                  {t('⚠️ 자소서 AI 사용 불가 기업 대비 & 사실 검토 필수')}
-                </p>
-                <p className={isLightMode ? "text-slate-700" : "text-slate-300"}>
-                  {t('많은 기업에서 자소서 AI 대필을 엄격히 금지하며, AI는 오직 기록을 구조화하는 보조 도구입니다. 추출된 내용 중 **본인이 실제로 하지 않은 경험이나 과장된 부분이 있는지 반드시 직접 꼼꼼히 읽고 검토**해 주세요.')}
-                </p>
-              </div>
+            {/* AI 사실 검토 필수 안내 (소형 빨간색 텍스트) */}
+            <div className="mb-3 px-1 flex items-start gap-1.5 text-[11px] sm:text-xs text-rose-500 dark:text-rose-400 font-medium leading-relaxed flex-none">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400 shrink-0 mt-0.5" />
+              <span>
+                {t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}
+              </span>
             </div>
             
             <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar markdown-body">
