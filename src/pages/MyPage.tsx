@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   User, 
@@ -12,22 +12,23 @@ import {
   Plus, 
   X, 
   ExternalLink,
-  Sparkles,
-  Award,
   ChevronRight,
-  Save,
-  RotateCcw,
   Sun,
   Moon,
-  Image as ImageIcon,
   Settings,
-  ArrowLeft,
   Sliders,
-  Palette
+  Palette,
+  Camera,
+  Briefcase,
+  Layers,
+  Sparkles,
+  CheckCircle2,
+  HelpCircle,
+  FileText
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
-import { MEISTER_HIGHSCHOOLS, searchMeisterSchools, MeisterSchool } from '../data/meisterSchools';
+import { searchMeisterSchools, MeisterSchool } from '../data/meisterSchools';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import { useTheme } from '../context/ThemeContext';
@@ -44,16 +45,6 @@ interface MyProfileData {
   hollandNote: string;
   targetCompanies: string[];
 }
-
-const PRESET_SCHOOLS = [
-  '수도전기공업고등학교',
-  '서울로봇고등학교',
-  '부산기계공업고등학교',
-  '동아마이스터고등학교',
-  '금오공업고등학교',
-  '미림여자정보과학고등학교',
-  '광주소프트웨어마이스터고등학교'
-];
 
 const PRESET_MAJORS = [
   '로봇제어과',
@@ -85,12 +76,15 @@ export default function MyPage() {
   const { user, userProfile: firestoreProfile, updateProfileInFirestore } = useAuth();
   const { showAliens, setShowAliens } = useChat();
   const { language, setLanguage, t } = useLanguage();
-  const { isLightMode, setIsLightMode, backgroundType, setBackgroundType, isClickEffectEnabled, setIsClickEffectEnabled } = useTheme();
+  const { isLightMode, setIsLightMode, setBackgroundType, isClickEffectEnabled, setIsClickEffectEnabled } = useTheme();
 
+  // Active Tab: 'profile' | 'aptitude' | 'companies' | 'settings'
+  const [activeTab, setActiveTab] = useState<'profile' | 'aptitude' | 'companies' | 'settings'>('profile');
+
+  // Full Edit Mode (Personal & Academic Info)
   const [isFullEditing, setIsFullEditing] = useState(false);
-  const [editingField, setEditingField] = useState<'name' | 'school' | 'major' | 'mbti' | 'holland' | null>(null);
 
-  // Temporary inputs for inline partial editing
+  // Search & Inputs
   const [tempName, setTempName] = useState('');
   const [tempSchool, setTempSchool] = useState('');
   const [tempMajor, setTempMajor] = useState('');
@@ -101,11 +95,8 @@ export default function MyPage() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [newCompanyInput, setNewCompanyInput] = useState('');
 
-  // Modal State for detail views ('mbti' | 'holland' | 'companies' | null)
+  // Modals for deep analysis
   const [activeModal, setActiveModal] = useState<'mbti' | 'holland' | 'companies' | null>(null);
-
-  // Tab State: 'profile' (main career profile) | 'settings' (aliens, theme, touch effect)
-  const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
 
   // Main Profile State
   const [profile, setProfile] = useState<MyProfileData>({
@@ -119,6 +110,10 @@ export default function MyPage() {
     hollandNote: '',
     targetCompanies: []
   });
+
+  // Stored test results
+  const [mbtiResult, setMbtiResult] = useState<any>(null);
+  const [hollandResult, setHollandResult] = useState<any>(null);
 
   const getActiveUid = () => {
     if (user?.uid) return user.uid;
@@ -139,47 +134,14 @@ export default function MyPage() {
     profileRef.current = profile;
   }, [profile]);
 
-  useEffect(() => {
-    if (isFullEditing) {
-      const uid = getActiveUid();
-      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
-      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(profile));
-    }
-  }, [profile, isFullEditing]);
-
-  // Auto-save on page unmount / navigating away so changes are never lost
-  useEffect(() => {
-    return () => {
-      const uid = getActiveUid();
-      const p = profileRef.current;
-      if (p && (p.name || p.highSchool || p.major || p.mbti || p.hollandCode)) {
-        try {
-          localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(p));
-          localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(p));
-          localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
-            name: p.name,
-            email: p.email,
-            avatarUrl: p.avatarUrl
-          }));
-          updateProfileInFirestore(p);
-        } catch (e) {}
-      }
-    };
-  }, []);
-
-  // Stored test results
-  const [mbtiResult, setMbtiResult] = useState<any>(null);
-  const [hollandResult, setHollandResult] = useState<any>(null);
-
+  // Load initial data
   const loadData = () => {
     const uid = getActiveUid();
 
-    // 1. Initial values from firestore profile or user
     let baseName = firestoreProfile?.name || user?.displayName || '';
     let baseEmail = firestoreProfile?.email || user?.email || '';
     let baseAvatarUrl = firestoreProfile?.avatarUrl || user?.photoURL || '';
 
-    // Check localStorage user_profile cache
     const savedSidebarProfile = localStorage.getItem(`mystair_user_profile_${uid}`);
     if (savedSidebarProfile) {
       try {
@@ -190,7 +152,6 @@ export default function MyPage() {
       } catch (e) {}
     }
 
-    // Check mock user as fallback
     const savedMockUser = localStorage.getItem('mystair_mock_user');
     if (savedMockUser) {
       try {
@@ -212,7 +173,6 @@ export default function MyPage() {
       targetCompanies: (firestoreProfile?.targetCompanies && firestoreProfile.targetCompanies.length > 0) ? firestoreProfile.targetCompanies : []
     };
 
-    // 2. Merge saved MyPage data from local storage (preserves values that may not be in remote yet)
     const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
     if (savedMyPage) {
       try {
@@ -232,7 +192,6 @@ export default function MyPage() {
       } catch (e) {}
     }
 
-    // 3. Saved MBTI test results
     const savedMbti = localStorage.getItem(`mystair_mbti_result_${uid}`);
     if (savedMbti) {
       try {
@@ -244,7 +203,6 @@ export default function MyPage() {
       } catch (e) {}
     }
 
-    // 4. Saved Holland test results
     const savedHolland = localStorage.getItem(`mystair_holland_result_${uid}`);
     if (savedHolland) {
       try {
@@ -266,14 +224,30 @@ export default function MyPage() {
 
   useEffect(() => {
     loadData();
-
-    // Listen to storage changes in case test results were saved
-    const handleStorageChange = () => {
-      loadData();
-    };
+    const handleStorageChange = () => loadData();
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [user, firestoreProfile]);
+
+  // Auto-save on page unmount
+  useEffect(() => {
+    return () => {
+      const uid = getActiveUid();
+      const p = profileRef.current;
+      if (p && (p.name || p.highSchool || p.major || p.mbti || p.hollandCode)) {
+        try {
+          localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(p));
+          localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(p));
+          localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
+            name: p.name,
+            email: p.email,
+            avatarUrl: p.avatarUrl
+          }));
+          updateProfileInFirestore(p);
+        } catch (e) {}
+      }
+    };
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -283,45 +257,16 @@ export default function MyPage() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Limit file size to 1.5MB to be safe for local storage / firestore
       if (file.size > 1.5 * 1024 * 1024) {
-        showToast('이미지 크기가 너무 큽니다 (1.5MB 이하만 가능합니다)');
+        showToast(t('이미지 크기가 너무 큽니다 (1.5MB 이하만 가능합니다)'));
         return;
       }
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        savePartialField('avatarUrl', base64String, '프로필 사진');
+        savePartialField('avatarUrl', base64String, t('프로필 사진'));
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const handleFullSave = async () => {
-    const uid = getActiveUid();
-    const updated: MyProfileData = {
-      ...profile,
-      name: profile.name || tempName.trim(),
-      highSchool: profile.highSchool || tempSchool.trim(),
-      major: profile.major || tempMajor.trim(),
-      mbti: profile.mbti || tempMbti,
-      hollandCode: profile.hollandCode || tempHolland
-    };
-    setProfile(updated);
-    try {
-      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(updated));
-      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(updated));
-      localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
-        name: updated.name,
-        email: updated.email,
-        avatarUrl: updated.avatarUrl
-      }));
-      await updateProfileInFirestore(updated);
-      showToast('마이페이지 프로필이 성공적으로 저장되었습니다!');
-      setIsFullEditing(false);
-      setEditingField(null);
-    } catch (e) {
-      showToast('저장 중 오류가 발생했습니다.');
     }
   };
 
@@ -340,10 +285,34 @@ export default function MyPage() {
         }));
       }
       await updateProfileInFirestore({ [key]: val });
-      setEditingField(null);
-      showToast(`${fieldLabel} 정보가 변경·저장되었습니다.`);
+      showToast(`${fieldLabel} ${t('정보가 저장되었습니다.')}`);
     } catch (e) {
-      showToast('저장 중 오류가 발생했습니다.');
+      showToast(t('저장 중 오류가 발생했습니다.'));
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    const uid = getActiveUid();
+    const updated: MyProfileData = {
+      ...profile,
+      name: tempName.trim() || profile.name,
+      highSchool: tempSchool.trim() || profile.highSchool,
+      major: tempMajor.trim() || profile.major
+    };
+    setProfile(updated);
+    try {
+      localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(updated));
+      localStorage.setItem(`mystair_local_user_profile_${uid}`, JSON.stringify(updated));
+      localStorage.setItem(`mystair_user_profile_${uid}`, JSON.stringify({
+        name: updated.name,
+        email: updated.email,
+        avatarUrl: updated.avatarUrl
+      }));
+      await updateProfileInFirestore(updated);
+      showToast(t('프로필 정보가 저장되었습니다.'));
+      setIsFullEditing(false);
+    } catch (e) {
+      showToast(t('저장 중 오류가 발생했습니다.'));
     }
   };
 
@@ -351,19 +320,18 @@ export default function MyPage() {
     const target = (companyName || newCompanyInput).trim();
     if (!target) return;
     if (profile.targetCompanies.includes(target)) {
-      showToast('이미 희망 기업에 포함되어 있습니다.');
+      showToast(t('이미 희망 기업에 포함되어 있습니다.'));
       return;
     }
     const updatedCompanies = [...profile.targetCompanies, target];
-    savePartialField('targetCompanies', updatedCompanies, '희망 기업');
+    savePartialField('targetCompanies', updatedCompanies, t('희망 기업'));
     if (!companyName) setNewCompanyInput('');
   };
 
   const handleRemoveCompany = (companyName: string) => {
     const updatedCompanies = profile.targetCompanies.filter(c => c !== companyName);
-    savePartialField('targetCompanies', updatedCompanies, '희망 기업');
+    savePartialField('targetCompanies', updatedCompanies, t('희망 기업'));
   };
-
 
   const currentMbtiMeta = profile.mbti ? mbtiMeta[profile.mbti] : null;
   const modalMbtiMeta = currentMbtiMeta || mbtiMeta['ISTJ'];
@@ -375,1330 +343,823 @@ export default function MyPage() {
   const modalSecondaryHollandMeta = secondaryHollandMeta || hollandMeta['C'];
 
   return (
-    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans flex flex-col relative pb-28 ${isLightMode ? "text-slate-900" : "text-white"}`}>
-      {/* Soft Ambient Cosmic Glows */}
-      <div className="absolute top-[10%] left-[25%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[110px] pointer-events-none z-0" />
-      <div className="absolute bottom-[30%] right-[20%] w-[420px] h-[420px] rounded-full bg-purple-500/10 blur-[120px] pointer-events-none z-0" />
-
-      {/* Top Header */}
-      <header className={` backdrop-blur-md border-b  h-[72px] w-full flex items-center justify-between px-6 sm:px-10 sticky top-0 z-40 ${isLightMode ? "bg-white/80 border-slate-200 text-slate-900" : "bg-slate-900/60 border-white/10"}`}>
-        <div className="flex items-center gap-4">
-          <Link to="/" className={` font-black text-[26px]  tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
+    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden font-sans flex flex-col relative pb-28 ${isLightMode ? "bg-slate-50/60 text-slate-900" : "bg-slate-950/40 text-slate-100"}`}>
+      
+      {/* Top Header Bar */}
+      <header className={`backdrop-blur-md border-b h-16 w-full flex items-center justify-between px-5 sm:px-10 sticky top-0 z-40 transition-colors ${
+        isLightMode ? "bg-white/85 border-slate-200/80 text-slate-900" : "bg-slate-900/80 border-slate-800 text-white"
+      }`}>
+        <div className="flex items-center gap-3">
+          <Link to="/" className="font-black text-xl tracking-tight hover:opacity-80 transition-opacity">
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
-            MY PAGE
-          </span>
-          <span className="text-[#94A3B8] text-[14px] font-medium border-l border-white/10 pl-4 hidden sm:block">
-            {t('나의 성장의 계단 & 진로 프로필')}
+          <span className="text-slate-400 font-light">/</span>
+          <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300">
+            {t('마이페이지')}
           </span>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          {/* Settings Tab Toggle Button */}
-          <button
-            onClick={() => setActiveTab(activeTab === 'profile' ? 'settings' : 'profile')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
-              activeTab === 'settings'
-                ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm ring-2 ring-indigo-300'
-                : isLightMode
-                  ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
-                  : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
-            }`}
-            title={t('화면 및 환경 설정')}
-          >
-            <Settings size={14} className={activeTab === 'settings' ? 'rotate-90 transition-transform duration-300' : ''} />
-            <span>{activeTab === 'settings' ? t('내 프로필') : t('설정')}</span>
-          </button>
-
+        <div className="flex items-center gap-3">
           <select 
             value={language}
             onChange={(e) => setLanguage(e.target.value as any)}
-            className={`bg-transparent border rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors focus:border-indigo-400 appearance-none cursor-pointer ${isLightMode ? "text-slate-900 border-slate-300 hover:bg-slate-100" : "text-white border-white/20 hover:bg-white/5"}`}
-            style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23ffffff\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em', paddingRight: '2rem' }}
+            className={`border rounded-lg px-3 py-1 text-xs font-semibold outline-none transition cursor-pointer ${
+              isLightMode 
+                ? "bg-white border-slate-300 text-slate-800 hover:border-slate-400" 
+                : "bg-slate-800 border-slate-700 text-slate-200 hover:border-slate-600"
+            }`}
           >
-            <option value="ko" className={isLightMode ? "bg-white text-slate-900" : "bg-gray-900 text-white"}>{t('한국어')}</option>
-            <option value="en" className={isLightMode ? "bg-white text-slate-900" : "bg-gray-900 text-white"}>English</option>
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
           </select>
         </div>
       </header>
 
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-8 py-7 space-y-6 relative z-10">
 
-      {/* Main Container */}
-      <main className="flex-1 w-full max-w-[880px] mx-auto px-4 sm:px-8 py-8 space-y-6 relative z-10">
-        
-        {activeTab === 'settings' ? (
-          /* ================= DEDICATED SETTINGS PAGE VIEW ================= */
-          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            {/* Settings Top Hero Card */}
-            <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex items-center justify-between gap-4 ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
-              <div className="flex items-center gap-3.5">
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer flex items-center justify-center shrink-0"
-                  title={t('내 프로필로 돌아가기')}
-                >
-                  <ArrowLeft size={18} />
-                </button>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-black tracking-tight">
-                      {t('환경 및 테마 설정')}
-                    </h1>
-                    <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">
-                      SETTINGS
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 font-medium mt-1">
-                    {t('외계인 캐릭터, 배경 화면 테마, 터치 이펙트를 내 취향에 맞게 설정하세요.')}
-                  </p>
+        {/* ================= HERO PROFILE CARD (YouTube & Instagram Inspired) ================= */}
+        <section className={`rounded-2xl border p-6 sm:p-7 shadow-xs transition-all ${
+          isLightMode 
+            ? "bg-white border-slate-200/90 text-slate-900" 
+            : "bg-slate-900/80 border-slate-800 text-white"
+        }`}>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            
+            {/* User Identity & Avatar */}
+            <div className="flex items-center gap-5 min-w-0">
+              {/* Refined Avatar */}
+              <div className="relative group shrink-0">
+                <div className={`w-20 h-20 sm:w-22 sm:h-22 rounded-full overflow-hidden border-2 p-0.5 transition-all ${
+                  isLightMode ? "border-slate-200 bg-slate-100" : "border-slate-700 bg-slate-800"
+                }`}>
+                  {(profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL) ? (
+                    <img 
+                      src={profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL || ''} 
+                      alt={t('프로필 사진')} 
+                      className="w-full h-full object-cover rounded-full" 
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800">
+                      <User size={38} className="text-slate-400" />
+                    </div>
+                  )}
+
+                  {/* Photo Edit Overlay */}
+                  <label className="absolute inset-0 bg-slate-950/60 rounded-full flex flex-col items-center justify-center gap-1 text-[11px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <Camera size={18} />
+                    <span>{t('사진 변경')}</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleAvatarChange} 
+                      className="hidden" 
+                    />
+                  </label>
                 </div>
               </div>
 
+              {/* Names and Status */}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight truncate tour-target-profile-name">
+                    {profile.name || t('마이스터 학생')}
+                  </h1>
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300">
+                    {t('마이스터 인재')}
+                  </span>
+                </div>
+
+                <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
+                  <span className="font-semibold text-slate-700 dark:text-slate-200">
+                    {profile.highSchool || t('마이스터고 미설정')}
+                  </span>
+                  <span>•</span>
+                  <span>{profile.major || t('전공 미설정')}</span>
+                </p>
+
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+                  {profile.email || user?.email || t('이메일 정보 없음')}
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2.5 w-full sm:w-auto self-end md:self-auto shrink-0">
               <button
-                onClick={() => setActiveTab('profile')}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-sm"
+                onClick={() => {
+                  if (isFullEditing) {
+                    handleSaveProfile();
+                  } else {
+                    setTempName(profile.name);
+                    setTempSchool(profile.highSchool);
+                    setTempMajor(profile.major);
+                    setIsFullEditing(true);
+                    setActiveTab('profile');
+                  }
+                }}
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs tour-target-edit-mode ${
+                  isFullEditing
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                    : isLightMode
+                      ? "bg-slate-900 hover:bg-slate-800 text-white"
+                      : "bg-white hover:bg-slate-100 text-slate-900"
+                }`}
               >
-                <Check size={15} />
-                <span className="hidden sm:inline">{t('프로필로 돌아가기')}</span>
+                {isFullEditing ? <Check size={14} /> : <Edit3 size={14} />}
+                <span>{isFullEditing ? t('저장 완료') : t('프로필 편집')}</span>
               </button>
-            </div>
 
-            {/* Settings Cards Stack */}
-            <div className="flex flex-col gap-4">
-
-              {/* Setting 1: 우주 외계인 배경 설정 */}
-              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="p-2 bg-indigo-500/10 text-indigo-600 rounded-xl">
-                      <Sparkles size={18} className="text-indigo-600 animate-pulse" />
-                    </span>
-                    <div>
-                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('배경 캐릭터')}</span>
-                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('우주 외계인 캐릭터 설정')}</h3>
-                    </div>
-                  </div>
-
-                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
-                    showAliens 
-                      ? 'bg-indigo-50 text-indigo-600 border-indigo-200' 
-                      : 'bg-slate-100 text-slate-500 border-slate-200'
-                  }`}>
-                    {showAliens ? t('현재: 보이기') : t('현재: 숨기기')}
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-slate-100">
-                  <div className="flex-1">
-                    <div className="text-sm font-bold text-slate-800">{t('우주 화면을 떠다니는 외계인 커플 캐릭터')}</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
-                      {t('메인 홈(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 결정합니다. 기본값은 숨김 상태입니다.')}
-                    </div>
-                  </div>
-
-                  <div className="shrink-0 flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 self-start sm:self-auto">
-                    <button
-                      onClick={() => setShowAliens(true)}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        showAliens 
-                          ? 'bg-indigo-600 text-white shadow-sm' 
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      {t('보이기')}
-                    </button>
-                    <button
-                      onClick={() => setShowAliens(false)}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        !showAliens 
-                          ? 'bg-slate-700 text-white shadow-sm' 
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      {t('숨기기')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Setting 2: 화면 및 배경 테마 설정 */}
-              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-purple-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="p-2 bg-purple-500/10 text-purple-600 rounded-xl">
-                      <Palette size={18} />
-                    </span>
-                    <div>
-                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('테마 & 배경')}</span>
-                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('화면 및 배경 테마 선택')}</h3>
-                    </div>
-                  </div>
-
-                  <span className="text-xs font-extrabold px-2.5 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-200">
-                    {isLightMode ? t('라이트 모드') : t('우주 모드')}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
-                  {/* Light Mode */}
-                  <button
-                    onClick={() => setIsLightMode(true)}
-                    className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all cursor-pointer text-center ${
-                      isLightMode 
-                        ? 'border-amber-500 bg-amber-50/70 text-amber-950 shadow-xs ring-2 ring-amber-300' 
-                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
-                    }`}
-                  >
-                    <Sun size={28} className={isLightMode ? 'text-amber-500 mb-2' : 'text-slate-400 mb-2'} />
-                    <span className="font-extrabold text-sm">{t('라이트 모드 (기본)', 'Light Mode')}</span>
-                    <span className="text-xs mt-1 text-slate-500">{t('깔끔하고 눈이 편안한 화이트 테마', 'Clean white theme')}</span>
-                  </button>
-
-                  {/* Space Mode (Dark) */}
-                  <button
-                    onClick={() => {
-                      setIsLightMode(false);
-                      setBackgroundType('black');
-                    }}
-                    className={`flex flex-col items-center justify-center p-5 rounded-2xl border-2 transition-all cursor-pointer text-center ${
-                      !isLightMode 
-                        ? 'border-indigo-500 bg-indigo-50/70 text-indigo-950 shadow-xs ring-2 ring-indigo-300' 
-                        : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300'
-                    }`}
-                  >
-                    <Moon size={28} className={!isLightMode ? 'text-indigo-600 mb-2' : 'text-slate-400 mb-2'} />
-                    <span className="font-extrabold text-sm">{t('우주 모드', 'Space Mode')}</span>
-                    <span className="text-xs mt-1 text-slate-500">{t('신비롭고 아름다운 밤하늘 별빛 테마', 'Beautiful starlight theme')}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Setting 3: 터치 & 클릭 이펙트 설정 */}
-              <div className="bg-white rounded-2xl p-5 sm:p-6 border-2 border-transparent hover:border-cyan-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 text-slate-900 shadow-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <span className="p-2 bg-cyan-500/10 text-cyan-600 rounded-xl">
-                      <Sliders size={18} />
-                    </span>
-                    <div>
-                      <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('인터랙션')}</span>
-                      <h3 className="text-base font-extrabold text-slate-950 mt-0.5">{t('터치 및 클릭 이펙트')}</h3>
-                    </div>
-                  </div>
-
-                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
-                    isClickEffectEnabled 
-                      ? 'bg-cyan-50 text-cyan-700 border-cyan-200' 
-                      : 'bg-slate-100 text-slate-500 border-slate-200'
-                  }`}>
-                    {isClickEffectEnabled ? t('활성화 (ON)') : t('비활성화 (OFF)')}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-4 pt-2 border-t border-slate-100">
-                  <div className="flex-1">
-                    <div className="text-sm font-bold text-slate-800">{t('화면 클릭 / 터치 시 별빛 파티클')}</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
-                      {t('마우스로 화면을 클릭하거나 화면을 터치할 때 다채로운 별빛 파티클이 톡톡 터지는 효과입니다.')}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
-                    className={`w-14 h-7 rounded-full transition-colors relative cursor-pointer shrink-0 shadow-inner ${
-                      isClickEffectEnabled ? 'bg-indigo-600' : 'bg-slate-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform shadow-md ${
-                      isClickEffectEnabled ? 'translate-x-7' : 'translate-x-0'
-                    }`} />
-                  </button>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Return Button Footer */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left shadow-2xs">
-              <div className="text-xs text-slate-500 font-medium">
-                {t('💡 모든 설정은 변경하는 즉시 자동 저장되어 다음 접속 시에도 그대로 유지됩니다.')}
-              </div>
               <button
-                onClick={() => setActiveTab('profile')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm w-full sm:w-auto"
+                onClick={() => setActiveTab('settings')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
+                  activeTab === 'settings'
+                    ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950/60 dark:border-indigo-700 dark:text-indigo-300"
+                    : isLightMode
+                      ? "bg-white hover:bg-slate-50 text-slate-700 border-slate-300"
+                      : "bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700"
+                }`}
               >
-                <ArrowLeft size={15} />
-                <span>{t('내 프로필로 돌아가기')}</span>
+                <Settings size={14} />
+                <span>{t('환경 설정')}</span>
               </button>
             </div>
           </div>
-        ) : (
-          /* ================= MAIN CAREER PROFILE VIEW ================= */
-          <div className="space-y-5 animate-in fade-in duration-200">
+
+          {/* Quick Metrics Bar (Instagram Profile Stats Style) */}
+          <div className={`mt-6 pt-5 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 ${
+            isLightMode ? "border-slate-100" : "border-slate-800/80"
+          }`}>
+            {/* Metric 1: 학적 정보 */}
+            <div 
+              onClick={() => { setActiveTab('profile'); }}
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+            >
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <School size={12} />
+                <span>{t('고등학교')}</span>
+              </div>
+              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+                {profile.highSchool ? profile.highSchool.replace('고등학교', '고') : t('미등록')}
+              </div>
+            </div>
+
+            {/* Metric 2: MBTI */}
+            <div 
+              onClick={() => { setActiveTab('aptitude'); }}
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+            >
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <Brain size={12} />
+                <span>{t('MBTI 진단')}</span>
+              </div>
+              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+                {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단')}
+              </div>
+            </div>
+
+            {/* Metric 3: 홀랜드 */}
+            <div 
+              onClick={() => { setActiveTab('aptitude'); }}
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+            >
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <Compass size={12} />
+                <span>{t('홀랜드 적성')}</span>
+              </div>
+              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+                {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단')}
+              </div>
+            </div>
+
+            {/* Metric 4: 목표 기업 */}
+            <div 
+              onClick={() => { setActiveTab('companies'); }}
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+            >
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                <Building2 size={12} />
+                <span>{t('희망 기업')}</span>
+              </div>
+              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+                {profile.targetCompanies.length > 0 ? `${profile.targetCompanies.length}${t('개 등록')}` : t('0개 등록')}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ================= HORIZONTAL NAVIGATION TABS ================= */}
+        <div className={`flex items-center gap-2 border-b overflow-x-auto no-scrollbar ${
+          isLightMode ? "border-slate-200" : "border-slate-800"
+        }`}>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+              activeTab === 'profile'
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+            }`}
+          >
+            <User size={15} />
+            <span>{t('기본 정보 & 학적')}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('aptitude')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+              activeTab === 'aptitude'
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+            }`}
+          >
+            <Brain size={15} />
+            <span>{t('진로 적성 진단')}</span>
+            {(profile.mbti || profile.hollandCode) && (
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('companies')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+              activeTab === 'companies'
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+            }`}
+          >
+            <Building2 size={15} />
+            <span>{t('희망 목표 기업')}</span>
+            <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
+              activeTab === 'companies' ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+            }`}>
+              {profile.targetCompanies.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+              activeTab === 'settings'
+                ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400"
+                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+            }`}
+          >
+            <Settings size={15} />
+            <span>{t('환경 설정')}</span>
+          </button>
+        </div>
+
+        {/* ================= TAB 1: 기본 정보 & 학적 ================= */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6 animate-in fade-in duration-150">
             
-            {/* Editing Banner Alert */}
+            {/* Edit Banner Alert */}
             {isFullEditing && (
-              <div className="bg-amber-500/15 border border-amber-500/30 text-amber-200 rounded-2xl p-4 flex items-center justify-between text-sm font-semibold shadow-sm animate-in fade-in duration-200">
+              <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/80 dark:bg-indigo-950/40 dark:border-indigo-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-indigo-900 dark:text-indigo-200">
                 <span className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-amber-400 animate-pulse" />
-                  <span>{t('전체 편집 모드입니다. 정보를 수정한 후 [전체 저장] 버튼을 눌러주세요.')}</span>
+                  <Sparkles size={16} className="text-indigo-600 dark:text-indigo-400" />
+                  <span>{t('프로필 편집 모드입니다. 수정 후 우측 [저장]을 눌러주세요.')}</span>
                 </span>
-                <button 
-                  onClick={handleFullSave}
-                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer shrink-0"
+                <button
+                  onClick={handleSaveProfile}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0"
                 >
-                  {t('저장 완료')}
+                  {t('저장')}
                 </button>
               </div>
             )}
 
-            {/* Top Profile Hero Header Box */}
-            <div className={`rounded-3xl p-6 sm:p-7 shadow-md border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-white/5 text-white border-white/10"}`}>
-              {/* Subtle Ambient Glow on Left Avatar Only */}
-              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-indigo-50/80 rounded-full blur-[35px] pointer-events-none" />
+            {/* Structured Card: Personal & Academic Information */}
+            <div className={`rounded-2xl border p-6 shadow-xs ${
+              isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+            }`}>
+              
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
+                <div className="flex items-center gap-2">
+                  <School size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    {t('학적 및 기본 프로필')}
+                  </h2>
+                </div>
 
-              <div className="flex items-center gap-5 relative z-10">
-                {/* Circular Avatar Container */}
-                <div className="relative group shrink-0">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-[0_0_20px_rgba(168,85,247,0.4)] relative overflow-hidden transition-transform duration-300 hover:scale-105">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_70%)] animate-pulse" />
-                    
-                    <div className="w-full h-full rounded-full bg-slate-950 overflow-hidden flex items-center justify-center relative">
-                      {(profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL) ? (
-                        <img 
-                          src={profile.avatarUrl || firestoreProfile?.avatarUrl || user?.photoURL || ''} 
-                          alt={t('프로필')} 
-                          className="w-full h-full object-cover" 
-                        />
-                      ) : (
-                        <div className="text-indigo-500 flex flex-col items-center justify-center">
-                          <User size={36} className="shrink-0" />
+                {!isFullEditing && (
+                  <button
+                    onClick={() => {
+                      setTempName(profile.name);
+                      setTempSchool(profile.highSchool);
+                      setTempMajor(profile.major);
+                      setIsFullEditing(true);
+                    }}
+                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Edit3 size={13} />
+                    <span>{t('수정하기')}</span>
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
+                
+                {/* Field 1: Name */}
+                <div className="space-y-1.5 tour-target-profile-name">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    {t('이름')}
+                  </label>
+                  {isFullEditing ? (
+                    <input
+                      type="text"
+                      value={tempName}
+                      onChange={e => setTempName(e.target.value)}
+                      placeholder={t('이름 입력')}
+                      className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
+                        isLightMode 
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                      }`}
+                    />
+                  ) : (
+                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                      {profile.name || t('이름 미입력')}
+                    </div>
+                  )}
+                </div>
+
+                {/* Field 2: Email */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    {t('계정 이메일')}
+                  </label>
+                  <div className="text-base font-semibold text-slate-700 dark:text-slate-300 py-1 truncate">
+                    {profile.email || user?.email || t('이메일 정보 없음')}
+                  </div>
+                </div>
+
+                {/* Field 3: High School */}
+                <div className="space-y-1.5 relative tour-target-profile-school sm:col-span-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      {t('재학 / 졸업 마이스터고등학교')}
+                    </label>
+                    {isFullEditing && (
+                      <span className="text-[11px] text-slate-400 font-normal">
+                        {t('전국 58개 마이스터고 실시간 검색')}
+                      </span>
+                    )}
+                  </div>
+
+                  {isFullEditing ? (
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={tempSchool}
+                        onFocus={() => setIsSchoolDropdownOpen(true)}
+                        onBlur={() => setTimeout(() => setIsSchoolDropdownOpen(false), 200)}
+                        onChange={e => {
+                          setTempSchool(e.target.value);
+                          setIsSchoolDropdownOpen(true);
+                        }}
+                        placeholder={t('학교명을 입력하세요 (예: 구미전자공고, 수도전기, 로봇 등)')}
+                        className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
+                          isLightMode 
+                            ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
+                            : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                        }`}
+                      />
+
+                      {/* Meister School Auto-complete Dropdown */}
+                      {isSchoolDropdownOpen && (
+                        <div 
+                          className={`absolute left-0 right-0 top-full mt-1 rounded-xl shadow-xl border z-50 max-h-56 overflow-y-auto divide-y ${
+                            isLightMode ? "bg-white border-slate-200 divide-slate-100" : "bg-slate-900 border-slate-700 divide-slate-800 text-white"
+                          }`}
+                          onMouseDown={e => e.preventDefault()}
+                        >
+                          <div className={`px-3 py-1.5 text-[11px] font-bold sticky top-0 flex items-center justify-between ${
+                            isLightMode ? "bg-slate-50 text-slate-500" : "bg-slate-800 text-slate-400"
+                          }`}>
+                            <span>{t('마이스터고 목록')} ({searchMeisterSchools(tempSchool).length}개)</span>
+                            <span className="text-[10px] text-indigo-500">{t('선택 시 자동 입력')}</span>
+                          </div>
+
+                          {searchMeisterSchools(tempSchool).length > 0 ? (
+                            searchMeisterSchools(tempSchool).map(sch => (
+                              <button
+                                key={sch.id}
+                                type="button"
+                                onClick={() => {
+                                  setTempSchool(sch.name);
+                                  setIsSchoolDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition cursor-pointer ${
+                                  isLightMode ? "hover:bg-indigo-50/70" : "hover:bg-slate-800"
+                                }`}
+                              >
+                                <span className="font-bold">{sch.name}</span>
+                                <div className="flex items-center gap-1.5 text-[10px]">
+                                  <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+                                    {sch.region}
+                                  </span>
+                                  <span className="px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-medium">
+                                    {sch.field}
+                                  </span>
+                                </div>
+                              </button>
+                            ))
+                          ) : (
+                            <div className="p-3 text-center text-xs text-slate-400">
+                              {t('일치하는 마이스터고가 없습니다. 직접 입력할 수 있습니다.')}
+                            </div>
+                          )}
                         </div>
                       )}
 
-                      {/* Change profile overlay when editing */}
-                      {isFullEditing && (
-                        <label className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 cursor-pointer text-[10px] text-white font-extrabold transition-opacity duration-200">
-                          <Edit3 size={14} className="text-indigo-600 animate-bounce" />
-                          <span>{t('사진 변경')}</span>
-                          <input 
-                            type="file" 
-                            accept="image/*" 
-                            onChange={handleAvatarChange} 
-                            className="hidden" 
-                          />
-                        </label>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Sparkling Star Decoration */}
-                  <Sparkles size={16} className="absolute -top-1 -right-1 text-yellow-300 animate-pulse" />
-                  <div className="absolute -bottom-1 -left-1 w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping" />
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-2.5">
-                    <h1 className={`text-xl sm:text-2xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                      {profile.name}
-                    </h1>
-                    <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${
-                      isLightMode 
-                        ? "bg-indigo-50 text-indigo-600 border-indigo-200" 
-                        : "bg-indigo-500/20 text-indigo-200 border-indigo-500/30"
-                    }`}>
-                      {t('마이스터 인재')}
-                    </span>
-                  </div>
-                  <p className={`text-xs font-medium mt-1 flex items-center gap-2 ${
-                    isLightMode ? "text-slate-600" : "text-slate-300"
-                  }`}>
-                    <span>{profile.highSchool}</span>
-                    <span className="text-slate-400">•</span>
-                    <span>{profile.major}</span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 w-full sm:w-auto relative z-10">
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
-                    isLightMode
-                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
-                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                  title={t('배경, 외계인, 터치 이펙트 설정')}
-                >
-                  <Settings size={15} />
-                  <span>{t('환경 설정')}</span>
-                </button>
-
-                <button
-                  onClick={() => isFullEditing ? handleFullSave() : setIsFullEditing(true)}
-                  className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm tour-target-edit-mode ${
-                    isFullEditing 
-                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
-                      : isLightMode
-                        ? 'bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-300 hover:border-slate-400 font-extrabold'
-                        : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                  }`}
-                >
-                  {isFullEditing ? <Check size={16} /> : <Edit3 size={16} />}
-                  <span>{isFullEditing ? t('전체 저장') : t('전체 편집 모드')}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* 6 Individual Vertical Stacked Cards */}
-            <div className="flex flex-col gap-4">
-
-            {/* Box 1: 이름 (Name) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-indigo-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-name">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
-                    <User size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('이름')}</span>
-                </div>
-
-                {editingField !== 'name' && !isFullEditing && (
-                  <button
-                    onClick={() => { setTempName(profile.name); setEditingField('name'); }}
-                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
-                  >
-                    <Edit3 size={13} />
-                    <span>{t('수정')}</span>
-                  </button>
-                )}
-              </div>
-
-              {isFullEditing || editingField === 'name' ? (
-                <div className="flex items-center gap-2 pt-1 animate-in fade-in duration-150">
-                  <input
-                    type="text"
-                    value={isFullEditing ? profile.name : tempName}
-                    onChange={e => isFullEditing ? setProfile({ ...profile, name: e.target.value }) : setTempName(e.target.value)}
-                    onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('name', tempName.trim(), '이름')}
-                    className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-sm font-bold text-slate-900 outline-none transition"
-                    placeholder={t('이름 입력')}
-                  />
-                  {!isFullEditing && (
-                    <button
-                      onClick={() => savePartialField('name', tempName.trim(), '이름')}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
-                    >
-                      <Check size={14} />
-                      <span>{t('저장')}</span>
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <div className="text-lg font-black text-slate-900">
-                  {profile.name}
-                </div>
-              )}
-            </div>
-
-            {/* Box 2: 고등학교 (High School) */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-blue-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-school">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-blue-100 text-blue-600 rounded-lg">
-                    <School size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('고등학교')}</span>
-                </div>
-
-                {editingField !== 'school' && !isFullEditing && (
-                  <button
-                    onClick={() => { setTempSchool(profile.highSchool); setEditingField('school'); }}
-                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
-                  >
-                    <Edit3 size={13} />
-                    <span>{t('수정')}</span>
-                  </button>
-                )}
-              </div>
-
-              {isFullEditing || editingField === 'school' ? (
-                <div className="space-y-2 pt-1 animate-in fade-in duration-150 relative">
-                  <div className="relative">
-                    <div className="flex items-center gap-2">
-                      <div className="relative flex-1">
-                        <input
-                          type="text"
-                          value={isFullEditing ? profile.highSchool : tempSchool}
-                          onFocus={() => setIsSchoolDropdownOpen(true)}
-                          onBlur={() => setTimeout(() => setIsSchoolDropdownOpen(false), 200)}
-                          onChange={e => {
-                            const val = e.target.value;
-                            if (isFullEditing) {
-                              setProfile({ ...profile, highSchool: val });
-                            } else {
-                              setTempSchool(val);
-                            }
-                            setIsSchoolDropdownOpen(true);
-                          }}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                              setIsSchoolDropdownOpen(false);
-                              if (!isFullEditing) {
-                                savePartialField('highSchool', tempSchool.trim(), '고등학교');
-                              }
-                            }
-                          }}
-                          className="w-full bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                          placeholder={t('학교명 입력 (예: 구, 구미, 구미전자공고 등)')}
-                        />
-                        {(isFullEditing ? profile.highSchool : tempSchool) && (
+                      {/* Quick Meister High School Chips */}
+                      <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                        <span className="text-[11px] font-bold text-slate-400 mr-1">{t('추천')}:</span>
+                        {['구미전자공업고등학교', '수도전기공업고등학교', '서울로봇고등학교', '부산기계공업고등학교'].map(sch => (
                           <button
+                            key={sch}
                             type="button"
                             onClick={() => {
-                              if (isFullEditing) setProfile({ ...profile, highSchool: '' });
-                              else setTempSchool('');
-                              setIsSchoolDropdownOpen(true);
+                              setTempSchool(sch);
+                              setIsSchoolDropdownOpen(false);
                             }}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1"
+                            className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
+                              tempSchool === sch 
+                                ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-700 dark:text-indigo-300"
+                                : isLightMode 
+                                  ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
+                                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                            }`}
                           >
-                            <X size={12} />
+                            {sch.replace('고등학교', '고')}
                           </button>
-                        )}
+                        ))}
                       </div>
-
-                      {!isFullEditing && (
-                        <button
-                          onClick={() => {
-                            setIsSchoolDropdownOpen(false);
-                            savePartialField('highSchool', tempSchool.trim(), '고등학교');
-                          }}
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
-                        >
-                          <Check size={14} />
-                          <span>{t('저장')}</span>
-                        </button>
-                      )}
                     </div>
-
-                    {/* 58개 마이스터고 실시간 자동완성 추천 드롭다운 */}
-                    {isSchoolDropdownOpen && (
-                      <div 
-                        className="absolute left-0 right-0 top-full mt-1 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 max-h-56 overflow-y-auto divide-y divide-slate-100"
-                        onMouseDown={e => e.preventDefault()} // 인풋 포커스 아웃 방지
-                      >
-                        <div className="px-3 py-1.5 bg-slate-50 text-[10px] font-bold text-slate-400 flex items-center justify-between sticky top-0 backdrop-blur-sm z-10">
-                          <span>마이스터고 추천 ({searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).length}개)</span>
-                          <span className="text-[9px] text-indigo-500 font-medium">클릭 시 자동 입력</span>
-                        </div>
-                        {searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).length > 0 ? (
-                          searchMeisterSchools(isFullEditing ? profile.highSchool : tempSchool).map(sch => (
-                            <button
-                              key={sch.id}
-                              type="button"
-                              onClick={() => {
-                                if (isFullEditing) {
-                                  setProfile({ ...profile, highSchool: sch.name });
-                                } else {
-                                  setTempSchool(sch.name);
-                                  savePartialField('highSchool', sch.name, '고등학교');
-                                }
-                                setIsSchoolDropdownOpen(false);
-                              }}
-                              className="w-full text-left px-3.5 py-2 hover:bg-indigo-50/80 transition-colors flex items-center justify-between group cursor-pointer"
-                            >
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
-                                  {sch.name}
-                                </span>
-                                {sch.aliases && sch.aliases.length > 0 && (
-                                  <span className="text-[10px] text-slate-400 hidden sm:inline">
-                                    ({sch.aliases[0]})
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-1 text-[10px]">
-                                <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium">
-                                  {sch.region}
-                                </span>
-                                <span className="bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded font-medium">
-                                  {sch.field}
-                                </span>
-                              </div>
-                            </button>
-                          ))
-                        ) : (
-                          <div className="p-3 text-center text-xs text-slate-400">
-                            일치하는 마이스터고가 없습니다. 직접 입력할 수 있습니다.
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 추천 단축 태그 (빠른 선택) */}
-                  <div className="flex flex-wrap gap-1 items-center pt-0.5">
-                    <span className="text-[10px] text-slate-400 font-semibold mr-1">인기:</span>
-                    {['구미전자공업고등학교', '수도전기공업고등학교', '서울로봇고등학교', '부산기계공업고등학교'].map(sch => (
-                      <button
-                        key={sch}
-                        type="button"
-                        onClick={() => {
-                          if (isFullEditing) setProfile({ ...profile, highSchool: sch });
-                          else {
-                            setTempSchool(sch);
-                            savePartialField('highSchool', sch, '고등학교');
-                          }
-                          setIsSchoolDropdownOpen(false);
-                        }}
-                        className="text-[10px] bg-slate-100 hover:bg-indigo-100 hover:text-indigo-700 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
-                      >
-                        {sch.replace('고등학교', '')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-base font-extrabold text-slate-900">
-                  {profile.highSchool}
-                </div>
-              )}
-            </div>
-
-            {/* Box 3: */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-blue-400 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-major">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-purple-100 text-purple-600 rounded-lg">
-                    <GraduationCap size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('전공 학과')}</span>
-                </div>
-
-                {editingField !== 'major' && !isFullEditing && (
-                  <button
-                    onClick={() => { setTempMajor(profile.major); setEditingField('major'); }}
-                    className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-1 cursor-pointer"
-                  >
-                    <Edit3 size={13} />
-                    <span>{t('수정')}</span>
-                  </button>
-                )}
-              </div>
-
-              {isFullEditing || editingField === 'major' ? (
-                <div className="space-y-2 pt-1 animate-in fade-in duration-150">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={isFullEditing ? profile.major : tempMajor}
-                      onChange={e => isFullEditing ? setProfile({ ...profile, major: e.target.value }) : setTempMajor(e.target.value)}
-                      onKeyDown={e => !isFullEditing && e.key === 'Enter' && savePartialField('major', tempMajor.trim(), '전공')}
-                      className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                      placeholder={t('전공 학과 선택 또는 입력')}
-                    />
-                    {!isFullEditing && (
-                      <button
-                        onClick={() => savePartialField('major', tempMajor.trim(), '전공')}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition cursor-pointer flex items-center gap-1"
-                      >
-                        <Check size={14} />
-                        <span>{t('저장')}</span>
-                      </button>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {PRESET_MAJORS.slice(0, 4).map(maj => (
-                      <button
-                        key={maj}
-                        type="button"
-                        onClick={() => {
-                          if (isFullEditing) setProfile({ ...profile, major: maj });
-                          else {
-                            setTempMajor(maj);
-                            savePartialField('major', maj, '전공');
-                          }
-                        }}
-                        className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md transition font-medium cursor-pointer"
-                      >
-                        {maj}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-base font-extrabold text-slate-900">
-                  {profile.major}
-                </div>
-              )}
-            </div>
-
-            {/* Box 4: */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-pink-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-mbti">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-pink-100 text-pink-600 rounded-lg">
-                    <Brain size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('MBTI 성격 진단')}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {editingField !== 'mbti' && !isFullEditing && (
-                    <button
-                      onClick={() => { setTempMbti(profile.mbti); setEditingField('mbti'); }}
-                      className="text-xs font-bold text-pink-400 hover:text-pink-600 flex items-center gap-0.5 cursor-pointer"
-                    >
-                      <Edit3 size={13} />
-                      <span>{t('수정')}</span>
-                    </button>
+                  ) : (
+                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                      {profile.highSchool || t('고등학교 정보 미등록')}
+                    </div>
                   )}
                 </div>
+
+                {/* Field 4: Major */}
+                <div className="space-y-1.5 tour-target-profile-major sm:col-span-2">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    {t('전공 학과')}
+                  </label>
+
+                  {isFullEditing ? (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={tempMajor}
+                        onChange={e => setTempMajor(e.target.value)}
+                        placeholder={t('전공 학과명을 입력하세요 (예: 전자제어과, 소프트웨어과)')}
+                        className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
+                          isLightMode 
+                            ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
+                            : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                        }`}
+                      />
+
+                      {/* Major Preset Chips */}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        <span className="text-[11px] font-bold text-slate-400 mr-1 self-center">{t('학과 프리셋')}:</span>
+                        {PRESET_MAJORS.map(maj => (
+                          <button
+                            key={maj}
+                            type="button"
+                            onClick={() => setTempMajor(maj)}
+                            className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
+                              tempMajor === maj 
+                                ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950 dark:border-indigo-700 dark:text-indigo-300"
+                                : isLightMode 
+                                  ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
+                                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                            }`}
+                          >
+                            {maj}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                      {profile.major || t('전공 학과 미등록')}
+                    </div>
+                  )}
+                </div>
+
               </div>
 
-              {isFullEditing || editingField === 'mbti' ? (
-                <div className="bg-pink-50/70 border border-pink-200 rounded-2xl p-3.5 sm:p-4 space-y-3 animate-in fade-in duration-150">
-                  {/* Selected State & Quick Actions */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-bold text-slate-500 shrink-0">{t('선택된 유형')}:</span>
-                      {(isFullEditing ? profile.mbti : tempMbti) ? (
-                        <span className="text-xs sm:text-sm font-black text-pink-600 bg-white border border-pink-300 px-2.5 py-0.5 rounded-lg shadow-2xs truncate">
-                          {(isFullEditing ? profile.mbti : tempMbti)}
-                          {mbtiMeta[(isFullEditing ? profile.mbti : tempMbti)] && (
-                            <span className="ml-1 text-[11px] font-bold text-pink-500">
-                              · {mbtiMeta[(isFullEditing ? profile.mbti : tempMbti)].alias}
-                            </span>
-                          )}
-                        </span>
-                      ) : (
-                        <span className="text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
-                          {t('미진단 / 선택 안 함')}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isFullEditing) setProfile({ ...profile, mbti: '' });
-                          else {
-                            setTempMbti('');
-                            savePartialField('mbti', '', 'MBTI');
-                          }
-                        }}
-                        className="text-[11px] font-bold text-slate-500 hover:text-slate-800 bg-white hover:bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg transition cursor-pointer"
-                      >
-                        {t('선택 해제')}
-                      </button>
-
-                      {!isFullEditing && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            savePartialField('mbti', tempMbti, 'MBTI');
-                            setEditingField(null);
-                          }}
-                          className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
-                        >
-                          <Check size={13} />
-                          <span>{t('저장')}</span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 16 MBTI Quick Selection Grid (4x4) */}
-                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                    {Object.keys(mbtiMeta).map(type => {
-                      const isSelected = (isFullEditing ? profile.mbti : tempMbti) === type;
-                      return (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => {
-                            if (isFullEditing) {
-                              setProfile({ ...profile, mbti: type });
-                            } else {
-                              setTempMbti(type);
-                              savePartialField('mbti', type, 'MBTI');
-                            }
-                          }}
-                          className={`p-2 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
-                            isSelected
-                              ? 'bg-pink-600 text-white border-pink-600 shadow-md font-black ring-2 ring-pink-300 scale-[1.02]'
-                              : 'bg-white hover:bg-pink-50/70 text-slate-800 hover:text-pink-600 border-slate-200 hover:border-pink-300 font-semibold'
-                          }`}
-                        >
-                          <span className="text-xs sm:text-sm font-black tracking-wide leading-tight">{type}</span>
-                          <span className={`text-[10px] mt-0.5 truncate max-w-full font-medium ${isSelected ? 'text-pink-100' : 'text-slate-400'}`}>
-                            {mbtiMeta[type]?.alias?.replace('형', '') || ''}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Bottom Action if Editing */}
+              {isFullEditing && (
+                <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTempName(profile.name);
+                      setTempSchool(profile.highSchool);
+                      setTempMajor(profile.major);
+                      setIsFullEditing(false);
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                      isLightMode ? "bg-white hover:bg-slate-100 border-slate-300 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                    }`}
+                  >
+                    {t('취소')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveProfile}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
+                  >
+                    {t('변경사항 저장')}
+                  </button>
                 </div>
-              ) : profile.mbti ? (
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div>
-                    <span className="text-xl font-black text-pink-500 tracking-tight">{profile.mbti}</span>
-                    <span className="text-xs font-extrabold text-slate-500 block mt-0.5">
-                      {currentMbtiMeta?.alias}
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 2: 진로 적성 진단 (MBTI & Holland) ================= */}
+        {activeTab === 'aptitude' && (
+          <div className="space-y-6 animate-in fade-in duration-150">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              {/* MBTI Card */}
+              <div className={`rounded-2xl border p-6 shadow-xs flex flex-col justify-between space-y-5 tour-target-profile-mbti ${
+                isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+              }`}>
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <Brain size={18} className="text-indigo-600 dark:text-indigo-400" />
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        {t('MBTI 성격 유형 진단')}
+                      </h3>
+                    </div>
+
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {profile.mbti ? profile.mbti : t('미진단')}
                     </span>
                   </div>
 
-                  <button
-                    onClick={() => setActiveModal('mbti')}
-                    className="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer animate-pulse"
-                  >
-                    <span>{t('상세분석')}</span>
-                    <ChevronRight size={14} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div>
-                    <span className="text-sm font-bold text-slate-400">{t('진단 결과 없음')}</span>
-                    <span className="text-xs font-medium text-slate-500 block mt-0.5">{t('MBTI 진단 검사를 진행해보세요')}</span>
-                  </div>
+                  {profile.mbti ? (
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <div className="text-2xl font-black tracking-tight text-indigo-600 dark:text-indigo-400">
+                          {profile.mbti}
+                        </div>
+                        <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                          {currentMbtiMeta?.alias}
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                          {currentMbtiMeta?.desc}
+                        </p>
+                      </div>
 
+                      {/* Trait Ratios breakdown if available */}
+                      {mbtiResult?.ratios && (
+                        <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            {t('세부 성향 지표')}
+                          </div>
+                          <div className="space-y-1.5">
+                            {Object.keys(mbtiResult.ratios).slice(0, 4).map(k => {
+                              const item = mbtiResult.ratios[k];
+                              return (
+                                <div key={k} className="text-xs">
+                                  <div className="flex justify-between font-semibold text-slate-600 dark:text-slate-300 mb-0.5">
+                                    <span>{item.label}</span>
+                                    <span>{item.val}%</span>
+                                  </div>
+                                  <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div 
+                                      className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full transition-all"
+                                      style={{ width: `${item.val}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recommended Jobs */}
+                      {currentMbtiMeta?.jobs && (
+                        <div className="pt-2">
+                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            {t('추천 직무/분야')}
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {currentMbtiMeta.jobs.slice(0, 4).map((job: string) => (
+                              <span 
+                                key={job}
+                                className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                              >
+                                {job}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="py-8 text-center space-y-3">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                        <Brain size={24} />
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {t('아직 MBTI 성격 진단 검사를 진행하지 않았습니다.')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/mbti"
-                    className="bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
+                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
                   >
-                    <span>{t('검사하기')}</span>
-                    <ChevronRight size={14} />
+                    <span>{profile.mbti ? t('검사 다시하기') : t('검사 진행하기')}</span>
+                    <ExternalLink size={12} />
                   </Link>
-                </div>
-              )}
-            </div>
 
-            {/* Box 5: */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-violet-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-holland">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-cyan-100 text-cyan-600 rounded-lg">
-                    <Compass size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">{t('홀랜드 진로 적성')}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {editingField !== 'holland' && !isFullEditing && (
+                  {profile.mbti && (
                     <button
-                      onClick={() => { setTempHolland(profile.hollandCode); setEditingField('holland'); }}
-                      className="text-xs font-bold text-cyan-500 hover:text-cyan-700 flex items-center gap-0.5 cursor-pointer"
+                      onClick={() => setActiveModal('mbti')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                        isLightMode ? "bg-white hover:bg-slate-50 border-slate-300 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                      }`}
                     >
-                      <Edit3 size={13} />
-                      <span>{t('수정')}</span>
+                      {t('상세 분석 보기')}
                     </button>
                   )}
                 </div>
               </div>
 
-              {isFullEditing || editingField === 'holland' ? (
-                <div className="bg-cyan-50/70 rounded-xl p-3 border border-cyan-200 space-y-2 animate-in fade-in duration-150">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={isFullEditing ? profile.hollandCode : tempHolland}
-                      onChange={e => {
-                        const val = e.target.value.toUpperCase();
-                        if (isFullEditing) setProfile({ ...profile, hollandCode: val });
-                        else setTempHolland(val);
-                      }}
-                      className="flex-1 bg-white border border-cyan-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 uppercase outline-none"
-                      placeholder={t('예: RC (비워두면 미진단)')}
-                    />
-                    {!isFullEditing && (
-                      <button
-                        onClick={() => savePartialField('hollandCode', tempHolland.trim(), '홀랜드 코드')}
-                        className="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition"
-                      >
-                        저장
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ) : profile.hollandCode ? (
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div>
-                    <span className="text-xl font-black text-cyan-400 tracking-tight">{profile.hollandCode}형</span>
-                    <span className="text-xs font-extrabold text-slate-500 block mt-0.5">
-                      {primaryHollandMeta?.name} & {secondaryHollandMeta?.name}
+              {/* Holland Card */}
+              <div className={`rounded-2xl border p-6 shadow-xs flex flex-col justify-between space-y-5 tour-target-profile-holland ${
+                isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+              }`}>
+                <div>
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <Compass size={18} className="text-indigo-600 dark:text-indigo-400" />
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        {t('홀랜드 직업 적성 검사')}
+                      </h3>
+                    </div>
+
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단')}
                     </span>
                   </div>
 
-                  <button
-                    onClick={() => setActiveModal('holland')}
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
-                  >
-                    <span>{t('상세분석')}</span>
-                    <ChevronRight size={14} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div>
-                    <span className="text-sm font-bold text-slate-400">{t('진단 결과 없음')}</span>
-                    <span className="text-xs font-medium text-slate-500 block mt-0.5">{t('홀랜드 적성 검사를 진행해보세요')}</span>
-                  </div>
+                  {profile.hollandCode ? (
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <div className="text-2xl font-black tracking-tight text-indigo-600 dark:text-indigo-400">
+                          {profile.hollandCode}형
+                        </div>
+                        <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                          {primaryHollandMeta?.name} & {secondaryHollandMeta?.name}
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                          {primaryHollandMeta?.desc}
+                        </p>
+                      </div>
 
+                      {/* RIASEC Percentages if available */}
+                      {hollandResult?.percentages && (
+                        <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            {t('RIASEC 적합도 지표')}
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            {Object.keys(hollandResult.percentages).map(k => {
+                              const val = hollandResult.percentages[k];
+                              return (
+                                <div key={k} className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-center">
+                                  <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">{k}</div>
+                                  <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">{val}%</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Holland Guidance Note */}
+                      <div className="pt-2">
+                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                          {t('진로 지도 소견 메모')}
+                        </div>
+                        <textarea
+                          value={profile.hollandNote}
+                          onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
+                          rows={2}
+                          placeholder={t('진로 관련 메모나 목표를 기록하세요.')}
+                          className={`w-full border rounded-xl p-2.5 text-xs font-medium outline-none transition ${
+                            isLightMode 
+                              ? "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-indigo-600" 
+                              : "bg-slate-800/80 border-slate-700 text-slate-200 focus:border-indigo-400"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-8 text-center space-y-3">
+                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                        <Compass size={24} />
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {t('아직 홀랜드 직업 적성 검사를 진행하지 않았습니다.')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/holland"
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-1 shrink-0 cursor-pointer"
+                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
                   >
-                    <span>{t('검사하기')}</span>
-                    <ChevronRight size={14} />
+                    <span>{profile.hollandCode ? t('검사 다시하기') : t('검사 진행하기')}</span>
+                    <ExternalLink size={12} />
                   </Link>
-                </div>
-              )}
-            </div>
 
-            {/* Box 6: */}
-            <div className="bg-white rounded-2xl p-5 border-2 border-transparent hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between space-y-3 text-slate-900 shadow-md tour-target-profile-company">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 bg-indigo-100 text-indigo-600 rounded-lg">
-                    <Building2 size={16} />
-                  </span>
-                  <span className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-                    {t('희망 기업')} ({profile.targetCompanies.length})
-                  </span>
+                  {profile.hollandCode && (
+                    <button
+                      onClick={() => setActiveModal('holland')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                        isLightMode ? "bg-white hover:bg-slate-50 border-slate-300 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                      }`}
+                    >
+                      {t('상세 분석 보기')}
+                    </button>
+                  )}
                 </div>
-
-                <button
-                  onClick={() => setActiveModal('companies')}
-                  className="text-xs font-bold text-indigo-500 hover:text-indigo-600 flex items-center gap-0.5 cursor-pointer font-extrabold"
-                >
-                  <span>{t('기업 추가/관리')}</span> <ChevronRight size={14} />
-                </button>
               </div>
 
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 3: 희망 목표 기업 ================= */}
+        {activeTab === 'companies' && (
+          <div className="space-y-6 animate-in fade-in duration-150">
+            <div className={`rounded-2xl border p-6 shadow-xs space-y-6 tour-target-profile-company ${
+              isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+            }`}>
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Building2 size={18} className="text-indigo-600 dark:text-indigo-400" />
+                    <span>{t('희망 목표 기업 관리')}</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {t('마이스터고 취업 준비를 위해 관심 있는 공기업, 대기업 및 강소기업을 등록하세요.')}
+                  </p>
+                </div>
+
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300 self-start sm:self-auto">
+                  {profile.targetCompanies.length}{t('개 등록됨')}
+                </span>
+              </div>
+
+              {/* Direct Add Input */}
               <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  {t('직접 기업 추가')}
+                </label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={newCompanyInput}
                     onChange={e => setNewCompanyInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
-                    placeholder={t('목표 기업명 입력 (예: 삼성전자, 한국전력공사)')}
-                    className="flex-1 bg-white border border-slate-300 focus:border-indigo-500 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-900 outline-none transition"
-                  />
-                  <button
-                    onClick={() => handleAddCompany()}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
-                  >
-                    <Plus size={14} />
-                    <span>{t('추가')}</span>
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {profile.targetCompanies.length === 0 ? (
-                    <span className="text-xs text-slate-500 italic">{t('설정된 희망 기업이 없습니다.')}</span>
-                  ) : (
-                    profile.targetCompanies.map(comp => (
-                      <div 
-                        key={comp}
-                        className="bg-slate-100 text-slate-700 font-bold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-sm border border-slate-200"
-                      >
-                        <Building2 size={13} className="text-indigo-400" />
-                        <span>{comp}</span>
-                        <button
-                          onClick={() => handleRemoveCompany(comp)}
-                          title={t('삭제')}
-                          className="text-slate-400 hover:text-red-500 transition cursor-pointer ml-1"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Settings Access Card in Profile */}
-            <div 
-              onClick={() => setActiveTab('settings')}
-              className={`rounded-2xl p-5 border transition-all cursor-pointer flex items-center justify-between gap-4 group shadow-sm ${
-                isLightMode 
-                  ? 'bg-slate-50 hover:bg-indigo-50/50 border-slate-200 hover:border-indigo-300' 
-                  : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-indigo-500/50'
-              }`}
-            >
-              <div className="flex items-center gap-3.5">
-                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 group-hover:scale-110 transition-transform">
-                  <Settings size={20} className="group-hover:rotate-45 transition-transform duration-300" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                      {t('화면 및 환경 설정')}
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
-                      {t('설정 페이지')}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                    {t('외계인 캐릭터 표시 여부, 화면 배경 테마(라이트/우주), 터치 효과를 설정합니다.')}
-                  </p>
-                </div>
-              </div>
-
-              <div className="shrink-0 flex items-center gap-1.5 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition-transform">
-                <span>{t('설정하기')}</span>
-                <Sliders size={14} />
-              </div>
-            </div>
-
-          </div>
-
-          {/* Footer Bar */}
-          <div className={`backdrop-blur-md rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs border ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/60 border-white/10"}`}>
-            <span className="text-xs text-slate-400 font-medium">{t('💡 각 박스의 [수정]으로 즉시 변경하거나 [전체 편집 모드]로 상단에서 일괄 수정할 수 있습니다.')}</span>
-
-            <div className="flex items-center gap-2">
-              {isFullEditing && (
-                <button
-                  onClick={handleFullSave}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-xs font-extrabold transition cursor-pointer shadow-md flex items-center gap-1.5"
-                >
-                  <Check size={16} />
-                  <span>{t('전체 저장 완료')}</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-        </div>
-      )}
-
-      </main>
-
-      {/* ================= MODAL 1: MBTI Detail Modal ================= */}
-      {activeModal === 'mbti' && (
-        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
-          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
-            <button
-              onClick={() => setActiveModal(null)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <span className="p-2.5 bg-pink-100 text-pink-400 rounded-2xl">
-                <Brain size={24} />
-              </span>
-              <div>
-                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('MBTI 성격 진단 상세 내역')}</h3>
-                <p className="text-xs text-slate-400 font-medium">{t('나의 성격 유형 분석 및 맞춤 직무 가이드')}</p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {/* Type Summary */}
-              <div className="bg-gradient-to-r from-pink-950/20 to-indigo-950/20 p-5 rounded-2xl border border-pink-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-pink-400">{profile.mbti || '미진단'}</span>
-                    <span className="text-sm font-extrabold text-slate-300">({modalMbtiMeta.alias})</span>
-                  </div>
-                  <p className="text-xs text-slate-300 font-medium mt-1 leading-relaxed">
-                    {modalMbtiMeta.desc}
-                  </p>
-                </div>
-
-                <div className="shrink-0 space-y-1 bg-slate-950 p-2.5 rounded-xl border border-pink-500/20 shadow-xs">
-                  <label className="text-[10px] font-extrabold text-slate-400 block">{t('수동 유형 변경')}</label>
-                  <select
-                    value={profile.mbti}
-                    onChange={e => savePartialField('mbti', e.target.value, 'MBTI')}
-                    className={`border rounded-lg px-2.5 py-1 text-xs font-bold outline-none ${isLightMode ? "bg-white border-slate-300 text-slate-900" : "bg-slate-900 border-slate-700 text-white"}`}
-                  >
-                    {Object.keys(mbtiMeta).map(type => (
-                      <option key={type} value={type} className={isLightMode ? "bg-white text-slate-900" : "bg-slate-900 text-white"}>
-                        {type} - {mbtiMeta[type].alias}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* MBTI Ratios if test taken */}
-              {mbtiResult && mbtiResult.ratios && (
-                <div className="bg-indigo-950/30 rounded-2xl p-4 border border-indigo-500/20 space-y-3">
-                  <div className="text-xs font-extrabold text-indigo-600 flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-indigo-500 animate-pulse" />
-                    <span>{t('실제 검사 세부지표 비율')}</span>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {Object.keys(mbtiResult.ratios).map(k => {
-                      const item = mbtiResult.ratios[k];
-                      return (
-                        <div key={k} className="bg-slate-950/80 p-3 rounded-xl border border-white/5 shadow-2xs">
-                          <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
-                            <span>{item.label}</span>
-                            <span className="text-indigo-500">{item.val}%</span>
-                          </div>
-                          <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full" 
-                              style={{ width: `${item.val}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Recommended Jobs */}
-              <div className="space-y-2">
-                <span className="text-xs font-extrabold text-slate-300 block">{t('🎯 MBTI 유형별 추천 직무 전체 목록')}</span>
-                <div className="flex flex-wrap gap-2">
-                  {modalMbtiMeta.jobs.map((job: string) => (
-                    <span 
-                      key={job} 
-                      className="bg-slate-950/80 border border-white/10 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs"
-                    >
-                      {job}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-              <Link
-                to="/mbti"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
-              >
-                <span>{t('MBTI 진단 검사 다시하기')}</span>
-                <ExternalLink size={13} />
-              </Link>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="bg-slate-850 hover:bg-slate-800 border border-white/10 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer"
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL 2: Holland Detail Modal ================= */}
-      {activeModal === 'holland' && (
-        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
-          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
-            <button
-              onClick={() => setActiveModal(null)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <span className="p-2.5 bg-cyan-100 text-cyan-400 rounded-2xl">
-                <Compass size={24} />
-              </span>
-              <div>
-                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('홀랜드 직업 적성 검사 상세')}</h3>
-                <p className="text-xs text-slate-400 font-medium">{t('RIASEC 직업적성 유형 분석 및 진로 소견')}</p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {/* Code Summary */}
-              <div className="bg-gradient-to-r from-cyan-950/20 to-indigo-950/20 p-5 rounded-2xl border border-cyan-500/20 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-black text-cyan-400">{profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}</span>
-                    <span className="text-xs font-extrabold text-slate-300">
-                      ({modalPrimaryHollandMeta.name} & {modalSecondaryHollandMeta.name})
-                    </span>
-                  </div>
-
-                  <input
-                    type="text"
-                    value={profile.hollandCode}
-                    onChange={e => savePartialField('hollandCode', e.target.value.toUpperCase(), '홀랜드 코드')}
-                    className="bg-slate-950 border border-white/10 rounded-xl px-2.5 py-1 text-xs font-bold text-white outline-none w-24 text-center"
-                    placeholder={t('예: RC')}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                  <div className="bg-slate-950/80 p-3 rounded-xl border border-white/10 space-y-1">
-                    <span className="font-extrabold text-cyan-400 block">1순위: {modalPrimaryHollandMeta.name}</span>
-                    <p className="text-slate-300 font-medium leading-relaxed">{modalPrimaryHollandMeta.desc}</p>
-                  </div>
-                  <div className="bg-slate-950/80 p-3 rounded-xl border border-white/10 space-y-1">
-                    <span className="font-extrabold text-indigo-500 block">2순위: {modalSecondaryHollandMeta.name}</span>
-                    <p className="text-slate-300 font-medium leading-relaxed">{modalSecondaryHollandMeta.desc}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Holland Percentages if test taken */}
-              {hollandResult && hollandResult.percentages && (
-                <div className="bg-cyan-950/30 rounded-2xl p-4 border border-cyan-500/20 space-y-3">
-                  <div className="text-xs font-extrabold text-cyan-600 flex items-center gap-1.5">
-                    <Award size={14} className="text-cyan-400 animate-pulse" />
-                    <span>{t('실제 홀랜드 RIASEC 적합도 지표')}</span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                    {Object.keys(hollandResult.percentages).map(typeKey => {
-                      const val = hollandResult.percentages[typeKey];
-                      const meta = hollandMeta[typeKey];
-                      return (
-                        <div key={typeKey} className="bg-slate-950/80 p-2.5 rounded-xl border border-white/5 text-xs">
-                          <div className="flex justify-between font-bold text-slate-300 mb-1">
-                            <span>{meta?.name?.split(' ')[0] || typeKey}</span>
-                            <span className="text-cyan-400">{val}%</span>
-                          </div>
-                          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-cyan-500 rounded-full" 
-                              style={{ width: `${val}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Editable Holland Note */}
-              <div className="space-y-2">
-                <label className="text-xs font-extrabold text-slate-300 block">{t('📝 진로 지도 및 적성 종합 소견')}</label>
-                <textarea
-                  value={profile.hollandNote}
-                  onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
-                  rows={3}
-                  className="w-full bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl p-3 text-xs font-medium text-white outline-none transition"
-                  placeholder={t('진로 지도 메모 및 소견을 입력하세요.')}
-                />
-              </div>
-
-              {/* Recommended Jobs */}
-              <div className="space-y-2">
-                <span className="text-xs font-extrabold text-slate-300 block">{t('🎯 맞춤 추천 직무')}</span>
-                <div className="flex flex-wrap gap-2">
-                  {Array.from(new Set([...modalPrimaryHollandMeta.jobs, ...modalSecondaryHollandMeta.jobs])).map((job: string) => (
-                    <span 
-                      key={job} 
-                      className="bg-slate-950/80 border border-white/10 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl shadow-xs"
-                    >
-                      {job}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-              <Link
-                to="/holland"
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
-              >
-                <span>{t('홀랜드 검사 다시하기')}</span>
-                <ExternalLink size={13} />
-              </Link>
-              <button
-                onClick={() => {
-                  const uid = user?.uid || 'local-user';
-                  localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
-                  setActiveModal(null);
-                  showToast('소견 저장 완료');
-                }}
-                className="bg-slate-850 hover:bg-slate-800 border border-white/10 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer"
-              >
-                저장 후 닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ================= MODAL 3: Target Companies Detail Modal ================= */}
-      {activeModal === 'companies' && (
-        <div className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto ${isLightMode ? "bg-white/80" : "bg-slate-950/80"}`}>
-          <div className={`w-full max-w-2xl rounded-3xl p-6 sm:p-8 ${isLightMode ? "bg-white text-slate-900 shadow-xl border-slate-200" : "bg-slate-900/95 text-white shadow-[0_0_50px_rgba(0,0,0,0.8)] border-white/10"} relative space-y-6 my-auto animate-in fade-in zoom-in duration-200`}>
-            <button
-              onClick={() => setActiveModal(null)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white transition p-2 rounded-full hover:bg-white/10"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <span className="p-2.5 bg-indigo-100 text-indigo-400 rounded-2xl">
-                <Building2 size={24} />
-              </span>
-              <div>
-                <h3 className={`text-xl font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('희망 기업 (Target Companies) 설정')}</h3>
-                <p className="text-xs text-slate-400 font-medium">{t('마이스터고 및 직업계고 학생들이 목표로 하는 주요 기업 관리')}</p>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              {/* Selected List */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-slate-300">
-                    {t('현재 선택된 희망 기업')} ({profile.targetCompanies.length})
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-2 min-h-[52px] p-3.5 bg-slate-950/80 rounded-2xl border border-white/10 items-center">
-                  {profile.targetCompanies.length === 0 ? (
-                    <span className="text-xs text-slate-400 italic">{t('등록된 기업이 없습니다. 아래의 추천 기업을 클릭하여 추가해 보세요.')}</span>
-                  ) : (
-                    profile.targetCompanies.map(comp => (
-                      <div 
-                        key={comp}
-                        className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-xs border border-white/10"
-                      >
-                        <Building2 size={13} className="text-indigo-400" />
-                        <span>{comp}</span>
-                        <button
-                          onClick={() => handleRemoveCompany(comp)}
-                          title={t('삭제')}
-                          className="text-slate-400 hover:text-red-400 transition cursor-pointer ml-1"
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {/* Search / Add Input */}
-              <div className="space-y-2">
-                <label className="text-xs font-extrabold text-slate-300 block">{t('직접 기업 추가하기')}</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={newCompanyInput}
-                    onChange={e => setNewCompanyInput(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCompany())}
-                    placeholder={t('기업명을 입력하세요 (예: LG에너지솔루션)')}
-                    className="flex-1 bg-slate-950/80 border border-white/10 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs font-bold text-white outline-none transition"
+                    placeholder={t('기업명을 입력하세요 (예: 삼성전자, 한국전력공사, NAVER)')}
+                    className={`flex-1 border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
+                      isLightMode 
+                        ? "bg-white border-slate-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600" 
+                        : "bg-slate-800 border-slate-700 text-white focus:border-indigo-400"
+                    }`}
                   />
                   <button
                     type="button"
                     onClick={() => handleAddCompany()}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-sm shrink-0"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
                   >
                     <Plus size={15} />
                     <span>{t('추가')}</span>
@@ -1706,9 +1167,56 @@ export default function MyPage() {
                 </div>
               </div>
 
-              {/* Popular Presets */}
-              <div className="space-y-2 pt-2">
-                <span className="text-xs font-extrabold text-slate-400 block">{t('💡 인기 마이스터고 추천 목표 기업 (클릭시 바로 추가/삭제)')}</span>
+              {/* Registered Companies Chips */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  {t('등록된 목표 기업 목록')}
+                </label>
+
+                <div className={`p-4 rounded-xl border min-h-[72px] flex flex-wrap gap-2 items-center ${
+                  isLightMode ? "bg-slate-50/70 border-slate-200" : "bg-slate-800/40 border-slate-800"
+                }`}>
+                  {profile.targetCompanies.length === 0 ? (
+                    <span className="text-xs text-slate-400 italic">
+                      {t('등록된 희망 기업이 없습니다. 아래 추천 기업을 클릭하거나 위에서 직접 입력해보세요.')}
+                    </span>
+                  ) : (
+                    profile.targetCompanies.map(comp => (
+                      <div 
+                        key={comp}
+                        className={`font-semibold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-2 border shadow-2xs transition ${
+                          isLightMode 
+                            ? "bg-white text-slate-800 border-slate-200" 
+                            : "bg-slate-800 text-slate-200 border-slate-700"
+                        }`}
+                      >
+                        <Building2 size={13} className="text-indigo-500" />
+                        <span>{comp}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCompany(comp)}
+                          className="text-slate-400 hover:text-red-500 transition cursor-pointer ml-0.5"
+                          title={t('삭제')}
+                        >
+                          <X size={13} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Curated Popular Meister Companies */}
+              <div className="space-y-2.5 pt-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    {t('마이스터고 추천 인기 파트너 기업')}
+                  </label>
+                  <span className="text-[11px] text-slate-400 font-medium">
+                    {t('클릭 시 바로 추가/삭제')}
+                  </span>
+                </div>
+
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_COMPANIES.map(comp => {
                     const isAdded = profile.targetCompanies.includes(comp);
@@ -1717,45 +1225,385 @@ export default function MyPage() {
                         key={comp}
                         type="button"
                         onClick={() => isAdded ? handleRemoveCompany(comp) : handleAddCompany(comp)}
-                        className={`text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1 cursor-pointer ${
-                          isAdded 
-                            ? 'bg-indigo-950/50 text-indigo-600 border border-indigo-500/30' 
-                            : 'bg-slate-950/50 text-slate-300 hover:bg-slate-950/80 border border-white/10'
+                        className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
+                          isAdded
+                            ? "bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-950/80 dark:border-indigo-700 dark:text-indigo-300"
+                            : isLightMode
+                              ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700"
+                              : "bg-slate-800/80 hover:bg-slate-800 border-slate-700 text-slate-300"
                         }`}
                       >
-                        {isAdded ? <Check size={12} /> : <Plus size={12} />}
+                        {isAdded ? <Check size={12} className="text-indigo-600 dark:text-indigo-400" /> : <Plus size={12} className="text-slate-400" />}
                         <span>{comp}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 4: 환경 및 테마 설정 ================= */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6 animate-in fade-in duration-150">
+            <div className={`rounded-2xl border p-6 shadow-xs space-y-6 ${
+              isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+            }`}>
+              
+              <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
+                <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Palette size={18} className="text-indigo-600 dark:text-indigo-400" />
+                  <span>{t('화면 및 인터랙션 환경 설정')}</span>
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {t('사용자 맞춤 화면 테마 및 보조 기능을 설정합니다. 변경사항은 즉시 저장됩니다.')}
+                </p>
+              </div>
+
+              {/* Setting 1: Theme selection */}
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  {t('화면 테마')}
+                </label>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* Light Mode */}
+                  <button
+                    type="button"
+                    onClick={() => setIsLightMode(true)}
+                    className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
+                      isLightMode 
+                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-950 ring-1 ring-indigo-600 dark:bg-indigo-950/40 dark:text-white" 
+                        : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className={`p-2.5 rounded-lg shrink-0 ${isLightMode ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
+                      <Sun size={20} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">{t('라이트 모드 (화이트)')}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t('눈이 편안하고 선명한 기본 화이트 테마')}</div>
+                    </div>
+                  </button>
+
+                  {/* Dark Space Mode */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLightMode(false);
+                      setBackgroundType('black');
+                    }}
+                    className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
+                      !isLightMode 
+                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-950 ring-1 ring-indigo-600 dark:bg-indigo-950/40 dark:text-white" 
+                        : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className={`p-2.5 rounded-lg shrink-0 ${!isLightMode ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
+                      <Moon size={20} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white">{t('우주 모드 (다크)')}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t('신비롭고 차분한 밤하늘 별빛 테마')}</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Setting 2: Alien Assistant toggle */}
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">{t('인공지능 도우미 외계인 표시')}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {t('화면 우측 하단에서 대화를 돕는 외계인 캐릭터 안내를 켜거나 끕니다.')}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-100 dark:bg-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setShowAliens(true)}
+                    className={`px-3 py-1 rounded-md text-xs font-bold transition cursor-pointer ${
+                      showAliens 
+                        ? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-2xs" 
+                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400"
+                    }`}
+                  >
+                    {t('켜기')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAliens(false)}
+                    className={`px-3 py-1 rounded-md text-xs font-bold transition cursor-pointer ${
+                      !showAliens 
+                        ? "bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs" 
+                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400"
+                    }`}
+                  >
+                    {t('끄기')}
+                  </button>
+                </div>
+              </div>
+
+              {/* Setting 3: Touch & Click particle effect */}
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">{t('화면 클릭/터치 별빛 효과')}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {t('화면을 클릭하거나 터치할 때 작은 파티클 애니메이션을 표시합니다.')}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
+                  className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
+                    isClickEffectEnabled ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-700"
+                  }`}
+                >
+                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-2xs ${
+                    isClickEffectEnabled ? "translate-x-6" : "translate-x-0"
+                  }`} />
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* ================= MODAL 1: MBTI Detail Analysis Modal ================= */}
+      {activeModal === 'mbti' && (
+        <div className="fixed inset-0 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-950/60 animate-in fade-in duration-150">
+          <div className={`w-full max-w-xl rounded-2xl p-6 sm:p-7 shadow-2xl border relative space-y-5 my-auto ${
+            isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-slate-900 text-white border-slate-700"
+          }`}>
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition p-1.5 rounded-lg"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                <Brain size={22} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">{t('MBTI 성격 유형 상세 분석')}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('성격 특성 및 맞춤형 직무 추천 가이드')}</p>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-white/10 flex items-center justify-end">
-              <button
-                onClick={() => {
-                  const uid = user?.uid || 'local-user';
-                  localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
-                  setActiveModal(null);
-                  showToast('희망 기업 설정이 저장되었습니다.');
-                }}
-                className="bg-slate-850 hover:bg-slate-800 border border-white/10 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer"
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                      {profile.mbti || 'ISTJ'}
+                    </span>
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                      ({modalMbtiMeta.alias})
+                    </span>
+                  </div>
+
+                  <select
+                    value={profile.mbti}
+                    onChange={e => savePartialField('mbti', e.target.value, 'MBTI')}
+                    className={`border rounded-lg px-2 py-1 text-xs font-bold outline-none ${
+                      isLightMode ? "bg-white border-slate-300 text-slate-900" : "bg-slate-800 border-slate-700 text-white"
+                    }`}
+                  >
+                    {Object.keys(mbtiMeta).map(type => (
+                      <option key={type} value={type}>
+                        {type} - {mbtiMeta[type].alias}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  {modalMbtiMeta.desc}
+                </p>
+              </div>
+
+              {/* Trait Ratios */}
+              {mbtiResult?.ratios && (
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('실제 검사 세부 지표')}</div>
+                  <div className="space-y-1.5">
+                    {Object.keys(mbtiResult.ratios).map(k => {
+                      const item = mbtiResult.ratios[k];
+                      return (
+                        <div key={k} className="text-xs">
+                          <div className="flex justify-between font-medium text-slate-600 dark:text-slate-300 mb-0.5">
+                            <span>{item.label}</span>
+                            <span className="font-bold">{item.val}%</span>
+                          </div>
+                          <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-indigo-600 dark:bg-indigo-500 rounded-full"
+                              style={{ width: `${item.val}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Jobs */}
+              <div className="space-y-2 pt-1">
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('추천 직무 목록')}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {modalMbtiMeta.jobs.map((job: string) => (
+                    <span 
+                      key={job}
+                      className="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-700"
+                    >
+                      {job}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <Link
+                to="/mbti"
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
               >
-                설정 완료
+                <span>{t('검사 다시하기')}</span>
+                <ExternalLink size={12} />
+              </Link>
+              <button
+                onClick={() => setActiveModal(null)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border ${
+                  isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
+                }`}
+              >
+                {t('닫기')}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Toast Popup */}
+      {/* ================= MODAL 2: Holland Detail Analysis Modal ================= */}
+      {activeModal === 'holland' && (
+        <div className="fixed inset-0 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-950/60 animate-in fade-in duration-150">
+          <div className={`w-full max-w-xl rounded-2xl p-6 sm:p-7 shadow-2xl border relative space-y-5 my-auto ${
+            isLightMode ? "bg-white text-slate-900 border-slate-200" : "bg-slate-900 text-white border-slate-700"
+          }`}>
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition p-1.5 rounded-lg"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                <Compass size={22} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">{t('홀랜드 직업 적성 검사 상세')}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t('RIASEC 직업적성 유형 분석 및 진로 소견')}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                    {profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}
+                  </div>
+                  <span className="text-xs font-semibold text-slate-500">
+                    {modalPrimaryHollandMeta.name} & {modalSecondaryHollandMeta.name}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                  <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <span className="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">1순위: {modalPrimaryHollandMeta.name}</span>
+                    <p className="text-slate-600 dark:text-slate-300">{modalPrimaryHollandMeta.desc}</p>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <span className="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">2순위: {modalSecondaryHollandMeta.name}</span>
+                    <p className="text-slate-600 dark:text-slate-300">{modalSecondaryHollandMeta.desc}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIASEC Percentages */}
+              {hollandResult?.percentages && (
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('RIASEC 적합도 지표')}</div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    {Object.keys(hollandResult.percentages).map(k => {
+                      const val = hollandResult.percentages[k];
+                      return (
+                        <div key={k} className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-center">
+                          <span className="font-bold text-slate-500 block">{k}</span>
+                          <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{val}%</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Memo Note */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">{t('진로 지도 소견 메모')}</label>
+                <textarea
+                  value={profile.hollandNote}
+                  onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
+                  rows={2}
+                  className={`w-full border rounded-xl p-2.5 text-xs font-medium outline-none ${
+                    isLightMode ? "bg-white border-slate-300 text-slate-900" : "bg-slate-800 border-slate-700 text-white"
+                  }`}
+                  placeholder={t('진로 소견 메모를 입력하세요.')}
+                />
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <Link
+                to="/holland"
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+              >
+                <span>{t('검사 다시하기')}</span>
+                <ExternalLink size={12} />
+              </Link>
+              <button
+                onClick={() => {
+                  const uid = getActiveUid();
+                  localStorage.setItem(`mystair_mypage_data_${uid}`, JSON.stringify(profile));
+                  setActiveModal(null);
+                  showToast(t('소견 메모가 저장되었습니다.'));
+                }}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer"
+              >
+                {t('저장 후 닫기')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Feedback */}
       {toastMsg && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-sm font-extrabold shadow-2xl z-[200] border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <Sparkles size={16} className="text-indigo-400" />
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-xl z-[200] border border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-150">
+          <CheckCircle2 size={15} className="text-indigo-400" />
           <span>{toastMsg}</span>
         </div>
       )}
+
     </div>
   );
 }
