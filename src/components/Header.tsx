@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Sparkles, HelpCircle } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Sparkles, HelpCircle, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -15,6 +15,7 @@ export default function Header() {
   const navItems = [
     { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-teal-400" /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={18} /> },
+    { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={18} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={18} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={18} /> },
     { name: 'MBTI검사', path: '/mbti', icon: <Brain size={18} /> },

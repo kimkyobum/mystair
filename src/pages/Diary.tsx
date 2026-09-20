@@ -1061,6 +1061,21 @@ JSON 구조 규격:
                 </div>
               )}
             </div>
+
+            {/* Bottom Link to Cover Letter Editor */}
+            <div className={`mt-3 pt-3 border-t flex items-center justify-between gap-3 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+              <span className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
+                {t('추출된 경험 소재를 활용해 직접 자기소개서를 작성해보세요!')}
+              </span>
+              <Link
+                to="/cover-letter"
+                onClick={() => setShowSummaryModal(false)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-xs"
+              >
+                <span>{t('자기소개서 작성하러 가기')}</span>
+                <span>→</span>
+              </Link>
+            </div>
           </div>
         </div>
       )}

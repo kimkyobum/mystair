@@ -11,6 +11,7 @@ import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
 import CompanySearch from './pages/CompanySearch';
 import Creators from './pages/Creators';
+import CoverLetter from './pages/CoverLetter';
 import { useTheme } from './context/ThemeContext';
 import { OnboardingTour } from './components/OnboardingTour';
 
@@ -27,6 +28,7 @@ export default function AppWrapper() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/diary" element={<Diary />} />
+            <Route path="/cover-letter" element={<CoverLetter />} />
             <Route path="/company-search" element={<CompanySearch />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/mbti" element={<MBTI />} />
