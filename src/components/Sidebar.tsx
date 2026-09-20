@@ -11,8 +11,7 @@ import {
   LogIn,
   Sparkles,
   Users,
-  Compass as CompassIcon,
-  HelpCircle
+  Compass as CompassIcon
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -128,24 +127,6 @@ export default function Sidebar() {
             </Link>
           );
         })}
-
-        {/* Interactive Experience Guide Tour Button */}
-        <button
-          onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding-tour'))}
-          title={t('서비스 체험 가이드', 'Experience Guide')}
-          className={`hidden sm:flex items-center gap-3.5 px-2.5 py-2.5 sm:py-3 rounded-xl transition-all whitespace-nowrap min-h-[48px] justify-start cursor-pointer group mt-1 ${
-            isDarkTheme 
-              ? 'text-teal-400 hover:text-white hover:bg-teal-500/20 bg-teal-500/10 border border-teal-500/20' 
-              : 'text-teal-700 hover:text-teal-900 hover:bg-teal-50 bg-teal-50/70 border border-teal-200/60'
-          }`}
-        >
-          <div className="shrink-0 flex items-center justify-center w-6 h-6 sm:w-5 sm:h-5">
-            <HelpCircle size={22} className="text-teal-400 group-hover:scale-110 transition-transform" />
-          </div>
-          <span className={`text-[13px] font-bold transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-            {t('서비스 사용 가이드', 'Product Experience')}
-          </span>
-        </button>
 
         {/* Mobile MyPage icon */}
         <Link 
