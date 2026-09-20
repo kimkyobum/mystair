@@ -25,6 +25,7 @@ import { useAuth, DiaryEntry } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import ReactMarkdown from 'react-markdown';
+import MiniDatePicker from '../components/MiniDatePicker';
 
 const getLocalDateString = (d: Date = new Date()) => {
   const year = d.getFullYear();
@@ -533,24 +534,24 @@ JSON 구조 규격:
                     <span>📝 {t('1학기 중간고사')}</span>
                   </label>
                   <div className="flex items-center gap-2 text-xs">
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.firstMid.start}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        firstMid: { ...examSchedule.firstMid, start: e.target.value }
+                        firstMid: { ...examSchedule.firstMid, start: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="left"
                     />
                     <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.firstMid.end}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        firstMid: { ...examSchedule.firstMid, end: e.target.value }
+                        firstMid: { ...examSchedule.firstMid, end: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="right"
                     />
                   </div>
                 </div>
@@ -561,24 +562,24 @@ JSON 구조 규격:
                     <span>💯 {t('1학기 기말고사')}</span>
                   </label>
                   <div className="flex items-center gap-2 text-xs">
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.firstFinal.start}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        firstFinal: { ...examSchedule.firstFinal, start: e.target.value }
+                        firstFinal: { ...examSchedule.firstFinal, start: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="left"
                     />
                     <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.firstFinal.end}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        firstFinal: { ...examSchedule.firstFinal, end: e.target.value }
+                        firstFinal: { ...examSchedule.firstFinal, end: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="right"
                     />
                   </div>
                 </div>
@@ -589,24 +590,24 @@ JSON 구조 규격:
                     <span>📝 {t('2학기 중간고사')}</span>
                   </label>
                   <div className="flex items-center gap-2 text-xs">
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.secondMid.start}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        secondMid: { ...examSchedule.secondMid, start: e.target.value }
+                        secondMid: { ...examSchedule.secondMid, start: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="left"
                     />
                     <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.secondMid.end}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        secondMid: { ...examSchedule.secondMid, end: e.target.value }
+                        secondMid: { ...examSchedule.secondMid, end: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="right"
                     />
                   </div>
                 </div>
@@ -617,24 +618,24 @@ JSON 구조 규격:
                     <span>🎓 {t('2학기 기말고사')}</span>
                   </label>
                   <div className="flex items-center gap-2 text-xs">
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.secondFinal.start}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        secondFinal: { ...examSchedule.secondFinal, start: e.target.value }
+                        secondFinal: { ...examSchedule.secondFinal, start: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="left"
                     />
                     <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>~</span>
-                    <input
-                      type="date"
+                    <MiniDatePicker
                       value={examSchedule.secondFinal.end}
-                      onChange={e => setExamSchedule({
+                      onChange={val => setExamSchedule({
                         ...examSchedule,
-                        secondFinal: { ...examSchedule.secondFinal, end: e.target.value }
+                        secondFinal: { ...examSchedule.secondFinal, end: val }
                       })}
-                      className={`${isLightMode ? "bg-white border-slate-200 text-slate-900 focus:border-emerald-500" : "bg-slate-900/90 border-slate-700 text-white focus:border-emerald-500"} border rounded-xl px-2.5 py-2 text-xs font-medium outline-none w-full transition-colors`}
+                      isLightMode={isLightMode}
+                      align="right"
                     />
                   </div>
                 </div>
@@ -1196,11 +1197,12 @@ JSON 구조 규격:
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className={`text-xs font-bold ${isLightMode ? "text-slate-600" : "text-slate-400"}`}>{t('날짜')}</label>
-                  <input 
-                    type="date" 
+                  <MiniDatePicker 
                     value={selectedDate} 
-                    onChange={e => setSelectedDate(e.target.value)}
-                    className={`w-full border rounded-xl px-4 py-2.5 text-sm font-bold outline-none transition-colors ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"}`}
+                    onChange={setSelectedDate}
+                    isLightMode={isLightMode}
+                    dropUp={false}
+                    className="w-full"
                   />
                 </div>
 
