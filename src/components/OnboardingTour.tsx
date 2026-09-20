@@ -370,17 +370,17 @@ export function OnboardingTour() {
   if (stepIndex === 0) {
     return (
       <div className="fixed inset-0 z-[99999] bg-black/95 sm:bg-black/90 backdrop-blur-md flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
-        <div className="max-w-md w-full text-center space-y-8">
+        <div className="max-w-xl w-full text-center space-y-8 px-2">
           <div className="space-y-3">
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight whitespace-nowrap">
               MyStair에 오신 것을 환영합니다!
             </h2>
-            <p className="text-slate-400 font-medium text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-400 font-medium text-base sm:text-lg leading-relaxed whitespace-nowrap">
               가이드를 시작할까요?
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 pt-2">
+          <div className="flex flex-col gap-3 pt-2 max-w-sm sm:max-w-md mx-auto w-full">
             <button 
               type="button"
               onClick={handleNext}
