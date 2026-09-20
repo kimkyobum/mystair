@@ -5,6 +5,7 @@ import fs from "fs";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 import { Pool } from "pg";
+import { correctKoreanText } from "./src/utils/koreanSpellChecker";
 
 dotenv.config();
 
@@ -1293,10 +1294,23 @@ ${text}
 
     const systemInstruction = "너는 한국어 맞춤법 및 국립국어원 표준 규정에 정통한 전문 교정 전문가입니다. 원문의 의미와 문맥을 보존하며 오타, 띄어쓰기, 맞춤법만 완벽하게 수정한 결과를 JSON으로 반환합니다.";
 
-    const geminiRes = await generateContentWithFallback(
-      [{ role: "user", parts: [{ text: prompt }] }],
-      systemInstruction
-    );
+    let geminiRes: any = null;
+    try {
+      geminiRes = await generateContentWithFallback(
+        [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction
+      );
+    } catch (aiErr: any) {
+      console.warn("AI generation failed for spelling, using deterministic Korean rules engine:", aiErr?.message || aiErr);
+    }
+
+    if (!geminiRes || !geminiRes.text) {
+      const fallbackResult = correctKoreanText(text);
+      return res.json({
+        correctedText: fallbackResult.correctedText,
+        count: fallbackResult.count
+      });
+    }
 
     const rawOutput = geminiRes.text || "{}";
     const cleaned = rawOutput
@@ -1308,20 +1322,27 @@ ${text}
     try {
       parsed = JSON.parse(cleaned);
       if (!parsed.correctedText || typeof parsed.correctedText !== "string") {
-        parsed.correctedText = text;
+        parsed = correctKoreanText(text);
       }
     } catch (parseErr) {
       console.warn("Spelling fix parse error fallback", parseErr, rawOutput);
-      parsed = { correctedText: text, count: 0 };
+      parsed = correctKoreanText(text);
     }
 
+    // Apply rule engine as secondary polish to guarantee particles & spacing
+    const finalPolish = correctKoreanText(parsed.correctedText);
+
     return res.json({
-      correctedText: parsed.correctedText,
-      count: typeof parsed.count === 'number' ? parsed.count : (parsed.correctedText !== text ? 1 : 0)
+      correctedText: finalPolish.correctedText,
+      count: finalPolish.correctedText !== text ? Math.max(parsed.count || 0, finalPolish.count, 1) : 0
     });
   } catch (err: any) {
-    console.error("Error in /api/check-spelling:", err);
-    return res.status(500).json({ error: "오타 수정 중 오류가 발생했습니다.", details: err?.message });
+    console.error("Error in /api/check-spelling, applying safe fallback:", err);
+    const safeFallback = correctKoreanText(req.body?.text || "");
+    return res.json({
+      correctedText: safeFallback.correctedText,
+      count: safeFallback.count
+    });
   }
 });
 
