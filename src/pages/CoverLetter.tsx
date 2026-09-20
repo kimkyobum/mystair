@@ -453,7 +453,7 @@ export default function CoverLetter() {
                     </span>
                   </div>
 
-                  {/* Buttons: [작성 팁], [오타 수정], [비우기] */}
+                  {/* Buttons: [작성 팁], [비우기] */}
                   <div className="flex items-center gap-1.5 shrink-0">
                     {/* Toggle Tips & Guidance button */}
                     <button
@@ -469,33 +469,6 @@ export default function CoverLetter() {
                       <Sparkles size={12} className={isTipOpen ? "text-emerald-600" : "text-amber-500"} />
                       <span>{t('작성 팁')}</span>
                       {isTipOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                    </button>
-
-                    {/* [오타 수정] 버튼: 누르는 순간 모든 오타와 띄어쓰기 즉시 수정 */}
-                    <button
-                      type="button"
-                      disabled={isFixing}
-                      onClick={() => handleAutoFixSpelling(sec.id)}
-                      className={`text-[11px] font-bold flex items-center gap-1 px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
-                        isFixing
-                          ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
-                          : isLightMode 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 shadow-2xs" 
-                            : "bg-emerald-950/60 text-emerald-300 border-emerald-700 hover:bg-emerald-900/60"
-                      }`}
-                      title={t('누르면 본문의 모든 오타와 띄어쓰기를 즉시 자동 수정합니다')}
-                    >
-                      {isFixing ? (
-                        <>
-                          <RefreshCw size={12} className="animate-spin text-amber-600" />
-                          <span>{t('수정 중...')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 size={12} className="text-emerald-600 dark:text-emerald-400" />
-                          <span>{t('오타 수정')}</span>
-                        </>
-                      )}
                     </button>
 
                     {/* Clear */}
@@ -614,7 +587,7 @@ export default function CoverLetter() {
                       type="button"
                       disabled={isFixing || !currentVal.trim()}
                       onClick={() => handleAutoFixSpelling(sec.id)}
-                      className={`text-xs font-extrabold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
+                      className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
                         isFixing
                           ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
                           : !currentVal.trim()
@@ -628,12 +601,12 @@ export default function CoverLetter() {
                       {isFixing ? (
                         <>
                           <RefreshCw size={13} className="animate-spin text-amber-600" />
-                          <span>{t('오타 및 띄어쓰기 수정 중...')}</span>
+                          <span>{t('수정 중...')}</span>
                         </>
                       ) : (
                         <>
                           <Wand2 size={13} />
-                          <span>{t('⚡ 오타·띄어쓰기 바로 수정하기')}</span>
+                          <span>{t('오타 수정')}</span>
                         </>
                       )}
                     </button>
