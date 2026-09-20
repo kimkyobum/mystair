@@ -22,6 +22,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
+import { correctKoreanText } from '../utils/koreanSpellChecker';
 
 export interface CoverLetterSection {
   id: string;
@@ -259,45 +260,48 @@ export default function CoverLetter() {
     setFixingSectionId(sectionId);
     setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
 
+    // 1단계: 내장 정밀 한국어 맞춤법/띄어쓰기 엔진으로 즉각 로컬 교정
+    const localResult = correctKoreanText(originalText);
+    let bestCorrectedText = localResult.correctedText;
+
     try {
+      // 2단계: 서버(AI/규정 기반) 보정 요청 시도
       const res = await fetch('/api/check-spelling', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: originalText })
       });
 
-      if (!res.ok) {
-        throw new Error('오타 수정 서버 응답 오류');
-      }
-
-      const data = await res.json();
-      const correctedText = data.correctedText;
-
-      if (correctedText && typeof correctedText === 'string') {
-        // Apply fixed text immediately into the box
-        handleChange(sectionId, correctedText);
-
-        if (correctedText.trim() === originalText.trim()) {
-          setFixNotification(prev => ({
-            ...prev,
-            [sectionId]: t('✨ 이미 오타나 띄어쓰기 오류가 없는 올바른 문장입니다!')
-          }));
-        } else {
-          setFixNotification(prev => ({
-            ...prev,
-            [sectionId]: t('✨ 모든 오타와 띄어쓰기가 깔끔하게 수정되었습니다!')
-          }));
+      if (res.ok) {
+        const data = await res.json();
+        if (data.correctedText && typeof data.correctedText === 'string') {
+          // 서버 결과에 다시 한 번 조사 및 공백 정밀 규칙 적용
+          const combined = correctKoreanText(data.correctedText);
+          bestCorrectedText = combined.correctedText;
         }
-
-        // Clear notification after 4 seconds
-        setTimeout(() => {
-          setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
-        }, 4000);
       }
     } catch (err) {
-      console.error(err);
-      alert(t('오타 수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'));
+      console.warn('API error, using built-in Korean spell corrector', err);
     } finally {
+      // 3단계: 화면 본문 텍스트 즉각 업데이트!
+      handleChange(sectionId, bestCorrectedText);
+
+      if (bestCorrectedText.trim() === originalText.trim()) {
+        setFixNotification(prev => ({
+          ...prev,
+          [sectionId]: t('✨ 이미 오타나 띄어쓰기 오류가 없는 올바른 문장입니다!')
+        }));
+      } else {
+        setFixNotification(prev => ({
+          ...prev,
+          [sectionId]: t('✨ 모든 오타와 띄어쓰기가 깔끔하게 수정되었습니다!')
+        }));
+      }
+
+      setTimeout(() => {
+        setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
+      }, 4000);
+
       setFixingSectionId(null);
     }
   };
@@ -598,16 +602,51 @@ export default function CoverLetter() {
                   </div>
                 )}
 
-                {/* Clean Textarea Input Box */}
+                {/* Clean Textarea Input Box with Quick Action Header */}
                 <div className="p-4 sm:p-5 space-y-2">
+                  <div className="flex items-center justify-between pb-1">
+                    <span className="text-xs font-semibold text-slate-400">
+                      {t('내용 작성')}
+                    </span>
+
+                    {/* Prominent in-box [오타 수정] button */}
+                    <button
+                      type="button"
+                      disabled={isFixing || !currentVal.trim()}
+                      onClick={() => handleAutoFixSpelling(sec.id)}
+                      className={`text-xs font-extrabold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
+                        isFixing
+                          ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
+                          : !currentVal.trim()
+                            ? "opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                            : isLightMode
+                              ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600 active:scale-95"
+                              : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black border-emerald-500 active:scale-95"
+                      }`}
+                      title={t('클릭 시 이 박스 안의 모든 오타와 띄어쓰기를 즉시 자동 교정합니다')}
+                    >
+                      {isFixing ? (
+                        <>
+                          <RefreshCw size={13} className="animate-spin text-amber-600" />
+                          <span>{t('오타 및 띄어쓰기 수정 중...')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 size={13} />
+                          <span>{t('⚡ 오타·띄어쓰기 바로 수정하기')}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
                   <textarea
                     rows={6}
                     value={currentVal}
                     onChange={e => handleChange(sec.id, e.target.value)}
                     placeholder={t(sec.placeholder)}
-                    className={`w-full border rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-all resize-y ${
+                    className={`w-full border-2 rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-all resize-y ${
                       isLightMode 
-                        ? "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-emerald-500" 
+                        ? "bg-slate-50/70 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:shadow-xs" 
                         : "bg-slate-800/70 border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:bg-slate-800"
                     }`}
                   />
