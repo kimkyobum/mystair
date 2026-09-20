@@ -5,7 +5,6 @@ import {
   Save, 
   Trash2, 
   Sparkles, 
-  Copy, 
   Check, 
   Clock,
   Building,
@@ -17,7 +16,8 @@ import {
   X,
   ExternalLink,
   PlusCircle,
-  Tag
+  Wand2,
+  RefreshCw
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -29,10 +29,10 @@ export interface CoverLetterSection {
   recommendedChars: number;
   placeholder: string;
   tips: string[];
-  enableDiaryHelper?: boolean; // Whether this section links with Growth Diary
+  enableDiaryHelper?: boolean;
 }
 
-// 5개 개별 항목: 성장과정과 실습경험에 성장다이어리 연동 플래그 활성화
+// 5개 개별 항목
 const DEFAULT_SECTIONS: CoverLetterSection[] = [
   {
     id: 'growth',
@@ -141,10 +141,8 @@ export default function CoverLetter() {
   });
 
   const [savedTime, setSavedTime] = useState<string>('');
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [copiedAll, setCopiedAll] = useState(false);
   
-  // Tips visibility per section (default: false)
+  // Tips visibility per section
   const [showTips, setShowTips] = useState<Record<string, boolean>>({
     growth: false,
     intro: false,
@@ -153,14 +151,16 @@ export default function CoverLetter() {
     practice: false
   });
 
+  // Auto-fixing state per section
+  const [fixingSectionId, setFixingSectionId] = useState<string | null>(null);
+  const [fixNotification, setFixNotification] = useState<Record<string, string>>({});
+
   // Diary entries from Growth Diary
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
-  // Selected diary modal to view full content
   const [selectedDiary, setSelectedDiary] = useState<DiaryEntry | null>(null);
-  // Which section is currently inserting or viewing diary
   const [activeDiarySectionId, setActiveDiarySectionId] = useState<string | null>(null);
 
-  // Load diaries from AuthContext or LocalStorage
+  // Load diaries
   useEffect(() => {
     const loadDiaries = async () => {
       try {
@@ -170,7 +170,7 @@ export default function CoverLetter() {
           return;
         }
       } catch (err) {
-        console.warn('Failed to fetch from firestore, checking local storage', err);
+        console.warn('Failed to fetch from firestore', err);
       }
       
       const uid = user?.uid || 'local-user';
@@ -182,13 +182,12 @@ export default function CoverLetter() {
           // ignore
         }
       } else {
-        // Fallback demo diaries if none exist
         setDiaries([
           {
             id: 'sample-1',
             userId: 'local',
             title: 'PLC 시퀀스 제어 실습 회로 결선 및 모터 구동 성공',
-            content: '오늘 자동화 설비 실습에서 PLC 입출력 결선 작업을 직접 수행했다. 처음에는 인터록 회로 타이밍 문제로 모터가 간헐적으로 오작동했으나, 배선 도면을 재검토하고 래더 다이어그램 로직을 0.5초 딜레이를 주어 수정한 결과 정상 구동에 성공했다. 트러블슈팅의 묘미를 느꼈다.',
+            content: '오늘 자동화 설비 실습에서 PLC 입출력 결선 작업을 직접 수행했다. 처음에는 인터록 회로 타이밍 문제로 모터가 간헐적으로 오작동했으나, 배선 도면을 재검토하고 래더 다이어그램 로직을 0.5초 딜레이를 주어 수정한 결과 정상 구동에 성공했다.',
             date: '2026-03-18',
             mood: '🔥',
             tags: ['실습', 'PLC', '트러블슈팅']
@@ -201,15 +200,6 @@ export default function CoverLetter() {
             date: '2026-03-12',
             mood: '😊',
             tags: ['자격증', '전기기능사', '칭찬']
-          },
-          {
-            id: 'sample-3',
-            userId: 'local',
-            title: '교내 전공동아리 3D 모델링 경진대회 은상 수상',
-            content: '팀원 2명과 함께 스마트 팩토리용 컨베이어 모듈을 Inventor로 설계했다. 부품 간 간섭 체크 과정에서 베어링 유격 문제가 발생했으나 공차를 재계산하여 조립성을 개선했다.',
-            date: '2026-02-20',
-            mood: '💡',
-            tags: ['경진대회', 'CAD', '팀워크']
           }
         ]);
       }
@@ -234,7 +224,7 @@ export default function CoverLetter() {
     }
   };
 
-  // Auto-save debounced
+  // Auto-save
   useEffect(() => {
     const timer = setTimeout(() => {
       handleSave(true);
@@ -250,41 +240,69 @@ export default function CoverLetter() {
     }));
   };
 
-  // Copy single section
-  const handleCopySection = (id: string, title: string) => {
-    const text = answers[id] || '';
-    if (!text.trim()) {
-      alert(t('복사할 작성 내용이 없습니다. 먼저 내용을 입력해주세요!'));
-      return;
-    }
-    const fullText = `[${title}]\n${text}`;
-    navigator.clipboard.writeText(fullText);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  // Copy entire cover letter
-  const handleCopyAll = () => {
-    const headerInfo = `[${userProfile?.name || '지원자'} 자기소개서]\n- 지원 기업: ${targetCompany || '미정'}\n- 지원 전공/직무: ${targetRole || '미정'}\n- 작성일: ${new Date().toLocaleDateString('ko-KR')}\n\n`;
-    
-    const body = DEFAULT_SECTIONS.map(sec => {
-      const content = answers[sec.id]?.trim() || '(내용 없음)';
-      return `------------------------------------\n${sec.title}\n------------------------------------\n${content}\n`;
-    }).join('\n');
-
-    navigator.clipboard.writeText(headerInfo + body);
-    setCopiedAll(true);
-    setTimeout(() => setCopiedAll(false), 2500);
-  };
-
   // Clear single section
   const handleClearSection = (id: string) => {
     if (window.confirm(t('이 항목의 작성 내용을 모두 지우시겠습니까?'))) {
       handleChange(id, '');
+      setFixNotification(prev => ({ ...prev, [id]: '' }));
     }
   };
 
-  // Insert diary snippet into current section
+  // [오타 수정] 버튼: 누르는 순간 모든 오타와 띄어쓰기를 즉시 자동 교정
+  const handleAutoFixSpelling = async (sectionId: string) => {
+    const originalText = answers[sectionId] || '';
+    if (!originalText.trim()) {
+      alert(t('오타 수정을 진행할 텍스트를 먼저 입력해주세요!'));
+      return;
+    }
+
+    setFixingSectionId(sectionId);
+    setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
+
+    try {
+      const res = await fetch('/api/check-spelling', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: originalText })
+      });
+
+      if (!res.ok) {
+        throw new Error('오타 수정 서버 응답 오류');
+      }
+
+      const data = await res.json();
+      const correctedText = data.correctedText;
+
+      if (correctedText && typeof correctedText === 'string') {
+        // Apply fixed text immediately into the box
+        handleChange(sectionId, correctedText);
+
+        if (correctedText.trim() === originalText.trim()) {
+          setFixNotification(prev => ({
+            ...prev,
+            [sectionId]: t('✨ 이미 오타나 띄어쓰기 오류가 없는 올바른 문장입니다!')
+          }));
+        } else {
+          setFixNotification(prev => ({
+            ...prev,
+            [sectionId]: t('✨ 모든 오타와 띄어쓰기가 깔끔하게 수정되었습니다!')
+          }));
+        }
+
+        // Clear notification after 4 seconds
+        setTimeout(() => {
+          setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
+        }, 4000);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(t('오타 수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'));
+    } finally {
+      setFixingSectionId(null);
+    }
+  };
+
+  // Insert diary snippet
   const handleInsertDiary = (sectionId: string, diary: DiaryEntry) => {
     const prev = answers[sectionId] || '';
     const addition = `[${diary.date} ${diary.title}]\n${diary.content}\n`;
@@ -319,21 +337,6 @@ export default function CoverLetter() {
               <span>{savedTime} {t('자동저장됨')}</span>
             </span>
           )}
-
-          <button
-            type="button"
-            onClick={handleCopyAll}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-              copiedAll 
-                ? 'bg-emerald-600 text-white border-emerald-500' 
-                : isLightMode 
-                  ? 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300 shadow-xs' 
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-            }`}
-          >
-            {copiedAll ? <Check size={14} /> : <Copy size={14} />}
-            <span>{copiedAll ? t('전체 복사완료!') : t('전체 복사')}</span>
-          </button>
 
           <button
             type="button"
@@ -418,6 +421,8 @@ export default function CoverLetter() {
             const charCountNoSpace = currentVal.replace(/\s/g, '').length;
             const isTipOpen = !!showTips[sec.id];
             const hasDiaryHelper = !!sec.enableDiaryHelper;
+            const isFixing = fixingSectionId === sec.id;
+            const notif = fixNotification[sec.id];
 
             return (
               <div 
@@ -428,7 +433,7 @@ export default function CoverLetter() {
                     : "bg-slate-900/90 border-slate-800 hover:border-slate-700 shadow-xs"
                 }`}
               >
-                {/* Header: Clean Title + Right Controls (Tips toggle, Copy, Clear) */}
+                {/* Header: Clean Title + Right Controls ([작성 팁], [오타 수정], [비우기]) */}
                 <div className={`px-4 sm:px-5 py-3 border-b flex items-center justify-between gap-3 ${
                   isLightMode ? "border-slate-100 bg-slate-50/50 rounded-t-2xl" : "border-slate-800/80 bg-slate-800/30 rounded-t-2xl"
                 }`}>
@@ -444,7 +449,7 @@ export default function CoverLetter() {
                     </span>
                   </div>
 
-                  {/* Buttons */}
+                  {/* Buttons: [작성 팁], [오타 수정], [비우기] */}
                   <div className="flex items-center gap-1.5 shrink-0">
                     {/* Toggle Tips & Guidance button */}
                     <button
@@ -462,19 +467,31 @@ export default function CoverLetter() {
                       {isTipOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     </button>
 
-                    {/* Copy single section */}
+                    {/* [오타 수정] 버튼: 누르는 순간 모든 오타와 띄어쓰기 즉시 수정 */}
                     <button
                       type="button"
-                      onClick={() => handleCopySection(sec.id, sec.title)}
-                      className={`text-[11px] font-bold flex items-center gap-1 px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer ${
-                        copiedId === sec.id
-                          ? "bg-emerald-600 text-white border-emerald-500"
-                          : isLightMode ? "bg-white text-slate-600 border-slate-200 hover:bg-slate-100" : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                      disabled={isFixing}
+                      onClick={() => handleAutoFixSpelling(sec.id)}
+                      className={`text-[11px] font-bold flex items-center gap-1 px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                        isFixing
+                          ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
+                          : isLightMode 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100 shadow-2xs" 
+                            : "bg-emerald-950/60 text-emerald-300 border-emerald-700 hover:bg-emerald-900/60"
                       }`}
-                      title={t('이 항목만 복사')}
+                      title={t('누르면 본문의 모든 오타와 띄어쓰기를 즉시 자동 수정합니다')}
                     >
-                      {copiedId === sec.id ? <Check size={12} /> : <Copy size={12} />}
-                      <span>{copiedId === sec.id ? t('복사됨!') : t('복사')}</span>
+                      {isFixing ? (
+                        <>
+                          <RefreshCw size={12} className="animate-spin text-amber-600" />
+                          <span>{t('수정 중...')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 size={12} className="text-emerald-600 dark:text-emerald-400" />
+                          <span>{t('오타 수정')}</span>
+                        </>
+                      )}
                     </button>
 
                     {/* Clear */}
@@ -571,7 +588,17 @@ export default function CoverLetter() {
                   </div>
                 )}
 
-                {/* Textarea Input Box */}
+                {/* Auto-fix Notification Message if any */}
+                {notif && (
+                  <div className={`px-4 sm:px-5 py-2.5 border-b text-xs flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 text-emerald-800 dark:text-emerald-300 animate-in fade-in duration-200`}>
+                    <div className="flex items-center gap-1.5 font-bold">
+                      <Check size={14} className="text-emerald-600" />
+                      <span>{notif}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Clean Textarea Input Box */}
                 <div className="p-4 sm:p-5 space-y-2">
                   <textarea
                     rows={6}
@@ -619,42 +646,25 @@ export default function CoverLetter() {
           })}
         </div>
 
-        {/* Bottom Actions */}
-        <div className={`mt-8 p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 ${
+        {/* Bottom Save Bar */}
+        <div className={`mt-8 p-4 rounded-2xl border flex items-center justify-between gap-4 ${
           isLightMode ? "bg-white border-slate-200 shadow-xs" : "bg-slate-900 border-slate-800"
         }`}>
           <div className="text-xs text-slate-500">
             <span className="font-bold text-slate-700 dark:text-slate-300">{t('총 작성 글자수')}: </span>
             <span className="text-emerald-600 dark:text-emerald-400 font-black">{totalChars}자</span>
             <span className="mx-1.5 text-slate-300">|</span>
-            <span>{t('[전체 복사]를 누르면 모든 항목이 한 번에 복사됩니다.')}</span>
+            <span>{t('작성 중인 내용은 브라우저에 안전하게 실시간 보관됩니다.')}</span>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
-            <button
-              type="button"
-              onClick={handleCopyAll}
-              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                copiedAll 
-                  ? 'bg-emerald-600 text-white border-emerald-500' 
-                  : isLightMode 
-                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' 
-                    : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-              }`}
-            >
-              {copiedAll ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copiedAll ? t('전체 내용 복사완료!') : t('전체 복사')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSave(false)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
-            >
-              <Save size={14} />
-              <span>{t('저장하기')}</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => handleSave(false)}
+            className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+          >
+            <Save size={14} />
+            <span>{t('저장하기')}</span>
+          </button>
         </div>
 
       </div>
@@ -715,46 +725,30 @@ export default function CoverLetter() {
               </div>
             </div>
 
-            {/* Modal Footer: Action to insert or copy into the current section */}
-            <div className={`mt-4 pt-3.5 border-t flex items-center justify-between gap-3 flex-none ${
+            {/* Modal Footer */}
+            <div className={`mt-4 pt-3.5 border-t flex items-center justify-end gap-2 flex-none ${
               isLightMode ? "border-slate-200" : "border-slate-800"
             }`}>
               <button
                 type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(selectedDiary.content);
-                  alert(t('다이어리 내용이 클립보드에 복사되었습니다!'));
-                }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300" : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
+                onClick={() => setSelectedDiary(null)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer ${
+                  isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-600" : "bg-slate-800 hover:bg-slate-700 text-slate-400"
                 }`}
               >
-                <Copy size={13} />
-                <span>{t('내용 복사')}</span>
+                {t('닫기')}
               </button>
 
-              <div className="flex items-center gap-2">
+              {activeDiarySectionId && (
                 <button
                   type="button"
-                  onClick={() => setSelectedDiary(null)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer ${
-                    isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-600" : "bg-slate-800 hover:bg-slate-700 text-slate-400"
-                  }`}
+                  onClick={() => handleInsertDiary(activeDiarySectionId, selectedDiary)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
                 >
-                  {t('닫기')}
+                  <PlusCircle size={14} />
+                  <span>{t('이 문항에 내용 넣기')}</span>
                 </button>
-
-                {activeDiarySectionId && (
-                  <button
-                    type="button"
-                    onClick={() => handleInsertDiary(activeDiarySectionId, selectedDiary)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
-                  >
-                    <PlusCircle size={14} />
-                    <span>{t('이 문항에 내용 넣기')}</span>
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </div>

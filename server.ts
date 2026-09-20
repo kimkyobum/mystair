@@ -1266,6 +1266,65 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
   }
 });
 
+// POST /api/check-spelling: 자기소개서 맞춤법, 띄어쓰기, 오탈자 즉시 일괄 수정 및 교정 엔드포인트
+app.post("/api/check-spelling", async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text || typeof text !== "string" || !text.trim()) {
+      return res.json({ correctedText: text || "", count: 0 });
+    }
+
+    const prompt = `
+다음 텍스트는 학생이 작성한 자기소개서 본문입니다.
+한국어 맞춤법 규정, 띄어쓰기 규칙, 오탈자, 잘못된 조사/어미를 국립국어원 표준에 맞게 정확히 교정한 최종 완성 텍스트를 출력하세요.
+
+반드시 원문의 원래 내용, 문장의 의미, 어조(학생의 진솔한 표현)는 그대로 유지하면서, 오직 "오타, 맞춤법, 띄어쓰기, 어색한 문장부호"만 바르게 교정해야 합니다.
+절대로 새로운 내용을 지어내거나 멋대로 문맥을 바꾸지 마세요.
+
+반드시 다른 설명 없이 오직 순수한 JSON 형식으로만 응답해야 합니다:
+{
+  "correctedText": "오타와 띄어쓰기가 완벽하게 수정된 전체 본문 텍스트",
+  "count": 수정된_오타_및_띄어쓰기_개수(숫자)
+}
+
+[검사 및 수정할 원문 텍스트]
+${text}
+`;
+
+    const systemInstruction = "너는 한국어 맞춤법 및 국립국어원 표준 규정에 정통한 전문 교정 전문가입니다. 원문의 의미와 문맥을 보존하며 오타, 띄어쓰기, 맞춤법만 완벽하게 수정한 결과를 JSON으로 반환합니다.";
+
+    const geminiRes = await generateContentWithFallback(
+      [{ role: "user", parts: [{ text: prompt }] }],
+      systemInstruction
+    );
+
+    const rawOutput = geminiRes.text || "{}";
+    const cleaned = rawOutput
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    let parsed: any = { correctedText: text, count: 0 };
+    try {
+      parsed = JSON.parse(cleaned);
+      if (!parsed.correctedText || typeof parsed.correctedText !== "string") {
+        parsed.correctedText = text;
+      }
+    } catch (parseErr) {
+      console.warn("Spelling fix parse error fallback", parseErr, rawOutput);
+      parsed = { correctedText: text, count: 0 };
+    }
+
+    return res.json({
+      correctedText: parsed.correctedText,
+      count: typeof parsed.count === 'number' ? parsed.count : (parsed.correctedText !== text ? 1 : 0)
+    });
+  } catch (err: any) {
+    console.error("Error in /api/check-spelling:", err);
+    return res.status(500).json({ error: "오타 수정 중 오류가 발생했습니다.", details: err?.message });
+  }
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
