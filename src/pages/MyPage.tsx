@@ -24,7 +24,8 @@ import {
   Sparkles,
   CheckCircle2,
   HelpCircle,
-  FileText
+  FileText,
+  Bot
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
@@ -422,7 +423,7 @@ export default function MyPage() {
               {/* Names and Status */}
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="text-xl sm:text-2xl font-black tracking-tight truncate tour-target-profile-name">
+                  <h1 className="text-xl sm:text-2xl font-black tracking-tight truncate tour-target-profile-header-name">
                     {profile.name || t('마이스터 학생')}
                   </h1>
                   <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300">
@@ -554,7 +555,7 @@ export default function MyPage() {
         }`}>
           <button
             onClick={() => setActiveTab('profile')}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-profile ${
               activeTab === 'profile'
                 ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
@@ -566,7 +567,7 @@ export default function MyPage() {
 
           <button
             onClick={() => setActiveTab('aptitude')}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-aptitude ${
               activeTab === 'aptitude'
                 ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
@@ -581,7 +582,7 @@ export default function MyPage() {
 
           <button
             onClick={() => setActiveTab('companies')}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-companies ${
               activeTab === 'companies'
                 ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
@@ -598,7 +599,7 @@ export default function MyPage() {
 
           <button
             onClick={() => setActiveTab('settings')}
-            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer ${
+            className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-settings ${
               activeTab === 'settings'
                 ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
                 : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
@@ -613,28 +614,12 @@ export default function MyPage() {
         {activeTab === 'profile' && (
           <div className="space-y-6 animate-in fade-in duration-150">
             
-            {/* Edit Banner Alert */}
-            {isFullEditing && (
-              <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/80 dark:bg-emerald-950/40 dark:border-emerald-900 flex items-center justify-between text-xs sm:text-sm font-semibold text-emerald-900 dark:text-emerald-200">
-                <span className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-emerald-600 dark:text-emerald-400" />
-                  <span>{t('프로필 편집 모드입니다. 수정 후 우측 [저장]을 눌러주세요.')}</span>
-                </span>
-                <button
-                  onClick={handleSaveProfile}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shrink-0"
-                >
-                  {t('저장')}
-                </button>
-              </div>
-            )}
-
             {/* Structured Card: Personal & Academic Information */}
             <div className={`rounded-2xl border p-6 shadow-xs ${
               isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
             }`}>
               
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80 tour-target-profile-academic">
                 <div className="flex items-center gap-2">
                   <School size={18} className="text-emerald-600 dark:text-emerald-400" />
                   <h2 className="text-base font-bold text-slate-900 dark:text-white">
@@ -642,7 +627,34 @@ export default function MyPage() {
                   </h2>
                 </div>
 
-                {!isFullEditing && (
+                {isFullEditing ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTempName(profile.name);
+                        setTempSchool(profile.highSchool);
+                        setTempMajor(profile.major);
+                        setIsFullEditing(false);
+                      }}
+                      className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition cursor-pointer ${
+                        isLightMode 
+                          ? "bg-white hover:bg-slate-100 border-slate-300 text-slate-700" 
+                          : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                      }`}
+                    >
+                      {t('취소')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveProfile}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-xs flex items-center gap-1"
+                    >
+                      <Check size={14} />
+                      <span>{t('저장')}</span>
+                    </button>
+                  </div>
+                ) : (
                   <button
                     onClick={() => {
                       setTempName(profile.name);
@@ -1247,126 +1259,247 @@ export default function MyPage() {
 
         {/* ================= TAB 4: 환경 및 테마 설정 ================= */}
         {activeTab === 'settings' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
-            <div className={`rounded-2xl border p-6 shadow-xs space-y-6 ${
+          <div className="space-y-6 animate-in fade-in duration-150 max-w-4xl">
+            
+            {/* Main Settings Card */}
+            <div className={`rounded-2xl border p-6 sm:p-7 shadow-xs space-y-7 tour-target-settings-card ${
               isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
             }`}>
               
-              <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Palette size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  <span>{t('화면 및 인터랙션 환경 설정')}</span>
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  {t('사용자 맞춤 화면 테마 및 보조 기능을 설정합니다. 변경사항은 즉시 저장됩니다.')}
-                </p>
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-slate-800/80">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                      <Palette size={18} />
+                    </div>
+                    <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                      {t('화면 및 인터랙션 환경 설정')}
+                    </h2>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {t('화면 테마와 시각적 인터랙션 효과를 원하는 대로 맞춤 설정할 수 있습니다.')}
+                  </p>
+                </div>
+                <span className="self-start sm:self-center inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  {t('실시간 자동 저장')}
+                </span>
               </div>
 
-              {/* Setting 1: Theme selection */}
-              <div className="space-y-3">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                  {t('화면 테마')}
-                </label>
+              {/* Section 1: Visual Theme Cards */}
+              <div className="space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    {t('화면 테마')}
+                  </label>
+                  <span className="text-[11px] text-slate-400">
+                    {isLightMode ? t('현재: 라이트 모드') : t('현재: 우주 다크 모드')}
+                  </span>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* Light Mode */}
-                  <button
-                    type="button"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Option A: Light Mode */}
+                  <div
                     onClick={() => setIsLightMode(true)}
-                    className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
+                    className={`group relative rounded-2xl border-2 p-4 transition-all cursor-pointer flex flex-col justify-between overflow-hidden ${
                       isLightMode 
-                        ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 ring-1 ring-emerald-600 dark:bg-emerald-950/40 dark:text-white" 
-                        : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                        ? "border-emerald-600 bg-emerald-50/30 dark:bg-emerald-950/20 shadow-sm ring-2 ring-emerald-600/10" 
+                        : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700"
                     }`}
                   >
-                    <div className={`p-2.5 rounded-lg shrink-0 ${isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
-                      <Sun size={20} />
+                    {/* Visual Mini Preview */}
+                    <div className="w-full h-24 rounded-xl bg-white border border-slate-200/80 p-2.5 flex flex-col gap-1.5 shadow-2xs mb-3.5 transition group-hover:scale-[1.01]">
+                      <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-rose-400"></div>
+                          <div className="w-2 h-2 rounded-full bg-amber-400"></div>
+                          <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                        </div>
+                        <div className="w-12 h-2 rounded bg-slate-100"></div>
+                      </div>
+                      <div className="flex gap-2 flex-1 pt-1">
+                        <div className="w-1/4 rounded bg-slate-50 border border-slate-100 p-1 flex flex-col gap-1">
+                          <div className="w-full h-1.5 rounded bg-emerald-100"></div>
+                          <div className="w-2/3 h-1.5 rounded bg-slate-100"></div>
+                        </div>
+                        <div className="flex-1 rounded bg-slate-50 border border-slate-100 p-1.5 flex flex-col justify-between">
+                          <div className="w-3/4 h-2 rounded bg-slate-200"></div>
+                          <div className="w-1/2 h-1.5 rounded bg-slate-100"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-bold text-slate-900 dark:text-white">{t('라이트 모드 (화이트)')}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t('눈이 편안하고 선명한 기본 화이트 테마')}</div>
-                    </div>
-                  </button>
 
-                  {/* Dark Space Mode */}
-                  <button
-                    type="button"
+                    {/* Content Label */}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-2 rounded-xl transition ${
+                          isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                        }`}>
+                          <Sun size={17} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-slate-900 dark:text-white">
+                            {t('라이트 모드 (화이트)')}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            {t('눈이 편안하고 선명한 기본 화이트 테마')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition ${
+                        isLightMode ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300 dark:border-slate-600"
+                      }`}>
+                        {isLightMode && <Check size={12} strokeWidth={3} />}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Option B: Space Dark Mode */}
+                  <div
                     onClick={() => {
                       setIsLightMode(false);
                       setBackgroundType('black');
                     }}
-                    className={`p-4 rounded-xl border text-left transition cursor-pointer flex items-center gap-3.5 ${
+                    className={`group relative rounded-2xl border-2 p-4 transition-all cursor-pointer flex flex-col justify-between overflow-hidden ${
                       !isLightMode 
-                        ? "border-emerald-600 bg-emerald-50/50 text-emerald-950 ring-1 ring-emerald-600 dark:bg-emerald-950/40 dark:text-white" 
-                        : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-slate-300"
+                        ? "border-emerald-500 bg-emerald-950/20 shadow-sm ring-2 ring-emerald-500/10" 
+                        : "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700"
                     }`}
                   >
-                    <div className={`p-2.5 rounded-lg shrink-0 ${!isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-500"}`}>
-                      <Moon size={20} />
+                    {/* Visual Mini Preview */}
+                    <div className="w-full h-24 rounded-xl bg-slate-950 border border-slate-800 p-2.5 flex flex-col gap-1.5 shadow-2xs mb-3.5 transition group-hover:scale-[1.01] relative overflow-hidden">
+                      {/* Decorative starry effect */}
+                      <div className="absolute top-2 right-4 w-1 h-1 rounded-full bg-emerald-400 opacity-60"></div>
+                      <div className="absolute bottom-3 left-6 w-1 h-1 rounded-full bg-white opacity-40"></div>
+                      <div className="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full bg-rose-500/70"></div>
+                          <div className="w-2 h-2 rounded-full bg-amber-500/70"></div>
+                          <div className="w-2 h-2 rounded-full bg-emerald-500/70"></div>
+                        </div>
+                        <div className="w-12 h-2 rounded bg-slate-800"></div>
+                      </div>
+                      <div className="flex gap-2 flex-1 pt-1">
+                        <div className="w-1/4 rounded bg-slate-900 border border-slate-800 p-1 flex flex-col gap-1">
+                          <div className="w-full h-1.5 rounded bg-emerald-500/40"></div>
+                          <div className="w-2/3 h-1.5 rounded bg-slate-800"></div>
+                        </div>
+                        <div className="flex-1 rounded bg-slate-900 border border-slate-800 p-1.5 flex flex-col justify-between">
+                          <div className="w-3/4 h-2 rounded bg-slate-700"></div>
+                          <div className="w-1/2 h-1.5 rounded bg-slate-800"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-bold text-slate-900 dark:text-white">{t('우주 모드 (다크)')}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t('신비롭고 차분한 밤하늘 별빛 테마')}</div>
+
+                    {/* Content Label */}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-2 rounded-xl transition ${
+                          !isLightMode ? "bg-emerald-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                        }`}>
+                          <Moon size={17} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-slate-900 dark:text-white">
+                            {t('우주 모드 (다크)')}
+                          </div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            {t('신비롭고 차분한 밤하늘 별빛 테마')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition ${
+                        !isLightMode ? "border-emerald-500 bg-emerald-500 text-white" : "border-slate-300 dark:border-slate-600"
+                      }`}>
+                        {!isLightMode && <Check size={12} strokeWidth={3} />}
+                      </div>
                     </div>
-                  </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Setting 2: Alien Assistant toggle */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-                <div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-white">{t('인공지능 도우미 외계인 표시')}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {t('화면 우측 하단에서 대화를 돕는 외계인 캐릭터 안내를 켜거나 끕니다.')}
+              {/* Section 2: Unified Interactive Preferences (iOS-style Clean List) */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  {t('상호작용 및 시각 효과')}
+                </label>
+
+                <div className={`rounded-2xl border divide-y overflow-hidden transition-colors ${
+                  isLightMode 
+                    ? "bg-slate-50/60 border-slate-200/90 divide-slate-200/80" 
+                    : "bg-slate-800/40 border-slate-800 divide-slate-800/80"
+                }`}>
+                  {/* Row 1: Alien AI Assistant */}
+                  <div className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                        <Bot size={20} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                          {t('인공지능 도우미 외계인 안내')}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                          {t('화면 우측 하단에서 실시간 조언 및 대화를 돕는 외계인 캐릭터를 표시합니다.')}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Smooth Toggle Switch */}
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={showAliens}
+                      onClick={() => setShowAliens(!showAliens)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        showAliens ? "bg-emerald-600" : isLightMode ? "bg-slate-300" : "bg-slate-700"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          showAliens ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Row 2: Touch & Click Particle Effect */}
+                  <div className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                        <Sparkles size={20} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                          {t('화면 클릭 / 터치 별빛 파티클 효과')}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                          {t('마우스 클릭이나 화면 터치 시 은은하고 아름다운 별빛 파티클 애니메이션을 생성합니다.')}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Smooth Toggle Switch */}
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={isClickEffectEnabled}
+                      onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        isClickEffectEnabled ? "bg-emerald-600" : isLightMode ? "bg-slate-300" : "bg-slate-700"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          isClickEffectEnabled ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-100 dark:bg-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setShowAliens(true)}
-                    className={`px-3 py-1 rounded-md text-xs font-bold transition cursor-pointer ${
-                      showAliens 
-                        ? "bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-300 shadow-2xs" 
-                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400"
-                    }`}
-                  >
-                    {t('켜기')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAliens(false)}
-                    className={`px-3 py-1 rounded-md text-xs font-bold transition cursor-pointer ${
-                      !showAliens 
-                        ? "bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 shadow-2xs" 
-                        : "text-slate-500 hover:text-slate-800 dark:text-slate-400"
-                    }`}
-                  >
-                    {t('끄기')}
-                  </button>
-                </div>
-              </div>
-
-              {/* Setting 3: Touch & Click particle effect */}
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-                <div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-white">{t('화면 클릭/터치 별빛 효과')}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {t('화면을 클릭하거나 터치할 때 작은 파티클 애니메이션을 표시합니다.')}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsClickEffectEnabled(!isClickEffectEnabled)}
-                  className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
-                    isClickEffectEnabled ? "bg-emerald-600" : "bg-slate-300 dark:bg-slate-700"
-                  }`}
-                >
-                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform shadow-2xs ${
-                    isClickEffectEnabled ? "translate-x-6" : "translate-x-0"
-                  }`} />
-                </button>
               </div>
 
             </div>

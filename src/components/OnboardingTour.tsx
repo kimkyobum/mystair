@@ -79,59 +79,89 @@ const TOUR_STEPS: TourStep[] = [
     onNext: (nav) => nav('/mypage'),
   },
   {
-    id: 'edit-mode',
-    target: '.tour-target-edit-mode',
-    message: '전체 편집 모드를 눌러주세요.',
+    id: 'profile-tab-basic',
+    target: '.tour-target-tab-profile',
+    message: '**기본 정보 & 학적** 탭에서 학생 개인 프로필과 기본 학적 정보를 관리할 수 있어요.',
     action: 'click_target',
+    allowAnywhereClick: true,
     onNext: () => {
-      const el = document.querySelector('.tour-target-edit-mode') as HTMLElement;
+      const el = document.querySelector('.tour-target-tab-profile') as HTMLElement;
       if (el) el.click();
     }
   },
   {
+    id: 'profile-academic',
+    target: '.tour-target-profile-academic',
+    message: '**학적 및 기본 프로필**에서 나의 학교, 전공, 인적 사항을 한눈에 확인해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
     id: 'profile-name',
     target: '.tour-target-profile-name',
-    message: '이름을 설정해주세요.',
+    message: '학생의 **이름**을 확인하고 수정할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'profile-school',
     target: '.tour-target-profile-school',
-    message: '고등학교를 설정해주세요.',
+    message: '재학 중인 **마이스터고등학교**를 검색하여 등록할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'profile-major',
     target: '.tour-target-profile-major',
-    message: '전공 학과를 설정해주세요.',
+    message: '전공 중인 **학과**를 선택하거나 직접 입력하여 지정해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
+    id: 'profile-tab-aptitude',
+    target: '.tour-target-tab-aptitude',
+    message: '**진로 적성 진단** 탭을 눌러 MBTI와 직업 적성 검사를 확인해 볼까요?',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: () => {
+      const el = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
+      if (el) el.click();
+    }
+  },
+  {
     id: 'profile-mbti',
     target: '.tour-target-profile-mbti',
-    message: 'MBTI를 설정해주세요. (상세 분석에서 검사 가능)',
+    message: '**MBTI 진단**을 통해 나의 성향에 어울리는 추천 직무를 확인할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'profile-holland',
     target: '.tour-target-profile-holland',
-    message: '홀랜드 진로적성을 설정해주세요. (상세 분석에서 검사 가능)',
+    message: '**홀랜드 진로 적성 검사**로 나에게 최적화된 산업 분야와 전공을 찾아보세요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
-    id: 'profile-company',
-    target: '.tour-target-profile-company',
-    message: '희망 기업을 설정해주세요.',
+    id: 'profile-tab-companies',
+    target: '.tour-target-tab-companies',
+    message: '**희망 목표 기업** 탭에서는 목표로 하는 기업을 등록하고 맞춤 취업 정보를 관리할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
-      const el = document.querySelector('.tour-target-edit-mode') as HTMLElement;
-      if (el) el.click(); // Save mode
+      const el = document.querySelector('.tour-target-tab-companies') as HTMLElement;
+      if (el) el.click();
+    }
+  },
+  {
+    id: 'profile-tab-settings',
+    target: '.tour-target-tab-settings',
+    message: '**환경 설정** 탭에서는 화면 테마와 애니메이션 효과를 맞춤 설정할 수 있어요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: () => {
+      const el = document.querySelector('.tour-target-tab-settings') as HTMLElement;
+      if (el) el.click();
     }
   },
   {
@@ -301,6 +331,27 @@ export function OnboardingTour() {
     raf = requestAnimationFrame(updateRect);
 
     return () => cancelAnimationFrame(raf);
+  }, [isActive, stepIndex, location.pathname]);
+
+  // Ensure the appropriate tab is active in MyPage for profile tour steps
+  useEffect(() => {
+    if (!isActive || stepIndex === 0) return;
+    const step = TOUR_STEPS[stepIndex];
+    if (!step) return;
+
+    if (step.id === 'profile-mbti' || step.id === 'profile-holland') {
+      const tabEl = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
+      if (tabEl) tabEl.click();
+    } else if (
+      step.id === 'profile-tab-basic' || 
+      step.id === 'profile-academic' || 
+      step.id === 'profile-name' || 
+      step.id === 'profile-school' || 
+      step.id === 'profile-major'
+    ) {
+      const tabEl = document.querySelector('.tour-target-tab-profile') as HTMLElement;
+      if (tabEl) tabEl.click();
+    }
   }, [isActive, stepIndex, location.pathname]);
 
   // Handle scrolling when step changes
