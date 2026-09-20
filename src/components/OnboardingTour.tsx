@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MousePointerClick } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { AlienUFOSvg } from './FloatingAliens';
@@ -586,14 +586,6 @@ export function OnboardingTour() {
               {/* Highlight Focus Frame */}
               <div className="absolute inset-0 rounded-xl border-2 border-teal-400 shadow-[0_0_20px_rgba(20,184,166,0.45)] pointer-events-none animate-pulse" />
               <div className="absolute inset-0 rounded-xl border border-teal-400/50 pointer-events-none animate-ping opacity-30" />
-              
-              {/* Refined Click / Tap Badge Indicator (Hide when target is on the left) */}
-              {targetRect.x >= 120 && (
-                <div className={`absolute ${targetRect.y + targetRect.height > (typeof window !== 'undefined' ? window.innerHeight - 50 : 600) ? '-top-3' : '-bottom-3'} right-1 sm:right-2 pointer-events-none z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-600 text-white text-xs font-bold shadow-lg shadow-teal-600/40 border border-teal-300/40 animate-bounce whitespace-nowrap`}>
-                  <MousePointerClick className="w-3.5 h-3.5 text-teal-100 shrink-0" />
-                  <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">클릭</span>
-                </div>
-              )}
             </>
           )}
         </div>
