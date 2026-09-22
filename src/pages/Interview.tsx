@@ -551,33 +551,28 @@ export default function Interview() {
             {t('AI 모의면접 시간을 선택해 주세요')}
           </h1>
 
-          <p className={`text-xs sm:text-sm max-w-lg mx-auto leading-relaxed ${isLightMode ? 'text-slate-600' : 'text-slate-400'}`}>
-            {t('희망하시는 면접 코스 길이를 선택하시면, 베테랑 기술 면접관이 실시간 카메라 행동(목소리 크기, 시선, 손버릇, 자세)을 분석하며 실전 꼬리 질문을 주고받습니다.')}
+          <p className={`text-sm max-w-md mx-auto leading-relaxed ${isLightMode ? 'text-slate-600' : 'text-slate-400'}`}>
+            {t('원하는 면접 시간을 선택하면 실시간 행동 분석과 대화형 꼬리 질문이 시작됩니다.')}
           </p>
 
           {/* 3 Course Option Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
             {/* 3 Minutes Course */}
             <button
               type="button"
               onClick={() => handleSelectCourse(3)}
-              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between group hover:scale-102 hover:shadow-lg ${
+              className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg ${
                 isLightMode 
                   ? 'bg-white border-slate-200 hover:border-indigo-500' 
                   : 'bg-slate-900 border-slate-800 hover:border-indigo-500'
               }`}
             >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center font-black text-base mb-3 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                  <Clock size={20} />
-                </div>
-                <h3 className="font-extrabold text-base mb-1">{t('3분 핵심 압축 면접')}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  {t('자기소개, 핵심 장단점, 직무 극복 경험 위주의 빠른 스피드 테스트 (3문항)')}
-                </p>
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center font-black text-lg mb-3 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <Clock size={22} />
               </div>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                <span>{t('3분 코스 시작하기')}</span> →
+              <h3 className="font-extrabold text-base mb-1">{t('3분 핵심 압축 면접')}</h3>
+              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-2">
+                {t('시작하기')} →
               </span>
             </button>
 
@@ -585,26 +580,21 @@ export default function Interview() {
             <button
               type="button"
               onClick={() => handleSelectCourse(5)}
-              className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between group hover:scale-102 hover:shadow-xl relative ${
+              className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-xl relative ${
                 isLightMode 
                   ? 'bg-gradient-to-b from-indigo-50/50 to-white border-indigo-500 shadow-sm' 
                   : 'bg-gradient-to-b from-indigo-950/40 to-slate-900 border-indigo-500'
               }`}
             >
-              <span className="absolute -top-2.5 right-4 bg-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+              <span className="absolute -top-2.5 bg-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
                 {t('추천 코스')}
               </span>
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-base mb-3">
-                  <Flame size={20} />
-                </div>
-                <h3 className="font-extrabold text-base mb-1">{t('5분 표준 실전 면접')}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  {t('장단점, 기술 갈등, 협업 태도, 꼬리 질문을 완벽히 다루는 실전형 코스 (5문항)')}
-                </p>
+              <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg mb-3">
+                <Flame size={22} />
               </div>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                <span>{t('5분 코스 시작하기')}</span> →
+              <h3 className="font-extrabold text-base mb-1">{t('5분 표준 실전 면접')}</h3>
+              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-2">
+                {t('시작하기')} →
               </span>
             </button>
 
@@ -612,23 +602,18 @@ export default function Interview() {
             <button
               type="button"
               onClick={() => handleSelectCourse(10)}
-              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between group hover:scale-102 hover:shadow-lg ${
+              className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg ${
                 isLightMode 
                   ? 'bg-white border-slate-200 hover:border-purple-500' 
                   : 'bg-slate-900 border-slate-800 hover:border-purple-500'
               }`}
             >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-black text-base mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                  <ShieldCheck size={20} />
-                </div>
-                <h3 className="font-extrabold text-base mb-1">{t('10분 심층 기술 면접')}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  {t('안전 규정, 돌발 위기, 상사 피드백 수용, 5년 후 포부까지 정밀 검증 (8문항)')}
-                </p>
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-black text-lg mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                <ShieldCheck size={22} />
               </div>
-              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                <span>{t('10분 코스 시작하기')}</span> →
+              <h3 className="font-extrabold text-base mb-1">{t('10분 심층 기술 면접')}</h3>
+              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 mt-2">
+                {t('시작하기')} →
               </span>
             </button>
           </div>
