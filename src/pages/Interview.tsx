@@ -106,6 +106,7 @@ export default function Interview() {
 
   // 면접 코스 시간 선택 모달 (null: 코스 미선택, 3 | 5 | 10: 선택됨)
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null);
+  const [candidateDuration, setCandidateDuration] = useState<number>(5); // 카드 선택 상태 (기본 5분 추천)
   const [activeQuestions, setActiveQuestions] = useState<InterviewQuestion[]>([]);
 
   // 실시간 면접 제한 시간 타이머 (초 단위)
@@ -173,16 +174,58 @@ export default function Interview() {
   // 음성 TTS 안내 (중장년 남성 베테랑 면접관 톤)
   const [voiceGuideEnabled, setVoiceGuideEnabled] = useState<boolean>(true);
 
-  // 1. 코스 선택 핸들러
-  const handleSelectCourse = (minutes: 3 | 5 | 10) => {
-    setSelectedDuration(minutes);
+  // 상단 제어 바: 마이크 음소거 / 카메라 끄기 토글
+  const [isMicMuted, setIsMicMuted] = useState<boolean>(false);
+  const [isCameraOff, setIsCameraOff] = useState<boolean>(false);
+
+  // 마이크 음소거 토글
+  const toggleMicMute = () => {
+    if (stream) {
+      const audioTracks = stream.getAudioTracks();
+      if (audioTracks.length > 0) {
+        const nextState = !audioTracks[0].enabled;
+        audioTracks.forEach(t => { t.enabled = nextState; });
+        setIsMicMuted(!nextState);
+      } else {
+        setIsMicMuted(prev => !prev);
+      }
+    } else {
+      setIsMicMuted(prev => !prev);
+    }
+  };
+
+  // 카메라 ON/OFF 토글
+  const toggleCameraOff = () => {
+    if (stream) {
+      const videoTracks = stream.getVideoTracks();
+      if (videoTracks.length > 0) {
+        const nextState = !videoTracks[0].enabled;
+        videoTracks.forEach(t => { t.enabled = nextState; });
+        setIsCameraOff(!nextState);
+      } else {
+        setIsCameraOff(prev => !prev);
+      }
+    } else {
+      setIsCameraOff(prev => !prev);
+    }
+  };
+
+  // 1. 코스 카드 선택 (즉시 시작하지 않고 후보 등록)
+  const handleSelectCourseCard = (minutes: 3 | 5 | 10) => {
+    setCandidateDuration(minutes);
+  };
+
+  // 정식 면접 시작 버튼 핸들러 (사용자가 시작 버튼을 누를 때 시작)
+  const handleStartInterview = (minutes?: number) => {
+    const targetMin = minutes || candidateDuration || 5;
+    setSelectedDuration(targetMin);
     let count = 3;
-    if (minutes === 5) count = 5;
-    if (minutes === 10) count = 8;
+    if (targetMin === 5) count = 5;
+    if (targetMin === 10) count = 8;
 
     const chosen = ALL_QUESTIONS.slice(0, count);
     setActiveQuestions(chosen);
-    setRemainingTime(minutes * 60);
+    setRemainingTime(targetMin * 60);
     setIsTimerRunning(true);
     setCurrentStep(1);
     setCurrentAnswer('');
@@ -560,65 +603,97 @@ export default function Interview() {
             {/* 3 Minutes Course */}
             <button
               type="button"
-              onClick={() => handleSelectCourse(3)}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg ${
-                isLightMode 
-                  ? 'bg-white border-slate-200 hover:border-indigo-500' 
-                  : 'bg-slate-900 border-slate-800 hover:border-indigo-500'
+              onClick={() => handleSelectCourseCard(3)}
+              className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg relative ${
+                candidateDuration === 3
+                  ? (isLightMode ? 'bg-indigo-50/70 border-indigo-600 shadow-md' : 'bg-indigo-950/40 border-indigo-500 shadow-md')
+                  : (isLightMode ? 'bg-white border-slate-200 hover:border-indigo-300' : 'bg-slate-900 border-slate-800 hover:border-indigo-400')
               }`}
             >
-              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center font-black text-lg mb-3 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+              {candidateDuration === 3 && (
+                <span className="absolute -top-2.5 bg-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+                  {t('선택됨')}
+                </span>
+              )}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg mb-3 transition-colors ${
+                candidateDuration === 3 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-indigo-500/10 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'
+              }`}>
                 <Clock size={22} />
               </div>
               <h3 className="font-extrabold text-base mb-1">{t('3분 핵심 압축 면접')}</h3>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-2">
-                {t('시작하기')} →
+              <span className={`text-xs font-bold mt-2 ${candidateDuration === 3 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`}>
+                {candidateDuration === 3 ? t('선택 완료') : t('선택하기')}
               </span>
             </button>
 
             {/* 5 Minutes Course (Recommended) */}
             <button
               type="button"
-              onClick={() => handleSelectCourse(5)}
+              onClick={() => handleSelectCourseCard(5)}
               className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-xl relative ${
-                isLightMode 
-                  ? 'bg-gradient-to-b from-indigo-50/50 to-white border-indigo-500 shadow-sm' 
-                  : 'bg-gradient-to-b from-indigo-950/40 to-slate-900 border-indigo-500'
+                candidateDuration === 5
+                  ? (isLightMode ? 'bg-indigo-50/70 border-indigo-600 shadow-md' : 'bg-indigo-950/40 border-indigo-500 shadow-md')
+                  : (isLightMode ? 'bg-white border-slate-200 hover:border-indigo-300' : 'bg-slate-900 border-slate-800 hover:border-indigo-400')
               }`}
             >
               <span className="absolute -top-2.5 bg-indigo-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
-                {t('추천 코스')}
+                {candidateDuration === 5 ? t('선택됨 (추천)') : t('추천 코스')}
               </span>
-              <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg mb-3">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg mb-3 transition-colors ${
+                candidateDuration === 5 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-indigo-500/10 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white'
+              }`}>
                 <Flame size={22} />
               </div>
               <h3 className="font-extrabold text-base mb-1">{t('5분 표준 실전 면접')}</h3>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mt-2">
-                {t('시작하기')} →
+              <span className={`text-xs font-bold mt-2 ${candidateDuration === 5 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'}`}>
+                {candidateDuration === 5 ? t('선택 완료') : t('선택하기')}
               </span>
             </button>
 
             {/* 10 Minutes Course */}
             <button
               type="button"
-              onClick={() => handleSelectCourse(10)}
-              className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg ${
-                isLightMode 
-                  ? 'bg-white border-slate-200 hover:border-purple-500' 
-                  : 'bg-slate-900 border-slate-800 hover:border-purple-500'
+              onClick={() => handleSelectCourseCard(10)}
+              className={`p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center group hover:scale-102 hover:shadow-lg relative ${
+                candidateDuration === 10
+                  ? (isLightMode ? 'bg-purple-50/70 border-purple-600 shadow-md' : 'bg-purple-950/40 border-purple-500 shadow-md')
+                  : (isLightMode ? 'bg-white border-slate-200 hover:border-purple-300' : 'bg-slate-900 border-slate-800 hover:border-purple-400')
               }`}
             >
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-black text-lg mb-3 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+              {candidateDuration === 10 && (
+                <span className="absolute -top-2.5 bg-purple-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs">
+                  {t('선택됨')}
+                </span>
+              )}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg mb-3 transition-colors ${
+                candidateDuration === 10 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-purple-500/10 text-purple-600 group-hover:bg-purple-600 group-hover:text-white'
+              }`}>
                 <ShieldCheck size={22} />
               </div>
               <h3 className="font-extrabold text-base mb-1">{t('10분 심층 기술 면접')}</h3>
-              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 mt-2">
-                {t('시작하기')} →
+              <span className={`text-xs font-bold mt-2 ${candidateDuration === 10 ? 'text-purple-600 dark:text-purple-400' : 'text-slate-400'}`}>
+                {candidateDuration === 10 ? t('선택 완료') : t('선택하기')}
               </span>
             </button>
           </div>
 
-          <div className="pt-2">
+          {/* 명시적인 시작 버튼 */}
+          <div className="pt-4 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={() => handleStartInterview(candidateDuration)}
+              className="w-full sm:w-80 py-4 px-8 rounded-2xl font-black text-base text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg hover:shadow-indigo-500/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Play size={18} fill="currentColor" />
+              <span>{candidateDuration}분 모의면접 시작하기</span>
+            </button>
+            
             <Link
               to="/cover-letter"
               className={`text-xs font-semibold inline-flex items-center gap-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors`}
@@ -689,6 +764,36 @@ export default function Interview() {
             <span className="hidden sm:inline">{t('전용 키')}</span>
           </button>
 
+          {/* 마이크 음소거 토글 버튼 */}
+          <button
+            type="button"
+            onClick={toggleMicMute}
+            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+              isMicMuted
+                ? 'bg-red-500/10 border-red-500/30 text-red-500'
+                : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200' : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700')
+            }`}
+            title={isMicMuted ? "마이크 켜기" : "내 마이크 음소거"}
+          >
+            {isMicMuted ? <MicOff size={16} /> : <Mic size={16} />}
+            <span className="hidden md:inline">{isMicMuted ? t('마이크 꺼짐') : t('마이크 ON')}</span>
+          </button>
+
+          {/* 카메라 끄기/켜기 토글 버튼 */}
+          <button
+            type="button"
+            onClick={toggleCameraOff}
+            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+              isCameraOff
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-500'
+                : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200' : 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700')
+            }`}
+            title={isCameraOff ? "카메라 켜기" : "내 카메라 끄기"}
+          >
+            {isCameraOff ? <CameraOff size={16} /> : <Camera size={16} />}
+            <span className="hidden md:inline">{isCameraOff ? t('카메라 꺼짐') : t('카메라 ON')}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => setVoiceGuideEnabled(!voiceGuideEnabled)}
@@ -700,7 +805,7 @@ export default function Interview() {
             title={voiceGuideEnabled ? "면접관 음성 켜짐 (중장년 톤)" : "면접관 음성 꺼짐"}
           >
             {voiceGuideEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-            <span className="hidden sm:inline">{voiceGuideEnabled ? '면접관 음성 ON' : '음소거'}</span>
+            <span className="hidden lg:inline">{voiceGuideEnabled ? '면접관 음성 ON' : '음소거'}</span>
           </button>
         </div>
       </header>
@@ -769,27 +874,30 @@ export default function Interview() {
                 autoPlay 
                 playsInline 
                 muted 
-                className={`w-full h-full object-cover transform -scale-x-100 ${!cameraActive ? 'hidden' : 'block'}`}
+                className={`w-full h-full object-cover transform -scale-x-100 ${(!cameraActive || isCameraOff) ? 'hidden' : 'block'}`}
               />
 
-              {!cameraActive && (
+              {(!cameraActive || isCameraOff) && (
                 <div className="flex flex-col items-center justify-center text-center p-6 text-slate-400">
                   <div className="w-16 h-16 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-3">
-                    <Camera size={28} className="text-slate-400" />
+                    <CameraOff size={28} className="text-slate-400" />
                   </div>
-                  <p className="text-sm font-bold text-slate-200 mb-1">{t('카메라가 꺼져 있습니다')}</p>
+                  <p className="text-sm font-bold text-slate-200 mb-1">
+                    {isCameraOff ? t('사용자에 의해 카메라가 꺼졌습니다') : t('카메라가 꺼져 있습니다')}
+                  </p>
                   <button
                     type="button"
-                    onClick={startCamera}
-                    className="mt-3 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer"
+                    onClick={isCameraOff ? toggleCameraOff : startCamera}
+                    className="mt-3 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1.5"
                   >
-                    {t('카메라 켜기')}
+                    <Camera size={14} />
+                    <span>{t('카메라 켜기')}</span>
                   </button>
                 </div>
               )}
 
-              {/* Live Overlay HUD when Camera is Active */}
-              {cameraActive && (
+              {/* Live Overlay HUD when Camera is Active and not turned off */}
+              {cameraActive && !isCameraOff && (
                 <>
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-white border border-white/10">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
