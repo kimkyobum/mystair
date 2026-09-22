@@ -2,12 +2,57 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
+import https from "https";
+import querystring from "querystring";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 import { Pool } from "pg";
 import { correctKoreanText } from "./src/utils/koreanSpellChecker";
 
 dotenv.config();
+
+// Daum Grammar / Spell Checking Service Proxy with fallback
+function queryDaumGrammarChecker(text: string): Promise<{ correctedText: string; count: number }> {
+  return new Promise((resolve) => {
+    if (!text || !text.trim()) {
+      return resolve({ correctedText: text || "", count: 0 });
+    }
+    const postData = querystring.stringify({ sentence: text });
+    const req = https.request("https://alldic.daum.net/grammar_checker.do", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Length": Buffer.byteLength(postData),
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      },
+      timeout: 3500
+    }, (res) => {
+      let html = "";
+      res.on("data", chunk => { html += chunk; });
+      res.on("end", () => {
+        const matches = [...html.matchAll(/data-error-input=\"([^\"]+)\"\s+data-error-output=\"([^\"]+)\"/g)];
+        let result = text;
+        let count = 0;
+        for (const m of matches) {
+          const errIn = m[1];
+          const errOut = m[2].split("|")[0];
+          if (errIn !== errOut && result.includes(errIn)) {
+            result = result.replace(errIn, errOut);
+            count++;
+          }
+        }
+        resolve({ correctedText: result, count });
+      });
+    });
+    req.on("error", () => resolve({ correctedText: text, count: 0 }));
+    req.on("timeout", () => {
+      req.destroy();
+      resolve({ correctedText: text, count: 0 });
+    });
+    req.write(postData);
+    req.end();
+  });
+}
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -1275,6 +1320,17 @@ app.post("/api/check-spelling", async (req, res) => {
       return res.json({ correctedText: text || "", count: 0 });
     }
 
+    // Step 1: 1차 국립국어원 규정 기반 외부 문법/맞춤법 검사기 호출
+    let daumResult = { correctedText: text, count: 0 };
+    try {
+      daumResult = await queryDaumGrammarChecker(text);
+    } catch (daumErr) {
+      console.warn("Daum spellcheck error, continuing to AI / rules:", daumErr);
+    }
+
+    let intermediateText = daumResult.correctedText || text;
+
+    // Step 2: 2차 Gemini AI 기반 문맥 및 어휘 정밀 교정 (시도)
     const prompt = `
 다음 텍스트는 학생이 작성한 자기소개서 본문입니다.
 한국어 맞춤법 규정, 띄어쓰기 규칙, 오탈자, 잘못된 조사/어미를 국립국어원 표준에 맞게 정확히 교정한 최종 완성 텍스트를 출력하세요.
@@ -1289,7 +1345,7 @@ app.post("/api/check-spelling", async (req, res) => {
 }
 
 [검사 및 수정할 원문 텍스트]
-${text}
+${intermediateText}
 `;
 
     const systemInstruction = "너는 한국어 맞춤법 및 국립국어원 표준 규정에 정통한 전문 교정 전문가입니다. 원문의 의미와 문맥을 보존하며 오타, 띄어쓰기, 맞춤법만 완벽하게 수정한 결과를 JSON으로 반환합니다.";
@@ -1301,43 +1357,42 @@ ${text}
         systemInstruction
       );
     } catch (aiErr: any) {
-      console.warn("AI generation failed for spelling, using deterministic Korean rules engine:", aiErr?.message || aiErr);
+      // Gemini 사용 불가 시에도 전혀 중단 없이 계속 진행
+      console.warn("AI generation failed for spelling, proceeding to universal rules engine:", aiErr?.message || aiErr);
     }
 
-    if (!geminiRes || !geminiRes.text) {
-      const fallbackResult = correctKoreanText(text);
-      return res.json({
-        correctedText: fallbackResult.correctedText,
-        count: fallbackResult.count
-      });
-    }
+    let aiCorrectedText = intermediateText;
+    let aiCount = daumResult.count || 0;
 
-    const rawOutput = geminiRes.text || "{}";
-    const cleaned = rawOutput
-      .replace(/```json/gi, "")
-      .replace(/```/g, "")
-      .trim();
+    if (geminiRes && geminiRes.text) {
+      const rawOutput = geminiRes.text || "{}";
+      const cleaned = rawOutput
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
 
-    let parsed: any = { correctedText: text, count: 0 };
-    try {
-      parsed = JSON.parse(cleaned);
-      if (!parsed.correctedText || typeof parsed.correctedText !== "string") {
-        parsed = correctKoreanText(text);
+      try {
+        const parsed = JSON.parse(cleaned);
+        if (parsed.correctedText && typeof parsed.correctedText === "string") {
+          aiCorrectedText = parsed.correctedText;
+          if (typeof parsed.count === "number") {
+            aiCount += parsed.count;
+          }
+        }
+      } catch (parseErr) {
+        console.warn("Spelling fix parse error fallback", parseErr, rawOutput);
       }
-    } catch (parseErr) {
-      console.warn("Spelling fix parse error fallback", parseErr, rawOutput);
-      parsed = correctKoreanText(text);
     }
 
-    // Apply rule engine as secondary polish to guarantee particles & spacing
-    const finalPolish = correctKoreanText(parsed.correctedText);
+    // Step 3: 3차 한글 음운 자모 분해 및 보편 맞춤법 규칙 엔진 (100% 무조건 적용 보장)
+    const finalResult = correctKoreanText(aiCorrectedText);
 
     return res.json({
-      correctedText: finalPolish.correctedText,
-      count: finalPolish.correctedText !== text ? Math.max(parsed.count || 0, finalPolish.count, 1) : 0
+      correctedText: finalResult.correctedText,
+      count: finalResult.correctedText !== text ? Math.max(aiCount, finalResult.count, 1) : 0
     });
   } catch (err: any) {
-    console.error("Error in /api/check-spelling, applying safe fallback:", err);
+    console.error("Error in /api/check-spelling, applying safe universal fallback:", err);
     const safeFallback = correctKoreanText(req.body?.text || "");
     return res.json({
       correctedText: safeFallback.correctedText,
