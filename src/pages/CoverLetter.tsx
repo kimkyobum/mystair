@@ -17,7 +17,8 @@ import {
   ExternalLink,
   PlusCircle,
   Wand2,
-  RefreshCw
+  RefreshCw,
+  Camera
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -335,6 +336,14 @@ export default function CoverLetter() {
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            to="/interview"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition-all cursor-pointer"
+          >
+            <Camera size={14} />
+            <span>{t('AI 모의면접')}</span>
+          </Link>
+
           {savedTime && (
             <span className={`text-[11px] hidden sm:flex items-center gap-1 ${isLightMode ? 'text-slate-400' : 'text-slate-500'}`}>
               <Clock size={12} />

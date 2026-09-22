@@ -12,7 +12,8 @@ import {
   Sparkles,
   Users,
   Compass as CompassIcon,
-  FileText
+  FileText,
+  Camera
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -29,7 +30,7 @@ export default function Sidebar() {
   const location = useLocation();
   const { isLightMode } = useTheme();
   
-  const isDarkTheme = !isLightMode && (location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/cover-letter' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/company-search');
+  const isDarkTheme = !isLightMode && (location.pathname === '/' || location.pathname === '/diary' || location.pathname === '/interview' || location.pathname === '/cover-letter' || location.pathname === '/mypage' || location.pathname === '/profile' || location.pathname === '/mbti' || location.pathname === '/holland' || location.pathname === '/certificates' || location.pathname === '/company-search');
 
   const displayName = userProfile?.name || user?.displayName || (t('게스트', 'Guest'));
 
@@ -52,6 +53,7 @@ export default function Sidebar() {
   const navItems = [
     { name: 'MyStair AI', path: '/', icon: <Sparkles size={22} className={isLightMode ? "text-teal-600" : "text-teal-400"} /> },
     { name: '성장다이어리', path: '/diary', icon: <BookOpen size={22} /> },
+    { name: '모의면접', path: '/interview', icon: <Camera size={22} className={isLightMode ? "text-indigo-600" : "text-indigo-400"} /> },
     { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={22} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={22} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={22} /> },
