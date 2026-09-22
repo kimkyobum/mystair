@@ -1442,13 +1442,15 @@ app.post("/api/evaluate-interview", async (req, res) => {
     const {
       eyeContactScore = 90,
       postureStability = 92,
-      facialExpressionScore = 88,
-      voiceClarityScore = 90
+      voiceLoudnessScore = 88,
+      fidgetingCount = 0,
+      distractingHabits = []
     } = behaviorMetrics || {};
 
     const prompt = `
-당신은 마이스터고 및 직업계고 학생 채용을 전문으로 하는 대기업/공기업 베테랑 기술 면접관입니다.
-지원자가 제시한 면접 질문에 대한 답변과 실시간 카메라 행동 분석 지표를 종합 평가하고, 실전 대화형 꼬리 질문(follow-up question)을 생성해 주세요.
+당신은 마이스터고 및 직업계고 학생 채용을 전문으로 하는 대기업/공기업 50대 중장년 베테랑 기술 면접관입니다.
+지원자가 제시한 면접 질문에 대한 답변과 실시간 카메라 행동 분석 지표(목소리 크기, 시선, 손톱 만지기나 얼굴 손대기 등 거슬리는 습관, 자세)를 결합하여 종합 평가하고,
+실제 사람이 직접 묻는 것처럼 실전 꼬리 질문 2개를 생성해 주세요.
 
 [지원 정보]
 - 희망 기업: ${targetCompany || "기술 중심 기업"}
@@ -1464,16 +1466,25 @@ app.post("/api/evaluate-interview", async (req, res) => {
 [실시간 카메라 영상 및 음성 행동 분석 수치]
 - 시선 유지도 (Eye Contact): ${eyeContactScore}%
 - 자세 안정도 (Posture Stability): ${postureStability}%
-- 표정 긍정도 (Facial Expression): ${facialExpressionScore}%
-- 발화 명확도 (Voice Clarity): ${voiceClarityScore}%
+- 목소리 성량/크기 (Voice Loudness): ${voiceLoudnessScore}%
+- 거슬리는 산만한 행동 횟수 (얼굴/입 손대기, 손톱 물어뜯기 등): ${fidgetingCount}회
+- 감지된 거슬리는 습관: ${distractingHabits.length > 0 ? distractingHabits.join(", ") : "특이사항 없음"}
+
+[꼬리 질문 생성 원칙]
+1. 지원자가 경험이나 프로젝트를 언급했다면: "그 경험을 통해 최종적으로 본인이 얻게 된 점이나 역량이 구체적으로 무엇인가?"
+2. 협업이나 갈등 상황과 연계하여: "그 과정에서 동료나 조원과 의견 충돌이나 다툼은 없었는지, 어떻게 조율했는가?"
+위 두 가지 질문 맥락을 포함하여 현장 면접관의 어조로 꼬리 질문 2개를 작성하세요.
 
 다음 JSON 형식으로만 엄격하게 응답해 주세요:
 {
   "score": 80~95 사이의 종합 점수(숫자),
-  "comment": "답변 내용과 행동 태도(시선, 자세, 표정)를 결합한 전체적인 총평(2~3문장)",
-  "followUpQuestion": "지원자의 답변 내용 중 구체성이 부족하거나 더 깊이 확인하고 싶은 실무/경험 꼬리 질문(1문장)",
+  "comment": "답변 내용과 목소리 크기, 시선, 손톱/손동작 태도를 결합한 전체적인 총평(2~3문장)",
+  "followUpQuestions": [
+    "경험을 통해 무엇을 얻었는지 묻는 실전 꼬리 질문 1",
+    "동료/친구와의 갈등이나 소통 과정을 묻는 실전 꼬리 질문 2"
+  ],
   "goodPoints": ["답변 내용 및 태도 측면에서 잘한 점 1", "잘한 점 2"],
-  "improvePoints": ["내용이나 자세/시선 측면에서 보완하면 좋을 점 1", "보완하면 좋을 점 2"]
+  "improvePoints": ["내용이나 자세/시선/손버릇 측면에서 보완하면 좋을 점 1", "보완하면 좋을 점 2"]
 }
 `;
 
@@ -1515,10 +1526,14 @@ app.post("/api/evaluate-interview", async (req, res) => {
       const cleaned = aiResult.text.replace(/```json/gi, "").replace(/```/g, "").trim();
       try {
         const parsed = JSON.parse(cleaned);
+        const returnedFollowUps = parsed.followUpQuestions || (parsed.followUpQuestion ? [parsed.followUpQuestion] : [
+          "그 경험을 통해 최종적으로 본인이 얻게 된 가장 큰 역량이나 깨달음은 무엇이었나요?",
+          "그 과정에서 동료나 조원과 의견 충돌이나 다툼은 없었습니까? 어떻게 조율했나요?"
+        ]);
         return res.json({
           score: parsed.score || 88,
-          comment: parsed.comment || "자신의 경험을 바탕으로 성실하게 답변하셨습니다.",
-          followUpQuestion: parsed.followUpQuestion || `해당 경험을 실제 산업 현장에 적용할 때 가장 주의해야 할 안전 요소는 무엇이라고 생각하나요?`,
+          comment: parsed.comment || "자신의 경험을 바탕으로 솔직하고 진중하게 답변하셨습니다.",
+          followUpQuestions: returnedFollowUps,
           goodPoints: parsed.goodPoints || ["실제 경험을 바탕으로 진솔하게 설명함", "직무에 대한 열정이 드러남"],
           improvePoints: parsed.improvePoints || ["결과 수치를 함께 제시하면 설득력이 높아집니다", "두괄식 문장 구성을 추천합니다"]
         });
@@ -1529,28 +1544,24 @@ app.post("/api/evaluate-interview", async (req, res) => {
 
     // AI 키가 없거나 대체 시 작동하는 정밀 행동-답변 연계 평가 엔진
     const ansLen = (answer || "").length;
-    const baseScore = Math.min(95, Math.max(83, 80 + Math.floor(ansLen / 25) + (eyeContactScore >= 90 ? 2 : 0)));
+    const baseScore = Math.min(95, Math.max(83, 80 + Math.floor(ansLen / 25) + (eyeContactScore >= 90 ? 2 : 0) - (fidgetingCount > 0 ? 2 : 0)));
 
-    const followUps: Record<string, string> = {
-      "기본역량": "우리 회사의 인재상과 본인이 일치한다고 느낀 가장 대표적인 학창 시절 에피소드를 하나만 더 꼽는다면 무엇인가요?",
-      "전공직무": "그 기술적 문제 해결 과정에서 만약 장비나 부품 지원이 부족했다면 대안으로 어떤 방법을 모색하셨을 것 같나요?",
-      "협업태도": "의견 충돌 과정에서 상대방 조원이 끝까지 자신의 주장을 굽히지 않았다면 어떻게 설득을 이어가셨을까요?",
-      "돌발위기": "비슷한 안전 위기 상황을 방지하기 위해 작업 매뉴얼이나 공정에 추가하고 싶은 체크리스트가 있나요?"
-    };
-
-    const followUp = followUps[category] || "해당 경험을 실무에서 발휘할 때 가장 큰 차별점이 되는 본인만의 장점은 무엇인가요?";
+    const fallbackFollowUps = [
+      "그 경험이나 프로젝트를 수행하면서 최종적으로 본인이 얻게 된 가장 큰 기술적 역량은 무엇이었나요?",
+      "그 과정에서 함께 작업하던 조원이나 친구와 의견 충돌은 없었습니까? 어떻게 풀어나갔나요?"
+    ];
 
     return res.json({
       score: baseScore,
-      comment: `카메라 시선 유지(${eyeContactScore}%)와 전반적인 자세가 매우 안정적이며, 전공에 대한 진지한 태도로 질문의 요지를 명확히 짚어 답변하셨습니다.`,
-      followUpQuestion: followUp,
+      comment: `목소리 성량(${voiceLoudnessScore}%)과 시선(${eyeContactScore}%)이 전반적으로 양호합니다. ${fidgetingCount > 0 ? "다만 손을 얼굴에 대거나 손톱을 만지는 거슬리는 습관은 실제 면접에서 감점 요인이 되니 손을 무릎에 단정히 고정하세요." : "바른 자세와 침착한 시선으로 면접관에게 신뢰를 주는 답변입니다."}`,
+      followUpQuestions: fallbackFollowUps,
       goodPoints: [
         `카메라 렌즈를 향한 시선 유지와 당당한 어조 (시선 점수: ${eyeContactScore}%)`,
-        "실습 경험을 바탕으로 기술적 맥락을 구체적으로 설명함"
+        "실습 및 학창 시절 경험을 바탕으로 구체적인 사례를 언급함"
       ],
       improvePoints: [
-        "답변 시작 시 핵심 결론을 1문장으로 먼저 제시(두괄식)하면 면접관의 집중도를 훨씬 높일 수 있습니다.",
-        "수행 기간이나 결과 수치(단축 시간, 오차율 등)를 보강하면 설득력이 더욱 배가됩니다."
+        fidgetingCount > 0 ? "손으로 턱이나 입, 손톱을 만지는 불필요한 손동작 고치기" : "눈을 너무 자주 깜빡이지 않도록 호흡을 가다듬기",
+        "답변 첫 문장에 핵심 결론을 먼저 제시하는 두괄식 구조 연습하기"
       ]
     });
   } catch (err: any) {
