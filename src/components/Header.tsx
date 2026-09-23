@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Brain, Compass, Users, User, Sparkles, HelpCircle, FileText } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Users, User, Sparkles, HelpCircle, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -18,8 +18,6 @@ export default function Header() {
     { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={18} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={18} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={18} /> },
-    { name: 'MBTI검사', path: '/mbti', icon: <Brain size={18} /> },
-    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={18} /> },
     { name: '만든 사람들', path: '/creators', icon: <Users size={18} /> },
     { name: '마이페이지', path: '/mypage', icon: <User size={18} /> }
   ];

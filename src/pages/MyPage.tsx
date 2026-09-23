@@ -508,28 +508,42 @@ export default function MyPage() {
             {/* Metric 2: MBTI */}
             <div 
               onClick={() => { setActiveTab('aptitude'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer group"
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <Brain size={12} />
-                <span>{t('MBTI 진단')}</span>
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Brain size={12} className="text-emerald-500" />
+                  <span>{t('MBTI 진단')}</span>
+                </span>
+                {!profile.mbti && (
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-100/80 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded group-hover:underline">
+                    {t('검사하기')}
+                  </span>
+                )}
               </div>
               <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
-                {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단')}
+                {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단 (클릭하여 검사)')}
               </div>
             </div>
 
             {/* Metric 3: 홀랜드 */}
             <div 
               onClick={() => { setActiveTab('aptitude'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer group"
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <Compass size={12} />
-                <span>{t('홀랜드 적성')}</span>
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Compass size={12} className="text-teal-500" />
+                  <span>{t('홀랜드 적성')}</span>
+                </span>
+                {!profile.hollandCode && (
+                  <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold bg-teal-100/80 dark:bg-teal-950/80 px-1.5 py-0.5 rounded group-hover:underline">
+                    {t('검사하기')}
+                  </span>
+                )}
               </div>
               <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
-                {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단')}
+                {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단 (클릭하여 검사)')}
               </div>
             </div>
 
@@ -901,6 +915,28 @@ export default function MyPage() {
         {activeTab === 'aptitude' && (
           <div className="space-y-6 animate-in fade-in duration-150">
             
+            {/* Aptitude Info Banner */}
+            <div className={`p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5 shadow-xs ${
+              isLightMode 
+                ? "bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-white border-emerald-200/80 text-emerald-950" 
+                : "bg-gradient-to-r from-emerald-950/40 via-teal-950/20 to-slate-900 border-emerald-900/60 text-emerald-100"
+            }`}>
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5 sm:mt-0">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold flex items-center gap-2">
+                    <span>{t('마이스터고 맞춤 진로 적성 심리검사')}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-semibold">{t('1회 검사 완료 추천')}</span>
+                  </h4>
+                  <p className="text-xs opacity-80 mt-0.5 leading-relaxed">
+                    {t('MBTI 성격 유형 진단과 홀랜드 직업적성검사를 마이페이지에서 간편하게 진행하세요. 검사 결과는 프로필에 저장되어 맞춤 기업 및 자기소개서 추천에 즉시 반영됩니다.')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
               {/* MBTI Card */}
@@ -916,7 +952,11 @@ export default function MyPage() {
                       </h3>
                     </div>
 
-                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                      profile.mbti 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    }`}>
                       {profile.mbti ? profile.mbti : t('미진단')}
                     </span>
                   </div>
@@ -983,13 +1023,26 @@ export default function MyPage() {
                       )}
                     </div>
                   ) : (
-                    <div className="py-8 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
-                        <Brain size={24} />
+                    <div className="py-7 px-4 text-center space-y-4 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 my-2">
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-xs">
+                        <Brain size={28} />
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {t('아직 MBTI 성격 진단 검사를 진행하지 않았습니다.')}
-                      </p>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                          {t('아직 MBTI 성격 진단 검사를 진행하지 않았습니다')}
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+                          {t('32가지 정밀 유형 분석을 통해 마이스터고 학생에게 최적화된 성격 특성과 추천 직무를 진단합니다.')}
+                        </p>
+                      </div>
+                      <Link
+                        to="/mbti"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                      >
+                        <Brain size={15} />
+                        <span>{t('MBTI 진단 검사 시작하기')}</span>
+                        <ChevronRight size={14} />
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -998,13 +1051,13 @@ export default function MyPage() {
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/mbti"
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1.5"
                   >
-                    <span>{profile.mbti ? t('검사 다시하기') : t('검사 진행하기')}</span>
+                    <span>{profile.mbti ? t('검사 다시하기') : t('검사 바로가기')}</span>
                     <ExternalLink size={12} />
                   </Link>
 
-                  {profile.mbti && (
+                  {profile.mbti ? (
                     <button
                       onClick={() => setActiveModal('mbti')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border ${
@@ -1013,6 +1066,10 @@ export default function MyPage() {
                     >
                       {t('상세 분석 보기')}
                     </button>
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      {t('약 5분 소요')}
+                    </span>
                   )}
                 </div>
               </div>
@@ -1030,7 +1087,11 @@ export default function MyPage() {
                       </h3>
                     </div>
 
-                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                      profile.hollandCode 
+                        ? 'bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/60 dark:border-teal-800 dark:text-teal-300' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    }`}>
                       {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단')}
                     </span>
                   </div>
@@ -1088,13 +1149,26 @@ export default function MyPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="py-8 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
-                        <Compass size={24} />
+                    <div className="py-7 px-4 text-center space-y-4 rounded-xl bg-slate-50/60 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 my-2">
+                      <div className="w-14 h-14 rounded-2xl bg-teal-100 dark:bg-teal-950/80 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto shadow-xs">
+                        <Compass size={28} />
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {t('아직 홀랜드 직업 적성 검사를 진행하지 않았습니다.')}
-                      </p>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                          {t('아직 홀랜드 직업 적성 검사를 진행하지 않았습니다')}
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+                          {t('RIASEC 6가지 직업 흥미 유형 분석을 통해 마이스터고 학생에게 최적화된 산업 분야를 진단합니다.')}
+                        </p>
+                      </div>
+                      <Link
+                        to="/holland"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                      >
+                        <Compass size={15} />
+                        <span>{t('홀랜드 직업적성검사 시작하기')}</span>
+                        <ChevronRight size={14} />
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -1103,13 +1177,13 @@ export default function MyPage() {
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                   <Link
                     to="/holland"
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1.5"
                   >
-                    <span>{profile.hollandCode ? t('검사 다시하기') : t('검사 진행하기')}</span>
+                    <span>{profile.hollandCode ? t('검사 다시하기') : t('검사 바로가기')}</span>
                     <ExternalLink size={12} />
                   </Link>
 
-                  {profile.hollandCode && (
+                  {profile.hollandCode ? (
                     <button
                       onClick={() => setActiveModal('holland')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer border ${
@@ -1118,6 +1192,10 @@ export default function MyPage() {
                     >
                       {t('상세 분석 보기')}
                     </button>
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      {t('약 7분 소요')}
+                    </span>
                   )}
                 </div>
               </div>

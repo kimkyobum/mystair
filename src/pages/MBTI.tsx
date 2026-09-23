@@ -153,8 +153,13 @@ export default function MBTI() {
         </div>
       </header>
 
-      <Link to="/" className="hidden sm:flex absolute top-[92px] left-10 w-20 h-[50px] rounded-xl justify-center items-center text-[24px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40">
-        ←
+      <Link 
+        to="/mypage" 
+        title={t('마이페이지로 돌아가기')}
+        className="hidden sm:flex absolute top-[92px] left-10 px-3.5 h-[44px] rounded-xl justify-center items-center gap-1.5 text-[13px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40"
+      >
+        <span>←</span>
+        <span>{t('마이페이지')}</span>
       </Link>
 
       <main className="flex-1 flex justify-center items-center py-10 px-5">

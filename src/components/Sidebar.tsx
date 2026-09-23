@@ -4,14 +4,10 @@ import {
   BookOpen, 
   Award, 
   Briefcase, 
-  Brain, 
-  Compass, 
   User,
   LogOut,
   LogIn,
   Sparkles,
-  Users,
-  Compass as CompassIcon,
   FileText,
   Camera
 } from 'lucide-react';
@@ -56,9 +52,7 @@ export default function Sidebar() {
     { name: '모의면접', path: '/interview', icon: <Camera size={22} className={isLightMode ? "text-indigo-600" : "text-indigo-400"} /> },
     { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={22} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={22} /> },
-    { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={22} /> },
-    { name: 'MBTI검사', path: '/mbti', icon: <Brain size={22} /> },
-    { name: '홀랜드 진로적성 검사', path: '/holland', icon: <Compass size={22} /> }
+    { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={22} /> }
   ];
 
   return (
