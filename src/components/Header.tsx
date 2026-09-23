@@ -52,11 +52,24 @@ export default function Header() {
         </div>
         
         <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
-          {navItems.slice(1, -1).map(item => (
-            <Link key={item.name} to={item.path} className={`${isLightMode ? 'text-slate-700 hover:text-slate-950 font-semibold' : 'text-white/80 hover:text-white font-medium'} transition-colors text-[15px] whitespace-nowrap`}>
-              {t(item.name)}
-            </Link>
-          ))}
+          {navItems.slice(1, -1).map(item => {
+            const isCoverLetter = item.path === '/cover-letter';
+            return (
+              <Link 
+                key={item.name} 
+                to={item.path} 
+                state={isCoverLetter ? { newLetter: Date.now() } : undefined}
+                onClick={() => {
+                  if (isCoverLetter) {
+                    window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
+                  }
+                }}
+                className={`${isLightMode ? 'text-slate-700 hover:text-slate-950 font-semibold' : 'text-white/80 hover:text-white font-medium'} transition-colors text-[15px] whitespace-nowrap`}
+              >
+                {t(item.name)}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
@@ -240,17 +253,26 @@ export default function Header() {
 
               {/* Navigation Items */}
               <nav className="flex flex-col gap-1.5">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 transition-all min-h-[44px] whitespace-nowrap word-keep"
-                  >
-                    <span className="text-teal-400 shrink-0">{item.icon}</span>
-                    <span className="truncate">{t(item.name)}</span>
-                  </Link>
-                ))}
+                {navItems.map((item) => {
+                  const isCoverLetter = item.path === '/cover-letter';
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      state={isCoverLetter ? { newLetter: Date.now() } : undefined}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        if (isCoverLetter) {
+                          window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
+                        }
+                      }}
+                      className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 transition-all min-h-[44px] whitespace-nowrap word-keep"
+                    >
+                      <span className="text-teal-400 shrink-0">{item.icon}</span>
+                      <span className="truncate">{t(item.name)}</span>
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
 

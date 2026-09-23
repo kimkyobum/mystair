@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   FileText, 
   Save, 
@@ -236,9 +236,31 @@ export default function CoverLetter() {
 
   const [savedTime, setSavedTime] = useState<string>(currentCompany.updatedAt || '');
 
-  // Add Company Modal State
-  const [isAddCompanyModalOpen, setIsAddCompanyModalOpen] = useState<boolean>(false);
+  // Add Company Modal State (Starts open so entering the page prompts for company name right from the start)
+  const location = useLocation();
+  const [isAddCompanyModalOpen, setIsAddCompanyModalOpen] = useState<boolean>(true);
   const [newCompanyNameInput, setNewCompanyNameInput] = useState<string>('');
+
+  // Listen to navigation trigger or custom event to open new cover letter modal
+  useEffect(() => {
+    const handleNewCoverLetter = () => {
+      setIsAddCompanyModalOpen(true);
+      setNewCompanyNameInput('');
+    };
+
+    window.addEventListener('mystair-new-cover-letter', handleNewCoverLetter);
+    return () => {
+      window.removeEventListener('mystair-new-cover-letter', handleNewCoverLetter);
+    };
+  }, []);
+
+  // When location.state indicates newLetter, open modal
+  useEffect(() => {
+    if (location.state?.newLetter) {
+      setIsAddCompanyModalOpen(true);
+      setNewCompanyNameInput('');
+    }
+  }, [location.state?.newLetter]);
 
   // Delete Company Modal State
   const [companyToDelete, setCompanyToDelete] = useState<CompanyCoverLetter | null>(null);
@@ -441,14 +463,14 @@ export default function CoverLetter() {
       updatedAt: timeStr
     };
 
-    const updated = [...companies, newComp];
+    const updated = [newComp, ...companies.filter(c => c.id !== newId)];
     setCompanies(updated);
     setActiveCompanyId(newId);
     setSavedTime(timeStr);
     setNewCompanyNameInput('');
     setIsAddCompanyModalOpen(false);
     persistCompanies(updated, newId);
-    showToast(t(`🏢 '${rawName}' 자기소개서 컬렉션이 생성되었습니다!`), 'success');
+    showToast(t(`🏢 '${rawName}' 새로운 자기소개서 작성을 시작합니다!`), 'success');
   };
 
   // Confirm delete company
@@ -822,12 +844,25 @@ export default function CoverLetter() {
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setIsAddCompanyModalOpen(true);
+              setNewCompanyNameInput('');
+            }}
+            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-700/80 hover:bg-emerald-600 text-white shadow-xs transition-all cursor-pointer"
+            title={t('새로운 기업 자기소개서 작성')}
+          >
+            <Plus size={14} strokeWidth={2.5} />
+            <span>{t('새 자소서 작성')}</span>
+          </button>
+
           <Link
             to="/interview"
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition-all cursor-pointer"
           >
             <Camera size={14} />
-            <span>{t('AI 모의면접')}</span>
+            <span className="hidden sm:inline">{t('AI 모의면접')}</span>
           </Link>
 
           {savedTime && (
@@ -1661,51 +1696,75 @@ export default function CoverLetter() {
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${
           isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"
         }`}>
-          <div className={`border-2 rounded-3xl p-6 max-w-md w-full shadow-2xl animate-in zoom-in-95 duration-150 ${
+          <div className={`border-2 rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto ${
             isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-emerald-500/50 text-white"
           }`}>
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                  <Building size={16} />
+            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
+                  <Building size={20} />
                 </div>
-                <h3 className="text-base font-black">
-                  {t('새 기업 자기소개서 추가')}
-                </h3>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black leading-tight">
+                    {t('새로운 자기소개서 작성')}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {t('지원할 회사 이름을 입력하고 새 자기소개서를 시작하세요.')}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsAddCompanyModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg cursor-pointer"
-              >
-                <X size={18} />
-              </button>
+              {companies.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setIsAddCompanyModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1.5 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  title={t('닫기')}
+                >
+                  <X size={20} />
+                </button>
+              )}
             </div>
 
             <form onSubmit={e => { e.preventDefault(); handleCreateNewCompany(); }} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  {t('지원 기업명')} <span className="text-rose-500">*</span>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-200 block mb-1.5 flex items-center gap-1">
+                  <span>{t('지원할 회사 이름')}</span>
+                  <span className="text-rose-500 font-black">*</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold ml-1">
+                    ({t('새 양식으로 작성 시작')})
+                  </span>
                 </label>
-                <input
-                  type="text"
-                  autoFocus
-                  required
-                  value={newCompanyNameInput}
-                  onChange={e => setNewCompanyNameInput(e.target.value)}
-                  placeholder={t('예: 현대자동차, SK하이닉스, 한국전력공사 등')}
-                  className={`w-full border rounded-xl px-3.5 py-2.5 text-sm font-semibold outline-none transition-colors ${
-                    isLightMode 
-                      ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" 
-                      : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"
-                  }`}
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    autoFocus
+                    required
+                    value={newCompanyNameInput}
+                    onChange={e => setNewCompanyNameInput(e.target.value)}
+                    placeholder={t('예: 삼성전자, 현대자동차, 한국전력공사 등')}
+                    className={`w-full border-2 rounded-2xl pl-4 pr-10 py-3 text-sm sm:text-base font-bold outline-none transition-all ${
+                      isLightMode 
+                        ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10" 
+                        : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20"
+                    }`}
+                  />
+                  {newCompanyNameInput && (
+                    <button
+                      type="button"
+                      onClick={() => setNewCompanyNameInput('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Popular Company Presets */}
-              <div>
-                <span className="text-[11px] font-bold text-slate-400 block mb-1.5">
-                  {t('자주 지원하는 추천 기업 선택')}:
+              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60">
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-2 flex items-center gap-1">
+                  <Sparkles size={12} className="text-emerald-500" />
+                  <span>{t('추천 인기 기업 선택')}:</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_COMPANIES.map(comp => (
@@ -1713,12 +1772,12 @@ export default function CoverLetter() {
                       key={comp}
                       type="button"
                       onClick={() => setNewCompanyNameInput(comp)}
-                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
+                      className={`text-[11px] font-semibold px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer ${
                         newCompanyNameInput === comp
-                          ? "bg-emerald-600 text-white border-emerald-600 font-bold"
+                          ? "bg-emerald-600 text-white border-emerald-600 font-bold shadow-xs scale-105"
                           : isLightMode 
-                            ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:border-emerald-300" 
-                            : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:border-emerald-500/50"
+                            ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700 hover:border-emerald-400" 
+                            : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:border-emerald-400/60"
                       }`}
                     >
                       {comp}
@@ -1727,25 +1786,81 @@ export default function CoverLetter() {
                 </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsAddCompanyModalOpen(false)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer ${
-                    isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-600" : "bg-slate-800 hover:bg-slate-700 text-slate-400"
-                  }`}
-                >
-                  {t('취소')}
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <Plus size={14} />
-                  <span>{t('기업 추가하고 작성하기')}</span>
-                </button>
-              </div>
+              {/* Start Writing Button */}
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-2xl text-sm font-black bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/25 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-98"
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                <span>{t('이 회사로 새 자기소개서 작성 시작')}</span>
+              </button>
             </form>
+
+            {/* Previously Created Cover Letters List (지금까지 작성한 자소서가 있을 경우) */}
+            {companies.length > 0 && (
+              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <Building2 size={13} className="text-emerald-500" />
+                    <span>{t('📂 지금까지 작성한 자기소개서')}</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-black">({companies.length}개)</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400">{t('클릭 시 즉시 열기')}</span>
+                </div>
+
+                <div className="max-h-44 overflow-y-auto space-y-1.5 pr-1">
+                  {companies.map(comp => {
+                    const answeredCount = comp.sections.filter(s => !!(comp.answers[s.id] || '').trim()).length;
+                    const isCurrent = comp.id === activeCompanyId;
+                    return (
+                      <button
+                        key={comp.id}
+                        type="button"
+                        onClick={() => {
+                          handleSelectCompany(comp.id);
+                          setIsAddCompanyModalOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          isCurrent
+                            ? isLightMode
+                              ? "bg-emerald-50/80 border-emerald-300 text-emerald-950 font-bold"
+                              : "bg-emerald-950/40 border-emerald-500/50 text-emerald-200 font-bold"
+                            : isLightMode
+                              ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                              : "bg-slate-800/70 hover:bg-slate-800 border-slate-700 text-slate-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Building size={14} className={isCurrent ? "text-emerald-600 dark:text-emerald-400 shrink-0" : "text-slate-400 shrink-0"} />
+                          <span className="text-xs truncate">{comp.companyName}</span>
+                          {isCurrent && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-600 text-white shrink-0">
+                              {t('현재 선택')}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] text-slate-400 shrink-0 ml-2">
+                          <span className="font-semibold">{answeredCount}/{comp.sections.length}문항</span>
+                          {comp.updatedAt && <span>· {comp.updatedAt}</span>}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-3 mt-3 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddCompanyModalOpen(false)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                      isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-600" : "bg-slate-800 hover:bg-slate-700 text-slate-300"
+                    }`}
+                  >
+                    {t('✕ 기존 작업 계속하기')}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

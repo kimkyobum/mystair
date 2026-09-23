@@ -69,11 +69,18 @@ export default function Sidebar() {
     const isActive = (item.path === '/' && location.pathname === '/') || 
                      (item.path !== '/' && location.pathname === item.path);
     const Icon = item.icon;
+    const isCoverLetter = item.path === '/cover-letter';
 
     return (
       <Link 
         key={item.path} 
         to={item.path} 
+        state={isCoverLetter ? { newLetter: Date.now() } : undefined}
+        onClick={() => {
+          if (isCoverLetter) {
+            window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
+          }
+        }}
         title={t(item.name)}
         className={`group flex items-center transition-colors duration-150 whitespace-nowrap ${item.tourClass || ''} ${
           // Mobile layout: column centered in 72px bottom bar
