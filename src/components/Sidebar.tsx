@@ -46,13 +46,52 @@ export default function Sidebar() {
     navigate('/');
   };
 
-  const navItems = [
-    { name: 'MyStair AI', path: '/', icon: <Sparkles size={22} className={isLightMode ? "text-teal-600" : "text-teal-400"} /> },
-    { name: '성장다이어리', path: '/diary', icon: <BookOpen size={22} /> },
-    { name: '모의면접', path: '/interview', icon: <Camera size={22} className={isLightMode ? "text-indigo-600" : "text-indigo-400"} /> },
-    { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={22} /> },
-    { name: '자격증 가이드', path: '/certificates', icon: <Award size={22} /> },
-    { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={22} /> }
+  const coreItems = [
+    { 
+      name: '성장다이어리', 
+      path: '/diary', 
+      badge: 'STAR 기록',
+      color: 'emerald',
+      tourClass: 'tour-target-nav-diary',
+      icon: (active: boolean) => (
+        <BookOpen size={19} className={active ? (isLightMode ? 'text-emerald-700' : 'text-emerald-300') : (isLightMode ? 'text-emerald-600' : 'text-emerald-400')} />
+      )
+    },
+    { 
+      name: '모의면접', 
+      path: '/interview', 
+      badge: 'AI 실시간',
+      color: 'indigo',
+      tourClass: 'tour-target-nav-interview',
+      icon: (active: boolean) => (
+        <Camera size={19} className={active ? (isLightMode ? 'text-indigo-700' : 'text-indigo-300') : (isLightMode ? 'text-indigo-600' : 'text-indigo-400')} />
+      )
+    },
+    { 
+      name: '자기소개서 작성', 
+      path: '/cover-letter', 
+      badge: 'AI 완성',
+      color: 'sky',
+      tourClass: 'tour-target-nav-coverletter',
+      icon: (active: boolean) => (
+        <FileText size={19} className={active ? (isLightMode ? 'text-sky-700' : 'text-sky-300') : (isLightMode ? 'text-sky-600' : 'text-sky-400')} />
+      )
+    }
+  ];
+
+  const secondaryItems = [
+    { 
+      name: '자격증 가이드', 
+      path: '/certificates', 
+      tourClass: 'tour-target-nav-cert',
+      icon: (active: boolean) => <Award size={20} className={active ? (isLightMode ? 'text-amber-600' : 'text-amber-400') : ''} /> 
+    },
+    { 
+      name: '나만의 기업찾기', 
+      path: '/company-search', 
+      tourClass: 'tour-target-nav-company',
+      icon: (active: boolean) => <Briefcase size={20} className={active ? (isLightMode ? 'text-teal-600' : 'text-teal-400') : ''} /> 
+    }
   ];
 
   return (
@@ -94,32 +133,146 @@ export default function Sidebar() {
         )}
       </div>
       
-        <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col items-center sm:items-stretch justify-around sm:justify-start gap-1 sm:gap-1.5 px-2 py-0 sm:py-4 scrollbar-hide">
-        {navItems.map((item, index) => {
-          const isActive = (item.path === '/' && index === 0 && location.pathname === '/') || 
-                           (item.path !== '/' && location.pathname === item.path);
+      <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col items-center sm:items-stretch justify-around sm:justify-start gap-1 sm:gap-1.5 px-2 py-0 sm:py-3 scrollbar-hide">
+        {/* 1. Home Item */}
+        <Link 
+          to="/" 
+          title={t('MyStair AI')}
+          className={`flex sm:items-center gap-3.5 px-2.5 py-2 sm:py-2.5 rounded-xl transition-all whitespace-nowrap min-h-[44px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none tour-target-nav-home ${
+            location.pathname === '/' 
+              ? (isDarkTheme ? 'text-teal-300 sm:bg-white/15 sm:text-white font-bold sm:shadow-xs' : 'text-teal-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-xs')
+              : (isDarkTheme ? 'text-white/60 hover:text-white sm:text-white/70 sm:hover:bg-white/10 font-medium' : 'text-slate-500 hover:text-slate-800 sm:text-slate-600 sm:hover:bg-slate-50 font-medium')
+          }`}
+        >
+          <div className="shrink-0 flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-lg">
+            <Sparkles size={20} className={isLightMode ? "text-teal-600" : "text-teal-400"} />
+          </div>
+          <span className={`text-[10px] sm:text-[14px] mt-1 sm:mt-0 transition-opacity duration-300 sm:block ${isHovered ? 'sm:opacity-100' : 'sm:opacity-0'}`}>
+            {t('MyStair AI')}
+          </span>
+        </Link>
+
+        {/* Separator / Core Section Label */}
+        {isHovered ? (
+          <div className="hidden sm:flex items-center justify-between px-2 pt-2.5 pb-1 animate-in fade-in duration-200">
+            <span className="text-[10.5px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+              <Sparkles size={11} className="text-emerald-500 animate-pulse" />
+              {t('핵심 취업 솔루션', 'Core Solutions')}
+            </span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-200/80 dark:border-emerald-800">
+              CORE
+            </span>
+          </div>
+        ) : (
+          <div className="hidden sm:block w-5 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1" />
+        )}
+
+        {/* 2. Core 3 items (Growth Diary, Mock Interview, Cover Letter) */}
+        {coreItems.map((item) => {
+          const isActive = location.pathname === item.path;
           
-          let tourClass = '';
-          if (item.path === '/') tourClass = 'tour-target-nav-home';
-          if (item.path === '/diary') tourClass = 'tour-target-nav-diary';
-          if (item.path === '/certificates') tourClass = 'tour-target-nav-cert';
-          if (item.path === '/company-search') tourClass = 'tour-target-nav-company';
+          // Color-specific highlight classes
+          const activeClass = item.color === 'emerald'
+            ? (isDarkTheme 
+                ? 'bg-gradient-to-r from-emerald-950/60 to-slate-900 text-emerald-200 font-bold border-l-4 border-l-emerald-400 border-y border-r border-emerald-800/80 shadow-xs' 
+                : 'bg-gradient-to-r from-emerald-50 to-white text-emerald-950 font-bold border-l-4 border-l-emerald-500 border-y border-r border-emerald-200/90 shadow-xs ring-1 ring-emerald-400/20')
+            : item.color === 'indigo'
+            ? (isDarkTheme 
+                ? 'bg-gradient-to-r from-indigo-950/60 to-slate-900 text-indigo-200 font-bold border-l-4 border-l-indigo-400 border-y border-r border-indigo-800/80 shadow-xs' 
+                : 'bg-gradient-to-r from-indigo-50 to-white text-indigo-950 font-bold border-l-4 border-l-indigo-500 border-y border-r border-indigo-200/90 shadow-xs ring-1 ring-indigo-400/20')
+            : (isDarkTheme 
+                ? 'bg-gradient-to-r from-sky-950/60 to-slate-900 text-sky-200 font-bold border-l-4 border-l-sky-400 border-y border-r border-sky-800/80 shadow-xs' 
+                : 'bg-gradient-to-r from-sky-50 to-white text-sky-950 font-bold border-l-4 border-l-sky-500 border-y border-r border-sky-200/90 shadow-xs ring-1 ring-sky-400/20');
+
+          const inactiveClass = item.color === 'emerald'
+            ? (isDarkTheme 
+                ? 'text-white/80 hover:text-white hover:bg-emerald-950/30 font-medium' 
+                : 'text-slate-800 hover:text-slate-950 hover:bg-emerald-50/70 border border-transparent hover:border-emerald-200/50 font-semibold')
+            : item.color === 'indigo'
+            ? (isDarkTheme 
+                ? 'text-white/80 hover:text-white hover:bg-indigo-950/30 font-medium' 
+                : 'text-slate-800 hover:text-slate-950 hover:bg-indigo-50/70 border border-transparent hover:border-indigo-200/50 font-semibold')
+            : (isDarkTheme 
+                ? 'text-white/80 hover:text-white hover:bg-sky-950/30 font-medium' 
+                : 'text-slate-800 hover:text-slate-950 hover:bg-sky-50/70 border border-transparent hover:border-sky-200/50 font-semibold');
+
+          // Icon tile background
+          const iconTileBg = item.color === 'emerald'
+            ? (isDarkTheme ? 'bg-emerald-500/20 border-emerald-500/30' : 'bg-emerald-100/80 border-emerald-200/90')
+            : item.color === 'indigo'
+            ? (isDarkTheme ? 'bg-indigo-500/20 border-indigo-500/30' : 'bg-indigo-100/80 border-indigo-200/90')
+            : (isDarkTheme ? 'bg-sky-500/20 border-sky-500/30' : 'bg-sky-100/80 border-sky-200/90');
 
           return (
             <Link 
-              key={index} 
+              key={item.name} 
               to={item.path} 
               title={t(item.name)}
-              className={`flex sm:items-center gap-3.5 px-2.5 py-2 sm:py-3 rounded-xl transition-colors whitespace-nowrap min-h-[48px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${tourClass} ${
-                isActive 
-                  ? (isDarkTheme ? 'text-teal-300 sm:bg-white/15 sm:text-white font-semibold sm:shadow-sm' : 'text-teal-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-sm')
-                  : (isDarkTheme ? 'text-white/50 hover:text-white sm:text-white/70 sm:hover:bg-white/10 font-medium' : 'text-slate-400 hover:text-slate-800 sm:text-slate-600 sm:hover:bg-slate-50 font-medium')
+              className={`group flex sm:items-center gap-3 px-2 sm:px-2.5 py-1.5 sm:py-2.5 rounded-xl transition-all whitespace-nowrap min-h-[46px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${item.tourClass} ${
+                isActive ? activeClass : inactiveClass
               }`}
             >
-              <div className="shrink-0 flex items-center justify-center w-6 h-6 sm:w-5 sm:h-5">
-                {item.icon}
+              {/* Highlighted Icon Tile */}
+              <div className={`shrink-0 flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-lg border transition-transform group-hover:scale-105 shadow-2xs ${iconTileBg}`}>
+                {item.icon(isActive)}
               </div>
-              <span className={`text-[10px] sm:text-[14px] mt-1 sm:mt-0 transition-opacity duration-300 sm:block ${isHovered ? 'sm:opacity-100' : 'sm:opacity-0'}`}>
+
+              {/* Label & Core Badge */}
+              <div className={`hidden sm:flex items-center justify-between flex-1 overflow-hidden transition-opacity duration-300 ${isHovered ? 'sm:opacity-100' : 'sm:opacity-0'}`}>
+                <span className="text-[13.5px] truncate font-bold">
+                  {t(item.name)}
+                </span>
+                
+                {/* Visual badge */}
+                <span className={`ml-1.5 text-[9.5px] font-extrabold px-1.5 py-0.5 rounded-md border shrink-0 ${
+                  item.color === 'emerald' 
+                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300/80 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800' 
+                    : item.color === 'indigo'
+                    ? 'bg-indigo-100 text-indigo-800 border-indigo-300/80 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800'
+                    : 'bg-sky-100 text-sky-800 border-sky-300/80 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800'
+                }`}>
+                  {t(item.badge)}
+                </span>
+              </div>
+
+              {/* Mobile text fallback */}
+              <span className="text-[10px] mt-0.5 sm:hidden font-bold truncate">
+                {t(item.name)}
+              </span>
+            </Link>
+          );
+        })}
+
+        {/* Separator / Explore Section Label */}
+        {isHovered ? (
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 pt-3 pb-1 border-t border-slate-200/70 dark:border-white/10 mt-1 animate-in fade-in duration-200">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              {t('탐색 & 지원', 'Explore')}
+            </span>
+          </div>
+        ) : (
+          <div className="hidden sm:block w-5 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1" />
+        )}
+
+        {/* 3. Secondary Items (Certificates, Company Search) */}
+        {secondaryItems.map((item) => {
+          const isActive = location.pathname === item.path;
+
+          return (
+            <Link 
+              key={item.name} 
+              to={item.path} 
+              title={t(item.name)}
+              className={`flex sm:items-center gap-3.5 px-2.5 py-1.5 sm:py-2.5 rounded-xl transition-all whitespace-nowrap min-h-[44px] justify-center sm:justify-start flex-col sm:flex-row flex-1 sm:flex-none ${item.tourClass} ${
+                isActive 
+                  ? (isDarkTheme ? 'text-teal-300 sm:bg-white/15 sm:text-white font-bold sm:shadow-xs' : 'text-teal-700 sm:bg-slate-100 sm:text-slate-900 font-bold sm:shadow-xs')
+                  : (isDarkTheme ? 'text-white/60 hover:text-white sm:text-white/70 sm:hover:bg-white/10 font-medium' : 'text-slate-500 hover:text-slate-800 sm:text-slate-600 sm:hover:bg-slate-50 font-medium')
+              }`}
+            >
+              <div className="shrink-0 flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-lg">
+                {item.icon(isActive)}
+              </div>
+              <span className={`text-[10px] sm:text-[13.5px] mt-1 sm:mt-0 transition-opacity duration-300 sm:block ${isHovered ? 'sm:opacity-100' : 'sm:opacity-0'}`}>
                 {t(item.name)}
               </span>
             </Link>
