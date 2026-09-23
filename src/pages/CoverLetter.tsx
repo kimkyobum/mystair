@@ -18,20 +18,19 @@ import {
   PlusCircle,
   Wand2,
   RefreshCw,
-  Camera
+  Camera,
+  RotateCcw
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
-import { correctKoreanText } from '../utils/koreanSpellChecker';
+import { checkAndCorrectKoreanSpelling, correctKoreanText } from '../utils/koreanSpellChecker';
 
 export interface CoverLetterSection {
   id: string;
   title: string;
   recommendedChars: number;
   placeholder: string;
-  tips: string[];
-  enableDiaryHelper?: boolean;
 }
 
 // 5개 개별 항목
@@ -40,53 +39,31 @@ const DEFAULT_SECTIONS: CoverLetterSection[] = [
     id: 'growth',
     title: '1. 성장과정',
     recommendedChars: 500,
-    placeholder: '학창 시절 및 지금까지의 생활에서 가치관을 형성하게 된 중요한 계기나 경험을 서술하세요.',
-    tips: [
-      '어릴 적부터의 단순 나열보다는, 자신에게 큰 영향을 준 구체적인 사건이나 인물을 중심으로 작성하세요.',
-      '그 경험을 통해 어떤 가치관(성실, 책임감, 도전의식 등)을 갖게 되었는지 명확히 연결하세요.'
-    ],
-    enableDiaryHelper: true
+    placeholder: '학창 시절 및 지금까지의 생활에서 가치관을 형성하게 된 중요한 계기나 경험을 서술하세요.'
   },
   {
     id: 'intro',
     title: '2. 자기소개',
     recommendedChars: 400,
-    placeholder: '자신을 가장 잘 드러내는 한 줄의 키워드와 함께, 어떤 인재인지 간결하고 명확하게 소개하세요.',
-    tips: [
-      '자신을 상징하는 비유나 핵심 역량 키워드로 첫 문장을 시작하면 주목도가 높아집니다.',
-      '마이스터/특성화고인으로서 현장에 즉시 적응할 수 있는 자신의 준비된 자세를 강조하세요.'
-    ]
+    placeholder: '자신을 가장 잘 드러내는 한 줄의 키워드와 함께, 어떤 인재인지 간결하고 명확하게 소개하세요.'
   },
   {
     id: 'strengths',
     title: '3. 장점',
     recommendedChars: 400,
-    placeholder: '자신의 가장 큰 강점과, 그 강점이 실무나 협업 현장에서 긍정적으로 발휘된 경험을 서술하세요.',
-    tips: [
-      '단순히 "꼼꼼하다"고 하기보다는, 실습이나 프로젝트에서 꼼꼼함 덕분에 문제를 예방했던 사례를 제시하세요.',
-      '희망하는 직무나 현장에서 직접적으로 요구되는 핵심 역량과 연결할수록 좋습니다.'
-    ]
+    placeholder: '자신의 가장 큰 강점과, 그 강점이 실무나 협업 현장에서 긍정적으로 발휘된 경험을 서술하세요.'
   },
   {
     id: 'weaknesses',
     title: '4. 단점',
     recommendedChars: 400,
-    placeholder: '자신이 가진 부족한 점을 솔직하게 인정하고, 이를 보완하기 위해 실천 중인 구체적인 노력과 루틴을 서술하세요.',
-    tips: [
-      '치명적인 결함(무책임, 지각 등) 대신 개선 가능한 습관을 솔직하게 언급하세요.',
-      '단점을 개선하기 위해 체크리스트를 쓰거나 메모하는 등 구체적인 극복 행동을 반드시 함께 적으세요.'
-    ]
+    placeholder: '자신이 가진 부족한 점을 솔직하게 인정하고, 이를 보완하기 위해 실천 중인 구체적인 노력과 루틴을 서술하세요.'
   },
   {
     id: 'practice',
     title: '5. 실습경험',
     recommendedChars: 600,
-    placeholder: '전공 실습, 프로젝트, 자격증 취득, 경진대회 중 부딪힌 문제와 이를 해결한 과정(행동 및 배운 점)을 서술하세요.',
-    tips: [
-      'STAR 공법(Situation 상황 - Task 과제 - Action 나의 행동 - Result 성과)으로 적으면 논리적입니다.',
-      '성장다이어리의 [자소서 요약] 버튼에서 추천받은 나의 STAR 실습 기록을 참고하여 구체적인 수치와 함께 작성하세요.'
-    ],
-    enableDiaryHelper: true
+    placeholder: '전공 실습, 프로젝트, 자격증 취득, 경진대회 중 부딪힌 문제와 이를 해결한 과정(행동 및 배운 점)을 서술하세요.'
   }
 ];
 
@@ -144,8 +121,8 @@ export default function CoverLetter() {
 
   const [savedTime, setSavedTime] = useState<string>('');
   
-  // Tips visibility per section
-  const [showTips, setShowTips] = useState<Record<string, boolean>>({
+  // Experience drawer open per section
+  const [openExperiences, setOpenExperiences] = useState<Record<string, boolean>>({
     growth: false,
     intro: false,
     strengths: false,
@@ -153,9 +130,10 @@ export default function CoverLetter() {
     practice: false
   });
 
-  // Auto-fixing state per section
+  // Auto-fixing state per section & undo history
   const [fixingSectionId, setFixingSectionId] = useState<string | null>(null);
   const [fixNotification, setFixNotification] = useState<Record<string, string>>({});
+  const [undoHistory, setUndoHistory] = useState<Record<string, string>>({});
 
   // Diary entries from Growth Diary
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
@@ -250,7 +228,7 @@ export default function CoverLetter() {
     }
   };
 
-  // [오타 수정] 버튼: 누르는 순간 모든 오타와 띄어쓰기를 즉시 자동 교정
+  // [오타 수정] 버튼: AI 및 국립국어원 표준 엔진으로 모든 오타와 띄어쓰기를 정확하게 자동 교정
   const handleAutoFixSpelling = async (sectionId: string) => {
     const originalText = answers[sectionId] || '';
     if (!originalText.trim()) {
@@ -261,49 +239,68 @@ export default function CoverLetter() {
     setFixingSectionId(sectionId);
     setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
 
-    // 1단계: 내장 정밀 한국어 맞춤법/띄어쓰기 엔진으로 즉각 로컬 교정
-    const localResult = correctKoreanText(originalText);
-    let bestCorrectedText = localResult.correctedText;
-
     try {
-      // 2단계: 서버(AI/규정 기반) 보정 요청 시도
-      const res = await fetch('/api/check-spelling', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: originalText })
-      });
+      const result = await checkAndCorrectKoreanSpelling(originalText);
+      const isActuallyModified = result.changed && result.correctedText.trim() !== originalText.trim();
 
-      if (res.ok) {
-        const data = await res.json();
-        if (data.correctedText && typeof data.correctedText === 'string') {
-          // 서버 결과에 다시 한 번 조사 및 공백 정밀 규칙 적용
-          const combined = correctKoreanText(data.correctedText);
-          bestCorrectedText = combined.correctedText;
-        }
-      }
-    } catch (err) {
-      console.warn('API error, using built-in Korean spell corrector', err);
-    } finally {
-      // 3단계: 화면 본문 텍스트 즉각 업데이트!
-      handleChange(sectionId, bestCorrectedText);
+      if (isActuallyModified) {
+        // 이전 원문 기록 보관 (되돌리기 가능)
+        setUndoHistory(prev => ({ ...prev, [sectionId]: originalText }));
+        // 교정된 텍스트 본문에 즉각 반영
+        handleChange(sectionId, result.correctedText);
 
-      if (bestCorrectedText.trim() === originalText.trim()) {
+        const countText = result.count > 0 ? ` (${result.count}건 교정)` : '';
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t('✨ 이미 오타나 띄어쓰기 오류가 없는 올바른 문장입니다!')
+          [sectionId]: t(`✨ 오타와 띄어쓰기가 깔끔하게 교정되었습니다!${countText}`)
         }));
       } else {
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t('✨ 모든 오타와 띄어쓰기가 깔끔하게 수정되었습니다!')
+          [sectionId]: t('💡 교정할 오타나 맞춤법 오류가 발견되지 않았습니다. 올바른 문장입니다.')
         }));
       }
-
+    } catch (err) {
+      console.warn('Spell correction error, applying local engine fallback:', err);
+      const localResult = correctKoreanText(originalText);
+      if (localResult.correctedText.trim() !== originalText.trim()) {
+        setUndoHistory(prev => ({ ...prev, [sectionId]: originalText }));
+        handleChange(sectionId, localResult.correctedText);
+        setFixNotification(prev => ({
+          ...prev,
+          [sectionId]: t('✨ 오타와 띄어쓰기가 깔끔하게 교정되었습니다!')
+        }));
+      } else {
+        setFixNotification(prev => ({
+          ...prev,
+          [sectionId]: t('💡 교정할 오타나 맞춤법 오류가 발견되지 않았습니다. 올바른 문장입니다.')
+        }));
+      }
+    } finally {
       setTimeout(() => {
         setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
-      }, 4000);
-
+      }, 5000);
       setFixingSectionId(null);
+    }
+  };
+
+  // [되돌리기]: 오타 수정 이전 내용으로 복원
+  const handleUndo = (sectionId: string) => {
+    const prev = undoHistory[sectionId];
+    if (prev !== undefined) {
+      handleChange(sectionId, prev);
+      setUndoHistory(hist => {
+        const copy = { ...hist };
+        delete copy[sectionId];
+        return copy;
+      });
+      setFixNotification(prevNotif => ({
+        ...prevNotif,
+        [sectionId]: t('↩️ 이전 작성 내용으로 되돌렸습니다.')
+      }));
+      setTimeout(() => {
+        setFixNotification(prevNotif => ({ ...prevNotif, [sectionId]: '' }));
+      }, 3000);
     }
   };
 
@@ -432,8 +429,7 @@ export default function CoverLetter() {
             const currentVal = answers[sec.id] || '';
             const charCount = currentVal.length;
             const charCountNoSpace = currentVal.replace(/\s/g, '').length;
-            const isTipOpen = !!showTips[sec.id];
-            const hasDiaryHelper = !!sec.enableDiaryHelper;
+            const isExperienceOpen = !!openExperiences[sec.id];
             const isFixing = fixingSectionId === sec.id;
             const notif = fixNotification[sec.id];
 
@@ -446,7 +442,7 @@ export default function CoverLetter() {
                     : "bg-slate-900/90 border-slate-800 hover:border-slate-700 shadow-xs"
                 }`}
               >
-                {/* Header: Clean Title + Right Controls ([작성 팁], [오타 수정], [비우기]) */}
+                {/* Header: Clean Title + Right Controls ([내 경험], [비우기]) */}
                 <div className={`px-4 sm:px-5 py-3 border-b flex items-center justify-between gap-3 ${
                   isLightMode ? "border-slate-100 bg-slate-50/50 rounded-t-2xl" : "border-slate-800/80 bg-slate-800/30 rounded-t-2xl"
                 }`}>
@@ -462,22 +458,35 @@ export default function CoverLetter() {
                     </span>
                   </div>
 
-                  {/* Buttons: [작성 팁], [비우기] */}
+                  {/* Buttons: [내 경험], [비우기] */}
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {/* Toggle Tips & Guidance button */}
+                    {/* [내 경험] 토글 버튼 */}
                     <button
                       type="button"
-                      onClick={() => setShowTips(prev => ({ ...prev, [sec.id]: !prev[sec.id] }))}
-                      className={`text-[11px] font-bold flex items-center gap-1 px-2.5 py-1.5 rounded-lg border transition-colors cursor-pointer ${
-                        isTipOpen
-                          ? isLightMode ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-emerald-950 text-emerald-300 border-emerald-800"
-                          : isLightMode ? "bg-white text-slate-600 border-slate-200 hover:bg-slate-100" : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+                      onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: !prev[sec.id] }))}
+                      className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                        isExperienceOpen
+                          ? isLightMode 
+                            ? "bg-emerald-600 text-white border-emerald-600 shadow-xs" 
+                            : "bg-emerald-500 text-slate-950 font-black border-emerald-500 shadow-xs"
+                          : isLightMode 
+                            ? "bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40" 
+                            : "bg-slate-800 text-slate-200 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-700/60"
                       }`}
-                      title={t('작성 팁 및 부가 설명 보기')}
+                      title={t('내가 작성한 성장 다이어리 실습 경험 보기')}
                     >
-                      <Sparkles size={12} className={isTipOpen ? "text-emerald-600" : "text-amber-500"} />
-                      <span>{t('작성 팁')}</span>
-                      {isTipOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                      <BookOpen size={13} className={isExperienceOpen ? (isLightMode ? "text-white" : "text-slate-950") : "text-emerald-500"} />
+                      <span>{t('내 경험')}</span>
+                      {diaries.length > 0 && (
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                          isExperienceOpen 
+                            ? isLightMode ? "bg-white/25 text-white" : "bg-slate-900/30 text-slate-950" 
+                            : isLightMode ? "bg-emerald-100 text-emerald-800" : "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                        }`}>
+                          {diaries.length}
+                        </span>
+                      )}
+                      {isExperienceOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                     </button>
 
                     {/* Clear */}
@@ -496,40 +505,22 @@ export default function CoverLetter() {
                   </div>
                 </div>
 
-                {/* Collapsible Tips */}
-                {isTipOpen && (
-                  <div className={`px-5 py-3 border-b text-xs space-y-1.5 animate-in fade-in-50 duration-150 ${
-                    isLightMode ? "bg-emerald-50/40 border-emerald-100 text-slate-700" : "bg-emerald-950/20 border-emerald-900/40 text-slate-300"
+                {/* [내 경험] 누르면 밑에 뜨는 사용자 경험(성장 다이어리) 펼침 영역 */}
+                {isExperienceOpen && (
+                  <div className={`px-4 sm:px-5 py-4 border-b text-xs transition-all animate-in fade-in-50 duration-200 ${
+                    isLightMode ? "bg-emerald-50/30 border-emerald-100" : "bg-emerald-950/20 border-emerald-900/40"
                   }`}>
-                    <div className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mb-1">
-                      <Sparkles size={13} />
-                      <span>{t('작성 핵심 팁 및 가이드')}</span>
-                    </div>
-                    {sec.tips.map((tip, tIdx) => (
-                      <p key={tIdx} className="flex items-start gap-1.5 leading-relaxed">
-                        <span className="text-emerald-500 font-bold">•</span>
-                        <span>{t(tip)}</span>
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                {/* Growth Diary Helper Row (Only on growth & practice sections) */}
-                {hasDiaryHelper && (
-                  <div className={`px-4 sm:px-5 py-3 border-b text-xs ${
-                    isLightMode ? "bg-slate-50/80 border-slate-100" : "bg-slate-800/40 border-slate-800/80"
-                  }`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
                         <BookOpen size={14} className="text-emerald-500" />
-                        <span>{t('내가 작성한 성장 다이어리 기록')}</span>
-                        <span className="text-[11px] font-normal text-slate-400">
-                          ({t('클릭하여 내용 확인 및 본문 인용')})
+                        <span className="text-xs sm:text-sm font-extrabold">{t('내가 작성한 성장 다이어리 경험 기록')}</span>
+                        <span className="hidden sm:inline text-[11px] font-normal text-slate-400">
+                          ({t('클릭하여 상세 확인 및 본문 인용 가능')})
                         </span>
                       </div>
                       <Link 
                         to="/diary" 
-                        className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-0.5"
+                        className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 shrink-0 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-2xs"
                       >
                         <span>{t('다이어리 더 쓰러가기')}</span>
                         <ExternalLink size={10} />
@@ -537,50 +528,118 @@ export default function CoverLetter() {
                     </div>
 
                     {diaries.length === 0 ? (
-                      <div className={`p-3 rounded-xl border text-center text-xs text-slate-400 ${
-                        isLightMode ? "bg-white border-slate-200" : "bg-slate-800/60 border-slate-700"
+                      <div className={`p-5 rounded-2xl border text-center space-y-2 ${
+                        isLightMode ? "bg-white border-slate-200 text-slate-500" : "bg-slate-800/80 border-slate-700 text-slate-400"
                       }`}>
-                        <span>{t('아직 등록된 다이어리가 없습니다. 성장다이어리에 실습 기록을 남겨보세요!')}</span>
+                        <p className="text-xs font-semibold">{t('아직 등록된 성장 다이어리가 없습니다.')}</p>
+                        <p className="text-[11px] text-slate-400">{t('성장다이어리에 전공 실습, 대회 참가, 자격증 취득 경험을 기록하면 이곳에서 바로 불러올 수 있습니다.')}</p>
+                        <Link
+                          to="/diary"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white mt-1 shadow-2xs"
+                        >
+                          <PlusCircle size={13} />
+                          <span>{t('다이어리에 첫 경험 기록하기')}</span>
+                        </Link>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                         {diaries.map((diary) => (
-                          <button
+                          <div
                             key={diary.id || diary.date + diary.title}
-                            type="button"
-                            onClick={() => {
-                              setSelectedDiary(diary);
-                              setActiveDiarySectionId(sec.id);
-                            }}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-left shrink-0 max-w-[260px] transition-all cursor-pointer hover:scale-[1.02] active:scale-95 shadow-2xs ${
+                            className={`p-3 rounded-xl border flex flex-col justify-between transition-all hover:shadow-xs group ${
                               isLightMode 
-                                ? "bg-white border-slate-200/90 hover:border-emerald-400 text-slate-800 hover:bg-emerald-50/20" 
-                                : "bg-slate-800/90 border-slate-700 hover:border-emerald-500 text-slate-200 hover:bg-slate-800"
+                                ? "bg-white border-slate-200/90 hover:border-emerald-400 text-slate-800" 
+                                : "bg-slate-800/90 border-slate-700 hover:border-emerald-500 text-slate-200"
                             }`}
                           >
-                            <span className="text-base shrink-0">{diary.mood || '📝'}</span>
-                            <div className="min-w-0 flex-1">
-                              <p className="font-bold text-xs truncate leading-snug">
+                            <div>
+                              <div className="flex items-start justify-between gap-1 mb-1">
+                                <span className="text-base shrink-0">{diary.mood || '📝'}</span>
+                                <span className="text-[10px] text-slate-400 font-mono">
+                                  {diary.date}
+                                </span>
+                              </div>
+                              <h4 className="font-bold text-xs leading-snug line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                                 {diary.title}
-                              </p>
-                              <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                                {diary.date}
+                              </h4>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                                {diary.content}
                               </p>
                             </div>
-                          </button>
+
+                            <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-1.5">
+                              {diary.tags && diary.tags.length > 0 ? (
+                                <div className="flex gap-1 overflow-hidden">
+                                  {diary.tags.slice(0, 1).map((tg, idx) => (
+                                    <span key={idx} className="bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[10px] font-medium truncate max-w-[80px]">
+                                      #{tg}
+                                    </span>
+                                  ))}
+                                </div>
+                              ) : <div />}
+
+                              <div className="flex items-center gap-1 shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedDiary(diary);
+                                    setActiveDiarySectionId(sec.id);
+                                  }}
+                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
+                                    isLightMode ? "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100" : "bg-slate-700/60 border-slate-600 text-slate-200 hover:bg-slate-700"
+                                  }`}
+                                  title={t('상세 내용 확인')}
+                                >
+                                  {t('자세히')}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleInsertDiary(sec.id, diary)}
+                                  className="px-2 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer flex items-center gap-0.5 shadow-2xs"
+                                  title={t('이 경험을 자기소개서 본문에 바로 인용합니다')}
+                                >
+                                  <span>{t('인용')}</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     )}
                   </div>
                 )}
 
-                {/* Auto-fix Notification Message if any */}
+                {/* Auto-fix Notification Message if any with Undo Option */}
                 {notif && (
-                  <div className={`px-4 sm:px-5 py-2.5 border-b text-xs flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 text-emerald-800 dark:text-emerald-300 animate-in fade-in duration-200`}>
+                  <div className={`px-4 sm:px-5 py-2.5 border-b text-xs flex items-center justify-between transition-all animate-in fade-in duration-200 ${
+                    notif.includes('💡')
+                      ? isLightMode ? "bg-amber-50/90 border-amber-200 text-amber-900" : "bg-amber-950/40 border-amber-800 text-amber-300"
+                      : isLightMode ? "bg-emerald-50 border-emerald-200 text-emerald-900" : "bg-emerald-950/40 border-emerald-800 text-emerald-300"
+                  }`}>
                     <div className="flex items-center gap-1.5 font-bold">
-                      <Check size={14} className="text-emerald-600" />
+                      {notif.includes('✨') ? (
+                        <Check size={14} className="text-emerald-600" />
+                      ) : (
+                        <Sparkles size={14} className="text-amber-500" />
+                      )}
                       <span>{notif}</span>
                     </div>
+
+                    {undoHistory[sec.id] !== undefined && (
+                      <button
+                        type="button"
+                        onClick={() => handleUndo(sec.id)}
+                        className={`text-[11px] font-bold px-2 py-1 rounded-md border flex items-center gap-1 transition-colors cursor-pointer ml-2 shrink-0 ${
+                          isLightMode 
+                            ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-100" 
+                            : "bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700"
+                        }`}
+                        title={t('수정 전 내용으로 되돌리기')}
+                      >
+                        <RotateCcw size={11} />
+                        <span>{t('되돌리기')}</span>
+                      </button>
+                    )}
                   </div>
                 )}
 

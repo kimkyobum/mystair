@@ -1320,71 +1320,54 @@ app.post("/api/check-spelling", async (req, res) => {
       return res.json({ correctedText: text || "", count: 0 });
     }
 
-    // Step 1: 1차 국립국어원 규정 기반 외부 문법/맞춤법 검사기 호출
-    let daumResult = { correctedText: text, count: 0 };
-    try {
-      daumResult = await queryDaumGrammarChecker(text);
-    } catch (daumErr) {
-      console.warn("Daum spellcheck error, continuing to AI / rules:", daumErr);
-    }
+    // Step 1: Gemini AI 기반 국립국어원 표준 맞춤법 및 오탈자 정밀 교정
+    const prompt = `다음 텍스트는 학생이 작성한 자기소개서 본문입니다.
+한국어 맞춤법 규정, 띄어쓰기 규칙, 오탈자(예: 됬->됐, 되서->돼서, 안되->안 돼, 않되->안 돼, 됫->됐, 준구난방->중구난방, 어의없->어이없, 몇일->며칠 등), 잘못된 조사/어미를 국립국어원 표준에 맞게 정확히 교정한 최종 완성 텍스트를 출력하세요.
 
-    let intermediateText = daumResult.correctedText || text;
+반드시 원문의 원래 내용, 문장의 의미, 어조는 그대로 유지하면서 오직 "오타, 맞춤법, 띄어쓰기"만 바르게 교정해야 합니다.
+절대로 새로운 내용을 지어내거나 학생의 경험/의도를 바꾸지 마세요.
 
-    // Step 2: 2차 Gemini AI 기반 문맥 및 어휘 정밀 교정 (시도)
-    const prompt = `
-다음 텍스트는 학생이 작성한 자기소개서 본문입니다.
-한국어 맞춤법 규정, 띄어쓰기 규칙, 오탈자, 잘못된 조사/어미를 국립국어원 표준에 맞게 정확히 교정한 최종 완성 텍스트를 출력하세요.
-
-반드시 원문의 원래 내용, 문장의 의미, 어조(학생의 진솔한 표현)는 그대로 유지하면서, 오직 "오타, 맞춤법, 띄어쓰기, 어색한 문장부호"만 바르게 교정해야 합니다.
-절대로 새로운 내용을 지어내거나 멋대로 문맥을 바꾸지 마세요.
-
-반드시 다른 설명 없이 오직 순수한 JSON 형식으로만 응답해야 합니다:
+반드시 순수한 JSON 형식으로만 응답하세요:
 {
   "correctedText": "오타와 띄어쓰기가 완벽하게 수정된 전체 본문 텍스트",
   "count": 수정된_오타_및_띄어쓰기_개수(숫자)
 }
 
 [검사 및 수정할 원문 텍스트]
-${intermediateText}
+${text}
 `;
 
     const systemInstruction = "너는 한국어 맞춤법 및 국립국어원 표준 규정에 정통한 전문 교정 전문가입니다. 원문의 의미와 문맥을 보존하며 오타, 띄어쓰기, 맞춤법만 완벽하게 수정한 결과를 JSON으로 반환합니다.";
 
-    let geminiRes: any = null;
+    let aiCorrectedText = text;
+    let aiCount = 0;
+
     try {
-      geminiRes = await generateContentWithFallback(
+      const geminiRes = await generateContentWithFallback(
         [{ role: "user", parts: [{ text: prompt }] }],
         systemInstruction
       );
-    } catch (aiErr: any) {
-      // Gemini 사용 불가 시에도 전혀 중단 없이 계속 진행
-      console.warn("AI generation failed for spelling, proceeding to universal rules engine:", aiErr?.message || aiErr);
-    }
 
-    let aiCorrectedText = intermediateText;
-    let aiCount = daumResult.count || 0;
+      if (geminiRes && geminiRes.text) {
+        const rawOutput = geminiRes.text || "{}";
+        const cleaned = rawOutput
+          .replace(/```json/gi, "")
+          .replace(/```/g, "")
+          .trim();
 
-    if (geminiRes && geminiRes.text) {
-      const rawOutput = geminiRes.text || "{}";
-      const cleaned = rawOutput
-        .replace(/```json/gi, "")
-        .replace(/```/g, "")
-        .trim();
-
-      try {
         const parsed = JSON.parse(cleaned);
         if (parsed.correctedText && typeof parsed.correctedText === "string") {
           aiCorrectedText = parsed.correctedText;
           if (typeof parsed.count === "number") {
-            aiCount += parsed.count;
+            aiCount = parsed.count;
           }
         }
-      } catch (parseErr) {
-        console.warn("Spelling fix parse error fallback", parseErr, rawOutput);
       }
+    } catch (aiErr: any) {
+      console.warn("AI generation failed for spelling in server.ts, proceeding to universal rules engine:", aiErr?.message || aiErr);
     }
 
-    // Step 3: 3차 한글 음운 자모 분해 및 보편 맞춤법 규칙 엔진 (100% 무조건 적용 보장)
+    // Step 2: 한국어 음운 자모 분해 및 보편 맞춤법 규칙 엔진 교정
     const finalResult = correctKoreanText(aiCorrectedText);
 
     return res.json({

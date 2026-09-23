@@ -1,3 +1,5 @@
+import { GoogleGenAI } from '@google/genai';
+
 /**
  * Universal Korean Grammar, Spell & Typo Correction Engine
  * 
@@ -197,26 +199,42 @@ const UNIVERSAL_DICTIONARY: [RegExp, string][] = [
   [/난\s+오늘/g, '저는 오늘'],
   [/난\s+/g, '저는 '],
 
-  // 자주 틀리는 맞춤법 (국립국어원 표준)
+  // 자주 틀리는 맞춤법 및 오탈자 (국립국어원 표준 규정)
+  [/됬/g, '됐'], // 현대 한국어 표준어에서 '됬'은 일체 존재하지 않으며 무조건 '됐'임
+  [/됫/g, '됐'], // '됫' 오타 일괄 '됐'으로 교정
+  [/준구난방/g, '중구난방'],
+  [/역활/g, '역할'],
+  [/되서(?=[^가-힣]|$)/g, '돼서'],
+  [/되서도/g, '돼서도'],
+  [/되서는/g, '돼서는'],
+  [/되야/g, '돼야'],
   [/되요(?=[^가-힣]|$)/g, '돼요'],
   [/안되(?=[^가-힣]|$)/g, '안 돼'],
   [/안되서/g, '안 돼서'],
+  [/안돼서/g, '안 돼서'],
   [/안됬/g, '안 됐'],
-  [/됫/g, '됐'],
-  [/됫다(?=[^가-힣]|$)/g, '됐다'],
-  [/되서(?=[^가-힣]|$)/g, '돼서'],
-  [/되었(?=[^가-힣]|$)/g, '됐'],
+  [/안됫/g, '안 됐'],
+  [/안된다고/g, '안 된다고'],
+  [/안된다는/g, '안 된다는'],
+  [/안되요/g, '안 돼요'],
+  [/안돼요/g, '안 돼요'],
+  [/안되는/g, '안 되는'],
+  [/안될/g, '안 될'],
+  [/안된다/g, '안 된다'],
   [/안돼다(?=[^가-힣]|$)/g, '안되다'],
   [/않하고(?=[^가-힣]|$)/g, '안 하고'],
-  [/않되(?=[^가-힣]|$)/g, '안 돼'],
-  [/않된다(?=[^가-힣]|$)/g, '안 된다'],
-  [/않되는(?=[^가-힣]|$)/g, '안 되는'],
+  [/않되/g, '안 돼'],
+  [/않된다/g, '안 된다'],
+  [/않되는/g, '안 되는'],
+  [/않돼/g, '안 돼'],
+  [/되엇(?=[^가-힣]|$)/g, '되었'],
   [/낳아지/g, '나아지'],
   [/낳아졌/g, '나아졌'],
   [/낳길(?=[^가-힣]|$)/g, '낫길'],
   [/몇일(?=[^가-힣]|$)/g, '며칠'],
   [/어떻해(?=[^가-힣]|$)/g, '어떡해'],
   [/어떻게해(?=[^가-힣]|$)/g, '어떡해'],
+  [/어의없/g, '어이없'],
   [/어의(?=[^가-힣]|$)/g, '어이'],
   [/금새(?=[^가-힣]|$)/g, '금세'],
   [/요세(?=[^가-힣]|$)/g, '요새'],
@@ -238,6 +256,13 @@ const UNIVERSAL_DICTIONARY: [RegExp, string][] = [
   [/문안한(?=[^가-힣]|$)/g, '무난한'],
   [/무난하다(?=[^가-힣]|$)/g, '무난하다'],
   [/내노라하는(?=[^가-힣]|$)/g, '내로라하는'],
+  [/단언컨데/g, '단언컨대'],
+  [/생각치/g, '생각지'],
+  [/서슴치/g, '서슴지'],
+  [/널부러/g, '널브러'],
+  [/오랫만에/g, '오랜만에'],
+  [/일부려/g, '일부러'],
+  [/뒤쳐지/g, '뒤처지'],
   [/치루/g, '치르'],
   [/치뤘다(?=[^가-힣]|$)/g, '치렀다'],
   [/치뤄/g, '치러'],
@@ -256,16 +281,39 @@ const UNIVERSAL_DICTIONARY: [RegExp, string][] = [
 // 음운 분해를 통한 보편적 과거/추측 선어말어미 받침 일괄 교정
 // 어떤 단어든 받침이 'ㅅ'이고 뒤에 종결어미나 연결어미가 붙어있는 경우 자동 'ㅆ'으로 치환
 function fixUniversalPastAndFutureBatchim(text: string): string {
+  let s = text;
+
+  // 1. '잇' 관련 고빈도 과거/존재 어휘 (있습니다, 있던, 있어서, 있으면, 있었)
+  s = s.replace(/잇습니다/g, '있습니다');
+  s = s.replace(/잇던/g, '있던');
+  s = s.replace(/잇어서/g, '있어서');
+  s = s.replace(/잇으면/g, '있으면');
+  s = s.replace(/잇었/g, '있었');
+  s = s.replace(/잇다가/g, '있다가');
+
+  // 2. '젔' -> '졌' (고쳐젔, 이루어젔, 빠젔 등)
+  s = s.replace(/([가-힣]+)젔([가-힣]*)/g, '$1졌$2');
+
+  // 3. '그랫' -> '그랬'
+  s = s.replace(/그랫([가-힣]+)/g, '그랬$1');
+
+  // 4. '안' 부정 부사 띄어쓰기 (안고쳐 -> 안 고쳐, 안돼 -> 안 돼, 안먹 -> 안 먹)
+  s = s.replace(/안([가-힣]{2,})/g, (m, p1) => {
+    // 예외: 안전, 안심, 안내, 안색, 안쪽, 안팎 등 안으로 시작하는 명사/어근
+    if (/^(전|심|내|색|쪽|팎|부|녕|정|부|영|대|락|도|하|가)/.test(p1)) return m;
+    return `안 ${p1}`;
+  });
+
   // 긴 어미를 먼저 매칭하여 온전한 어미 결합 포착
-  const eomiList = '습니다|습네다|에서는|에서도|이지만|더라도|을텐데|텐데|지만|으나|으면|는데|으며|으니|어서|아서|네|소|을|죠|군요|듯|길|때|도|면|지|다|고|어|아';
+  const eomiList = '습니다|습네다|에서는|에서도|이지만|더라도|을텐데|텐데|지만|으나|으면|는데|으며|으니|어서|아서|네|소|을|죠|군요|듯|길|때|도|면|지|다|고|어|아|던|든|더';
   const eomiRegex = new RegExp(`([가-힣])(${eomiList})`, 'g');
 
-  return text.replace(eomiRegex, (match, p1, p2, offset, str) => {
+  return s.replace(eomiRegex, (match, p1, p2, offset, str) => {
     const d = decomposeHangul(p1);
     if (!d || d.T !== 19) return match; // 받침이 'ㅅ'이 아닌 글자는 그대로 유지
 
-    // 예외: 기본형 어간 받침이 원래 'ㅅ'인 용언 (웃다, 씻다, 벗다, 솟다, 뺏다, 짓다, 빗다, 잇다, 맛, 낫다)
-    const safeBase = ['웃', '씻', '벗', '솟', '뺏', '짓', '빗', '잇', '맛'];
+    // 예외: 기본형 어간 받침이 원래 'ㅅ'인 용언 (웃다, 씻다, 벗다, 솟다, 뺏다, 짓다, 빗다, 맛, 낫다)
+    const safeBase = ['웃', '씻', '벗', '솟', '뺏', '짓', '빗', '맛'];
     if (safeBase.includes(p1)) return match;
 
     // '낫': 만낫다, 일어낫다, 생각낫다, 떠올랏다는 ㅆ으로 변경, 단독 '병이 낫다/낫지'는 보존
@@ -438,5 +486,134 @@ export function correctKoreanText(text: string): { correctedText: string; count:
   return {
     correctedText: current,
     count: current !== text ? Math.max(changes, 1) : 0
+  };
+}
+
+/**
+ * Universal Intelligent Spell and Typo Checking Pipeline
+ * 1. Checks server /api/check-spelling endpoint (with Gemini on server/Vercel)
+ * 2. Falls back to client-side Gemini if API fails
+ * 3. Always applies rigorous local rules engine (correctKoreanText)
+ * 4. Accurately reports whether meaningful changes were made
+ */
+export async function checkAndCorrectKoreanSpelling(text: string): Promise<{
+  correctedText: string;
+  count: number;
+  changed: boolean;
+}> {
+  if (!text || typeof text !== 'string' || !text.trim()) {
+    return { correctedText: text || '', count: 0, changed: false };
+  }
+
+  let bestResult = text;
+  let detectedCount = 0;
+
+  // 1. Try serverless / server endpoint
+  try {
+    const endpoint = typeof window !== 'undefined' ? '/api/check-spelling' : 'http://localhost:3000/api/check-spelling';
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data.correctedText === 'string') {
+        bestResult = data.correctedText;
+        detectedCount = data.count || 0;
+      }
+    }
+  } catch (err) {
+    // API endpoint unavailable (e.g. offline or pure client mode), fall back gracefully
+  }
+
+  // 2. Client-side Gemini fallback if bestResult is still unchanged
+  if (bestResult === text) {
+    try {
+      const keys = [
+        (import.meta as any).env?.VITE_GEMINI_API_KEY,
+        (import.meta as any).env?.VITE_GEMINI_API_KEY2,
+        (import.meta as any).env?.VITE_GEMINI_API_KEY3,
+        (import.meta as any).env?.VITE_GEMINI_API_KEY4,
+        (typeof process !== 'undefined' ? (process as any).env?.GEMINI_API_KEY : ''),
+        (typeof process !== 'undefined' ? (process as any).env?.GEMINI_API_KEY2 : ''),
+        (typeof process !== 'undefined' ? (process as any).env?.GEMINI_API_KEY3 : ''),
+        (typeof process !== 'undefined' ? (process as any).env?.GEMINI_API_KEY4 : '')
+      ].filter((k): k is string => {
+        if (!k) return false;
+        const trimmed = k.trim();
+        const lower = trimmed.toLowerCase();
+        return trimmed !== '' &&
+               lower !== 'my_gemini_api_key' &&
+               lower !== 'your_api_key' &&
+               lower !== 'your_gemini_api_key' &&
+               lower !== 'null' &&
+               lower !== 'undefined' &&
+               lower !== 'placeholder';
+      });
+
+      if (keys.length > 0) {
+        const apiKey = keys[Math.floor(Math.random() * keys.length)];
+        const fallbackModels = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-3.1-flash-lite'];
+        for (const modelName of fallbackModels) {
+          try {
+            const ai = new GoogleGenAI({ apiKey });
+            const prompt = `다음 텍스트는 학생이 작성한 자기소개서 본문입니다.
+한국어 맞춤법 규정, 띄어쓰기 규칙, 오탈자(예: 됬->됐, 되서->돼서, 안되->안 돼, 않되->안 돼, 됫->됐, 준구난방->중구난방, 어의없->어이없, 몇일->며칠 등), 잘못된 조사/어미를 국립국어원 표준에 맞게 정확히 교정한 최종 완성 텍스트를 출력하세요.
+
+반드시 원문의 원래 내용, 문장의 의미, 어조는 그대로 유지하면서 오직 "오타, 맞춤법, 띄어쓰기"만 바르게 교정해야 합니다.
+절대로 새로운 내용을 지어내거나 학생의 경험/의도를 바꾸지 마세요.
+
+반드시 순수한 JSON 형식으로만 응답하세요:
+{
+  "correctedText": "오타와 띄어쓰기가 완벽하게 수정된 전체 본문 텍스트",
+  "count": 수정된_오타_및_띄어쓰기_개수(숫자)
+}
+
+[검사 및 수정할 원문 텍스트]
+${text}`;
+
+            const response = await ai.models.generateContent({
+              model: modelName,
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              config: {
+                systemInstruction: '너는 한국어 맞춤법 및 국립국어원 표준 규정에 정통한 전문 교정 전문가입니다. 원문의 의미와 문맥을 보존하며 오타, 띄어쓰기, 맞춤법만 완벽하게 수정한 결과를 JSON으로 반환합니다.',
+                temperature: 0.1
+              }
+            });
+
+            if (response && response.text) {
+              const cleaned = response.text.replace(/```json/gi, '').replace(/```/g, '').trim();
+              const parsed = JSON.parse(cleaned);
+              if (parsed.correctedText && typeof parsed.correctedText === 'string') {
+                bestResult = parsed.correctedText;
+                if (typeof parsed.count === 'number') {
+                  detectedCount = parsed.count;
+                }
+                break;
+              }
+            }
+          } catch {
+            // continue to next model
+          }
+        }
+      }
+    } catch (clientErr) {
+      console.warn('Client-side Gemini spell check fallback error', clientErr);
+    }
+  }
+
+  // 3. Always apply rigorous local rule engine
+  const localRuleResult = correctKoreanText(bestResult);
+  const finalCorrected = localRuleResult.correctedText;
+
+  // Determine whether genuine text differences exist (ignoring leading/trailing line endings)
+  const isChanged = finalCorrected.trim() !== text.trim();
+  const totalCount = isChanged ? Math.max(detectedCount, localRuleResult.count, 1) : 0;
+
+  return {
+    correctedText: finalCorrected,
+    count: totalCount,
+    changed: isChanged
   };
 }
