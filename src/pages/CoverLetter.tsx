@@ -304,13 +304,23 @@ export default function CoverLetter() {
     }
   };
 
-  // Insert diary snippet
+  // Insert diary snippet (날짜와 제목은 제외하고 본문 내용만 인용)
   const handleInsertDiary = (sectionId: string, diary: DiaryEntry) => {
-    const prev = answers[sectionId] || '';
-    const addition = `[${diary.date} ${diary.title}]\n${diary.content}\n`;
-    const newText = prev ? `${prev}\n\n${addition}` : addition;
+    const prev = (answers[sectionId] || '').trim();
+    const content = (diary.content || '').trim();
+    if (!content) return;
+
+    const newText = prev ? `${prev}\n\n${content}` : content;
     handleChange(sectionId, newText);
     setSelectedDiary(null);
+
+    setFixNotification(prevNotif => ({
+      ...prevNotif,
+      [sectionId]: t(`✨ '${diary.title}' 경험 내용이 인용되었습니다.`)
+    }));
+    setTimeout(() => {
+      setFixNotification(prevNotif => ({ ...prevNotif, [sectionId]: '' }));
+    }, 3500);
   };
 
   // Total characters count
@@ -542,66 +552,35 @@ export default function CoverLetter() {
                         </Link>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                      <div className="flex flex-wrap items-center gap-2">
                         {diaries.map((diary) => (
                           <div
                             key={diary.id || diary.date + diary.title}
-                            className={`p-3 rounded-xl border flex flex-col justify-between transition-all hover:shadow-xs group ${
+                            className={`inline-flex items-center gap-2 pl-3 pr-1.5 py-1.5 rounded-xl border text-xs transition-all shadow-2xs group ${
                               isLightMode 
                                 ? "bg-white border-slate-200/90 hover:border-emerald-400 text-slate-800" 
-                                : "bg-slate-800/90 border-slate-700 hover:border-emerald-500 text-slate-200"
+                                : "bg-slate-800 border-slate-700 hover:border-emerald-500 text-slate-200"
                             }`}
                           >
-                            <div>
-                              <div className="flex items-start justify-between gap-1 mb-1">
-                                <span className="text-base shrink-0">{diary.mood || '📝'}</span>
-                                <span className="text-[10px] text-slate-400 font-mono">
-                                  {diary.date}
-                                </span>
-                              </div>
-                              <h4 className="font-bold text-xs leading-snug line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                {diary.title}
-                              </h4>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">
-                                {diary.content}
-                              </p>
-                            </div>
-
-                            <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-1.5">
-                              {diary.tags && diary.tags.length > 0 ? (
-                                <div className="flex gap-1 overflow-hidden">
-                                  {diary.tags.slice(0, 1).map((tg, idx) => (
-                                    <span key={idx} className="bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[10px] font-medium truncate max-w-[80px]">
-                                      #{tg}
-                                    </span>
-                                  ))}
-                                </div>
-                              ) : <div />}
-
-                              <div className="flex items-center gap-1 shrink-0">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedDiary(diary);
-                                    setActiveDiarySectionId(sec.id);
-                                  }}
-                                  className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
-                                    isLightMode ? "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100" : "bg-slate-700/60 border-slate-600 text-slate-200 hover:bg-slate-700"
-                                  }`}
-                                  title={t('상세 내용 확인')}
-                                >
-                                  {t('자세히')}
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleInsertDiary(sec.id, diary)}
-                                  className="px-2 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer flex items-center gap-0.5 shadow-2xs"
-                                  title={t('이 경험을 자기소개서 본문에 바로 인용합니다')}
-                                >
-                                  <span>{t('인용')}</span>
-                                </button>
-                              </div>
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedDiary(diary);
+                                setActiveDiarySectionId(sec.id);
+                              }}
+                              className="font-bold text-xs truncate max-w-[200px] sm:max-w-[260px] cursor-pointer text-left hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                              title={`${diary.title} (${t('클릭하여 내용 확인')})`}
+                            >
+                              {diary.title}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleInsertDiary(sec.id, diary)}
+                              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-2xs shrink-0 active:scale-95"
+                              title={t('본문에 내용 인용')}
+                            >
+                              <span>{t('인용')}</span>
+                            </button>
                           </div>
                         ))}
                       </div>
