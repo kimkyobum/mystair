@@ -468,36 +468,137 @@ export default function CoverLetter() {
                     </span>
                   </div>
 
-                  {/* Buttons: [내 경험], [비우기] */}
+                  {/* Buttons: [내 경험] (팝업 창), [비우기] */}
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {/* [내 경험] 토글 버튼 */}
-                    <button
-                      type="button"
-                      onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: !prev[sec.id] }))}
-                      className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
-                        isExperienceOpen
-                          ? isLightMode 
-                            ? "bg-emerald-600 text-white border-emerald-600 shadow-xs" 
-                            : "bg-emerald-500 text-slate-950 font-black border-emerald-500 shadow-xs"
-                          : isLightMode 
-                            ? "bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40" 
-                            : "bg-slate-800 text-slate-200 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-700/60"
-                      }`}
-                      title={t('내가 작성한 성장 다이어리 실습 경험 보기')}
-                    >
-                      <BookOpen size={13} className={isExperienceOpen ? (isLightMode ? "text-white" : "text-slate-950") : "text-emerald-500"} />
-                      <span>{t('내 경험')}</span>
-                      {diaries.length > 0 && (
-                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-                          isExperienceOpen 
-                            ? isLightMode ? "bg-white/25 text-white" : "bg-slate-900/30 text-slate-950" 
-                            : isLightMode ? "bg-emerald-100 text-emerald-800" : "bg-emerald-950 text-emerald-300 border border-emerald-800"
-                        }`}>
-                          {diaries.length}
-                        </span>
+                    {/* [내 경험] 토글 버튼 및 팝업 창 */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: !prev[sec.id] }))}
+                        className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                          isExperienceOpen
+                            ? isLightMode 
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-xs" 
+                              : "bg-emerald-500 text-slate-950 font-black border-emerald-500 shadow-xs"
+                            : isLightMode 
+                              ? "bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40" 
+                              : "bg-slate-800 text-slate-200 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-700/60"
+                        }`}
+                        title={t('내가 작성한 성장 다이어리 실습 경험 보기')}
+                      >
+                        <BookOpen size={13} className={isExperienceOpen ? (isLightMode ? "text-white" : "text-slate-950") : "text-emerald-500"} />
+                        <span>{t('내 경험')}</span>
+                        {diaries.length > 0 && (
+                          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                            isExperienceOpen 
+                              ? isLightMode ? "bg-white/25 text-white" : "bg-slate-900/30 text-slate-950" 
+                              : isLightMode ? "bg-emerald-100 text-emerald-800" : "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                          }`}>
+                            {diaries.length}
+                          </span>
+                        )}
+                        {isExperienceOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                      </button>
+
+                      {/* [내 경험] 클릭 시 버튼 바로 아래에 작게 뜨는 팝업 창 */}
+                      {isExperienceOpen && (
+                        <>
+                          {/* 배경 클릭 시 닫기 */}
+                          <div 
+                            className="fixed inset-0 z-30" 
+                            onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: false }))} 
+                          />
+
+                          <div className={`absolute right-0 top-full mt-2 w-[300px] sm:w-[350px] z-40 rounded-2xl border shadow-2xl p-3.5 transition-all animate-in fade-in zoom-in-95 duration-150 ${
+                            isLightMode 
+                              ? "bg-white border-slate-200 text-slate-800" 
+                              : "bg-slate-900 border-slate-700 text-slate-100 shadow-emerald-950/40"
+                          }`}>
+                            {/* 팝업 상단 바 */}
+                            <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                              <div className="flex items-center gap-1.5">
+                                <BookOpen size={14} className="text-emerald-500" />
+                                <span className="text-xs font-black tracking-tight">{t('내 경험 선택')}</span>
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                                  {diaries.length}{t('개')}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: false }))}
+                                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                                title={t('닫기')}
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
+
+                            {/* 경험 목록 컨텐츠 */}
+                            {diaries.length === 0 ? (
+                              <div className="text-center py-5 space-y-2">
+                                <p className="text-xs text-slate-400 font-medium">{t('아직 등록된 경험 다이어리가 없습니다.')}</p>
+                                <Link
+                                  to="/diary"
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs"
+                                >
+                                  <PlusCircle size={12} />
+                                  <span>{t('다이어리 작성하기')}</span>
+                                </Link>
+                              </div>
+                            ) : (
+                              <div className="space-y-1.5 max-h-[220px] overflow-y-auto pr-1 scrollbar-thin">
+                                {diaries.map((diary) => (
+                                  <div
+                                    key={diary.id || diary.date + diary.title}
+                                    className={`flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl border text-xs transition-all ${
+                                      isLightMode 
+                                        ? "bg-slate-50/70 border-slate-200 hover:border-emerald-300 hover:bg-white" 
+                                        : "bg-slate-800/60 border-slate-700/80 hover:border-emerald-500 hover:bg-slate-800"
+                                    }`}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedDiary(diary);
+                                        setActiveDiarySectionId(sec.id);
+                                      }}
+                                      className="font-bold text-xs truncate text-left flex-1 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+                                      title={`${diary.title} (${t('클릭하여 상세 내용 확인')})`}
+                                    >
+                                      {diary.title}
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        handleInsertDiary(sec.id, diary);
+                                        setOpenExperiences(prev => ({ ...prev, [sec.id]: false }));
+                                      }}
+                                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-2xs shrink-0 active:scale-95"
+                                      title={t('본문에 내용 인용')}
+                                    >
+                                      <span>{t('인용')}</span>
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* 하단 보조 링크 */}
+                            <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                              <span className="text-[10px] text-slate-400">{t('제목 클릭 시 상세 미리보기')}</span>
+                              <Link
+                                to="/diary"
+                                className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-0.5 text-[11px]"
+                              >
+                                <span>{t('다이어리 추가')}</span>
+                                <ExternalLink size={10} />
+                              </Link>
+                            </div>
+                          </div>
+                        </>
                       )}
-                      {isExperienceOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                    </button>
+                    </div>
 
                     {/* Clear */}
                     {currentVal && (
@@ -514,79 +615,6 @@ export default function CoverLetter() {
                     )}
                   </div>
                 </div>
-
-                {/* [내 경험] 누르면 밑에 뜨는 사용자 경험(성장 다이어리) 펼침 영역 */}
-                {isExperienceOpen && (
-                  <div className={`px-4 sm:px-5 py-4 border-b text-xs transition-all animate-in fade-in-50 duration-200 ${
-                    isLightMode ? "bg-emerald-50/30 border-emerald-100" : "bg-emerald-950/20 border-emerald-900/40"
-                  }`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
-                        <BookOpen size={14} className="text-emerald-500" />
-                        <span className="text-xs sm:text-sm font-extrabold">{t('내가 작성한 성장 다이어리 경험 기록')}</span>
-                        <span className="hidden sm:inline text-[11px] font-normal text-slate-400">
-                          ({t('클릭하여 상세 확인 및 본문 인용 가능')})
-                        </span>
-                      </div>
-                      <Link 
-                        to="/diary" 
-                        className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 shrink-0 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-2xs"
-                      >
-                        <span>{t('다이어리 더 쓰러가기')}</span>
-                        <ExternalLink size={10} />
-                      </Link>
-                    </div>
-
-                    {diaries.length === 0 ? (
-                      <div className={`p-5 rounded-2xl border text-center space-y-2 ${
-                        isLightMode ? "bg-white border-slate-200 text-slate-500" : "bg-slate-800/80 border-slate-700 text-slate-400"
-                      }`}>
-                        <p className="text-xs font-semibold">{t('아직 등록된 성장 다이어리가 없습니다.')}</p>
-                        <p className="text-[11px] text-slate-400">{t('성장다이어리에 전공 실습, 대회 참가, 자격증 취득 경험을 기록하면 이곳에서 바로 불러올 수 있습니다.')}</p>
-                        <Link
-                          to="/diary"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white mt-1 shadow-2xs"
-                        >
-                          <PlusCircle size={13} />
-                          <span>{t('다이어리에 첫 경험 기록하기')}</span>
-                        </Link>
-                      </div>
-                    ) : (
-                      <div className="flex flex-wrap items-center gap-2">
-                        {diaries.map((diary) => (
-                          <div
-                            key={diary.id || diary.date + diary.title}
-                            className={`inline-flex items-center gap-2 pl-3 pr-1.5 py-1.5 rounded-xl border text-xs transition-all shadow-2xs group ${
-                              isLightMode 
-                                ? "bg-white border-slate-200/90 hover:border-emerald-400 text-slate-800" 
-                                : "bg-slate-800 border-slate-700 hover:border-emerald-500 text-slate-200"
-                            }`}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedDiary(diary);
-                                setActiveDiarySectionId(sec.id);
-                              }}
-                              className="font-bold text-xs truncate max-w-[200px] sm:max-w-[260px] cursor-pointer text-left hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
-                              title={`${diary.title} (${t('클릭하여 내용 확인')})`}
-                            >
-                              {diary.title}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleInsertDiary(sec.id, diary)}
-                              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-all cursor-pointer shadow-2xs shrink-0 active:scale-95"
-                              title={t('본문에 내용 인용')}
-                            >
-                              <span>{t('인용')}</span>
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* Auto-fix Notification Message if any with Undo Option */}
                 {notif && (
