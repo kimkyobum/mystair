@@ -186,7 +186,6 @@ export default function CoverLetter() {
   const [isAddingSection, setIsAddingSection] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>('');
   const [newChars, setNewChars] = useState<number>(500);
-  const [newPlaceholder, setNewPlaceholder] = useState<string>('');
 
   // Editing Section State
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
@@ -326,7 +325,7 @@ export default function CoverLetter() {
       id: newId,
       title: formattedTitle,
       recommendedChars: Math.max(50, Number(newChars) || 500),
-      placeholder: newPlaceholder.trim() || '해당 문항에 대한 답변을 구체적인 경험과 근거를 바탕으로 서술하세요.',
+      placeholder: '해당 문항에 대한 내용을 구체적인 경험과 근거를 바탕으로 작성하세요.',
       isCustom: true
     };
 
@@ -341,7 +340,6 @@ export default function CoverLetter() {
     // Reset create state
     setNewTitle('');
     setNewChars(500);
-    setNewPlaceholder('');
     setIsAddingSection(false);
 
     // Scroll to the newly created section box
@@ -869,7 +867,7 @@ export default function CoverLetter() {
                       )}
                     </div>
 
-                    {/* Edit Section Title/Chars (Only for custom or non-editing) */}
+                    {/* Edit Section Title/Chars */}
                     {!isEditingThis && (
                       <button
                         type="button"
@@ -899,19 +897,17 @@ export default function CoverLetter() {
                       </button>
                     )}
 
-                    {/* Delete Question (Only for Custom Sections) */}
-                    {sec.isCustom && (
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteSection(sec.id, sec.title)}
-                        className={`text-[11px] font-bold p-1.5 rounded-lg border text-rose-500 transition-colors cursor-pointer ${
-                          isLightMode ? "bg-white border-slate-200 hover:bg-rose-50 hover:border-rose-200" : "bg-slate-800 border-slate-700 hover:bg-rose-950/50"
-                        }`}
-                        title={t('이 문항 완전히 삭제')}
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    )}
+                    {/* Delete Question (X button on every question box) */}
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSection(sec.id, sec.title)}
+                      className={`text-[11px] font-bold p-1.5 rounded-lg border transition-colors cursor-pointer text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 ${
+                        isLightMode ? "bg-white border-slate-200" : "bg-slate-800 border-slate-700"
+                      }`}
+                      title={t('이 문항 자기소개서에서 삭제')}
+                    >
+                      <X size={13} />
+                    </button>
                   </div>
                 </div>
 
@@ -1032,7 +1028,37 @@ export default function CoverLetter() {
           })}
         </div>
 
-        {/* 자기소개서 질문 추가 버튼 & 입력 폼 */}
+        {/* Empty state when all sections deleted */}
+        {sections.length === 0 && (
+          <div className={`p-8 rounded-2xl border-2 border-dashed text-center space-y-3 ${
+            isLightMode ? "border-slate-200 bg-white" : "border-slate-800 bg-slate-900"
+          }`}>
+            <p className="text-sm font-semibold text-slate-500">{t('작성 중인 자기소개서 문항이 없습니다.')}</p>
+            <div className="flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAddingSection(true);
+                  setNewTitle('1. ');
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer"
+              >
+                {t('질문 추가하기')}
+              </button>
+              <button
+                type="button"
+                onClick={handleResetToDefault}
+                className={`px-4 py-2 rounded-xl text-xs font-bold border cursor-pointer ${
+                  isLightMode ? "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100" : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                }`}
+              >
+                {t('기본 문항 불러오기')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* 자기소개서 질문 추가 버튼 & 깔끔한 입력 폼 */}
         <div className="mt-8">
           {!isAddingSection ? (
             <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -1042,41 +1068,29 @@ export default function CoverLetter() {
                   setIsAddingSection(true);
                   setNewTitle(`${sections.length + 1}. `);
                 }}
-                className={`flex-1 w-full py-4 px-6 rounded-2xl border-2 border-dashed flex items-center justify-center gap-3.5 font-bold transition-all cursor-pointer group shadow-2xs hover:scale-[1.008] active:scale-[0.995] ${
+                className={`flex-1 w-full py-3.5 px-6 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2.5 font-bold transition-all cursor-pointer group shadow-2xs hover:scale-[1.005] active:scale-[0.995] ${
                   isLightMode
                     ? "border-emerald-300 bg-emerald-50/70 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-500"
                     : "border-emerald-500/40 bg-emerald-950/20 text-emerald-300 hover:bg-emerald-950/40 hover:border-emerald-400"
                 }`}
               >
-                <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform">
-                  <Plus size={20} strokeWidth={2.6} />
-                </div>
-                <div className="text-left">
-                  <div className="text-base font-black flex items-center gap-2">
-                    <span>{t('자기소개서 질문 추가')}</span>
-                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-600/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                      {t('자유 질문')}
-                    </span>
-                  </div>
-                  <p className={`text-xs font-medium mt-0.5 ${isLightMode ? 'text-slate-500' : 'text-slate-400'}`}>
-                    {t('가고 싶은 기업의 실제 채용 질문과 권장 글자수를 추가해 맞춤 작성 박스를 만드세요')}
-                  </p>
-                </div>
+                <Plus size={18} strokeWidth={2.5} className="text-emerald-600 dark:text-emerald-400" />
+                <span className="text-sm font-black">{t('자기소개서 질문 추가')}</span>
               </button>
 
-              {/* 기본 5개 문항으로 초기화 (커스텀 문항이 있을 경우 표시) */}
-              {sections.some(s => s.isCustom) && (
+              {/* 기본 문항과 다른 경우 복원 버튼 제공 */}
+              {(sections.length !== DEFAULT_SECTIONS.length || sections.some(s => s.isCustom)) && (
                 <button
                   type="button"
                   onClick={handleResetToDefault}
-                  className={`px-4 py-4 rounded-2xl border text-xs font-semibold shrink-0 transition-colors cursor-pointer ${
+                  className={`px-4 py-3.5 rounded-2xl border text-xs font-bold shrink-0 transition-colors cursor-pointer ${
                     isLightMode 
-                      ? "border-slate-200 bg-white text-slate-500 hover:text-rose-600 hover:bg-rose-50" 
-                      : "border-slate-800 bg-slate-900 text-slate-400 hover:text-rose-400 hover:bg-slate-800"
+                      ? "border-slate-200 bg-white text-slate-500 hover:text-emerald-600 hover:bg-slate-50" 
+                      : "border-slate-800 bg-slate-900 text-slate-400 hover:text-emerald-400 hover:bg-slate-800"
                   }`}
                   title={t('기본 5개 문항으로 되돌리기')}
                 >
-                  {t('기본 문항으로 초기화')}
+                  {t('기본 문항 복원')}
                 </button>
               )}
             </div>
@@ -1086,20 +1100,15 @@ export default function CoverLetter() {
                 ? "bg-white border-emerald-500/90 shadow-emerald-500/5" 
                 : "bg-slate-900 border-emerald-500/70 shadow-black/50"
             }`}>
-              {/* Creator Box Header */}
+              {/* Creator Box Header (간결한 상단바) */}
               <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                    <PlusCircle size={18} />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+                    <Plus size={16} />
                   </div>
-                  <div>
-                    <h3 className={`text-base font-black ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                      {t('새로운 자기소개서 질문 추가')}
-                    </h3>
-                    <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
-                      {t('질문 제목과 권장 글자수를 입력하면 맨 밑에 바로 작성 박스가 생성됩니다.')}
-                    </p>
-                  </div>
+                  <h3 className={`text-base font-black ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                    {t('자기소개서 질문 추가')}
+                  </h3>
                 </div>
 
                 <button
@@ -1113,42 +1122,12 @@ export default function CoverLetter() {
                 </button>
               </div>
 
-              {/* Recommended Presets */}
-              <div className="mb-4">
-                <span className="text-[11px] font-bold text-slate-400 block mb-2 flex items-center gap-1">
-                  <Lightbulb size={13} className="text-amber-500" />
-                  {t('자주 나오는 대표 문항 추천 (클릭 시 자동 입력)')}
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {PRESET_QUESTIONS.map((preset, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setNewTitle(`${sections.length + 1}. ${preset.title}`);
-                        setNewChars(preset.recommendedChars);
-                        setNewPlaceholder(preset.placeholder);
-                      }}
-                      className={`text-xs px-2.5 py-1.5 rounded-lg border font-medium transition-all cursor-pointer ${
-                        isLightMode 
-                          ? "bg-slate-50 border-slate-200 text-slate-700 hover:border-emerald-400 hover:bg-emerald-50/50 hover:text-emerald-800" 
-                          : "bg-slate-800 border-slate-700 text-slate-300 hover:border-emerald-500 hover:bg-slate-800/80 hover:text-emerald-300"
-                      }`}
-                    >
-                      <span>+ {preset.title}</span>
-                      <span className="ml-1 text-[10px] text-slate-400 font-semibold">({preset.recommendedChars}자)</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Input Form Fields */}
               <form onSubmit={handleAddCustomSection} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                   <div className="sm:col-span-8 space-y-1">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                      <span>{t('질문 (문항 제목)')} <span className="text-rose-500">*</span></span>
-                      <span className="text-[11px] text-slate-400 font-normal">{t('번호와 제목을 적어주세요')}</span>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {t('질문 (문항 제목)')} <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -1165,9 +1144,8 @@ export default function CoverLetter() {
                   </div>
 
                   <div className="sm:col-span-4 space-y-1">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                      <span>{t('권장 글자수')} <span className="text-rose-500">*</span></span>
-                      <span className="text-[11px] text-slate-400 font-normal">{t('기준 글자수')}</span>
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {t('권장 글자수')} <span className="text-rose-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -1194,7 +1172,7 @@ export default function CoverLetter() {
                 {/* Quick Char Selection Chips */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[11px] text-slate-400 font-semibold">{t('글자수 빠른 선택')}:</span>
-                  {[300, 400, 500, 600, 700, 800, 1000].map((num) => (
+                  {[300, 500, 700, 800, 1000].map((num) => (
                     <button
                       key={num}
                       type="button"
@@ -1210,25 +1188,6 @@ export default function CoverLetter() {
                       {num}{t('자')}
                     </button>
                   ))}
-                </div>
-
-                {/* Optional Placeholder / Guidance */}
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                    <span>{t('작성 팁 / 가이드 안내 (선택)')}</span>
-                    <span className="text-[11px] text-slate-400 font-normal">{t('텍스트 입력창 안내 문구로 표시됩니다')}</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={newPlaceholder}
-                    onChange={e => setNewPlaceholder(e.target.value)}
-                    placeholder={t('예: 지원 동기와 이를 증명할 수 있는 자신의 실무 경험을 서술하세요.')}
-                    className={`w-full border rounded-xl px-3.5 py-2.5 text-sm outline-none transition-colors ${
-                      isLightMode 
-                        ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" 
-                        : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"
-                    }`}
-                  />
                 </div>
 
                 {/* Submit & Cancel Buttons */}
