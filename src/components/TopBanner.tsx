@@ -20,6 +20,10 @@ export default function TopBanner() {
       {/* 윗부분의 은은한 에메랄드 네온 라인 효과 */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
       
+      {/* 좌우 부드러운 페이드아웃 그라디언트 (사이드바 경계 자연스럽게 처리) */}
+      <div className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-r ${isLightMode ? 'from-white/70 to-transparent' : 'from-slate-900/80 to-transparent'}`}></div>
+      <div className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-l ${isLightMode ? 'from-white/70 to-transparent' : 'from-slate-900/80 to-transparent'}`}></div>
+      
       <motion.div
         className="flex whitespace-nowrap items-center"
         animate={{ x: ["0%", "-50%"] }}

@@ -25,7 +25,7 @@ export default function AppWrapper() {
         <ClickEffect />
         <Sidebar />
         {isLightMode ? <LightBackground /> : (backgroundType === 'black' && <Starfield />)}
-        <div className="flex-1 h-full pl-0 pb-[72px] sm:pb-0 sm:pl-14 relative z-10 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex-1 h-full pl-0 pb-[72px] sm:pb-0 sm:pl-16 relative z-10 flex flex-col min-w-0 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/diary" element={<Diary />} />

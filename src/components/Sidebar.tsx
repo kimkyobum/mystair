@@ -76,13 +76,13 @@ export default function Sidebar() {
         to={item.path} 
         title={t(item.name)}
         className={`group flex items-center transition-all whitespace-nowrap ${item.tourClass || ''} ${
-          // Mobile layout: column centered
-          'flex-col sm:flex-row justify-center sm:justify-start gap-1 sm:gap-3 py-1.5 sm:py-2.5 px-2 flex-1 sm:flex-none'
+          // Mobile layout
+          'flex-col justify-center gap-1 py-1.5 px-2 flex-1 sm:flex-none'
         } ${
-          // Desktop layout: full width on hover, compact centered square when collapsed
+          // Desktop layout: full width when hovered, perfectly centered 40x40 square when collapsed
           isHovered 
-            ? 'sm:w-full sm:px-3 sm:rounded-xl min-h-[42px]' 
-            : 'sm:w-10 sm:h-10 sm:p-0 sm:mx-auto sm:justify-center sm:rounded-xl'
+            ? 'sm:flex-row sm:w-full sm:px-3 sm:py-2.5 sm:justify-start sm:gap-3 sm:rounded-xl min-h-[42px]' 
+            : 'sm:flex-row sm:w-10 sm:h-10 sm:p-0 sm:px-0 sm:mx-auto sm:justify-center sm:items-center sm:self-center sm:gap-0 sm:rounded-xl'
         } ${
           isActive 
             ? (isDarkTheme 
@@ -93,7 +93,7 @@ export default function Sidebar() {
                 : 'text-slate-600 hover:text-slate-900 sm:hover:bg-slate-100 font-medium')
         }`}
       >
-        <div className="shrink-0 flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6">
+        <div className="shrink-0 flex items-center justify-center w-5 h-5 sm:w-5 sm:h-5">
           <Icon 
             size={20} 
             className={`transition-colors duration-150 ${
@@ -129,7 +129,9 @@ export default function Sidebar() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`hidden sm:flex h-[72px] items-center px-3.5 overflow-hidden whitespace-nowrap shrink-0 border-b ${
+      <div className={`hidden sm:flex h-[72px] items-center overflow-hidden whitespace-nowrap shrink-0 border-b ${
+        isHovered ? 'px-3.5 justify-start' : 'px-0 justify-center w-full'
+      } ${
         isDarkTheme ? 'border-white/10' : 'border-slate-200'
       }`}>
         {isHovered ? (
@@ -148,7 +150,7 @@ export default function Sidebar() {
           <a 
             href="/" 
             onClick={handleLogoClick}
-            className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-full leading-none group select-none transition-all duration-300 hover:scale-110`}
+            className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-10 h-10 rounded-xl leading-none group select-none transition-all duration-300 hover:scale-110`}
           >
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} group-hover:rotate-180 transition-transform duration-500 ease-out`}>
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
@@ -158,9 +160,11 @@ export default function Sidebar() {
         )}
       </div>
       
-      <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col items-center sm:items-stretch justify-around sm:justify-start gap-1 sm:gap-1 px-2 py-0 sm:py-3 scrollbar-hide">
+      <nav className={`flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col justify-around sm:justify-start gap-1 scrollbar-hide py-0 sm:py-3 ${
+        isHovered ? 'sm:px-3 sm:items-stretch' : 'sm:px-0 sm:items-center'
+      } px-2`}>
         {/* 1. Main Navigation (Home, 성장다이어리, 모의면접, 자소서) */}
-        <div className="flex sm:flex-col items-center sm:items-stretch gap-1 w-full">
+        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
           {mainItems.map(renderNavItem)}
         </div>
 
@@ -170,11 +174,11 @@ export default function Sidebar() {
             {t('탐색 & 지원')}
           </div>
         ) : (
-          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5" />
+          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5 self-center shrink-0" />
         )}
 
         {/* 2. 탐색 & 지원 (자격증 가이드, 기업찾기) */}
-        <div className="flex sm:flex-col items-center sm:items-stretch gap-1 w-full">
+        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
           {exploreItems.map(renderNavItem)}
         </div>
 
@@ -184,11 +188,11 @@ export default function Sidebar() {
             {t('검사')}
           </div>
         ) : (
-          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5" />
+          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5 self-center shrink-0" />
         )}
 
         {/* 3. 검사 (MBTI, 홀랜드) */}
-        <div className="flex sm:flex-col items-center sm:items-stretch gap-1 w-full">
+        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
           {testItems.map(renderNavItem)}
         </div>
 
