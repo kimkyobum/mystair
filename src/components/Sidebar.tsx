@@ -75,14 +75,12 @@ export default function Sidebar() {
         key={item.path} 
         to={item.path} 
         title={t(item.name)}
-        className={`group flex items-center transition-all whitespace-nowrap ${item.tourClass || ''} ${
-          // Mobile layout
+        className={`group flex items-center transition-colors duration-150 whitespace-nowrap ${item.tourClass || ''} ${
+          // Mobile layout: column centered in 72px bottom bar
           'flex-col justify-center gap-1 py-1.5 px-2 flex-1 sm:flex-none'
         } ${
-          // Desktop layout: full width when hovered, perfectly centered 40x40 square when collapsed
-          isHovered 
-            ? 'sm:flex-row sm:w-full sm:px-3 sm:py-2.5 sm:justify-start sm:gap-3 sm:rounded-xl min-h-[42px]' 
-            : 'sm:flex-row sm:w-10 sm:h-10 sm:p-0 sm:px-0 sm:mx-auto sm:justify-center sm:items-center sm:self-center sm:gap-0 sm:rounded-xl'
+          // Desktop layout: fixed 40px height, full-width within px-3 container (40px square collapsed, 232px wide expanded)
+          'sm:flex-row sm:w-full sm:h-10 sm:p-0 sm:justify-start sm:rounded-xl overflow-hidden'
         } ${
           isActive 
             ? (isDarkTheme 
@@ -93,7 +91,8 @@ export default function Sidebar() {
                 : 'text-slate-600 hover:text-slate-900 sm:hover:bg-slate-100 font-medium')
         }`}
       >
-        <div className="shrink-0 flex items-center justify-center w-5 h-5 sm:w-5 sm:h-5">
+        {/* Fixed 40x40 icon anchor on desktop (remains at exact same position whether expanded or collapsed) */}
+        <div className="shrink-0 flex items-center justify-center w-5 h-5 sm:w-10 sm:h-10">
           <Icon 
             size={20} 
             className={`transition-colors duration-150 ${
@@ -104,12 +103,16 @@ export default function Sidebar() {
           />
         </div>
 
-        {/* Desktop text: only shown when sidebar is expanded on hover */}
-        {isHovered && (
-          <span className="hidden sm:inline-block text-[13.5px] truncate font-semibold animate-in fade-in duration-150">
+        {/* Desktop text: slides and fades in smoothly without reflowing layout */}
+        <div className="hidden sm:flex items-center overflow-hidden min-w-0 flex-1">
+          <span className={`text-[13.5px] font-semibold truncate whitespace-nowrap transition-all duration-200 ease-out ${
+            isHovered 
+              ? 'opacity-100 translate-x-0' 
+              : 'opacity-0 -translate-x-2 pointer-events-none'
+          }`}>
             {t(item.name)}
           </span>
-        )}
+        </div>
 
         {/* Mobile text label */}
         <span className="text-[10px] sm:hidden font-medium truncate max-w-[56px]">
@@ -121,78 +124,79 @@ export default function Sidebar() {
 
   return (
     <aside 
-      className={`fixed z-[100] transition-all duration-300 ease-in-out flex ${
+      className={`fixed z-[100] transition-[width,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0,0,1)] flex ${
         isDarkTheme 
           ? 'bg-slate-950/80 sm:bg-slate-950/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-white/10 text-white shadow-[0_-5px_25px_rgba(0,0,0,0.3)] sm:shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
           : 'bg-white/80 sm:bg-white/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-slate-200/60 text-slate-800 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] sm:shadow-[0_0_20px_rgba(0,0,0,0.03)]'
-      } bottom-0 left-0 w-full h-[72px] flex-row sm:flex-col sm:bottom-auto sm:top-0 sm:h-full ${isHovered ? 'sm:w-64' : 'sm:w-16'}`}
+      } bottom-0 left-0 w-full h-[72px] flex-row sm:flex-col sm:bottom-auto sm:top-0 sm:h-full overflow-hidden ${isHovered ? 'sm:w-64' : 'sm:w-16'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`hidden sm:flex h-[72px] items-center overflow-hidden whitespace-nowrap shrink-0 border-b ${
-        isHovered ? 'px-3.5 justify-start' : 'px-0 justify-center w-full'
-      } ${
-        isDarkTheme ? 'border-white/10' : 'border-slate-200'
+      {/* Desktop Logo Header (Never switches elements, smooth slide) */}
+      <div className={`hidden sm:flex h-[72px] items-center px-3 overflow-hidden whitespace-nowrap shrink-0 border-b ${
+        isDarkTheme ? 'border-white/10' : 'border-slate-200/80'
       }`}>
-        {isHovered ? (
-          <a 
-            href="/" 
-            onClick={handleLogoClick}
-            className={`${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'} font-black text-[24px] tracking-[-0.06em] cursor-pointer flex items-center gap-2 leading-none pl-1 group select-none transition-all duration-300 hover:scale-105`}
-          >
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} shrink-0 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out`}>
-              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
-              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
-            </svg>
-            <span className="transition-colors duration-300">Mystair</span>
-          </a>
-        ) : (
-          <a 
-            href="/" 
-            onClick={handleLogoClick}
-            className={`${isDarkTheme ? 'text-white' : 'text-slate-900'} cursor-pointer flex items-center justify-center w-10 h-10 rounded-xl leading-none group select-none transition-all duration-300 hover:scale-110`}
-          >
+        <a 
+          href="/" 
+          onClick={handleLogoClick}
+          className="flex items-center w-full h-10 rounded-xl select-none group transition-colors cursor-pointer"
+        >
+          <div className="w-10 h-10 flex items-center justify-center shrink-0">
             <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} group-hover:rotate-180 transition-transform duration-500 ease-out`}>
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
               <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
             </svg>
-          </a>
-        )}
+          </div>
+          <div className="flex items-center overflow-hidden min-w-0">
+            <span className={`font-black text-[22px] tracking-[-0.06em] leading-none transition-all duration-200 ease-out whitespace-nowrap ${
+              isHovered 
+                ? 'opacity-100 translate-x-0 ml-1' 
+                : 'opacity-0 -translate-x-2 pointer-events-none'
+            } ${isDarkTheme ? 'text-white hover:text-teal-300' : 'text-slate-900 hover:text-teal-600'}`}>
+              Mystair
+            </span>
+          </div>
+        </a>
       </div>
       
-      <nav className={`flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col justify-around sm:justify-start gap-1 scrollbar-hide py-0 sm:py-3 ${
-        isHovered ? 'sm:px-3 sm:items-stretch' : 'sm:px-0 sm:items-center'
-      } px-2`}>
+      {/* Navigation items (Consistent layout, zero vertical jumping) */}
+      <nav className="flex-1 overflow-x-auto sm:overflow-y-auto sm:overflow-x-hidden flex sm:flex-col justify-around sm:justify-start gap-1 scrollbar-hide py-0 sm:py-3 px-2 sm:px-3">
         {/* 1. Main Navigation (Home, 성장다이어리, 모의면접, 자소서) */}
-        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
+        <div className="flex sm:flex-col gap-1 w-full">
           {mainItems.map(renderNavItem)}
         </div>
 
-        {/* Divider & Section 2 Label: 탐색 & 지원 */}
-        {isHovered ? (
-          <div className="hidden sm:block pt-3 pb-1 px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none animate-in fade-in duration-150">
+        {/* Fixed-height Divider 1: 탐색 & 지원 (Never causes lower items to jump vertically) */}
+        <div className="hidden sm:flex items-center h-6 my-1 relative shrink-0 overflow-hidden">
+          <div className={`h-[1px] transition-all duration-300 ${
+            isDarkTheme ? 'bg-white/10' : 'bg-slate-200'
+          } ${isHovered ? 'w-full opacity-40' : 'w-7 mx-auto opacity-100'}`} />
+          <span className={`absolute left-1 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none'
+          } ${isDarkTheme ? 'text-slate-400 bg-slate-950/90 px-1 rounded' : 'text-slate-500 bg-white/90 px-1 rounded'}`}>
             {t('탐색 & 지원')}
-          </div>
-        ) : (
-          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5 self-center shrink-0" />
-        )}
+          </span>
+        </div>
 
         {/* 2. 탐색 & 지원 (자격증 가이드, 기업찾기) */}
-        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
+        <div className="flex sm:flex-col gap-1 w-full">
           {exploreItems.map(renderNavItem)}
         </div>
 
-        {/* Divider & Section 3 Label: 검사 */}
-        {isHovered ? (
-          <div className="hidden sm:block pt-3 pb-1 px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider select-none animate-in fade-in duration-150">
+        {/* Fixed-height Divider 2: 검사 (Never causes lower items to jump vertically) */}
+        <div className="hidden sm:flex items-center h-6 my-1 relative shrink-0 overflow-hidden">
+          <div className={`h-[1px] transition-all duration-300 ${
+            isDarkTheme ? 'bg-white/10' : 'bg-slate-200'
+          } ${isHovered ? 'w-full opacity-40' : 'w-7 mx-auto opacity-100'}`} />
+          <span className={`absolute left-1 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 pointer-events-none'
+          } ${isDarkTheme ? 'text-slate-400 bg-slate-950/90 px-1 rounded' : 'text-slate-500 bg-white/90 px-1 rounded'}`}>
             {t('검사')}
-          </div>
-        ) : (
-          <div className="hidden sm:block w-7 h-[1px] bg-slate-200 dark:bg-white/10 mx-auto my-1.5 self-center shrink-0" />
-        )}
+          </span>
+        </div>
 
         {/* 3. 검사 (MBTI, 홀랜드) */}
-        <div className={`flex sm:flex-col gap-1 w-full ${isHovered ? 'sm:items-stretch' : 'sm:items-center'}`}>
+        <div className="flex sm:flex-col gap-1 w-full">
           {testItems.map(renderNavItem)}
         </div>
 
@@ -223,28 +227,33 @@ export default function Sidebar() {
         </Link>
       </nav>
 
-      {/* Desktop Profile Section */}
-      <div className={`hidden sm:flex shrink-0 py-3 border-t ${isHovered ? 'px-3' : 'px-0 justify-center'} ${isDarkTheme ? 'border-white/10 bg-transparent' : 'border-slate-200 bg-slate-50/50'}`}>
-        <div className={`flex items-center whitespace-nowrap ${isHovered ? 'justify-between w-full' : 'justify-center'}`}>
+      {/* Desktop Profile Section (Zero jumping, perfect 40px alignment) */}
+      <div className={`hidden sm:flex shrink-0 py-3 px-3 border-t overflow-hidden ${
+        isDarkTheme ? 'border-white/10 bg-transparent' : 'border-slate-200/80 bg-slate-50/50'
+      }`}>
+        <div className="flex items-center w-full h-10 overflow-hidden">
           <Link 
             to="/mypage" 
             title={t('마이페이지 겸 설정', 'My Page & Settings')}
-            className={`flex items-center gap-3 cursor-pointer group tour-target-nav-mypage-desktop ${isHovered ? 'flex-1 min-w-0' : 'justify-center'}`}
+            className="flex items-center min-w-0 flex-1 cursor-pointer group tour-target-nav-mypage-desktop"
           >
-            {userProfile?.avatarUrl || user?.photoURL ? (
-              <img 
-                src={userProfile?.avatarUrl || user?.photoURL || ''} 
-                alt={t('프로필')} 
-                className="w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full object-cover shrink-0 transition-all group-hover:scale-105 shadow-sm"
-              />
-            ) : (
-              <div className={`w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-all group-hover:scale-105 ${
-                isLightMode ? 'bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm' : 'bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm'
-              }`}>
-                <User size={14} className="shrink-0" />
-              </div>
-            )}
-            <div className={`flex flex-col transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'} overflow-hidden min-w-0`}>
+            <div className="w-10 h-10 flex items-center justify-center shrink-0">
+              {userProfile?.avatarUrl || user?.photoURL ? (
+                <img 
+                  src={userProfile?.avatarUrl || user?.photoURL || ''} 
+                  alt={t('프로필')} 
+                  className="w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full object-cover shrink-0 transition-transform group-hover:scale-105 shadow-sm"
+                />
+              ) : (
+                <div className="w-7 h-7 min-w-[28px] min-h-[28px] aspect-square rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm">
+                  <User size={14} className="shrink-0" />
+                </div>
+              )}
+            </div>
+
+            <div className={`flex flex-col overflow-hidden min-w-0 transition-all duration-200 ease-out ${
+              isHovered ? 'opacity-100 translate-x-0 ml-1.5' : 'opacity-0 -translate-x-2 pointer-events-none'
+            }`}>
               <span className={`text-[13px] font-bold leading-tight truncate group-hover:text-teal-400 transition-colors ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
                 {displayName}
               </span>
@@ -254,30 +263,30 @@ export default function Sidebar() {
             </div>
           </Link>
 
-          {isHovered && (
-            <div className="flex items-center gap-1 shrink-0 ml-1">
-              {!user && (
-                <button 
-                  onClick={() => loginWithGoogle()}
-                  title={t('구글 로그인')}
-                  className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    isDarkTheme ? 'hover:bg-white/10 text-teal-300 hover:text-white' : 'hover:bg-slate-200 text-teal-600 hover:text-teal-800'
-                  }`}
-                >
-                  <LogIn size={14} />
-                </button>
-              )}
+          <div className={`flex items-center gap-1 shrink-0 transition-all duration-200 ${
+            isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
+          }`}>
+            {!user && (
               <button 
-                onClick={handleLogout}
-                title={user ? t('로그아웃') : t('홍보 페이지로 이동')}
+                onClick={() => loginWithGoogle()}
+                title={t('구글 로그인')}
                 className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                  isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
+                  isDarkTheme ? 'hover:bg-white/10 text-teal-300 hover:text-white' : 'hover:bg-slate-200 text-teal-600 hover:text-teal-800'
                 }`}
               >
-                <LogOut size={14} />
+                <LogIn size={14} />
               </button>
-            </div>
-          )}
+            )}
+            <button 
+              onClick={handleLogout}
+              title={user ? t('로그아웃') : t('홍보 페이지로 이동')}
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                isDarkTheme ? 'hover:bg-white/10 text-white/60 hover:text-white' : 'hover:bg-slate-200 text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
         </div>
       </div>
     </aside>
