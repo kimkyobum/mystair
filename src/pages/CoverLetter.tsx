@@ -23,7 +23,9 @@ import {
   Download,
   FolderPlus,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Printer,
+  Eye
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -267,6 +269,9 @@ export default function CoverLetter() {
 
   // Reset to default sections confirmation modal state
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState<boolean>(false);
+
+  // A4 Document Preview Modal State (A4 용지 세로 문서 미리보기 및 인쇄)
+  const [isA4PreviewOpen, setIsA4PreviewOpen] = useState<boolean>(false);
 
   // Experience drawer open per section
   const [openExperiences, setOpenExperiences] = useState<Record<string, boolean>>({});
@@ -872,6 +877,17 @@ export default function CoverLetter() {
             </span>
           )}
 
+          {/* A4 Document Preview Button (Right next to Save) */}
+          <button
+            type="button"
+            onClick={() => setIsA4PreviewOpen(true)}
+            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer"
+            title={t('A4 한글/문서 서식 미리보기 및 인쇄')}
+          >
+            <FileText size={14} />
+            <span>{t('A4 미리보기')}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => handleSave(false)}
@@ -1054,6 +1070,20 @@ export default function CoverLetter() {
           {/* Quick Utility Action Bar: Copy All, Download TXT, Save, Delete Company */}
           <div className="flex flex-wrap items-center justify-between gap-2 pt-3.5 text-xs">
             <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setIsA4PreviewOpen(true)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer ${
+                  isLightMode 
+                    ? "bg-sky-50 hover:bg-sky-100 border-sky-200 text-sky-700" 
+                    : "bg-sky-950/40 hover:bg-sky-900/60 border-sky-800 text-sky-300"
+                }`}
+                title={t('A4 한글 서식 문서 미리보기 및 인쇄')}
+              >
+                <FileText size={13} />
+                <span>{t('A4 서식 미리보기')}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={handleCopyAll}
@@ -2108,6 +2138,252 @@ export default function CoverLetter() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* F. A4 DOCUMENT PREVIEW & PRINT MODAL (한글/A4 서식 미리보기) */}
+      {/* ============================================================== */}
+      {isA4PreviewOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-start p-2 sm:p-6 print:p-0 print:bg-white print:static animate-in fade-in duration-150">
+          
+          {/* Print Style Injector */}
+          <style>{`
+            @media print {
+              body * {
+                visibility: hidden !important;
+              }
+              #a4-print-document, #a4-print-document * {
+                visibility: visible !important;
+              }
+              #a4-print-document {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 15mm 20mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+                color: black !important;
+              }
+              .no-print {
+                display: none !important;
+              }
+            }
+          `}</style>
+
+          {/* Sticky Top Control Toolbar (Hidden in Print) */}
+          <div className="no-print sticky top-3 z-50 w-full max-w-[840px] mb-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-white">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+                <FileText size={18} />
+              </div>
+              <div>
+                <h4 className="text-sm font-black flex items-center gap-1.5">
+                  <span>[{currentCompany.companyName}]</span>
+                  <span>{t('A4 자기소개서 서식 미리보기')}</span>
+                </h4>
+                <p className="text-[11px] text-slate-400">
+                  {t('실제 한글(HWP)/입사지원서 서식 규격에 맞춘 A4 세로 인쇄 미리보기')}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Print / PDF Button */}
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer"
+                title={t('A4 용지로 인쇄하거나 PDF 파일로 저장')}
+              >
+                <Printer size={14} />
+                <span>{t('인쇄 / PDF 저장')}</span>
+              </button>
+
+              {/* Copy Text Button */}
+              <button
+                type="button"
+                onClick={handleCopyAll}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer"
+                title={t('서식 텍스트 전체 복사')}
+              >
+                <Copy size={13} />
+                <span className="hidden sm:inline">{t('전체 복사')}</span>
+              </button>
+
+              {/* Download TXT Button */}
+              <button
+                type="button"
+                onClick={handleDownloadText}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer"
+                title={t('텍스트 파일로 다운로드')}
+              >
+                <Download size={13} />
+                <span className="hidden sm:inline">{t('텍스트 저장')}</span>
+              </button>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setIsA4PreviewOpen(false)}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer ml-1"
+                title={t('닫기 및 편집으로 돌아가기')}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Authentic Vertical A4 Paper Canvas */}
+          <div 
+            id="a4-print-document" 
+            className="w-full max-w-[820px] min-h-[1160px] bg-white text-slate-900 shadow-2xl rounded-sm p-8 sm:p-14 border border-slate-200/90 my-2 sm:my-4 transition-all relative font-sans flex flex-col justify-between"
+            style={{ minHeight: '297mm' }}
+          >
+            {/* Top Document Header Section */}
+            <div>
+              {/* Document Meta Header */}
+              <div className="flex items-center justify-between text-[11px] text-slate-500 pb-2 mb-4 border-b border-slate-300">
+                <span className="font-semibold tracking-wider">[ 2026학년도 입사지원서 서식 ]</span>
+                <span>MyStair 표준 취업 자기소개서 양식</span>
+              </div>
+
+              {/* Main Official Title */}
+              <div className="text-center py-4 mb-6">
+                <h1 className="text-2xl sm:text-3xl font-black tracking-widest text-slate-950 mb-1">
+                  [ {currentCompany.companyName} ] 입 사 지 원 서
+                </h1>
+                <p className="text-sm font-bold text-slate-600 tracking-wider">
+                  ( 자 기 소 개 서 )
+                </p>
+              </div>
+
+              {/* Applicant Summary Formal Table */}
+              <div className="border border-slate-800 rounded-xs mb-8 overflow-hidden">
+                <table className="w-full text-xs border-collapse">
+                  <tbody>
+                    <tr className="border-b border-slate-300">
+                      <td className="w-24 bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        지 원 기 업
+                      </td>
+                      <td className="p-2.5 font-extrabold text-slate-900 border-r border-slate-300">
+                        {currentCompany.companyName}
+                      </td>
+                      <td className="w-24 bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        지 원 자
+                      </td>
+                      <td className="p-2.5 font-bold text-slate-900">
+                        {userProfile?.name || user?.displayName || '지원자'}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-slate-300">
+                      <td className="bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        소 속 학 교
+                      </td>
+                      <td className="p-2.5 text-slate-800 border-r border-slate-300">
+                        {userProfile?.highSchool || '마이스터고등학교'} {userProfile?.major ? `(${userProfile.major})` : ''}
+                      </td>
+                      <td className="bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        작 성 일 자
+                      </td>
+                      <td className="p-2.5 text-slate-800">
+                        {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        문 항 구 성
+                      </td>
+                      <td className="p-2.5 text-slate-800 border-r border-slate-300">
+                        총 <strong className="text-slate-950 font-bold">{sections.length}</strong>개 항목
+                      </td>
+                      <td className="bg-slate-100 font-bold p-2.5 text-center text-slate-800 border-r border-slate-300">
+                        총 분 량
+                      </td>
+                      <td className="p-2.5 text-slate-800">
+                        <strong className="text-slate-950 font-bold">{totalChars}자</strong> (공백 제외 {totalCharsNoSpace}자)
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Double Horizontal Separator Line */}
+              <div className="border-b-4 border-double border-slate-900 mb-8"></div>
+
+              {/* Questions & Answers Sequentially Formatted */}
+              <div className="space-y-8">
+                {sections.map((sec, idx) => {
+                  const content = (answers[sec.id] || '').trim();
+                  const charCount = content.length;
+                  return (
+                    <div key={sec.id} className="break-inside-avoid">
+                      {/* Question Header Box */}
+                      <div className="bg-slate-100/90 border-l-4 border-slate-900 px-3.5 py-2 mb-3.5 flex items-center justify-between text-slate-900">
+                        <h2 className="font-extrabold text-[15px] sm:text-[16px] tracking-tight">
+                          {idx + 1}. {getCleanTitle(sec.title)}
+                        </h2>
+                        <span className="text-[11px] text-slate-500 font-semibold shrink-0 ml-2">
+                          [ 권장 {sec.recommendedChars}자 | 실제 {charCount}자 ]
+                        </span>
+                      </div>
+
+                      {/* Answer Body */}
+                      {content ? (
+                        <div className="whitespace-pre-wrap leading-[1.85] text-[14px] sm:text-[14.5px] text-slate-900 font-normal tracking-[-0.015em] pl-1 break-words">
+                          {content}
+                        </div>
+                      ) : (
+                        <div className="italic text-slate-400 text-xs sm:text-sm pl-1 py-4 border-b border-dashed border-slate-200">
+                          (작성된 내용이 없습니다.)
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Formal Footer & Signature Block */}
+            <div className="border-t-2 border-slate-300 pt-8 mt-12 text-center break-inside-avoid">
+              <p className="text-sm font-semibold text-slate-800 tracking-tight mb-3">
+                위 기재 사항은 사실과 틀림없음을 서약하며, 만일 허위 사실이 있을 경우 어떠한 불이익도 감수하겠습니다.
+              </p>
+              <p className="text-xs sm:text-sm text-slate-600 mb-8">
+                {new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </p>
+              
+              <div className="flex items-center justify-end pr-6 text-sm font-bold text-slate-900 gap-2">
+                <span>지 원 자 : </span>
+                <span className="inline-block border-b border-slate-400 min-w-[120px] text-center pb-0.5">
+                  {userProfile?.name || user?.displayName || '지원자'}
+                </span>
+                <span className="font-normal text-slate-500 text-xs">(인 / 서명)</span>
+              </div>
+
+              {/* Page Number indicator */}
+              <div className="text-center text-xs text-slate-400 mt-10">
+                - 1 -
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Floating Close Button (Mobile Friendly) */}
+          <div className="no-print mt-4 pb-8 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setIsA4PreviewOpen(false)}
+              className="px-6 py-2.5 rounded-full text-xs font-bold bg-white text-slate-900 hover:bg-slate-200 shadow-xl cursor-pointer transition-all flex items-center gap-1.5"
+            >
+              <X size={14} />
+              <span>{t('A4 미리보기 닫기 (편집으로)')}</span>
+            </button>
+          </div>
+
         </div>
       )}
 
