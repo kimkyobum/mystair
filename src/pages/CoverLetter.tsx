@@ -38,6 +38,11 @@ export interface CoverLetterSection {
   isCustom?: boolean;
 }
 
+// Helper to extract clean question title without leading numbers
+export const getCleanTitle = (title: string): string => {
+  return title.replace(/^\s*\d+\s*[\.\,\:\)\-]\s*/, '').trim();
+};
+
 // 5개 기본 항목
 const DEFAULT_SECTIONS: CoverLetterSection[] = [
   {
@@ -207,7 +212,11 @@ export default function CoverLetter() {
       if (savedSections) {
         const parsed = JSON.parse(savedSections);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setSections(parsed);
+          const renumbered = parsed.map((s: CoverLetterSection, idx: number) => ({
+            ...s,
+            title: `${idx + 1}. ${getCleanTitle(s.title)}`
+          }));
+          setSections(renumbered);
         }
       }
       const savedAnswers = localStorage.getItem(userKey);
@@ -317,16 +326,11 @@ export default function CoverLetter() {
       return;
     }
 
-    // Format title with numbering if not already starting with a number
-    let formattedTitle = trimmed;
-    if (!/^\d+[\.\)]\s*/.test(trimmed)) {
-      formattedTitle = `${sections.length + 1}. ${trimmed}`;
-    }
-
+    const cleanTitle = getCleanTitle(trimmed);
     const newId = `custom_${Date.now()}`;
     const newSec: CoverLetterSection = {
       id: newId,
-      title: formattedTitle,
+      title: `${sections.length + 1}. ${cleanTitle}`,
       recommendedChars: Math.max(50, Number(newChars) || 500),
       placeholder: '해당 문항에 대한 내용을 구체적인 경험과 근거를 바탕으로 작성하세요.',
       isCustom: true
@@ -361,11 +365,16 @@ export default function CoverLetter() {
     setSectionToDelete({ id, title });
   };
 
-  // Execute section deletion when confirmed in modal
+  // Execute section deletion when confirmed in modal (renumbers sequentially from 1)
   const confirmDeleteSection = () => {
     if (!sectionToDelete) return;
     const { id } = sectionToDelete;
-    const updated = sections.filter(s => s.id !== id);
+    const filtered = sections.filter(s => s.id !== id);
+    // Renumber remaining sections sequentially so questions always start from 1
+    const updated = filtered.map((s, idx) => ({
+      ...s,
+      title: `${idx + 1}. ${getCleanTitle(s.title)}`
+    }));
     setSections(updated);
     try {
       localStorage.setItem(`${userKey}_sections`, JSON.stringify(updated));
@@ -404,21 +413,22 @@ export default function CoverLetter() {
   // Start editing a section title/recommendedChars
   const handleStartEdit = (sec: CoverLetterSection) => {
     setEditingSectionId(sec.id);
-    setEditTitle(sec.title);
+    setEditTitle(getCleanTitle(sec.title));
     setEditChars(sec.recommendedChars);
   };
 
   // Save edited section
   const handleSaveEdit = (secId: string) => {
-    if (!editTitle.trim()) {
+    const clean = getCleanTitle(editTitle);
+    if (!clean) {
       alert(t('질문 제목을 입력해주세요!'));
       return;
     }
-    const updated = sections.map(s => {
+    const updated = sections.map((s, idx) => {
       if (s.id === secId) {
         return {
           ...s,
-          title: editTitle.trim(),
+          title: `${idx + 1}. ${clean}`,
           recommendedChars: Math.max(50, Number(editChars) || 500)
         };
       }
@@ -684,15 +694,20 @@ export default function CoverLetter() {
                   {/* Title & Recommended Chars or Inline Edit Mode */}
                   {isEditingThis ? (
                     <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 py-1">
-                      <input
-                        type="text"
-                        value={editTitle}
-                        onChange={e => setEditTitle(e.target.value)}
-                        placeholder={t('질문 제목을 입력하세요')}
-                        className={`flex-1 border rounded-lg px-3 py-1.5 text-sm font-bold outline-none ${
-                          isLightMode ? "bg-white border-emerald-500 text-slate-900" : "bg-slate-800 border-emerald-500 text-white"
-                        }`}
-                      />
+                      <div className="flex items-center gap-1.5 flex-1">
+                        <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 shrink-0">
+                          {index + 1}.
+                        </span>
+                        <input
+                          type="text"
+                          value={editTitle}
+                          onChange={e => setEditTitle(e.target.value)}
+                          placeholder={t('질문 제목을 입력하세요')}
+                          className={`flex-1 border rounded-lg px-3 py-1.5 text-sm font-bold outline-none ${
+                            isLightMode ? "bg-white border-emerald-500 text-slate-900" : "bg-slate-800 border-emerald-500 text-white"
+                          }`}
+                        />
+                      </div>
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1">
                           <input
@@ -730,7 +745,7 @@ export default function CoverLetter() {
                   ) : (
                     <div className="flex items-center gap-2 flex-wrap">
                       <h2 className={`text-base font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                        {sec.title}
+                        {index + 1}. {getCleanTitle(sec.title)}
                       </h2>
                       <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
                         isLightMode ? "bg-white border-slate-200 text-slate-600" : "bg-slate-800 border-slate-700 text-slate-300"
@@ -1035,7 +1050,7 @@ export default function CoverLetter() {
                 type="button"
                 onClick={() => {
                   setIsAddingSection(true);
-                  setNewTitle('1. ');
+                  setNewTitle('');
                 }}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer"
               >
@@ -1062,7 +1077,7 @@ export default function CoverLetter() {
                 type="button"
                 onClick={() => {
                   setIsAddingSection(true);
-                  setNewTitle(`${sections.length + 1}. `);
+                  setNewTitle('');
                 }}
                 className={`flex-1 w-full py-3.5 px-6 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2.5 font-bold transition-all cursor-pointer group shadow-2xs hover:scale-[1.005] active:scale-[0.995] ${
                   isLightMode
@@ -1125,18 +1140,23 @@ export default function CoverLetter() {
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       {t('질문 (문항 제목)')} <span className="text-rose-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={newTitle}
-                      onChange={e => setNewTitle(e.target.value)}
-                      placeholder={t(`예: ${sections.length + 1}. 지원동기 및 입사 후 포부`)}
-                      className={`w-full border rounded-xl px-3.5 py-2.5 text-sm font-semibold outline-none transition-colors ${
-                        isLightMode 
-                          ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" 
-                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"
-                      }`}
-                    />
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-black text-sm border border-emerald-500/20 shrink-0">
+                        {sections.length + 1}.
+                      </span>
+                      <input
+                        type="text"
+                        required
+                        value={newTitle}
+                        onChange={e => setNewTitle(e.target.value)}
+                        placeholder={t('예: 지원동기 및 입사 후 포부')}
+                        className={`flex-1 w-full border rounded-xl px-3.5 py-2.5 text-sm font-semibold outline-none transition-colors ${
+                          isLightMode 
+                            ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" 
+                            : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"
+                        }`}
+                      />
+                    </div>
                   </div>
 
                   <div className="sm:col-span-4 space-y-1">
@@ -1342,7 +1362,9 @@ export default function CoverLetter() {
               isLightMode ? "bg-slate-50 border-slate-200 text-slate-700" : "bg-slate-800/80 border-slate-700 text-slate-300"
             }`}>
               <span className="text-slate-400 block text-[10px] mb-0.5">{t('삭제할 질문')}:</span>
-              <span className="font-bold text-slate-900 dark:text-white line-clamp-2">{sectionToDelete.title}</span>
+              <span className="font-bold text-slate-900 dark:text-white line-clamp-2">
+                {getCleanTitle(sectionToDelete.title)}
+              </span>
             </div>
 
             <div className="flex items-center justify-end gap-2">
