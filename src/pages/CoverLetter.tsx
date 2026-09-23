@@ -187,6 +187,9 @@ export default function CoverLetter() {
   const [newTitle, setNewTitle] = useState<string>('');
   const [newChars, setNewChars] = useState<number>(500);
 
+  // Deleting Section Confirmation Modal State
+  const [sectionToDelete, setSectionToDelete] = useState<{ id: string; title: string } | null>(null);
+
   // Editing Section State
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
@@ -353,42 +356,49 @@ export default function CoverLetter() {
     }, 150);
   };
 
-  // Delete Custom Section
+  // Open modal to confirm deleting section
   const handleDeleteSection = (id: string, title: string) => {
-    if (window.confirm(t(`'${title}' 문항을 완전히 삭제하시겠습니까?\n작성된 내용도 함께 삭제됩니다.`))) {
-      const updated = sections.filter(s => s.id !== id);
-      setSections(updated);
+    setSectionToDelete({ id, title });
+  };
+
+  // Execute section deletion when confirmed in modal
+  const confirmDeleteSection = () => {
+    if (!sectionToDelete) return;
+    const { id } = sectionToDelete;
+    const updated = sections.filter(s => s.id !== id);
+    setSections(updated);
+    try {
+      localStorage.setItem(`${userKey}_sections`, JSON.stringify(updated));
+    } catch (err) {
+      console.error(err);
+    }
+    setAnswers(prev => {
+      const copy = { ...prev };
+      delete copy[id];
       try {
-        localStorage.setItem(`${userKey}_sections`, JSON.stringify(updated));
+        localStorage.setItem(userKey, JSON.stringify(copy));
       } catch (err) {
         console.error(err);
       }
-      setAnswers(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        try {
-          localStorage.setItem(userKey, JSON.stringify(copy));
-        } catch (err) {
-          console.error(err);
-        }
-        return copy;
-      });
-      setOpenExperiences(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-      setFixNotification(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-      setUndoHistory(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-    }
+      return copy;
+    });
+    setOpenExperiences(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+    setFixNotification(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+    setUndoHistory(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+
+    setSectionToDelete(null);
   };
 
   // Start editing a section title/recommendedChars
@@ -883,30 +893,16 @@ export default function CoverLetter() {
                       </button>
                     )}
 
-                    {/* Clear Text Content */}
-                    {currentVal && (
-                      <button
-                        type="button"
-                        onClick={() => handleClearSection(sec.id)}
-                        className={`text-[11px] font-bold p-1.5 rounded-lg border text-amber-600 dark:text-amber-400 transition-colors cursor-pointer ${
-                          isLightMode ? "bg-white border-slate-200 hover:bg-amber-50 hover:border-amber-200" : "bg-slate-800 border-slate-700 hover:bg-amber-950/50"
-                        }`}
-                        title={t('작성 내용 비우기')}
-                      >
-                        <RotateCcw size={12} />
-                      </button>
-                    )}
-
                     {/* Delete Question (X button on every question box) */}
                     <button
                       type="button"
                       onClick={() => handleDeleteSection(sec.id, sec.title)}
-                      className={`text-[11px] font-bold p-1.5 rounded-lg border transition-colors cursor-pointer text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 ${
+                      className={`text-[11px] font-bold p-1.5 rounded-lg border transition-all cursor-pointer text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-300 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 ${
                         isLightMode ? "bg-white border-slate-200" : "bg-slate-800 border-slate-700"
                       }`}
                       title={t('이 문항 자기소개서에서 삭제')}
                     >
-                      <X size={13} />
+                      <X size={14} />
                     </button>
                   </div>
                 </div>
@@ -1317,6 +1313,56 @@ export default function CoverLetter() {
                   <span>{t('이 문항에 내용 넣기')}</span>
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECTION DELETION CONFIRMATION MODAL */}
+      {sectionToDelete && (
+        <div className="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 bg-slate-950/60 animate-in fade-in duration-150">
+          <div className={`border-2 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-150 ${
+            isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-slate-700 text-white"
+          }`}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  {t('정말로 삭제하겠습니까?')}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {t('문항과 작성된 답변이 함께 삭제됩니다.')}
+                </p>
+              </div>
+            </div>
+
+            <div className={`p-3 rounded-xl border text-xs font-semibold mb-5 ${
+              isLightMode ? "bg-slate-50 border-slate-200 text-slate-700" : "bg-slate-800/80 border-slate-700 text-slate-300"
+            }`}>
+              <span className="text-slate-400 block text-[10px] mb-0.5">{t('삭제할 질문')}:</span>
+              <span className="font-bold text-slate-900 dark:text-white line-clamp-2">{sectionToDelete.title}</span>
+            </div>
+
+            <div className="flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setSectionToDelete(null)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                  isLightMode ? "bg-slate-100 hover:bg-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 text-slate-300"
+                }`}
+              >
+                {t('취소')}
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteSection}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Trash2 size={13} />
+                <span>{t('삭제하기')}</span>
+              </button>
             </div>
           </div>
         </div>
