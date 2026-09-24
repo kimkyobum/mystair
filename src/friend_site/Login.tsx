@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   googleProvider
 } from '../lib/firebase';
+import { recordAccountLogin } from '../utils/tourTracker';
 
 interface LoginProps {
   onBack: () => void;
@@ -160,7 +161,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         localStorage.setItem('mystair_mock_user', JSON.stringify(loggedInUser));
         sessionStorage.setItem('isLoggedIn', 'true');
         sessionStorage.setItem('viewingPromo', 'false');
-        sessionStorage.setItem('mystair_auto_start_tour', 'true');
+        recordAccountLogin(loggedInUser.email || loggedInUser.uid);
 
         if (onLoginSuccess) {
           onLoginSuccess();
@@ -221,7 +222,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
       localStorage.removeItem('mystair_mock_user');
       sessionStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('viewingPromo', 'false');
-      sessionStorage.setItem('mystair_auto_start_tour', 'true');
+      recordAccountLogin(user.email || user.uid);
       
       setIsLoading(false);
       if (onLoginSuccess) {
@@ -328,7 +329,7 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
     sessionStorage.setItem('isLoggedIn', 'true');
     sessionStorage.setItem('viewingPromo', 'false');
-    sessionStorage.setItem('mystair_auto_start_tour', 'true');
+    recordAccountLogin(selectedEmail || stableUid);
 
     setIsLoading(false);
     setShowMockAccountChooser(false);

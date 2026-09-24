@@ -674,7 +674,8 @@ export default function MyPage() {
                       setTempHolland(profile.hollandCode);
                       setIsFullEditing(true);
                     }}
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer tour-target-edit-mode"
+                    title={t('수정하기')}
                   >
                     <Edit3 size={13} />
                     <span>{t('수정하기')}</span>
@@ -1507,7 +1508,7 @@ export default function MyPage() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 tour-target-settings-theme">
                   {/* Option A: Light Mode */}
                   <div
                     onClick={() => setIsLightMode(true)}

@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
-import { useLanguage } from '../friend_site/LanguageContext';
-import { useTheme } from '../context/ThemeContext';
 import { AlienUFOSvg } from './FloatingAliens';
+import { 
+  isTourAllowedForCurrentAccount, 
+  markTourCompletedForCurrentAccount,
+  getEffectiveAccountKey 
+} from '../utils/tourTracker';
 
 export interface TourStep {
   id: string;
@@ -27,7 +29,7 @@ const TypewriterText = ({ text }: { text: string }) => {
       setDisplayedLength((prev) => prev + 1);
       i++;
       if (i >= rawTextLength) clearInterval(interval);
-    }, 40); // Fast typing speed
+    }, 35); // Fast typing speed
     return () => clearInterval(interval);
   }, [text]);
 
@@ -64,24 +66,40 @@ const TypewriterText = ({ text }: { text: string }) => {
   );
 };
 
+// Exact sequence requested:
+// 1. 마이페이지 (기본 정보 학적)
+// 2. 수정하기
+// 3. 진로작성진단
+// 4. MBTI
+// 5. 홀랜드
+// 6. 희망목표기업
+// 7. 환경설정에서 검은배경할지 화이트 배경할지
+// 8. 나만의 기업찾기
+// 9. 자격증가이드
+// 10. 성적다이어리
+// 11. 자기소개서작성
+// 12. 모의 면접
+// 13. MYSTAIR
+// 14. 마지막 마무리
 const TOUR_STEPS: TourStep[] = [
   {
     id: 'intro',
     target: 'body',
     message: '가이드를 시작하시겠습니까?',
-    action: 'click_anywhere', // Handled specially in render
+    action: 'click_anywhere',
   },
   {
-    id: 'nav-mypage',
+    id: 'step-nav-mypage',
     target: '.tour-target-nav-mypage-desktop, .tour-target-nav-mypage-mobile',
-    message: '먼저 **마이페이지**를 눌러 시작해 볼까요?',
+    message: '먼저 사이드바의 **마이페이지**를 눌러 프로필과 맞춤 설정을 시작해 볼까요?',
     action: 'click_target',
+    allowAnywhereClick: true,
     onNext: (nav) => nav('/mypage'),
   },
   {
-    id: 'profile-tab-basic',
-    target: '.tour-target-tab-profile',
-    message: '**기본 정보 & 학적** 탭에서 학생 개인 프로필과 기본 학적 정보를 관리할 수 있어요.',
+    id: 'step-basic-info',
+    target: '.tour-target-profile-academic, .tour-target-tab-profile',
+    message: '**기본 정보 & 학적**에서 나의 고등학교, 전공 학과, 인적 사항을 한눈에 확인할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -90,37 +108,16 @@ const TOUR_STEPS: TourStep[] = [
     }
   },
   {
-    id: 'profile-academic',
-    target: '.tour-target-profile-academic',
-    message: '**학적 및 기본 프로필**에서 나의 학교, 전공, 인적 사항을 한눈에 확인해요.',
+    id: 'step-edit-profile',
+    target: '.tour-target-edit-mode',
+    message: '**수정하기(프로필 편집)** 버튼을 눌러 나의 학교, 학과, 성명 등 기본 정보를 손쉽게 수정하고 등록할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
-    id: 'profile-name',
-    target: '.tour-target-profile-name',
-    message: '학생의 **이름**을 확인하고 수정할 수 있어요.',
-    action: 'click_target',
-    allowAnywhereClick: true,
-  },
-  {
-    id: 'profile-school',
-    target: '.tour-target-profile-school',
-    message: '재학 중인 **마이스터고등학교**를 검색하여 등록할 수 있어요.',
-    action: 'click_target',
-    allowAnywhereClick: true,
-  },
-  {
-    id: 'profile-major',
-    target: '.tour-target-profile-major',
-    message: '전공 중인 **학과**를 선택하거나 직접 입력하여 지정해요.',
-    action: 'click_target',
-    allowAnywhereClick: true,
-  },
-  {
-    id: 'profile-tab-aptitude',
+    id: 'step-aptitude-tab',
     target: '.tour-target-tab-aptitude',
-    message: '**진로 적성 진단** 탭을 눌러 MBTI와 직업 적성 검사를 확인해 볼까요?',
+    message: '**진로 적성 진단** 탭을 눌러 MBTI 성격 유형과 직업 적성 검사를 확인해 볼까요?',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -129,23 +126,23 @@ const TOUR_STEPS: TourStep[] = [
     }
   },
   {
-    id: 'profile-mbti',
+    id: 'step-mbti',
     target: '.tour-target-profile-mbti',
-    message: '**MBTI 진단**을 통해 나의 성향에 어울리는 추천 직무를 확인할 수 있어요.',
+    message: '**MBTI 진단**을 통해 나의 성향에 어울리는 추천 직무를 파악하거나, 검사 없이 직접 유형을 간편 선택할 수도 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
-    id: 'profile-holland',
+    id: 'step-holland',
     target: '.tour-target-profile-holland',
-    message: '**홀랜드 진로 적성 검사**로 나에게 최적화된 산업 분야와 전공을 찾아보세요.',
+    message: '**홀랜드 직업 적성 검사**로 나에게 최적화된 산업 분야와 맞춤 추천 복합 유형(RIASEC)을 확인해 보세요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
-    id: 'profile-tab-companies',
+    id: 'step-companies-tab',
     target: '.tour-target-tab-companies',
-    message: '**희망 목표 기업** 탭에서는 목표로 하는 기업을 등록하고 맞춤 취업 정보를 관리할 수 있어요.',
+    message: '**희망 목표 기업** 탭에서는 관심 있는 공기업, 대기업을 등록하고 목표 달성을 위한 맞춤 취업 정보를 관리할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -154,9 +151,9 @@ const TOUR_STEPS: TourStep[] = [
     }
   },
   {
-    id: 'profile-tab-settings',
-    target: '.tour-target-tab-settings',
-    message: '**환경 설정** 탭에서는 화면 테마와 애니메이션 효과를 맞춤 설정할 수 있어요.',
+    id: 'step-settings-theme',
+    target: '.tour-target-settings-theme, .tour-target-tab-settings',
+    message: '**환경 설정**에서 나의 눈과 취향에 맞게 **화이트(라이트) 배경** 또는 별빛 가득한 **검은(우주) 배경**을 자유롭게 설정할 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -165,94 +162,57 @@ const TOUR_STEPS: TourStep[] = [
     }
   },
   {
-    id: 'nav-company',
+    id: 'step-nav-company',
     target: '.tour-target-nav-company',
-    message: '나만의 기업찾기 기능은 사용자님의 마이페이지를 분석하여 선별한 최적의 대기업과 공기업이에요.',
+    message: '**나만의 기업찾기**는 마이페이지에 등록된 전공과 적성을 MYSTAIR AI가 종합 분석하여 최적의 대기업과 공기업을 추천해 주는 기능이에요.',
     action: 'click_target',
+    allowAnywhereClick: true,
     onNext: (nav) => nav('/company-search'),
   },
   {
-    id: 'nav-cert',
+    id: 'step-nav-cert',
     target: '.tour-target-nav-cert',
-    message: '자격증에 대한 모든 걸 알려드리는 기능이에요.',
+    message: '**자격증 가이드**에서는 마이스터고 전공 분야별 필수 자격증 정보와 원서접수 공식 홈페이지 링크를 한곳에서 쉽게 찾아볼 수 있어요.',
     action: 'click_target',
+    allowAnywhereClick: true,
     onNext: (nav) => nav('/certificates'),
   },
   {
-    id: 'nav-diary',
+    id: 'step-nav-diary',
     target: '.tour-target-nav-diary',
-    message: '성장 다이어리를 눌러주세요.',
+    message: '**성장 다이어리**를 눌러 매일의 전공 실습, 자격증 공부, 학교 생활을 일기로 기록하고 역량을 체계적으로 쌓아보세요.',
     action: 'click_target',
+    allowAnywhereClick: true,
     onNext: (nav) => nav('/diary'),
   },
   {
-    id: 'diary-today',
-    target: '.tour-target-diary-today',
-    message: '오늘 날짜를 눌러 일기를 써보세요.',
-    action: 'click_target',
-    onNext: () => {
-      setTimeout(() => {
-        const el = document.querySelector('.tour-target-diary-today') as HTMLElement;
-        if (el) el.click();
-      }, 300);
-    }
-  },
-  {
-    id: 'diary-title',
-    target: '.tour-target-diary-title',
-    message: '오늘의 제목을 적어주세요.',
+    id: 'step-nav-coverletter',
+    target: '.tour-target-nav-coverletter',
+    message: '**자기소개서 작성** 기능에서는 지금까지 기록한 다이어리를 바탕으로 AI가 STAR 기법에 맞춘 합격 자기소개서를 완성해줘요.',
     action: 'click_target',
     allowAnywhereClick: true,
+    onNext: (nav) => nav('/cover-letter'),
   },
   {
-    id: 'diary-mood',
-    target: '.tour-target-diary-mood',
-    message: '오늘의 기분을 선택해주세요.',
+    id: 'step-nav-interview',
+    target: '.tour-target-nav-interview',
+    message: '**모의 면접**에서는 희망하는 기업과 직무의 예상 면접 질문을 실전처럼 연습하고 AI 맞춤 피드백을 받을 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
+    onNext: (nav) => nav('/interview'),
   },
   {
-    id: 'diary-content',
-    target: '.tour-target-diary-content',
-    message: '오늘 실습이나 배운 내용을 자세히 적어주세요.',
-    action: 'click_target',
-    allowAnywhereClick: true,
-    onNext: () => {
-      // Close the modal by clicking the background or close button
-      const closeBtn = document.querySelector('.tour-target-close-modal');
-      if (closeBtn) (closeBtn as HTMLElement).click();
-    }
-  },
-  {
-    id: 'exam-schedule',
-    target: '.tour-target-exam-schedule',
-    message: '시험 일정을 등록하고 관리할 수 있어요.',
-    action: 'click_anywhere',
-  },
-  {
-    id: 'resume-summary',
-    target: '.tour-target-resume-summary',
-    message: '지금까지 쓴 다이어리를 바탕으로 자소서를 요약해줘요.',
-    action: 'click_anywhere',
-  },
-  {
-    id: 'nav-home',
+    id: 'step-nav-home',
     target: '.tour-target-nav-home',
-    message: '이제 핵심인 MyStair 버튼을 눌러주세요.',
-    action: 'click_target',
-    onNext: (nav) => nav('/'),
-  },
-  {
-    id: 'home-diary-btn',
-    target: '.tour-target-home-diary-btn',
-    message: '오늘의 다이어리 작성을 눌러 간편하게 일기를 시작할 수도 있어요.',
+    message: '이제 중심이 되는 **MYSTAIR AI 홈**으로 이동해 볼까요? 언제든 AI와 대화하며 학습과 취업 질문을 나눌 수 있어요.',
     action: 'click_target',
     allowAnywhereClick: true,
+    onNext: (nav) => nav('/'),
   },
   {
     id: 'outro',
     target: 'body',
-    message: '이제 **MyStair**와 함께 꿈에 한 발자국 더 나아가 봐요!',
+    message: '축하합니다! 이제 **MyStair**와 함께 꿈을 향해 멋지게 도약해 봐요!',
     action: 'click_anywhere',
   }
 ];
@@ -266,30 +226,25 @@ export function OnboardingTour() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
-  const { isLightMode } = useTheme();
 
-  // Check if we need to start
+  // Strictly check first-time eligibility
   useEffect(() => {
-    const shouldAutoStart = sessionStorage.getItem('mystair_auto_start_tour') === 'true';
-    const hasSeenGuide = localStorage.getItem('mystair_seen_guide_onboarding');
     const isMockUser = localStorage.getItem('mystair_mock_user');
-    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true' || !!isMockUser; 
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true' || !!isMockUser;
+    const accountKey = getEffectiveAccountKey();
 
-    if ((shouldAutoStart || !hasSeenGuide) && isLoggedIn && !isActive) {
-      if (shouldAutoStart) {
-        sessionStorage.removeItem('mystair_auto_start_tour');
-      }
+    // The tour ONLY automatically starts if allowed for this account (1st login only, not 2nd, 3rd, etc.)
+    if (isLoggedIn && !isActive && isTourAllowedForCurrentAccount(accountKey)) {
+      sessionStorage.removeItem('mystair_auto_start_tour');
       setStepIndex(0);
       setIsOutroClosing(false);
-      // Small delay to ensure DOM is ready after login redirect
       const timer = setTimeout(() => {
         setIsActive(true);
       }, 350);
       return () => clearTimeout(timer);
     }
 
-    // Event listener for manual trigger
+    // Event listener for manual user trigger (e.g. Help / Usage Guide button)
     const handleOpen = () => {
       setStepIndex(0);
       setIsActive(true);
@@ -299,7 +254,7 @@ export function OnboardingTour() {
     return () => window.removeEventListener('open-onboarding-tour', handleOpen);
   }, [isActive]);
 
-  // Update target rect
+  // Update target rect with requestAnimationFrame
   useEffect(() => {
     if (!isActive || stepIndex === 0) return;
 
@@ -308,7 +263,6 @@ export function OnboardingTour() {
       const step = TOUR_STEPS[stepIndex];
       if (step && step.target !== 'body') {
         const els = document.querySelectorAll(step.target);
-        // If multiple targets (like mobile/desktop nav), pick the visible one
         let visibleEl = null;
         for (let i = 0; i < els.length; i++) {
           const rect = els[i].getBoundingClientRect();
@@ -339,27 +293,29 @@ export function OnboardingTour() {
     const step = TOUR_STEPS[stepIndex];
     if (!step) return;
 
-    if (step.id === 'profile-mbti' || step.id === 'profile-holland') {
-      const tabEl = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
-      if (tabEl) tabEl.click();
-    } else if (
-      step.id === 'profile-tab-basic' || 
-      step.id === 'profile-academic' || 
-      step.id === 'profile-name' || 
-      step.id === 'profile-school' || 
-      step.id === 'profile-major'
-    ) {
-      const tabEl = document.querySelector('.tour-target-tab-profile') as HTMLElement;
-      if (tabEl) tabEl.click();
+    if (location.pathname === '/mypage') {
+      if (step.id === 'step-basic-info' || step.id === 'step-edit-profile') {
+        const tabEl = document.querySelector('.tour-target-tab-profile') as HTMLElement;
+        if (tabEl) tabEl.click();
+      } else if (step.id === 'step-aptitude-tab' || step.id === 'step-mbti' || step.id === 'step-holland') {
+        const tabEl = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
+        if (tabEl) tabEl.click();
+      } else if (step.id === 'step-companies-tab') {
+        const tabEl = document.querySelector('.tour-target-tab-companies') as HTMLElement;
+        if (tabEl) tabEl.click();
+      } else if (step.id === 'step-settings-theme') {
+        const tabEl = document.querySelector('.tour-target-tab-settings') as HTMLElement;
+        if (tabEl) tabEl.click();
+      }
     }
   }, [isActive, stepIndex, location.pathname]);
 
-  // Handle scrolling when step changes
+  // Handle smooth scrolling when step changes
   useEffect(() => {
     if (!isActive || stepIndex === 0) return;
     const step = TOUR_STEPS[stepIndex];
     if (step && step.target !== 'body') {
-      setTimeout(() => {
+      const scrollTimer = setTimeout(() => {
         const els = document.querySelectorAll(step.target);
         let visibleEl = null;
         for (let i = 0; i < els.length; i++) {
@@ -372,7 +328,8 @@ export function OnboardingTour() {
         if (visibleEl) {
           visibleEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 100);
+      }, 150);
+      return () => clearTimeout(scrollTimer);
     }
   }, [isActive, stepIndex, location.pathname]);
 
@@ -400,7 +357,6 @@ export function OnboardingTour() {
 
   const handleOutroClose = () => {
     setIsOutroClosing(true);
-    // Wait for the fly-away animation to finish
     setTimeout(() => {
       endTour();
       navigate('/');
@@ -408,8 +364,7 @@ export function OnboardingTour() {
   };
 
   const endTour = () => {
-    localStorage.setItem('mystair_seen_guide_onboarding', 'true');
-    sessionStorage.removeItem('mystair_auto_start_tour');
+    markTourCompletedForCurrentAccount();
     setIsActive(false);
     setStepIndex(0);
     setIsOutroClosing(false);
@@ -454,7 +409,7 @@ export function OnboardingTour() {
 
   const currentStep = TOUR_STEPS[stepIndex];
 
-  // Check if current target is near the top-right corner to avoid colliding with the skip button
+  // Check if current target is near the top-right corner to avoid colliding with skip button
   const isTargetTopRight = Boolean(
     targetRect && 
     targetRect.y < 130 && 
@@ -464,7 +419,7 @@ export function OnboardingTour() {
   const getBubblePosition = () => {
     if (!targetRect) return { left: 16, top: 16 };
     
-    const bubbleWidth = windowSize.w < 640 ? 290 : 320;
+    const bubbleWidth = windowSize.w < 640 ? 290 : 330;
     const isNearTop = targetRect.y < 120;
     const isNearBottom = targetRect.y + 130 > windowSize.h;
     const isRightSide = (targetRect.x + targetRect.width + bubbleWidth + 20 > windowSize.w);
@@ -481,7 +436,6 @@ export function OnboardingTour() {
       }
     } else {
       if (isNearTop) {
-        // Place below target to avoid colliding with top navigation bar and header buttons
         top = targetRect.y + targetRect.height + 16;
         if (isRightSide) {
           left = Math.max(16, Math.min(windowSize.w - bubbleWidth - 20, targetRect.x + targetRect.width - bubbleWidth + 20));
@@ -511,7 +465,7 @@ export function OnboardingTour() {
   return (
     <div className="fixed inset-0 z-[99999] pointer-events-none">
       
-      {/* Controls: Step progress and skip button (smoothly relocates if target is in the top-right) */}
+      {/* Controls: Step progress and skip button */}
       <div 
         className={`fixed z-[100002] pointer-events-auto flex items-center gap-2 transition-all duration-300 ${
           isTargetTopRight ? 'bottom-6 right-6' : 'top-4 right-4'
@@ -573,21 +527,12 @@ export function OnboardingTour() {
           }}
           onClick={(e) => {
             e.stopPropagation();
-            if (currentStep.action === 'click_target') {
-              handleNext();
-            } else if (currentStep.action === 'click_anywhere' || currentStep.allowAnywhereClick) {
-              handleNext();
-            }
+            handleNext();
           }}
         >
-          {/* Target Highlight & Touch Guidance Effect */}
-          {currentStep.action === 'click_target' && (
-            <>
-              {/* Highlight Focus Frame */}
-              <div className="absolute inset-0 rounded-xl border-2 border-teal-400 shadow-[0_0_20px_rgba(20,184,166,0.45)] pointer-events-none animate-pulse" />
-              <div className="absolute inset-0 rounded-xl border border-teal-400/50 pointer-events-none animate-ping opacity-30" />
-            </>
-          )}
+          {/* Highlight Focus Frame */}
+          <div className="absolute inset-0 rounded-xl border-2 border-teal-400 shadow-[0_0_20px_rgba(20,184,166,0.45)] pointer-events-none animate-pulse" />
+          <div className="absolute inset-0 rounded-xl border border-teal-400/50 pointer-events-none animate-ping opacity-30" />
         </div>
       )}
 
@@ -603,9 +548,9 @@ export function OnboardingTour() {
               initial={{ opacity: 0, scale: 0.5, y: 50 }}
               animate={isOutroClosing ? {
                 scale: 0.2,
-                x: windowSize.w / 2, // Fly to top right
+                x: windowSize.w / 2,
                 y: -windowSize.h / 2,
-                rotate: 1080, // Spin more
+                rotate: 1080,
                 opacity: 0,
               } : { 
                 opacity: 1, 
@@ -620,7 +565,7 @@ export function OnboardingTour() {
               <AlienUFOSvg className="w-20 h-20 sm:w-28 sm:h-28 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
             </motion.div>
 
-            {/* Giant Bubble - Disappears immediately on close */}
+            {/* Giant Bubble */}
             <AnimatePresence>
               {!isOutroClosing && (
                 <motion.div 
@@ -654,7 +599,7 @@ export function OnboardingTour() {
             top: getBubblePosition().top,
           }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[320px]"
+          className="absolute pointer-events-none z-[100000] flex gap-3 items-start max-w-[290px] sm:max-w-[330px]"
         >
           {/* Character */}
           <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden shrink-0">

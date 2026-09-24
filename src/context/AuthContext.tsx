@@ -10,6 +10,7 @@ import {
 } from '../lib/firebase';
 
 import { apiService } from '../api_client/api';
+import { recordAccountLogin } from '../utils/tourTracker';
 
 export interface UserProfileData {
   uid: string;
@@ -196,12 +197,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithGoogle = async () => {
     setAuthError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
       localStorage.removeItem('mystair_mock_user');
       sessionStorage.setItem('isLoggedIn', 'true');
       sessionStorage.setItem('viewingPromo', 'false');
-      sessionStorage.setItem('mystair_auto_start_tour', 'true');
-      window.dispatchEvent(new CustomEvent('open-onboarding-tour'));
+      
+      const userKey = result.user?.email || result.user?.uid;
+      const isFirstTime = recordAccountLogin(userKey);
+      if (isFirstTime) {
+        window.dispatchEvent(new CustomEvent('open-onboarding-tour'));
+      }
     } catch (error: any) {
       console.error('Google login failed:', error);
 
