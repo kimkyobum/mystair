@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Users, User, Sparkles, HelpCircle, FileText, Camera } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Users, User, Sparkles, HelpCircle, FileText, Camera, ChevronDown, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -10,7 +10,98 @@ export default function Header() {
   const { isLightMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guideModalOpen, setGuideModalOpen] = useState(false);
+  const [activeGuideTopic, setActiveGuideTopic] = useState<string | null>('company');
   const navigate = useNavigate();
+
+  const guideTopics = [
+    {
+      id: 'company',
+      num: '1',
+      title: '나만의 기업찾기 사용법',
+      icon: '🏢',
+      path: '/company-search',
+      pathLabel: '나만의 기업찾기 바로가기',
+      summary: '마이페이지에 입력된 학교, 전공, MBTI, 홀랜드 적성검사를 MYSTAIR AI가 종합 분석하여, 회사의 인재상과 근무 환경을 고려한 맞춤형 대기업 및 공공기관 리스트를 추천합니다.',
+      details: [
+        '마이페이지에서 자신의 전공과 직업 적성 검사를 완료하면 더욱 높은 정확도로 맞춤 추천을 받을 수 있습니다.',
+        '각 기업의 채용 형태, 신입 초봉, 필요 직무 역량, 마이스터고 선배들의 커리어 패스를 한눈에 비교할 수 있습니다.',
+        '관심 있는 기업을 목표 기업으로 지정하여 마이페이지에서 집중적으로 취업 준비 현황을 추적하세요.'
+      ]
+    },
+    {
+      id: 'ai',
+      num: '2',
+      title: 'AI 사용법',
+      icon: '🤖',
+      path: '/',
+      pathLabel: 'AI 홈 바로가기',
+      summary: 'MYSTAIR의 모든 기능과 실시간 연동되어 24시간 나만의 1:1 진로 및 취업 컨설팅을 제공합니다.',
+      prompts: [
+        '오늘 ~활동을 했는데 내 다이어리에 기록해줘',
+        '~기업에 취업하려면 어떤 필수 자격증이 필요해?',
+        '나의 적성과 전공에 가장 적합한 기업과 직무는 어디야?',
+        '~기업의 최신 면접 기출문제와 인재상을 알려줘'
+      ],
+      details: [
+        '홈 화면의 AI 챗봇을 통해 일상적인 학습 질문부터 구체적인 취업 로드맵 상담까지 자유롭게 진행할 수 있습니다.'
+      ]
+    },
+    {
+      id: 'diary',
+      num: '3',
+      title: '성장 다이어리 사용법',
+      icon: '✨',
+      path: '/diary',
+      pathLabel: '성장 다이어리 바로가기',
+      summary: '하루하루 실습과 학교 생활을 기록하면, AI가 대내외활동, 수상, 자격증 등으로 자동 분류하고 STAR 기법(Situation, Task, Action, Result)으로 체계화합니다.',
+      details: [
+        '자유로운 일기 형식으로 매일의 실습 경험과 배운 점을 꾸준히 기록하세요.',
+        'AI가 활동의 핵심 성과를 분석해 실전 자기소개서 소재로 전환 가능한 구조화된 기록으로 정리해 줍니다.',
+        '💡 [자소서 요약] 버튼을 누르면 그동안 기록한 경험들이 지원서 항목별 맞춤 문장으로 즉시 정리됩니다.'
+      ]
+    },
+    {
+      id: 'certificates',
+      num: '4',
+      title: '자격증 가이드 사용법',
+      icon: '📜',
+      path: '/certificates',
+      pathLabel: '자격증 가이드 바로가기',
+      summary: '마이스터고 전공 분야별 필수 자격증의 시험 일정과 과목 정보를 확인하고, 큐넷(Q-Net) 등 공식 원서접수처로 바로 이동할 수 있습니다.',
+      details: [
+        '자격증 검색 창에서 취득하고자 하는 자격증의 기본 정보, 응시 자격, 시험 과목을 손쉽게 확인하세요.',
+        '공식 홈페이지 URL 링크를 통해 원서접수 페이지로 즉시 연결되어 접수 일정을 놓치지 않습니다.',
+        'MYSTAIR AI에게 자신의 전공에 어울리는 추천 자격증을 요청하면 맞춤형 자격증 로드맵을 설계해 줍니다.'
+      ]
+    },
+    {
+      id: 'mypage',
+      num: '5',
+      title: '마이페이지 & 맞춤 설정',
+      icon: '👤',
+      path: '/mypage',
+      pathLabel: '마이페이지 바로가기',
+      summary: '기본 학적 정보 관리, MBTI 및 홀랜드 직업 적성 검사, 희망 목표 기업 관리와 함께 화이트 / 우주 다크 테마를 자유롭게 설정할 수 있습니다.',
+      details: [
+        '기본 정보 & 학적: 고등학교, 전공 학과, 인적 사항을 입력하고 언제든 수정할 수 있습니다.',
+        '진로 적성 진단: MBTI 및 홀랜드(RIASEC) 적성검사를 통해 나에게 최적화된 산업 분야를 진단합니다.',
+        '환경 설정: 밝고 눈이 편안한 화이트 모드 또는 신비로운 별빛 우주 다크 모드 중 원하는 배경을 선택할 수 있습니다.'
+      ]
+    },
+    {
+      id: 'interview',
+      num: '6',
+      title: '자기소개서 & 모의 면접',
+      icon: '🎯',
+      path: '/interview',
+      pathLabel: '모의 면접 바로가기',
+      summary: '다이어리에 누적된 실습 기록을 바탕으로 합격 자기소개서를 완성하고, 목표 기업의 기출 예상 질문으로 실전 모의면접을 대비합니다.',
+      details: [
+        '자기소개서: AI가 다이어리 기록을 바탕으로 지원 기업 문항에 최적화된 STAR 답변을 완성해 줍니다.',
+        '모의 면접: 실제 면접관과 대화하듯 실시간 음성/화상 연습을 진행하고 시선, 태도, 답변 내용에 대한 AI 맞춤 피드백을 받습니다.'
+      ]
+    }
+  ];
 
   const navItems = [
     { name: 'MyStair AI 홈', path: '/', icon: <Sparkles size={18} className="text-teal-400" /> },
@@ -117,40 +208,78 @@ export default function Header() {
 
       {/* USAGE GUIDE MODAL */}
       {guideModalOpen && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setGuideModalOpen(false)}>
-          <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl overflow-y-auto max-h-[90vh]" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="bg-teal-500/20 p-2.5 rounded-2xl border border-teal-500/40 text-teal-300">
-                  <HelpCircle size={24} />
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-fade-in" 
+          onClick={() => setGuideModalOpen(false)}
+        >
+          <div 
+            className={`relative w-full max-w-2xl rounded-3xl p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[88vh] border transition-colors ${
+              isLightMode 
+                ? 'bg-white text-slate-900 border-slate-200 shadow-slate-300/50' 
+                : 'bg-slate-900 text-white border-slate-700 shadow-black/80'
+            }`} 
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className={`flex items-center justify-between pb-4 mb-4 border-b ${
+              isLightMode ? 'border-slate-200' : 'border-slate-800'
+            }`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`p-2 rounded-xl border shrink-0 ${
+                  isLightMode 
+                    ? 'bg-teal-50 border-teal-200 text-teal-600' 
+                    : 'bg-teal-500/20 border-teal-500/40 text-teal-300'
+                }`}>
+                  <HelpCircle size={22} />
                 </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white">{t('Mystair AI 이용 가이드 & 사용법', 'Mystair AI User Guide')}</h3>
-                  <p className="text-xs sm:text-sm text-slate-400">{t('마이스터고 학생들을 위한 맞춤형 성장 & 취업 플랫폼 사용 설명서', 'Custom growth & employment platform guide for high school students')}</p>
+                <div className="min-w-0">
+                  <h3 className={`text-base sm:text-lg font-extrabold truncate ${
+                    isLightMode ? 'text-slate-900' : 'text-white'
+                  }`}>
+                    {t('Mystair AI 이용 가이드 & 사용법', 'Mystair AI User Guide')}
+                  </h3>
+                  <p className={`text-xs truncate ${
+                    isLightMode ? 'text-slate-500' : 'text-slate-400'
+                  }`}>
+                    {t('각 항목을 누르면 상세 사용법이 펼쳐집니다', 'Click an item to see its detailed guide')}
+                  </p>
                 </div>
               </div>
               <button 
                 onClick={() => setGuideModalOpen(false)}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className={`p-1.5 rounded-xl transition-colors cursor-pointer shrink-0 ${
+                  isLightMode 
+                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800' 
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white'
+                }`}
+                aria-label="닫기"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <div className="space-y-6 text-sm text-slate-300">
-              {/* Interactive Product Experience Tour Trigger Banner */}
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-teal-500/20 via-emerald-500/20 to-teal-500/10 border border-teal-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-teal-500/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/30 border border-teal-400/50 flex items-center justify-center text-teal-300 shrink-0">
-                    <Sparkles size={20} />
+            <div className="space-y-4">
+              {/* Short & Concise Tour Trigger Banner */}
+              <div className={`p-3 sm:p-3.5 rounded-2xl border flex items-center justify-between gap-3 ${
+                isLightMode 
+                  ? 'bg-gradient-to-r from-teal-50 via-emerald-50 to-teal-50/70 border-teal-200 text-teal-950' 
+                  : 'bg-gradient-to-r from-teal-500/15 via-emerald-500/10 to-teal-500/5 border-teal-500/30 text-white'
+              }`}>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                    isLightMode ? 'bg-teal-100 text-teal-700' : 'bg-teal-500/30 text-teal-300'
+                  }`}>
+                    <Sparkles size={16} />
                   </div>
-                  <div>
-                    <h4 className="text-sm sm:text-base font-extrabold text-white">
-                      {t('인터랙티브 화면 체험 가이드', 'Interactive Product Tour')}
-                    </h4>
-                    <p className="text-xs text-teal-200/90">
-                      {t('말풍선과 핫스팟을 직접 누르며 MyStair의 핵심 기능을 한눈에 둘러보세요!', 'Click callouts & hotspots to tour key MyStair features interactively!')}
-                    </p>
+                  <div className="min-w-0">
+                    <span className={`text-xs sm:text-sm font-bold ${isLightMode ? 'text-slate-900' : 'text-white'}`}>
+                      {t('화면 안내 가이드', 'Interactive Tour')}
+                    </span>
+                    <span className={`ml-2 text-[11px] sm:text-xs hidden xs:inline ${
+                      isLightMode ? 'text-slate-500' : 'text-teal-200/80'
+                    }`}>
+                      {t('화면을 직접 둘러보며 배웁니다', 'Tour the screen directly')}
+                    </span>
                   </div>
                 </div>
                 <button
@@ -158,60 +287,142 @@ export default function Header() {
                     setGuideModalOpen(false);
                     window.dispatchEvent(new CustomEvent('open-onboarding-tour'));
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 hover:from-teal-400 hover:to-emerald-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-md shadow-teal-500/30 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+                  className="px-3 py-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all shadow-xs flex items-center gap-1 shrink-0 cursor-pointer active:scale-95 whitespace-nowrap"
                 >
-                  <span>{t('가이드 체험 시작 👆', 'Start Tour 👆')}</span>
+                  <span>{t('체험 시작', 'Start Tour')}</span>
+                  <span>🚀</span>
                 </button>
               </div>
 
-              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-teal-300 flex items-center gap-2">
-                  <span>🏢 1. 나만의 기업찾기 사용법</span>
-                </h4>
-                <p className="leading-relaxed text-slate-300">
-                  자신의 학교, 전공, MBTI, 홀랜드 적성검사를 마이페이지에 입력하면 MYSTAIR AI가 모두 분석하여 회사의 인재상, 환경 등을 고려하여 대기업, 공공기관 리스트를 뽑아줍니다.
-                </p>
-              </div>
+              {/* Expandable Topic Pages */}
+              <div className="space-y-2">
+                {guideTopics.map((topic) => {
+                  const isOpen = activeGuideTopic === topic.id;
+                  return (
+                    <div 
+                      key={topic.id}
+                      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                        isOpen 
+                          ? isLightMode 
+                            ? 'border-teal-300 shadow-xs' 
+                            : 'border-teal-500/50 shadow-sm shadow-teal-500/10'
+                          : isLightMode 
+                            ? 'border-slate-200/90 hover:border-slate-300' 
+                            : 'border-slate-800 hover:border-slate-700'
+                      }`}
+                    >
+                      {/* Topic Header Button */}
+                      <button
+                        type="button"
+                        onClick={() => setActiveGuideTopic(isOpen ? null : topic.id)}
+                        className={`w-full flex items-center justify-between p-3 sm:p-3.5 text-left transition-colors cursor-pointer ${
+                          isOpen
+                            ? isLightMode 
+                              ? 'bg-teal-50/80 text-teal-950' 
+                              : 'bg-teal-950/40 text-teal-200'
+                            : isLightMode 
+                              ? 'bg-slate-50/70 hover:bg-slate-100/70 text-slate-800' 
+                              : 'bg-slate-800/40 hover:bg-slate-800/80 text-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="text-base sm:text-lg shrink-0 select-none">{topic.icon}</span>
+                          <span className="text-xs sm:text-sm font-bold truncate">
+                            {topic.num}. {topic.title}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold transition-colors ${
+                            isOpen
+                              ? isLightMode ? 'bg-teal-200/70 text-teal-900' : 'bg-teal-500/30 text-teal-200'
+                              : isLightMode ? 'bg-slate-200/70 text-slate-600' : 'bg-slate-700/60 text-slate-400'
+                          }`}>
+                            {isOpen ? t('접기', 'Collapse') : t('보기', 'View')}
+                          </span>
+                          <ChevronDown 
+                            size={16} 
+                            className={`transition-transform duration-200 ${
+                              isOpen ? 'rotate-180 text-teal-500' : isLightMode ? 'text-slate-400' : 'text-slate-500'
+                            }`} 
+                          />
+                        </div>
+                      </button>
 
-              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-teal-300 flex items-center gap-2">
-                  <span>🤖 2. AI 사용법</span>
-                </h4>
-                <p className="leading-relaxed text-slate-300">
-                  MYSTAIR의 모든 기능과 연결되어 있어서 나만의 AI 컨설팅을 할 수 있으며, 일상적인 궁금증뿐만 아니라 아래 예시 프롬프트처럼 다양하게 활용할 수 있습니다.
-                </p>
-                <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-1.5 text-xs text-teal-200">
-                  <p className="font-semibold text-teal-300">💡 예시 프롬프트:</p>
-                  <p>1) 오늘 ~활동을 했는데 내 다이어리에 기록해줘</p>
-                  <p>2) ~기업에 가려면 필수 자격증이 뭐야?</p>
-                  <p>3) 나의 적성을 고려했을 때 가장 맞는 기업은 어디야?</p>
-                  <p>4) ~기업의 정보 알려줘</p>
-                </div>
-              </div>
+                      {/* Topic Detailed Content Page */}
+                      {isOpen && (
+                        <div className={`p-4 sm:p-4.5 border-t space-y-3 animate-fade-in ${
+                          isLightMode 
+                            ? 'bg-white border-teal-200/70 text-slate-700' 
+                            : 'bg-slate-800/30 border-teal-500/30 text-slate-300'
+                        }`}>
+                          <p className={`text-xs sm:text-sm leading-relaxed font-medium ${
+                            isLightMode ? 'text-slate-700' : 'text-slate-200'
+                          }`}>
+                            {topic.summary}
+                          </p>
 
-              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-teal-300 flex items-center gap-2">
-                  <span>✨ 3. 성장 다이어리 사용법</span>
-                </h4>
-                <p className="leading-relaxed text-slate-300">
-                  하루하루 다이어리를 일기 형식으로 기록하면, 자소서 요약 버튼에서 지금까지 했던 기록을 대내외활동, 상, 자격증 등으로 분류해주고 <strong>STAR 공법(Situation, Task, Action, Result)</strong>으로 상세하게 적어줍니다.
-                </p>
-              </div>
+                          {/* Specific prompts if available */}
+                          {topic.prompts && (
+                            <div className={`p-3 rounded-xl border space-y-1.5 text-xs ${
+                              isLightMode 
+                                ? 'bg-teal-50/50 border-teal-200 text-teal-900' 
+                                : 'bg-slate-900/90 border-slate-700/80 text-teal-200'
+                            }`}>
+                              <p className="font-bold flex items-center gap-1.5">
+                                <span>💡</span>
+                                <span>{t('추천 질문 예시:', 'Recommended Questions:')}</span>
+                              </p>
+                              {topic.prompts.map((prompt, idx) => (
+                                <p key={idx} className="pl-4 relative before:content-['•'] before:absolute before:left-1.5 before:font-bold">
+                                  {prompt}
+                                </p>
+                              ))}
+                            </div>
+                          )}
 
-              <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 space-y-2">
-                <h4 className="font-bold text-amber-300 flex items-center gap-2">
-                  <span>📜 4. 자격증 가이드 사용법</span>
-                </h4>
-                <p className="leading-relaxed text-slate-300">
-                  MYSTAIR AI에게 추천받았거나 내가 원하는 자격증을 검색하여 기본적인 정보를 확인할 수 있으며, 해당 자격증의 공식 홈페이지 URL로 바로 연결되어 원서접수 및 정보를 쉽게 파악할 수 있습니다.
-                </p>
+                          {/* Detail Bullet Points */}
+                          <ul className="space-y-1.5 text-xs leading-relaxed">
+                            {topic.details.map((detail, idx) => (
+                              <li key={idx} className="flex items-start gap-1.5">
+                                <span className="text-teal-500 font-bold shrink-0 mt-0.5">•</span>
+                                <span className={isLightMode ? 'text-slate-600' : 'text-slate-300'}>{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* Direct Navigation Button */}
+                          <div className="pt-2 flex justify-end">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setGuideModalOpen(false);
+                                navigate(topic.path);
+                              }}
+                              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer active:scale-95 ${
+                                isLightMode 
+                                  ? 'bg-teal-100 hover:bg-teal-200 text-teal-900' 
+                                  : 'bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/30'
+                              }`}
+                            >
+                              <span>{topic.pathLabel}</span>
+                              <ArrowRight size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-800 flex justify-end">
+            {/* Modal Bottom Footer */}
+            <div className={`mt-5 pt-3.5 border-t flex justify-end ${
+              isLightMode ? 'border-slate-200' : 'border-slate-800'
+            }`}>
               <button
                 onClick={() => setGuideModalOpen(false)}
-                className="px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold transition-all cursor-pointer shadow-md"
+                className="px-5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-md active:scale-95"
               >
                 {t('확인 완료', 'Got it')}
               </button>

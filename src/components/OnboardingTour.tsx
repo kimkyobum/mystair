@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlienUFOSvg } from './FloatingAliens';
+import { useTheme } from '../context/ThemeContext';
 import { 
   isTourAllowedForCurrentAccount, 
   markTourCompletedForCurrentAccount,
@@ -218,6 +219,7 @@ const TOUR_STEPS: TourStep[] = [
 ];
 
 export function OnboardingTour() {
+  const { isLightMode } = useTheme();
   const [isActive, setIsActive] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
@@ -372,16 +374,26 @@ export function OnboardingTour() {
 
   if (!isActive) return null;
 
-  // Intro Screen (Step 0) - 검은색 창과 가이드 시작 질문 화면
+  // Intro Screen (Step 0) - 가이드 시작 질문 화면
   if (stepIndex === 0) {
     return (
-      <div className="fixed inset-0 z-[99999] bg-black/95 sm:bg-black/90 backdrop-blur-md flex items-center justify-center p-6 text-white font-sans animate-in fade-in duration-300">
-        <div className="max-w-xl w-full text-center space-y-8 px-2">
+      <div className={`fixed inset-0 z-[99999] backdrop-blur-md flex items-center justify-center p-6 font-sans animate-in fade-in duration-300 ${
+        isLightMode ? 'bg-slate-900/60' : 'bg-black/95 sm:bg-black/90 text-white'
+      }`}>
+        <div className={`max-w-xl w-full text-center space-y-6 sm:space-y-8 px-5 py-8 sm:py-10 rounded-3xl border shadow-2xl ${
+          isLightMode 
+            ? 'bg-white text-slate-900 border-slate-200' 
+            : 'bg-slate-950/90 text-white border-white/10'
+        }`}>
           <div className="space-y-3">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white leading-tight whitespace-nowrap">
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight whitespace-nowrap ${
+              isLightMode ? 'text-slate-900' : 'text-white'
+            }`}>
               MyStair에 오신 것을 환영합니다!
             </h2>
-            <p className="text-slate-400 font-medium text-base sm:text-lg leading-relaxed whitespace-nowrap">
+            <p className={`font-medium text-base sm:text-lg leading-relaxed whitespace-nowrap ${
+              isLightMode ? 'text-slate-600' : 'text-slate-400'
+            }`}>
               가이드를 시작할까요?
             </p>
           </div>
@@ -397,7 +409,11 @@ export function OnboardingTour() {
             <button 
               type="button"
               onClick={endTour}
-              className="w-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3.5 rounded-xl font-semibold text-base transition-colors cursor-pointer border border-white/10 active:scale-98"
+              className={`w-full py-3.5 rounded-xl font-semibold text-base transition-colors cursor-pointer border active:scale-98 ${
+                isLightMode 
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300' 
+                  : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border-white/10'
+              }`}
             >
               아니요, 바로 시작할게요
             </button>
@@ -471,12 +487,20 @@ export function OnboardingTour() {
           isTargetTopRight ? 'bottom-6 right-6' : 'top-4 right-4'
         }`}
       >
-        <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 text-teal-300 border border-teal-500/30 backdrop-blur-md shadow-lg">
+        <span className={`text-xs font-semibold px-3 py-1.5 rounded-full border backdrop-blur-md shadow-lg ${
+          isLightMode 
+            ? 'bg-white/95 text-teal-800 border-teal-200 shadow-slate-300/40' 
+            : 'bg-slate-900/90 text-teal-300 border-teal-500/30'
+        }`}>
           {stepIndex} / {TOUR_STEPS.length - 1}
         </span>
         <button 
           onClick={endTour}
-          className="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-900/85 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/20 hover:border-white/40 transition-all flex items-center gap-1.5 cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+          className={`text-xs font-bold px-3.5 py-1.5 rounded-full border transition-all flex items-center gap-1.5 cursor-pointer shadow-lg backdrop-blur-md active:scale-95 ${
+            isLightMode 
+              ? 'bg-white/95 hover:bg-slate-100 text-slate-800 border-slate-300 hover:border-slate-400 shadow-slate-300/40' 
+              : 'bg-slate-900/85 hover:bg-slate-800 text-slate-300 hover:text-white border-white/20 hover:border-white/40'
+          }`}
           title="가이드 건너뛰기"
         >
           <span>가이드 건너뛰기</span>
