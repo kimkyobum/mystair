@@ -238,31 +238,9 @@ export default function CoverLetter() {
 
   const [savedTime, setSavedTime] = useState<string>(currentCompany.updatedAt || '');
 
-  // Add Company Modal State (Starts open so entering the page prompts for company name right from the start)
-  const location = useLocation();
-  const [isAddCompanyModalOpen, setIsAddCompanyModalOpen] = useState<boolean>(true);
+  // Add Company Modal State (Defaults to false; open explicitly via Add Company button)
+  const [isAddCompanyModalOpen, setIsAddCompanyModalOpen] = useState<boolean>(false);
   const [newCompanyNameInput, setNewCompanyNameInput] = useState<string>('');
-
-  // Listen to navigation trigger or custom event to open new cover letter modal
-  useEffect(() => {
-    const handleNewCoverLetter = () => {
-      setIsAddCompanyModalOpen(true);
-      setNewCompanyNameInput('');
-    };
-
-    window.addEventListener('mystair-new-cover-letter', handleNewCoverLetter);
-    return () => {
-      window.removeEventListener('mystair-new-cover-letter', handleNewCoverLetter);
-    };
-  }, []);
-
-  // When location.state indicates newLetter, open modal
-  useEffect(() => {
-    if (location.state?.newLetter) {
-      setIsAddCompanyModalOpen(true);
-      setNewCompanyNameInput('');
-    }
-  }, [location.state?.newLetter]);
 
   // Delete Company Modal State
   const [companyToDelete, setCompanyToDelete] = useState<CompanyCoverLetter | null>(null);

@@ -10,7 +10,7 @@ export default function Header() {
   const { isLightMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guideModalOpen, setGuideModalOpen] = useState(false);
-  const [activeGuideTopic, setActiveGuideTopic] = useState<string | null>('company');
+  const [activeGuideTopic, setActiveGuideTopic] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const guideTopics = [
@@ -128,7 +128,10 @@ export default function Header() {
 
           {/* Usage Guide Button */}
           <button
-            onClick={() => setGuideModalOpen(true)}
+            onClick={() => {
+              setActiveGuideTopic(null);
+              setGuideModalOpen(true);
+            }}
             title={t('사용방법', 'How to use')}
             className={`flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full border text-[11px] sm:text-xs font-bold transition-all duration-200 cursor-pointer active:scale-95 whitespace-nowrap min-h-[34px] shrink-0 ${
               isLightMode 
@@ -143,24 +146,15 @@ export default function Header() {
         </div>
         
         <nav className="hidden xl:flex gap-8 items-center absolute left-1/2 -translate-x-1/2">
-          {navItems.slice(1, -1).map(item => {
-            const isCoverLetter = item.path === '/cover-letter';
-            return (
-              <Link 
-                key={item.name} 
-                to={item.path} 
-                state={isCoverLetter ? { newLetter: Date.now() } : undefined}
-                onClick={() => {
-                  if (isCoverLetter) {
-                    window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
-                  }
-                }}
-                className={`${isLightMode ? 'text-slate-700 hover:text-slate-950 font-semibold' : 'text-white/80 hover:text-white font-medium'} transition-colors text-[15px] whitespace-nowrap`}
-              >
-                {t(item.name)}
-              </Link>
-            );
-          })}
+          {navItems.slice(1, -1).map(item => (
+            <Link 
+              key={item.name} 
+              to={item.path} 
+              className={`${isLightMode ? 'text-slate-700 hover:text-slate-950 font-semibold' : 'text-white/80 hover:text-white font-medium'} transition-colors text-[15px] whitespace-nowrap`}
+            >
+              {t(item.name)}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
@@ -464,26 +458,17 @@ export default function Header() {
 
               {/* Navigation Items */}
               <nav className="flex flex-col gap-1.5">
-                {navItems.map((item) => {
-                  const isCoverLetter = item.path === '/cover-letter';
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.path}
-                      state={isCoverLetter ? { newLetter: Date.now() } : undefined}
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        if (isCoverLetter) {
-                          window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
-                        }
-                      }}
-                      className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 transition-all min-h-[44px] whitespace-nowrap word-keep"
-                    >
-                      <span className="text-teal-400 shrink-0">{item.icon}</span>
-                      <span className="truncate">{t(item.name)}</span>
-                    </Link>
-                  );
-                })}
+                {navItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/10 active:bg-white/15 transition-all min-h-[44px] whitespace-nowrap word-keep"
+                  >
+                    <span className="text-teal-400 shrink-0">{item.icon}</span>
+                    <span className="truncate">{t(item.name)}</span>
+                  </Link>
+                ))}
               </nav>
             </div>
 
@@ -492,6 +477,7 @@ export default function Header() {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
+                  setActiveGuideTopic(null);
                   setGuideModalOpen(true);
                 }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"

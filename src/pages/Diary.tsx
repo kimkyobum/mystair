@@ -92,6 +92,9 @@ export default function Diary() {
   const [expandedSummaryIndex, setExpandedSummaryIndex] = useState<number | null>(null);
 
   const handleSummarizeDiaries = async () => {
+    setShowFormModal(false);
+    setShowDayDiariesModal(false);
+    setShowExamSettings(false);
     setShowSummaryModal(true);
     setSummaryLoading(true);
     setSummaryText(null);
@@ -243,6 +246,7 @@ JSON 구조 규격:
     const handleTourCloseDiary = () => {
       setShowFormModal(false);
       setShowDayDiariesModal(false);
+      setShowSummaryModal(false);
     };
     window.addEventListener('tour-open-diary', handleTourOpenDiary);
     window.addEventListener('tour-close-diary', handleTourCloseDiary);

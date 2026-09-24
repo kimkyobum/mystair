@@ -215,7 +215,10 @@ const TOUR_STEPS: TourStep[] = [
     message: '**자소서 요약**으로 기록을 자동 정리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
-    onNext: (nav) => nav('/cover-letter'),
+    onNext: (nav) => {
+      window.dispatchEvent(new CustomEvent('tour-close-diary'));
+      nav('/cover-letter');
+    },
   },
   {
     id: 'step-coverletter-company',
