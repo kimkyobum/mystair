@@ -484,7 +484,7 @@ export function OnboardingTour() {
     setTimeout(() => {
       endTour();
       navigate('/');
-    }, 1000);
+    }, 600);
   };
 
   const endTour = () => {
@@ -603,7 +603,7 @@ export function OnboardingTour() {
 
   // Active Tour Overlay
   return (
-    <div className="fixed inset-0 z-[99999] pointer-events-none">
+    <div className={`fixed inset-0 z-[99999] pointer-events-none transition-opacity duration-500 ease-in-out ${isOutroClosing ? 'opacity-0' : 'opacity-100'}`}>
       
       {/* Controls: Step progress and skip button */}
       <div 
@@ -691,15 +691,13 @@ export function OnboardingTour() {
             className="flex flex-row items-center justify-center gap-4 sm:gap-6 pointer-events-auto cursor-pointer"
             onClick={handleNext}
           >
-            {/* Giant Character - Flies away on close */}
+            {/* Giant Character - Fades out smoothly on close */}
             <motion.div
               initial={{ opacity: 0, scale: 0.5, y: 50 }}
               animate={isOutroClosing ? {
-                scale: 0.2,
-                x: windowSize.w / 2,
-                y: -windowSize.h / 2,
-                rotate: 1080,
                 opacity: 0,
+                scale: 0.95,
+                y: -10,
               } : { 
                 opacity: 1, 
                 scale: 1, 
@@ -707,7 +705,7 @@ export function OnboardingTour() {
                 y: 0,
                 rotate: 0
               }}
-              transition={{ type: isOutroClosing ? 'tween' : 'spring', duration: isOutroClosing ? 1.0 : 0.6, ease: isOutroClosing ? "easeIn" : undefined }}
+              transition={{ duration: isOutroClosing ? 0.5 : 0.6, ease: "easeInOut" }}
               className="w-20 h-20 sm:w-28 sm:h-28 rounded-full flex items-center justify-center overflow-hidden shrink-0 z-10"
             >
               <AlienUFOSvg className="w-20 h-20 sm:w-28 sm:h-28 drop-shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
@@ -719,7 +717,7 @@ export function OnboardingTour() {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.8, x: -20 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.5, ease: "easeInOut" } }}
                   className="bg-white text-slate-900 p-5 sm:p-7 rounded-3xl shadow-2xl font-bold text-[15px] sm:text-lg leading-relaxed border border-slate-200 max-w-md relative"
                 >
                   <div className="whitespace-nowrap sm:whitespace-normal">
