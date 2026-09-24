@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { User, Copy, RotateCcw, Home } from 'lucide-react';
 import { hollandQuestions, hollandMeta } from '../data/hollandData';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -262,19 +263,44 @@ export default function Holland() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 mt-8">
-                <Link to="/mypage" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
-                  <span>{t('👤 마이페이지로 이동하여 결과 확인하기')}</span>
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                {/* Primary Action Button */}
+                <Link 
+                  to="/mypage" 
+                  className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
+                >
+                  <User size={16} />
+                  <span>{t('마이페이지에서 결과 확인하기')}</span>
                 </Link>
-                <button onClick={copyResults} className="w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(99,102,241,0.3)] transition-all hover:opacity-95 hover:-translate-y-0.5">
-                  {t('📋 검사 결과 복사하기')}
-                </button>
-                <button onClick={restartQuiz} className="w-full bg-[#F1F5F9] text-[#0F172A] border border-[#E2E8F0] p-3.5 rounded-xl text-[14px] font-bold cursor-pointer transition-colors hover:bg-[#E2E8F0]">
-                  {t('🔄 다시 검사하기')}
-                </button>
-                <Link to="/" className="w-full bg-[#0F172A] text-white border-none p-4 rounded-xl text-[15px] font-bold cursor-pointer shadow-[0_4px_14px_rgba(15,23,42,0.2)] transition-all hover:bg-[#1E293B] hover:-translate-y-0.5 text-center flex items-center justify-center">
-                  {t('🏠 메인으로 돌아가기')}
-                </Link>
+
+                {/* Secondary Actions Row */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+                  <button 
+                    type="button"
+                    onClick={copyResults} 
+                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Copy size={14} className="text-slate-400" />
+                    <span>{t('결과 복사')}</span>
+                  </button>
+
+                  <button 
+                    type="button"
+                    onClick={restartQuiz} 
+                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <RotateCcw size={14} className="text-slate-400" />
+                    <span>{t('다시 검사')}</span>
+                  </button>
+
+                  <Link 
+                    to="/" 
+                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-center"
+                  >
+                    <Home size={14} className="text-slate-400" />
+                    <span>{t('메인으로')}</span>
+                  </Link>
+                </div>
               </div>
             </div>
           )}
