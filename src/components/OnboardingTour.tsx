@@ -215,10 +215,27 @@ const TOUR_STEPS: TourStep[] = [
     message: '**자소서 요약**으로 기록을 자동 정리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
-    onNext: (nav) => {
-      window.dispatchEvent(new CustomEvent('tour-close-diary'));
-      nav('/cover-letter');
+    onNext: () => {
+      window.dispatchEvent(new CustomEvent('tour-open-summary'));
     },
+  },
+  {
+    id: 'step-diary-summary-inside',
+    target: '.tour-target-summary-tabs, .tour-target-summary-modal',
+    message: '**STAR 공법**으로 경험이 자동 분류돼요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: () => {
+      window.dispatchEvent(new CustomEvent('tour-close-summary'));
+    },
+  },
+  {
+    id: 'step-nav-coverletter',
+    target: '.tour-target-nav-coverletter',
+    message: '**자기소개서 작성**을 눌러 이동해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: (nav) => nav('/cover-letter'),
   },
   {
     id: 'step-coverletter-company',

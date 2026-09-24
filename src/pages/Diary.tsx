@@ -248,13 +248,53 @@ JSON 구조 규격:
       setShowDayDiariesModal(false);
       setShowSummaryModal(false);
     };
+    const handleTourOpenSummary = () => {
+      setShowFormModal(false);
+      setShowDayDiariesModal(false);
+      setShowExamSettings(false);
+      setShowSummaryModal(true);
+      setSummaryLoading(false);
+      if (!summaryData) {
+        setSummaryData({
+          certificates: [
+            {
+              title: '전기기능사 자격증 회로 결선 실습',
+              date: '2026.04.12',
+              situation: '시퀀스 제어 회로 구성 실습 중 타이머 결선 접점 오류 발생',
+              task: '오류 원인을 신속히 계측하고 정해진 시간 내 정상 동작 회로 완성',
+              action: '회로도와 배선도를 대조하며 멀티미터로 통전 시험을 직접 실시하고 재결선 수행',
+              result: '동작 검사 100% 통과 및 시퀀스 회로 이해도 향상'
+            }
+          ],
+          activities: [
+            {
+              title: '교내 전공 동아리 스마트 팩토리 PLC 프로젝트',
+              date: '2026.05.20',
+              situation: 'PLC 기반 컨베이어 센서 제어 자동화 시스템 구현 프로젝트 진행',
+              task: '모터 구동 및 포토센서 신호 연동 래더 프로그램 작성',
+              action: '타이머와 카운터를 활용한 순차 제어 알고리즘 직접 프로그래밍',
+              result: '물류 이송 자동화 모형 성공적 구동'
+            }
+          ],
+          awards: [],
+          others: []
+        });
+      }
+    };
+    const handleTourCloseSummary = () => {
+      setShowSummaryModal(false);
+    };
     window.addEventListener('tour-open-diary', handleTourOpenDiary);
     window.addEventListener('tour-close-diary', handleTourCloseDiary);
+    window.addEventListener('tour-open-summary', handleTourOpenSummary);
+    window.addEventListener('tour-close-summary', handleTourCloseSummary);
     return () => {
       window.removeEventListener('tour-open-diary', handleTourOpenDiary);
       window.removeEventListener('tour-close-diary', handleTourCloseDiary);
+      window.removeEventListener('tour-open-summary', handleTourOpenSummary);
+      window.removeEventListener('tour-close-summary', handleTourCloseSummary);
     };
-  }, []);
+  }, [summaryData]);
 
   const loadDiaryList = async () => {
     setLoading(true);
@@ -891,7 +931,7 @@ JSON 구조 규격:
       {/* SUMMARY MODAL */}
       {showSummaryModal && (
         <div className={`fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center p-4 ${isLightMode ? "bg-slate-900/40" : "bg-slate-950/80"}`}>
-          <div className={`border-2 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-emerald-500/50 text-white"}`}>
+          <div className={`border-2 rounded-3xl p-6 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-150 tour-target-summary-modal ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-emerald-500/50 text-white"}`}>
             <div className={`flex items-center justify-between border-b pb-3 mb-3 flex-none ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
               <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 <Sparkles size={20} className="text-amber-400 animate-pulse" />
@@ -920,7 +960,7 @@ JSON 구조 규격:
               ) : summaryData ? (
                 <div className="space-y-4">
                   {/* Category Filter Buttons */}
-                  <div className={`grid grid-cols-2 sm:grid-cols-4 gap-2 border-b pb-4 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+                  <div className={`grid grid-cols-2 sm:grid-cols-4 gap-2 border-b pb-4 tour-target-summary-tabs ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
                     <button
                       onClick={() => {
                         setActiveSummaryTab('certificates');
