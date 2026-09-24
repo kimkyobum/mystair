@@ -599,7 +599,7 @@ export default function Interview() {
           </p>
 
           {/* 3 Course Option Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 tour-target-interview-courses">
             {/* 3 Minutes Course */}
             <button
               type="button"
@@ -688,7 +688,7 @@ export default function Interview() {
             <button
               type="button"
               onClick={() => handleStartInterview(candidateDuration)}
-              className="w-full sm:w-80 py-4 px-8 rounded-2xl font-black text-base text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg hover:shadow-indigo-500/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full sm:w-80 py-4 px-8 rounded-2xl font-black text-base text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg hover:shadow-indigo-500/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2 tour-target-interview-start-btn"
             >
               <Play size={18} fill="currentColor" />
               <span>{candidateDuration}분 모의면접 시작하기</span>

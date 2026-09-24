@@ -92,7 +92,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-nav-mypage',
     target: '.tour-target-nav-mypage-desktop, .tour-target-nav-mypage-mobile',
-    message: '먼저 사이드바의 **마이페이지**를 눌러 프로필과 맞춤 설정을 시작해 볼까요?',
+    message: '**마이페이지**에서 기본 정보와 설정을 시작해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/mypage'),
@@ -100,7 +100,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-basic-info',
     target: '.tour-target-profile-academic, .tour-target-tab-profile',
-    message: '**기본 정보 & 학적**에서 나의 고등학교, 전공 학과, 인적 사항을 한눈에 확인할 수 있어요.',
+    message: '**기본 정보 & 학적**에서 학교와 전공을 확인하세요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -111,14 +111,14 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-edit-profile',
     target: '.tour-target-edit-mode',
-    message: '**수정하기(프로필 편집)** 버튼을 눌러 나의 학교, 학과, 성명 등 기본 정보를 손쉽게 수정하고 등록할 수 있어요.',
+    message: '**수정하기**로 학교, 전공, 이름을 등록·수정해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-aptitude-tab',
     target: '.tour-target-tab-aptitude',
-    message: '**진로 적성 진단** 탭을 눌러 MBTI 성격 유형과 직업 적성 검사를 확인해 볼까요?',
+    message: '**진로 적성 진단**에서 나의 적성을 검사해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -129,21 +129,21 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-mbti',
     target: '.tour-target-profile-mbti',
-    message: '**MBTI 진단**을 통해 나의 성향에 어울리는 추천 직무를 파악하거나, 검사 없이 직접 유형을 간편 선택할 수도 있어요.',
+    message: '**MBTI**를 진단하고 추천 직무를 확인하세요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-holland',
     target: '.tour-target-profile-holland',
-    message: '**홀랜드 직업 적성 검사**로 나에게 최적화된 산업 분야와 맞춤 추천 복합 유형(RIASEC)을 확인해 보세요.',
+    message: '**홀랜드 검사**로 최적의 산업 분야를 진단해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-companies-tab',
     target: '.tour-target-tab-companies',
-    message: '**희망 목표 기업** 탭에서는 관심 있는 공기업, 대기업을 등록하고 목표 달성을 위한 맞춤 취업 정보를 관리할 수 있어요.',
+    message: '**희망 목표 기업**을 등록하고 취업 정보를 관리하세요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -154,58 +154,76 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-settings-theme',
     target: '.tour-target-settings-theme, .tour-target-tab-settings',
-    message: '**환경 설정**에서 나의 눈과 취향에 맞게 **화이트(라이트) 배경** 또는 별빛 가득한 **검은(우주) 배경**을 자유롭게 설정할 수 있어요.',
-    action: 'click_target',
-    allowAnywhereClick: true,
-    onNext: () => {
-      const el = document.querySelector('.tour-target-tab-settings') as HTMLElement;
-      if (el) el.click();
-    }
-  },
-  {
-    id: 'step-nav-company',
-    target: '.tour-target-nav-company',
-    message: '**나만의 기업찾기**는 마이페이지에 등록된 전공과 적성을 MYSTAIR AI가 종합 분석하여 최적의 대기업과 공기업을 추천해 주는 기능이에요.',
+    message: '**환경 설정**에서 **화이트** 또는 **검은 우주** 배경을 설정해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/company-search'),
   },
   {
-    id: 'step-nav-cert',
-    target: '.tour-target-nav-cert',
-    message: '**자격증 가이드**에서는 마이스터고 전공 분야별 필수 자격증 정보와 원서접수 공식 홈페이지 링크를 한곳에서 쉽게 찾아볼 수 있어요.',
+    id: 'step-nav-company',
+    target: '.tour-target-nav-company',
+    message: '**나만의 기업찾기**로 내 적성에 맞는 기업을 추천받아요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/certificates'),
   },
   {
-    id: 'step-nav-diary',
-    target: '.tour-target-nav-diary',
-    message: '**성장 다이어리**를 눌러 매일의 전공 실습, 자격증 공부, 학교 생활을 일기로 기록하고 역량을 체계적으로 쌓아보세요.',
+    id: 'step-nav-cert',
+    target: '.tour-target-nav-cert',
+    message: '**자격증 가이드**에서 필수 자격증과 접수 링크를 확인해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/diary'),
   },
   {
-    id: 'step-nav-coverletter',
-    target: '.tour-target-nav-coverletter',
-    message: '**자기소개서 작성** 기능에서는 지금까지 기록한 다이어리를 바탕으로 AI가 STAR 기법에 맞춘 합격 자기소개서를 완성해줘요.',
+    id: 'step-diary-today',
+    target: '.tour-target-diary-today, .tour-target-diary-calendar',
+    message: '**오늘 날짜**를 눌러 실습 일기를 기록하세요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-diary-summary',
+    target: '.tour-target-resume-summary',
+    message: '**자소서 요약**으로 기록을 STAR 기법으로 자동 정리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/cover-letter'),
   },
   {
-    id: 'step-nav-interview',
-    target: '.tour-target-nav-interview',
-    message: '**모의 면접**에서는 희망하는 기업과 직무의 예상 면접 질문을 실전처럼 연습하고 AI 맞춤 피드백을 받을 수 있어요.',
+    id: 'step-coverletter-company',
+    target: '.tour-target-cover-companies',
+    message: '**목표 기업**을 선택해 전용 자기소개서를 작성해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-coverletter-myexp',
+    target: '.tour-target-cover-my-exp',
+    message: '**내 경험**을 눌러 다이어리 실습 기록을 바로 불러와요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/interview'),
   },
   {
+    id: 'step-interview-course',
+    target: '.tour-target-interview-courses',
+    message: '원하는 **면접 시간(3분·5분·10분)**을 선택하세요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-interview-start',
+    target: '.tour-target-interview-start-btn',
+    message: '**모의면접 시작**으로 실전 연습과 AI 피드백을 받으세요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: (nav) => nav('/'),
+  },
+  {
     id: 'step-nav-home',
     target: '.tour-target-nav-home',
-    message: '이제 중심이 되는 **MYSTAIR AI 홈**으로 이동해 볼까요? 언제든 AI와 대화하며 학습과 취업 질문을 나눌 수 있어요.',
+    message: '**MyStair AI 홈**에서 취업과 학습 질문을 언제든 나눠보세요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/'),
@@ -213,7 +231,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'outro',
     target: 'body',
-    message: '축하합니다! 이제 **MyStair**와 함께 꿈을 향해 멋지게 도약해 봐요!',
+    message: '축하합니다! 이제 **MyStair**와 함께 꿈을 펼쳐봐요!',
     action: 'click_anywhere',
   }
 ];
@@ -289,28 +307,44 @@ export function OnboardingTour() {
     return () => cancelAnimationFrame(raf);
   }, [isActive, stepIndex, location.pathname]);
 
-  // Ensure the appropriate tab is active in MyPage for profile tour steps
+  // Ensure the appropriate tab is active in MyPage and route is synchronized for tour steps
   useEffect(() => {
     if (!isActive || stepIndex === 0) return;
     const step = TOUR_STEPS[stepIndex];
     if (!step) return;
 
-    if (location.pathname === '/mypage') {
-      if (step.id === 'step-basic-info' || step.id === 'step-edit-profile') {
-        const tabEl = document.querySelector('.tour-target-tab-profile') as HTMLElement;
-        if (tabEl) tabEl.click();
-      } else if (step.id === 'step-aptitude-tab' || step.id === 'step-mbti' || step.id === 'step-holland') {
-        const tabEl = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
-        if (tabEl) tabEl.click();
-      } else if (step.id === 'step-companies-tab') {
-        const tabEl = document.querySelector('.tour-target-tab-companies') as HTMLElement;
-        if (tabEl) tabEl.click();
-      } else if (step.id === 'step-settings-theme') {
-        const tabEl = document.querySelector('.tour-target-tab-settings') as HTMLElement;
-        if (tabEl) tabEl.click();
+    if (step.id === 'step-nav-mypage' || step.id.startsWith('step-basic') || step.id.startsWith('step-edit') || step.id.startsWith('step-aptitude') || step.id.startsWith('step-mbti') || step.id.startsWith('step-holland') || step.id.startsWith('step-companies') || step.id.startsWith('step-settings')) {
+      if (location.pathname !== '/mypage') {
+        navigate('/mypage');
+      } else {
+        if (step.id === 'step-basic-info' || step.id === 'step-edit-profile') {
+          const tabEl = document.querySelector('.tour-target-tab-profile') as HTMLElement;
+          if (tabEl) tabEl.click();
+        } else if (step.id === 'step-aptitude-tab' || step.id === 'step-mbti' || step.id === 'step-holland') {
+          const tabEl = document.querySelector('.tour-target-tab-aptitude') as HTMLElement;
+          if (tabEl) tabEl.click();
+        } else if (step.id === 'step-companies-tab') {
+          const tabEl = document.querySelector('.tour-target-tab-companies') as HTMLElement;
+          if (tabEl) tabEl.click();
+        } else if (step.id === 'step-settings-theme') {
+          const tabEl = document.querySelector('.tour-target-tab-settings') as HTMLElement;
+          if (tabEl) tabEl.click();
+        }
       }
+    } else if (step.id === 'step-nav-company' && location.pathname !== '/company-search') {
+      navigate('/company-search');
+    } else if (step.id === 'step-nav-cert' && location.pathname !== '/certificates') {
+      navigate('/certificates');
+    } else if (step.id.startsWith('step-diary') && location.pathname !== '/diary') {
+      navigate('/diary');
+    } else if (step.id.startsWith('step-coverletter') && location.pathname !== '/cover-letter') {
+      navigate('/cover-letter');
+    } else if (step.id.startsWith('step-interview') && location.pathname !== '/interview') {
+      navigate('/interview');
+    } else if (step.id === 'step-nav-home' && location.pathname !== '/') {
+      navigate('/');
     }
-  }, [isActive, stepIndex, location.pathname]);
+  }, [isActive, stepIndex, location.pathname, navigate]);
 
   // Handle smooth scrolling when step changes
   useEffect(() => {

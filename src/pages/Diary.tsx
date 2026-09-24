@@ -747,7 +747,7 @@ JSON 구조 규격:
             </div>
 
             {/* 7-Column Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 sm:gap-1.5 flex-1 min-h-0 auto-rows-fr">
+            <div className="grid grid-cols-7 gap-1 sm:gap-1.5 flex-1 min-h-0 auto-rows-fr tour-target-diary-calendar">
               {/* Empty leading cells from previous month */}
               {Array.from({ length: firstDayOfWeek }).map((_, idx) => {
                 const prevDayNum = prevMonthDays - firstDayOfWeek + idx + 1;

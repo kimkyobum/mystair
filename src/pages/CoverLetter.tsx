@@ -905,7 +905,7 @@ export default function CoverLetter() {
         {/* ============================================================== */}
         {/* 1. COMPANY COVER LETTER COLLECTION BAR (기업별 자기소개서 컬렉션) */}
         {/* ============================================================== */}
-        <div className={`p-4 sm:p-5 rounded-2xl border mb-6 transition-all ${
+        <div className={`p-4 sm:p-5 rounded-2xl border mb-6 transition-all tour-target-cover-companies ${
           isLightMode ? "bg-white border-slate-200 shadow-xs" : "bg-slate-900/90 border-slate-800"
         }`}>
           <div className="flex items-center justify-between gap-3 mb-3.5">
@@ -1249,7 +1249,7 @@ export default function CoverLetter() {
                       <button
                         type="button"
                         onClick={() => setOpenExperiences(prev => ({ ...prev, [sec.id]: !prev[sec.id] }))}
-                        className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                        className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all cursor-pointer shadow-2xs tour-target-cover-my-exp ${
                           isExperienceOpen
                             ? isLightMode 
                               ? "bg-emerald-600 text-white border-emerald-600 shadow-xs" 
