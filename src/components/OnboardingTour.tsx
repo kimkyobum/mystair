@@ -86,13 +86,13 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'intro',
     target: 'body',
-    message: '가이드를 시작하시겠습니까?',
+    message: '가이드를 시작할까요?',
     action: 'click_anywhere',
   },
   {
     id: 'step-nav-mypage',
     target: '.tour-target-nav-mypage-desktop, .tour-target-nav-mypage-mobile',
-    message: '**마이페이지**에서 기본 정보와 설정을 시작해요.',
+    message: '**마이페이지**에서 기본 정보를 관리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/mypage'),
@@ -100,7 +100,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-basic-info',
     target: '.tour-target-profile-academic, .tour-target-tab-profile',
-    message: '**기본 정보 & 학적**에서 학교와 전공을 확인하세요.',
+    message: '**기본 정보**에서 학교와 전공을 확인해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -111,14 +111,14 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-edit-profile',
     target: '.tour-target-edit-mode',
-    message: '**수정하기**로 학교, 전공, 이름을 등록·수정해요.',
+    message: '**수정하기**로 프로필을 등록·변경해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-aptitude-tab',
     target: '.tour-target-tab-aptitude',
-    message: '**진로 적성 진단**에서 나의 적성을 검사해요.',
+    message: '**진로 적성 진단**에서 적성 검사를 진행해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -129,21 +129,21 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-mbti',
     target: '.tour-target-profile-mbti',
-    message: '**MBTI**를 진단하고 추천 직무를 확인하세요.',
+    message: '**MBTI**로 추천 직무를 진단해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-holland',
     target: '.tour-target-profile-holland',
-    message: '**홀랜드 검사**로 최적의 산업 분야를 진단해요.',
+    message: '**홀랜드**로 맞춤 산업군을 확인해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-companies-tab',
     target: '.tour-target-tab-companies',
-    message: '**희망 목표 기업**을 등록하고 취업 정보를 관리하세요.',
+    message: '**희망 기업**을 등록하고 관리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -154,7 +154,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-settings-theme',
     target: '.tour-target-settings-theme, .tour-target-tab-settings',
-    message: '**환경 설정**에서 **화이트** 또는 **검은 우주** 배경을 설정해요.',
+    message: '**환경 설정**에서 다크/라이트 테마를 변경해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/company-search'),
@@ -162,7 +162,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-nav-company',
     target: '.tour-target-nav-company',
-    message: '**나만의 기업찾기**로 내 적성에 맞는 기업을 추천받아요.',
+    message: '**나만의 기업찾기**로 맞춤 기업을 탐색해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/certificates'),
@@ -170,22 +170,49 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-nav-cert',
     target: '.tour-target-nav-cert',
-    message: '**자격증 가이드**에서 필수 자격증과 접수 링크를 확인해요.',
+    message: '**자격증 가이드**로 필수 자격증을 확인해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/diary'),
   },
   {
-    id: 'step-diary-today',
-    target: '.tour-target-diary-today, .tour-target-diary-calendar',
-    message: '**오늘 날짜**를 눌러 실습 일기를 기록하세요.',
+    id: 'step-diary-open',
+    target: '.tour-target-diary-write-btn, .tour-target-diary-today',
+    message: '**일기 쓰기**를 눌러 작성 창을 열어요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: () => {
+      window.dispatchEvent(new CustomEvent('tour-open-diary'));
+    }
+  },
+  {
+    id: 'step-diary-title',
+    target: '.tour-target-diary-title',
+    message: '**제목**을 입력해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
+    id: 'step-diary-mood',
+    target: '.tour-target-diary-mood',
+    message: '**오늘의 기분**을 선택해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-diary-content',
+    target: '.tour-target-diary-content',
+    message: '**실습·성장 내용**을 자유롭게 기록해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: () => {
+      window.dispatchEvent(new CustomEvent('tour-close-diary'));
+    }
+  },
+  {
     id: 'step-diary-summary',
     target: '.tour-target-resume-summary',
-    message: '**자소서 요약**으로 기록을 STAR 기법으로 자동 정리해요.',
+    message: '**자소서 요약**으로 기록을 자동 정리해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/cover-letter'),
@@ -193,14 +220,14 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-coverletter-company',
     target: '.tour-target-cover-companies',
-    message: '**목표 기업**을 선택해 전용 자기소개서를 작성해요.',
+    message: '**목표 기업** 전용 자소서를 작성해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-coverletter-myexp',
     target: '.tour-target-cover-my-exp',
-    message: '**내 경험**을 눌러 다이어리 실습 기록을 바로 불러와요.',
+    message: '**내 경험**을 불러와 자소서에 활용해요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/interview'),
@@ -208,22 +235,49 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-interview-course',
     target: '.tour-target-interview-courses',
-    message: '원하는 **면접 시간(3분·5분·10분)**을 선택하세요.',
+    message: '**면접 코스** 시간을 선택해요.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-interview-start',
     target: '.tour-target-interview-start-btn',
-    message: '**모의면접 시작**으로 실전 연습과 AI 피드백을 받으세요.',
+    message: '**면접 시작하기**를 눌러 면접실로 들어가요.',
     action: 'click_target',
     allowAnywhereClick: true,
-    onNext: (nav) => nav('/'),
+    onNext: () => {
+      window.dispatchEvent(new CustomEvent('tour-enter-interview'));
+    }
+  },
+  {
+    id: 'step-interview-camera-hud',
+    target: '.tour-target-interview-camera-hud',
+    message: '**카메라·AI**가 시선, 성량, 자세를 분석해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-interview-qa',
+    target: '.tour-target-interview-qa',
+    message: '**마이크나 텍스트**로 질문에 답변해요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-interview-submit',
+    target: '.tour-target-interview-submit',
+    message: '**답변 제출** 시 AI 총평과 피드백을 받아요.',
+    action: 'click_target',
+    allowAnywhereClick: true,
+    onNext: (nav) => {
+      window.dispatchEvent(new CustomEvent('tour-exit-interview'));
+      nav('/');
+    }
   },
   {
     id: 'step-nav-home',
     target: '.tour-target-nav-home',
-    message: '**MyStair AI 홈**에서 취업과 학습 질문을 언제든 나눠보세요.',
+    message: '**MyStair 홈**에서 무엇이든 질문하세요.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/'),
@@ -231,7 +285,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'outro',
     target: 'body',
-    message: '축하합니다! 이제 **MyStair**와 함께 꿈을 펼쳐봐요!',
+    message: '모든 준비가 완료되었습니다! 지금 시작해보세요!',
     action: 'click_anywhere',
   }
 ];
@@ -335,14 +389,45 @@ export function OnboardingTour() {
       navigate('/company-search');
     } else if (step.id === 'step-nav-cert' && location.pathname !== '/certificates') {
       navigate('/certificates');
-    } else if (step.id.startsWith('step-diary') && location.pathname !== '/diary') {
-      navigate('/diary');
-    } else if (step.id.startsWith('step-coverletter') && location.pathname !== '/cover-letter') {
-      navigate('/cover-letter');
-    } else if (step.id.startsWith('step-interview') && location.pathname !== '/interview') {
-      navigate('/interview');
-    } else if (step.id === 'step-nav-home' && location.pathname !== '/') {
-      navigate('/');
+    } else if (step.id.startsWith('step-diary')) {
+      if (location.pathname !== '/diary') {
+        navigate('/diary');
+      } else {
+        if (step.id === 'step-diary-title' || step.id === 'step-diary-mood' || step.id === 'step-diary-content') {
+          const titleInput = document.querySelector('.tour-target-diary-title');
+          if (!titleInput) {
+            window.dispatchEvent(new CustomEvent('tour-open-diary'));
+          }
+        } else if (step.id === 'step-diary-summary') {
+          window.dispatchEvent(new CustomEvent('tour-close-diary'));
+        }
+      }
+    } else if (step.id.startsWith('step-coverletter')) {
+      window.dispatchEvent(new CustomEvent('tour-close-diary'));
+      if (location.pathname !== '/cover-letter') {
+        navigate('/cover-letter');
+      }
+    } else if (step.id.startsWith('step-interview')) {
+      if (location.pathname !== '/interview') {
+        navigate('/interview');
+      } else {
+        if (step.id === 'step-interview-camera-hud' || step.id === 'step-interview-qa' || step.id === 'step-interview-submit') {
+          const cameraHud = document.querySelector('.tour-target-interview-camera-hud');
+          if (!cameraHud) {
+            window.dispatchEvent(new CustomEvent('tour-enter-interview'));
+          }
+        } else if (step.id === 'step-interview-course' || step.id === 'step-interview-start') {
+          const cameraHud = document.querySelector('.tour-target-interview-camera-hud');
+          if (cameraHud) {
+            window.dispatchEvent(new CustomEvent('tour-exit-interview'));
+          }
+        }
+      }
+    } else if (step.id === 'step-nav-home') {
+      window.dispatchEvent(new CustomEvent('tour-exit-interview'));
+      if (location.pathname !== '/') {
+        navigate('/');
+      }
     }
   }, [isActive, stepIndex, location.pathname, navigate]);
 
@@ -400,6 +485,8 @@ export function OnboardingTour() {
   };
 
   const endTour = () => {
+    window.dispatchEvent(new CustomEvent('tour-close-diary'));
+    window.dispatchEvent(new CustomEvent('tour-exit-interview'));
     markTourCompletedForCurrentAccount();
     setIsActive(false);
     setStepIndex(0);

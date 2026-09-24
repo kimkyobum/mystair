@@ -239,6 +239,22 @@ export default function Interview() {
     }, 1000);
   };
 
+  // Automated tour navigation synchronization
+  useEffect(() => {
+    const handleTourEnterInterview = () => {
+      handleStartInterview(5);
+    };
+    const handleTourExitInterview = () => {
+      setSelectedDuration(null);
+    };
+    window.addEventListener('tour-enter-interview', handleTourEnterInterview);
+    window.addEventListener('tour-exit-interview', handleTourExitInterview);
+    return () => {
+      window.removeEventListener('tour-enter-interview', handleTourEnterInterview);
+      window.removeEventListener('tour-exit-interview', handleTourExitInterview);
+    };
+  }, [candidateDuration]);
+
   // 2. 타이머 카운트다운
   useEffect(() => {
     if (!isTimerRunning || remainingTime <= 0) return;
@@ -864,7 +880,7 @@ export default function Interview() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
           {/* Left Column: Camera + Live Behavior HUD (5 Cols) */}
-          <div className="lg:col-span-5 space-y-4">
+          <div className="lg:col-span-5 space-y-4 tour-target-interview-camera-hud">
             <div className={`relative rounded-2xl overflow-hidden border shadow-lg aspect-video sm:aspect-[4/3] flex items-center justify-center ${
               isLightMode ? 'bg-slate-900 border-slate-200' : 'bg-black border-slate-800'
             }`}>
@@ -1029,7 +1045,7 @@ export default function Interview() {
 
             {/* Current Question & Dialogue Card */}
             {currentQ && (
-              <div className={`p-5 rounded-2xl border transition-all ${
+              <div className={`p-5 rounded-2xl border transition-all tour-target-interview-qa ${
                 isLightMode ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900 border-slate-800'
               }`}>
                 <div className="flex items-center justify-between gap-3 mb-2">
@@ -1101,7 +1117,7 @@ export default function Interview() {
                     type="button"
                     onClick={handleSubmitAnswer}
                     disabled={isEvaluating || !currentAnswer.trim()}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white shadow-md transition-all cursor-pointer"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white shadow-md transition-all cursor-pointer tour-target-interview-submit"
                   >
                     {isEvaluating ? (
                       <>

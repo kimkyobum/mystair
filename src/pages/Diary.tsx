@@ -228,6 +228,30 @@ JSON 구조 규격:
     }
   };
 
+  // Support automated guidance from onboarding tour
+  useEffect(() => {
+    const handleTourOpenDiary = () => {
+      setSelectedDate(getLocalDateString());
+      setEditingId(null);
+      setTitle('');
+      setContent('');
+      setMood('🔥');
+      setTags(['성장기록']);
+      setShowDayDiariesModal(false);
+      setShowFormModal(true);
+    };
+    const handleTourCloseDiary = () => {
+      setShowFormModal(false);
+      setShowDayDiariesModal(false);
+    };
+    window.addEventListener('tour-open-diary', handleTourOpenDiary);
+    window.addEventListener('tour-close-diary', handleTourCloseDiary);
+    return () => {
+      window.removeEventListener('tour-open-diary', handleTourOpenDiary);
+      window.removeEventListener('tour-close-diary', handleTourCloseDiary);
+    };
+  }, []);
+
   const loadDiaryList = async () => {
     setLoading(true);
     try {
@@ -706,7 +730,7 @@ JSON 구조 규격:
                 </button>
                 <button
                   onClick={() => handleOpenDayModal(getLocalDateString())}
-                  className={`ml-2 px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${isLightMode ? "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 shadow-xs" : "border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300"}`}
+                  className={`ml-2 px-4 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all tour-target-diary-write-btn ${isLightMode ? "border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 shadow-xs" : "border-emerald-500/30 bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300"}`}
                 >
                   <Plus size={15} />
                   <span>{t('일기 쓰기')}</span>
