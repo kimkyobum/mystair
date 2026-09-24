@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { mbtiMeta } from '../data/mbtiData';
 import { hollandMeta } from '../data/hollandData';
+import { AlienUFOSvg } from '../components/FloatingAliens';
 import { searchMeisterSchools, MeisterSchool } from '../data/meisterSchools';
 import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
@@ -287,7 +288,9 @@ export default function MyPage() {
       ...profile,
       name: tempName.trim() || profile.name,
       highSchool: tempSchool.trim() || profile.highSchool,
-      major: tempMajor.trim() || profile.major
+      major: tempMajor.trim() || profile.major,
+      mbti: tempMbti,
+      hollandCode: tempHolland
     };
     setProfile(updated);
     try {
@@ -444,6 +447,8 @@ export default function MyPage() {
                     setTempName(profile.name);
                     setTempSchool(profile.highSchool);
                     setTempMajor(profile.major);
+                    setTempMbti(profile.mbti);
+                    setTempHolland(profile.hollandCode);
                     setIsFullEditing(true);
                     setActiveTab('profile');
                   }
@@ -638,6 +643,8 @@ export default function MyPage() {
                         setTempName(profile.name);
                         setTempSchool(profile.highSchool);
                         setTempMajor(profile.major);
+                        setTempMbti(profile.mbti);
+                        setTempHolland(profile.hollandCode);
                         setIsFullEditing(false);
                       }}
                       className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition cursor-pointer ${
@@ -663,6 +670,8 @@ export default function MyPage() {
                       setTempName(profile.name);
                       setTempSchool(profile.highSchool);
                       setTempMajor(profile.major);
+                      setTempMbti(profile.mbti);
+                      setTempHolland(profile.hollandCode);
                       setIsFullEditing(true);
                     }}
                     className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
@@ -820,6 +829,96 @@ export default function MyPage() {
                   )}
                 </div>
 
+                {/* Field 5: MBTI */}
+                <div className="space-y-1.5 tour-target-profile-mbti-field">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Brain size={14} className="text-emerald-500" />
+                      <span>{t('MBTI 성격 유형')}</span>
+                    </label>
+                    {!isFullEditing && (
+                      <Link to="/mbti" className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                        {t('검사하기')} →
+                      </Link>
+                    )}
+                  </div>
+
+                  {isFullEditing ? (
+                    <select
+                      value={tempMbti}
+                      onChange={e => setTempMbti(e.target.value)}
+                      className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition cursor-pointer ${
+                        isLightMode 
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
+                      }`}
+                    >
+                      <option value="">{t('선택 안 함 / 미설정')}</option>
+                      {Object.keys(mbtiMeta).map(type => (
+                        <option key={type} value={type}>
+                          {type} - {mbtiMeta[type].alias}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                      {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단')}
+                    </div>
+                  )}
+                </div>
+
+                {/* Field 6: Holland Code */}
+                <div className="space-y-1.5 tour-target-profile-holland-field">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Compass size={14} className="text-teal-500" />
+                      <span>{t('홀랜드 직업 적성 유형')}</span>
+                    </label>
+                    {!isFullEditing && (
+                      <Link to="/holland" className="text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline">
+                        {t('검사하기')} →
+                      </Link>
+                    )}
+                  </div>
+
+                  {isFullEditing ? (
+                    <select
+                      value={tempHolland}
+                      onChange={e => setTempHolland(e.target.value)}
+                      className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition cursor-pointer ${
+                        isLightMode 
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
+                      }`}
+                    >
+                      <option value="">{t('선택 안 함 / 미설정')}</option>
+                      <optgroup label={t('6대 기본 RIASEC 유형')}>
+                        {Object.keys(hollandMeta).map(type => (
+                          <option key={type} value={type}>
+                            {type}형 - {hollandMeta[type].name} ({hollandMeta[type].alias})
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label={t('마이스터고 추천 복합 유형')}>
+                        <option value="RI">RI형 - 현장 기술 전문가 (실제+탐구)</option>
+                        <option value="RC">RC형 - 정밀 공정/품질 관리 (실제+관습)</option>
+                        <option value="IR">IR형 - SW/R&D 연구원 (탐구+실제)</option>
+                        <option value="IA">IA형 - 데이터/디자인 기획 (탐구+예술)</option>
+                        <option value="AS">AS형 - 창의 소통 전문가 (예술+사회)</option>
+                        <option value="SE">SE형 - 기술 교육/멘토링 (사회+기업)</option>
+                        <option value="ER">ER형 - 기술영업/PM 리더 (기업+실제)</option>
+                        <option value="EC">EC형 - 공정/생산 총괄 관리 (기업+관습)</option>
+                        <option value="CR">CR형 - 품질 검사/설비 유지 (관습+실제)</option>
+                        <option value="CI">CI형 - 보안/전산 시스템 관리 (관습+탐구)</option>
+                      </optgroup>
+                    </select>
+                  ) : (
+                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                      {profile.hollandCode ? `${profile.hollandCode}형 (${primaryHollandMeta?.name || ''})` : t('미진단')}
+                    </div>
+                  )}
+                </div>
+
               </div>
 
               {/* Bottom Action if Editing */}
@@ -831,6 +930,8 @@ export default function MyPage() {
                       setTempName(profile.name);
                       setTempSchool(profile.highSchool);
                       setTempMajor(profile.major);
+                      setTempMbti(profile.mbti);
+                      setTempHolland(profile.hollandCode);
                       setIsFullEditing(false);
                     }}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer border ${
@@ -894,13 +995,25 @@ export default function MyPage() {
                       </h3>
                     </div>
 
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                      profile.mbti 
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300' 
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
-                    }`}>
-                      {profile.mbti ? profile.mbti : t('미진단')}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <select
+                        value={profile.mbti}
+                        onChange={e => savePartialField('mbti', e.target.value, 'MBTI')}
+                        className={`text-xs font-bold px-2.5 py-1 rounded-lg border outline-none cursor-pointer transition ${
+                          profile.mbti 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300' 
+                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                        }`}
+                        title={t('유형 간편 변경')}
+                      >
+                        <option value="">{t('미진단 (직접 선택)')}</option>
+                        {Object.keys(mbtiMeta).map(type => (
+                          <option key={type} value={type}>
+                            {type} - {mbtiMeta[type].alias}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   {profile.mbti ? (
@@ -977,14 +1090,32 @@ export default function MyPage() {
                           {t('32가지 정밀 유형 분석을 통해 마이스터고 학생에게 최적화된 성격 특성과 추천 직무를 진단합니다.')}
                         </p>
                       </div>
-                      <Link
-                        to="/mbti"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                      >
-                        <Brain size={15} />
-                        <span>{t('MBTI 진단 검사 시작하기')}</span>
-                        <ChevronRight size={14} />
-                      </Link>
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                        <Link
+                          to="/mbti"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                        >
+                          <Brain size={15} />
+                          <span>{t('MBTI 진단 검사 시작하기')}</span>
+                          <ChevronRight size={14} />
+                        </Link>
+                        <select
+                          value=""
+                          onChange={e => {
+                            if (e.target.value) savePartialField('mbti', e.target.value, 'MBTI');
+                          }}
+                          className={`px-3 py-2.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition ${
+                            isLightMode ? "bg-white hover:bg-slate-50 border-slate-300 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
+                          }`}
+                        >
+                          <option value="">{t('검사 없이 직접 유형 선택하기')}</option>
+                          {Object.keys(mbtiMeta).map(type => (
+                            <option key={type} value={type}>
+                              {type} ({mbtiMeta[type].alias})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1029,13 +1160,39 @@ export default function MyPage() {
                       </h3>
                     </div>
 
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                      profile.hollandCode 
-                        ? 'bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/60 dark:border-teal-800 dark:text-teal-300' 
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
-                    }`}>
-                      {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단')}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <select
+                        value={profile.hollandCode}
+                        onChange={e => savePartialField('hollandCode', e.target.value, '홀랜드 적성')}
+                        className={`text-xs font-bold px-2.5 py-1 rounded-lg border outline-none cursor-pointer transition ${
+                          profile.hollandCode 
+                            ? 'bg-teal-50 text-teal-700 border-teal-300 dark:bg-teal-950/60 dark:border-teal-800 dark:text-teal-300' 
+                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                        }`}
+                        title={t('유형 간편 변경')}
+                      >
+                        <option value="">{t('미진단 (직접 선택)')}</option>
+                        <optgroup label={t('6대 기본 RIASEC 유형')}>
+                          {Object.keys(hollandMeta).map(type => (
+                            <option key={type} value={type}>
+                              {type}형 - {hollandMeta[type].name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label={t('마이스터고 추천 복합 유형')}>
+                          <option value="RI">RI형 (현장 기술 엔지니어)</option>
+                          <option value="RC">RC형 (정밀 공정/품질 전문가)</option>
+                          <option value="IR">IR형 (SW/R&D 연구원)</option>
+                          <option value="IA">IA형 (데이터/디자인 기획)</option>
+                          <option value="AS">AS형 (창의 서비스/소통)</option>
+                          <option value="SE">SE형 (기술 교육/멘토링)</option>
+                          <option value="ER">ER형 (기술영업/PM 리더)</option>
+                          <option value="EC">EC형 (공정/생산 총괄 관리)</option>
+                          <option value="CR">CR형 (품질 검사/설비 유지)</option>
+                          <option value="CI">CI형 (전산/보안 시스템 관리)</option>
+                        </optgroup>
+                      </select>
+                    </div>
                   </div>
 
                   {profile.hollandCode ? (
@@ -1103,14 +1260,46 @@ export default function MyPage() {
                           {t('RIASEC 6가지 직업 흥미 유형 분석을 통해 마이스터고 학생에게 최적화된 산업 분야를 진단합니다.')}
                         </p>
                       </div>
-                      <Link
-                        to="/holland"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                      >
-                        <Compass size={15} />
-                        <span>{t('홀랜드 직업적성검사 시작하기')}</span>
-                        <ChevronRight size={14} />
-                      </Link>
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                        <Link
+                          to="/holland"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                        >
+                          <Compass size={15} />
+                          <span>{t('홀랜드 직업적성검사 시작하기')}</span>
+                          <ChevronRight size={14} />
+                        </Link>
+                        <select
+                          value=""
+                          onChange={e => {
+                            if (e.target.value) savePartialField('hollandCode', e.target.value, '홀랜드 적성');
+                          }}
+                          className={`px-3 py-2.5 rounded-xl text-xs font-bold border outline-none cursor-pointer transition ${
+                            isLightMode ? "bg-white hover:bg-slate-50 border-slate-300 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
+                          }`}
+                        >
+                          <option value="">{t('검사 없이 직접 유형 선택하기')}</option>
+                          <optgroup label={t('6대 기본 유형')}>
+                            {Object.keys(hollandMeta).map(type => (
+                              <option key={type} value={type}>
+                                {type}형 ({hollandMeta[type].name})
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label={t('복합 추천 유형')}>
+                            <option value="RI">RI형 (현장 기술 엔지니어)</option>
+                            <option value="RC">RC형 (정밀 공정/품질 전문가)</option>
+                            <option value="IR">IR형 (SW/R&D 연구원)</option>
+                            <option value="IA">IA형 (데이터/디자인 기획)</option>
+                            <option value="AS">AS형 (창의 서비스/소통)</option>
+                            <option value="SE">SE형 (기술 교육/멘토링)</option>
+                            <option value="ER">ER형 (기술영업/PM 리더)</option>
+                            <option value="EC">EC형 (공정/생산 총괄 관리)</option>
+                            <option value="CR">CR형 (품질 검사/설비 유지)</option>
+                            <option value="CI">CI형 (전산/보안 시스템 관리)</option>
+                          </optgroup>
+                        </select>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1452,18 +1641,18 @@ export default function MyPage() {
                     ? "bg-slate-50/60 border-slate-200/90 divide-slate-200/80" 
                     : "bg-slate-800/40 border-slate-800 divide-slate-800/80"
                 }`}>
-                  {/* Row 1: Alien AI Assistant */}
+                  {/* Row 1: Floating Alien Characters */}
                   <div className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                        <Bot size={20} />
+                      <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/60 flex items-center justify-center shrink-0">
+                        <AlienUFOSvg className="w-7 h-7 drop-shadow-sm" />
                       </div>
                       <div className="space-y-0.5">
                         <div className="text-sm font-bold text-slate-900 dark:text-white">
-                          {t('인공지능 도우미 외계인 안내')}
+                          {t('우주를 떠다니는 외계인 캐릭터')}
                         </div>
                         <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                          {t('화면 우측 하단에서 실시간 조언 및 대화를 돕는 외계인 캐릭터를 표시합니다.')}
+                          {t('홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.')}
                         </div>
                       </div>
                     </div>
@@ -1671,13 +1860,44 @@ export default function MyPage() {
 
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
-                    {profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                      {profile.hollandCode ? `${profile.hollandCode}형` : '미진단'}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      ({modalPrimaryHollandMeta.name}{modalSecondaryHollandMeta ? ` & ${modalSecondaryHollandMeta.name}` : ''})
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {modalPrimaryHollandMeta.name} & {modalSecondaryHollandMeta.name}
-                  </span>
+
+                  <select
+                    value={profile.hollandCode}
+                    onChange={e => savePartialField('hollandCode', e.target.value, '홀랜드')}
+                    className={`border rounded-lg px-2 py-1 text-xs font-bold outline-none cursor-pointer ${
+                      isLightMode ? "bg-white border-slate-300 text-slate-900" : "bg-slate-800 border-slate-700 text-white"
+                    }`}
+                  >
+                    <option value="">{t('선택 안 함 / 미설정')}</option>
+                    <optgroup label={t('6대 기본 유형')}>
+                      {Object.keys(hollandMeta).map(type => (
+                        <option key={type} value={type}>
+                          {type}형 - {hollandMeta[type].name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label={t('마이스터고 추천 복합 유형')}>
+                      <option value="RI">RI형 - 실제+탐구</option>
+                      <option value="RC">RC형 - 실제+관습</option>
+                      <option value="IR">IR형 - 탐구+실제</option>
+                      <option value="IA">IA형 - 탐구+예술</option>
+                      <option value="AS">AS형 - 예술+사회</option>
+                      <option value="SE">SE형 - 사회+기업</option>
+                      <option value="ER">ER형 - 기업+실제</option>
+                      <option value="EC">EC형 - 기업+관습</option>
+                      <option value="CR">CR형 - 관습+실제</option>
+                      <option value="CI">CI형 - 관습+탐구</option>
+                    </optgroup>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
