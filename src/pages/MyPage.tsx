@@ -47,17 +47,6 @@ interface MyProfileData {
   targetCompanies: string[];
 }
 
-const PRESET_MAJORS = [
-  '로봇제어과',
-  '전자제어과',
-  '정밀기계과',
-  '소프트웨어과',
-  '전기제어과',
-  'AI융합과',
-  '바이오의약과',
-  '자동화설비과'
-];
-
 const POPULAR_COMPANIES = [
   '삼성전자',
   '현대자동차',
@@ -798,30 +787,6 @@ export default function MyPage() {
                           )}
                         </div>
                       )}
-
-                      {/* Quick Meister High School Chips */}
-                      <div className="flex flex-wrap items-center gap-1.5 pt-2">
-                        <span className="text-[11px] font-bold text-slate-400 mr-1">{t('추천')}:</span>
-                        {['구미전자공업고등학교', '수도전기공업고등학교', '서울로봇고등학교', '부산기계공업고등학교'].map(sch => (
-                          <button
-                            key={sch}
-                            type="button"
-                            onClick={() => {
-                              setTempSchool(sch);
-                              setIsSchoolDropdownOpen(false);
-                            }}
-                            className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
-                              tempSchool === sch 
-                                ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-700 dark:text-emerald-300"
-                                : isLightMode 
-                                  ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
-                                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
-                            }`}
-                          >
-                            {sch.replace('고등학교', '고')}
-                          </button>
-                        ))}
-                      </div>
                     </div>
                   ) : (
                     <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
@@ -837,40 +802,17 @@ export default function MyPage() {
                   </label>
 
                   {isFullEditing ? (
-                    <div className="space-y-2">
-                      <input
-                        type="text"
-                        value={tempMajor}
-                        onChange={e => setTempMajor(e.target.value)}
-                        placeholder={t('전공 학과명을 입력하세요 (예: 전자제어과, 소프트웨어과)')}
-                        className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
-                          isLightMode 
-                            ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
-                            : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
-                        }`}
-                      />
-
-                      {/* Major Preset Chips */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        <span className="text-[11px] font-bold text-slate-400 mr-1 self-center">{t('학과 프리셋')}:</span>
-                        {PRESET_MAJORS.map(maj => (
-                          <button
-                            key={maj}
-                            type="button"
-                            onClick={() => setTempMajor(maj)}
-                            className={`text-[11px] font-medium px-2 py-0.5 rounded-md transition cursor-pointer border ${
-                              tempMajor === maj 
-                                ? "bg-emerald-50 border-emerald-300 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-700 dark:text-emerald-300"
-                                : isLightMode 
-                                  ? "bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700" 
-                                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
-                            }`}
-                          >
-                            {maj}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                    <input
+                      type="text"
+                      value={tempMajor}
+                      onChange={e => setTempMajor(e.target.value)}
+                      placeholder={t('전공 학과명을 입력하세요 (예: 전자제어과, 소프트웨어과)')}
+                      className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
+                        isLightMode 
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
+                      }`}
+                    />
                   ) : (
                     <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
                       {profile.major || t('전공 학과 미등록')}
