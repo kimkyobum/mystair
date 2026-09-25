@@ -564,10 +564,14 @@ JSON 구조 규격:
       {/* Main Container */}
       <main className={`flex-1 min-h-0 max-w-[1000px] mx-auto w-full px-4 sm:px-8 py-3.5 flex flex-col overflow-y-auto custom-scrollbar`}>
 
-        {/* AI 보조 도구 사실 검토 안내 (소형 빨간색 텍스트) */}
-        <div className="mb-2.5 px-0.5 flex items-center gap-1.5 text-[11px] sm:text-xs text-rose-500 dark:text-rose-400 font-medium leading-relaxed">
-          <AlertTriangle size={13} className="shrink-0 text-rose-500 dark:text-rose-400" />
-          <span>{t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}</span>
+        {/* AI 보조 도구 사실 검토 안내 (안정적이고 편안한 그린 톤) */}
+        <div className={`mb-2.5 px-3 py-1.5 rounded-xl border flex items-center gap-2 text-[11px] sm:text-xs font-semibold leading-relaxed transition-colors ${
+          isLightMode 
+            ? "bg-emerald-50/90 border-emerald-200 text-emerald-800" 
+            : "bg-emerald-950/35 border-emerald-500/30 text-emerald-300"
+        }`}>
+          <ShieldCheck size={14} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <span>{t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 직접 검토하세요.')}</span>
         </div>
 
         {/* Exam Schedule Settings Modal (Popup Overlay to prevent calendar squeezing) */}
@@ -1001,11 +1005,15 @@ JSON 구조 규격:
               </button>
             </div>
 
-            {/* AI 사실 검토 필수 안내 (소형 빨간색 텍스트) */}
-            <div className="mb-3 px-1 flex items-start gap-1.5 text-[11px] sm:text-xs text-rose-500 dark:text-rose-400 font-medium leading-relaxed flex-none">
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400 shrink-0 mt-0.5" />
+            {/* AI 사실 검토 필수 안내 (편안한 초록색 톤) */}
+            <div className={`mb-3 px-3 py-2 rounded-xl border flex items-start gap-2 text-[11px] sm:text-xs font-semibold leading-relaxed flex-none ${
+              isLightMode 
+                ? "bg-emerald-50/90 border-emerald-200 text-emerald-800" 
+                : "bg-emerald-950/35 border-emerald-500/30 text-emerald-300"
+            }`}>
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
               <span>
-                {t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 반드시 직접 검토하세요.')}
+                {t('AI는 사실 정돈을 돕는 보조 도구입니다. 채용 시 AI 대필이 불가하므로, 작성된 기록에 본인이 하지 않은 경험이나 과장이 없는지 직접 검토하세요.')}
               </span>
             </div>
             
