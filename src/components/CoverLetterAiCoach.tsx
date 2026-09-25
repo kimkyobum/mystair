@@ -7,8 +7,10 @@ import {
   ChevronDown, 
   ChevronUp, 
   MessageSquare,
-  Bot
+  CheckCircle2,
+  Lightbulb
 } from 'lucide-react';
+import { AlienUFOSvg } from './FloatingAliens';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 
@@ -40,7 +42,7 @@ export default function CoverLetterAiCoach({
   const { isLightMode } = useTheme();
   const { t } = useLanguage();
 
-  // 기본적으로 닫힌 상태로 시작 (사용자가 원할 때 클릭해서 열기)
+  // 기본적으로 닫힌 상태 (페이지 진입 시 화면을 가리지 않음, 누르면 켜짐)
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<CoachFeedback | null>(null);
   const [isLoadingFeedback, setIsLoadingFeedback] = useState<boolean>(false);
@@ -53,12 +55,16 @@ export default function CoverLetterAiCoach({
   const lastAnalyzedTextRef = useRef<string>('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // 새 메시지나 피드백 도착 시 최하단으로 자동 스크롤
+  // 새 메시지나 피드백 도착 시 최하단으로 부드럽게 자동 스크롤
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     if (isOpen && !isMinimized) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollToBottom();
     }
-  }, [chatHistory, feedback, isOpen, isMinimized]);
+  }, [chatHistory, feedback, isOpen, isMinimized, isAsking]);
 
   // 실시간 피드백 요청 (자동 디바운스)
   const fetchFeedback = async (force: boolean = false) => {
@@ -98,7 +104,7 @@ export default function CoverLetterAiCoach({
     }
   };
 
-  // 사용자가 타이핑 멈출 때 실시간 자동 분석
+  // 사용자가 타이핑을 멈출 때 실시간 자동 분석
   useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -190,25 +196,25 @@ export default function CoverLetterAiCoach({
             isLightMode 
               ? "bg-white border-slate-200 text-slate-900" 
               : "bg-slate-900 border-slate-700 text-slate-100"
-          } ${isMinimized ? "h-auto" : "h-[500px] max-h-[75vh]"}`}
+          } ${isMinimized ? "h-auto" : "h-[520px] max-h-[75vh]"}`}
         >
           {/* Card Header (Fixed Top) */}
-          <div className={`px-4 py-3 border-b flex items-center justify-between gap-2 shrink-0 ${
+          <div className={`px-3.5 py-2.5 border-b flex items-center justify-between gap-2 shrink-0 ${
             isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/80 border-slate-700"
           }`}>
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-lg bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
-                <Sparkles size={15} />
+              <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center shrink-0 border border-emerald-400/40">
+                <AlienUFOSvg className="w-6 h-6 drop-shadow-[0_0_6px_rgba(56,189,248,0.5)]" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
                   <h4 className="text-xs font-bold truncate">
-                    {t('AI 자소서 코치')}
+                    {t('MyStair AI 외계인 코치')}
                   </h4>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  {sectionTitle ? sectionTitle : t('실시간 피드백')}
+                  {sectionTitle ? `[${sectionTitle}]` : t('실시간 피드백')}
                 </p>
               </div>
             </div>
@@ -248,7 +254,7 @@ export default function CoverLetterAiCoach({
           {!isMinimized && (
             <div className="flex-1 p-3.5 overflow-y-auto space-y-3 text-xs">
               
-              {/* Real-time Analysis Card (Clean, No Emojis, No Clutter) */}
+              {/* Real-time Analysis Card (Clean text blocks, no huge banners) */}
               {feedback && (
                 <div className={`p-3 rounded-xl border space-y-2.5 ${
                   isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/50 border-slate-700"
@@ -295,7 +301,7 @@ export default function CoverLetterAiCoach({
               )}
 
               {/* Chat / Q&A Messages */}
-              {chatHistory.length > 0 && (
+              {chatHistory.length > 0 ? (
                 <div className="space-y-2.5 pt-1">
                   {chatHistory.map((msg, idx) => (
                     <div 
@@ -311,20 +317,30 @@ export default function CoverLetterAiCoach({
                       }`}
                     >
                       {msg.role === 'ai' && (
-                        <div className="font-bold text-[11px] text-emerald-600 dark:text-emerald-400 mb-1">
-                          {t('AI 코치')}
+                        <div className="font-bold text-[11px] text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1">
+                          <AlienUFOSvg className="w-3.5 h-3.5" />
+                          <span>{t('MyStair AI')}</span>
                         </div>
                       )}
-                      {msg.text}
+                      <div className="whitespace-pre-line">
+                        {msg.text}
+                      </div>
                     </div>
                   ))}
                 </div>
+              ) : (
+                !feedback && (
+                  <div className="p-4 text-center text-slate-400 text-[11.5px] leading-relaxed">
+                    {t('글을 작성하시면 실시간으로 분석해 드리며, 하단에서 무엇이든 편하게 질문하실 수 있습니다.')}
+                  </div>
+                )
               )}
 
               {/* Status indicator when answering */}
               {isAsking && (
-                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-500 animate-pulse">
-                  {t('답변을 작성하고 있습니다...')}
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-500 animate-pulse flex items-center gap-1.5">
+                  <RefreshCw size={12} className="animate-spin text-emerald-500" />
+                  <span>{t('외계인 코치가 생각을 정리하고 있어요...')}</span>
                 </div>
               )}
 
@@ -371,7 +387,7 @@ export default function CoverLetterAiCoach({
                       : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
                   }`}
                 >
-                  {t('첫 문장 시작')}
+                  {t('첫 문장 팁')}
                 </button>
                 <button
                   type="button"
@@ -423,26 +439,33 @@ export default function CoverLetterAiCoach({
         </div>
       )}
 
-      {/* 2. Sleek Modern Floating Assistant Button (Clean, Non-tacky) */}
+      {/* 2. Floating Alien Mascot Button (The user's beloved Alien!) */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`pointer-events-auto flex items-center gap-2 px-3.5 py-2.5 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer border ${
-          isOpen
-            ? "bg-slate-900 text-white border-slate-700 shadow-emerald-500/10"
-            : isLightMode
-              ? "bg-slate-900 hover:bg-slate-800 text-white border-slate-800"
-              : "bg-slate-800 hover:bg-slate-700 text-white border-slate-600"
-        }`}
-        title={isOpen ? t('AI 코치 닫기') : t('AI 자소서 코치 열기')}
+        className="pointer-events-auto group relative flex items-center gap-2 p-1.5 pr-3.5 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer bg-slate-950/90 hover:bg-slate-900 border border-emerald-500/40 text-white"
+        title={isOpen ? t('AI 코치 닫기') : t('MyStair AI 외계인 코치 열기')}
       >
-        <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-          <Sparkles size={13} />
+        {/* Glow Aura */}
+        <span className="absolute -inset-0.5 rounded-full bg-emerald-500/20 blur-xs group-hover:bg-emerald-500/35 transition-all"></span>
+
+        {/* Mascot Face Icon */}
+        <div className="relative w-9 h-9 rounded-full bg-slate-900 border border-emerald-400/50 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+          <AlienUFOSvg className="w-7 h-7 drop-shadow-[0_0_6px_rgba(56,189,248,0.7)]" />
         </div>
-        <span className="text-xs font-bold tracking-tight">
-          {t('AI 코치')}
-        </span>
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+
+        {/* Text Label + Status */}
+        <div className="relative flex flex-col text-left">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11.5px] font-black tracking-tight text-emerald-400">
+              MyStair AI
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          </div>
+          <span className="text-[9.5px] text-slate-400 font-medium">
+            {isOpen ? t('클릭하여 닫기') : t('실시간 자소서 코치')}
+          </span>
+        </div>
       </button>
 
     </div>
