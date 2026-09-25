@@ -1199,61 +1199,34 @@ ${formattedAnswer}
               </button>
             </div>
 
-            {/* Quick Action Toolbar (한글 HWP 저장, PDF 저장, 인쇄, 텍스트 다운로드, 초기화) */}
-            <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0 flex-wrap justify-end">
+            {/* Quick Action Toolbar (한글 HWP 저장, A4 인쇄/미리보기, 문항 복원) */}
+            <div className="flex items-center gap-2 self-end md:self-auto shrink-0 flex-wrap justify-end">
               <button
                 type="button"
                 onClick={handleDownloadHwp}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95 ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95 ${
                   isLightMode
                     ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600"
                     : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-500 font-black"
                 }`}
-                title={t('아래아한글(.hwp) 표준 입사지원서 서식 파일로 저장')}
+                title={t('아래아한글(.hwp) 입사지원서 서식 파일로 즉시 저장')}
               >
                 <FileDown size={14} />
-                <span>{t('한글(HWP) 저장')}</span>
-              </button>
-
-              <button
-                type="button"
-                disabled={isGeneratingPdf}
-                onClick={handleDownloadPdf}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                  isLightMode
-                    ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700"
-                    : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
-                }`}
-                title={t('A4 서식 규격 PDF 파일로 즉시 저장')}
-              >
-                <Download size={13} />
-                <span>{isGeneratingPdf ? t('생성 중...') : t('PDF 저장')}</span>
+                <span>{t('한글(HWP) 파일 저장')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsA4PreviewOpen(true)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   isLightMode
                     ? "bg-sky-50 hover:bg-sky-100 border-sky-200 text-sky-700"
                     : "bg-sky-950/40 hover:bg-sky-900/60 border-sky-800 text-sky-300"
                 }`}
-                title={t('A4 서식 미리보기 및 인쇄')}
+                title={t('A4 서식 미리보기 및 종이 인쇄')}
               >
                 <Printer size={13} />
-                <span>{t('A4 인쇄')}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleDownloadText}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                  isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
-                }`}
-                title={t('텍스트 파일(.txt)로 저장')}
-              >
-                <FileText size={13} />
-                <span className="hidden sm:inline">{t('텍스트')}</span>
+                <span>{t('인쇄하기')}</span>
               </button>
 
               <button
@@ -2359,75 +2332,38 @@ ${formattedAnswer}
           `}</style>
 
           {/* Sticky Top Control Toolbar (Hidden in Print) */}
-          <div className="no-print sticky top-3 z-50 w-full max-w-[840px] mb-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-white">
+          <div className="no-print sticky top-3 z-50 w-full max-w-[840px] mb-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-2xl px-4 py-3 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-white">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
                 <FileText size={18} />
               </div>
-              <div>
-                <h4 className="text-sm font-black flex items-center gap-1.5">
-                  <span>[{currentCompany.companyName}]</span>
-                  <span>{t('A4 자기소개서 서식')}</span>
-                </h4>
-                <p className="text-[11px] text-slate-400">
-                  {t('실제 한글(HWP)/입사지원서 서식 규격에 맞춘 A4 세로 인쇄 및 PDF 저장')}
-                </p>
-              </div>
+              <h4 className="text-sm font-black flex items-center gap-1.5">
+                <span className="text-emerald-400">[{currentCompany.companyName}]</span>
+                <span>{t('A4 자기소개서 서식')}</span>
+              </h4>
             </div>
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2">
               {/* Hangul (HWP) File Download Button - Primary */}
               <button
                 type="button"
                 onClick={handleDownloadHwp}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
                 title={t('아래아한글(.hwp) 표준 입사지원서 서식 파일로 저장')}
               >
                 <FileDown size={15} />
                 <span>{t('한글(HWP) 파일 저장')}</span>
               </button>
 
-              {/* Real PDF File Download Button */}
-              <button
-                type="button"
-                disabled={isGeneratingPdf}
-                onClick={handleDownloadPdf}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
-                title={t('A4 서식 규격 PDF 파일(.pdf)로 즉시 다운로드')}
-              >
-                {isGeneratingPdf ? (
-                  <>
-                    <RefreshCw size={14} className="animate-spin" />
-                    <span>{t('PDF 생성 중...')}</span>
-                  </>
-                ) : (
-                  <>
-                    <Download size={14} />
-                    <span>{t('PDF 저장')}</span>
-                  </>
-                )}
-              </button>
-
               {/* Real Print Button */}
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
                 title={t('프린터로 직접 인쇄하거나 브라우저 인쇄 대화상자 열기')}
               >
                 <Printer size={15} />
                 <span>{t('인쇄하기')}</span>
-              </button>
-
-              {/* Download TXT Button */}
-              <button
-                type="button"
-                onClick={handleDownloadText}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer"
-                title={t('텍스트 파일로 다운로드')}
-              >
-                <FileText size={13} />
-                <span className="hidden sm:inline">{t('텍스트 저장')}</span>
               </button>
 
               {/* Close Button */}
