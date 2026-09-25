@@ -31,6 +31,8 @@ import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useAuth, DiaryEntry } from '../context/AuthContext';
 import { checkAndCorrectKoreanSpelling, correctKoreanText } from '../utils/koreanSpellChecker';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 export interface CoverLetterSection {
   id: string;
@@ -250,6 +252,7 @@ export default function CoverLetter() {
 
   // A4 Document Preview Modal State (A4 용지 세로 문서 미리보기 및 인쇄)
   const [isA4PreviewOpen, setIsA4PreviewOpen] = useState<boolean>(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
 
   // Experience drawer open per section
   const [openExperiences, setOpenExperiences] = useState<Record<string, boolean>>({});
@@ -744,16 +747,81 @@ export default function CoverLetter() {
     }, 3500);
   };
 
-  // 전체 복사
-  const handleCopyAll = () => {
+  // 고화질 PDF 파일 생성 및 다운로드
+  const handleDownloadPdf = async () => {
     if (!currentCompany) return;
-    let text = `[ ${currentCompany.companyName} 자기소개서 ]\n\n`;
-    sections.forEach((sec, idx) => {
-      text += `■ ${idx + 1}. ${getCleanTitle(sec.title)} (${sec.recommendedChars}자 권장)\n`;
-      text += `${answers[sec.id] || '(작성 내용 없음)'}\n\n`;
-    });
-    navigator.clipboard.writeText(text.trim());
-    showToast(t(`📋 '${currentCompany.companyName}' 전체 자기소개서 내용이 클립보드에 복사되었습니다!`), 'success');
+
+    if (!isA4PreviewOpen) {
+      setIsA4PreviewOpen(true);
+      showToast(t('A4 서식을 불러와 PDF 파일을 생성합니다...'), 'info');
+      setTimeout(() => {
+        generatePdfAction();
+      }, 400);
+      return;
+    }
+
+    await generatePdfAction();
+  };
+
+  const generatePdfAction = async () => {
+    const element = document.getElementById('a4-print-document');
+    if (!element) {
+      showToast(t('문서 요소를 찾을 수 없습니다. 다시 시도해 주세요.'), 'warn');
+      return;
+    }
+
+    try {
+      setIsGeneratingPdf(true);
+      showToast(t('고화질 PDF 파일을 생성하고 있습니다. 잠시만 기다려주세요...'), 'info');
+
+      // Ensure full rendering without clipped scroll
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const ratio = pdfWidth / imgWidth;
+      const totalPdfHeight = imgHeight * ratio;
+
+      let heightLeft = totalPdfHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - totalPdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, totalPdfHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      const safeCompany = (currentCompany.companyName || '자기소개서').replace(/[/\\?%*:|"<>]/g, '_').trim();
+      const candidateName = (userProfile?.name || user?.displayName || '지원자').replace(/[/\\?%*:|"<>]/g, '_').trim();
+      const fileName = `${safeCompany}_자기소개서_${candidateName}.pdf`;
+
+      pdf.save(fileName);
+      showToast(t(`📄 '${fileName}' PDF 파일이 성공적으로 저장되었습니다!`), 'success');
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      showToast(t('PDF 생성 중 오류가 발생했습니다. 브라우저 인쇄 대화상자에서 PDF 저장을 이용해 주세요.'), 'warn');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   // 텍스트 파일 다운로드
@@ -963,7 +1031,7 @@ export default function CoverLetter() {
               </button>
             </div>
 
-            {/* Quick Action Toolbar (미리보기, 복사, 다운로드, 초기화) */}
+            {/* Quick Action Toolbar (인쇄 미리보기, PDF 저장, 텍스트 다운로드, 초기화) */}
             <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0">
               <button
                 type="button"
@@ -975,20 +1043,23 @@ export default function CoverLetter() {
                 }`}
                 title={t('A4 서식 미리보기 및 인쇄')}
               >
-                <FileText size={13} />
-                <span>{t('A4 미리보기')}</span>
+                <Printer size={13} />
+                <span>{t('A4 인쇄')}</span>
               </button>
 
               <button
                 type="button"
-                onClick={handleCopyAll}
+                disabled={isGeneratingPdf}
+                onClick={handleDownloadPdf}
                 className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                  isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                  isLightMode
+                    ? "bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-800"
+                    : "bg-emerald-950/40 hover:bg-emerald-900/60 border-emerald-800 text-emerald-300"
                 }`}
-                title={t('전체 복사')}
+                title={t('A4 서식 규격 PDF 파일로 즉시 저장')}
               >
-                <Copy size={13} />
-                <span>{t('전체 복사')}</span>
+                <Download size={13} />
+                <span>{isGeneratingPdf ? t('생성 중...') : t('PDF 저장')}</span>
               </button>
 
               <button
@@ -997,10 +1068,10 @@ export default function CoverLetter() {
                 className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
                 }`}
-                title={t('텍스트 파일로 저장')}
+                title={t('텍스트 파일(.txt)로 저장')}
               >
-                <Download size={13} />
-                <span>{t('다운로드')}</span>
+                <FileText size={13} />
+                <span className="hidden sm:inline">{t('텍스트')}</span>
               </button>
 
               <button
@@ -2068,6 +2139,18 @@ export default function CoverLetter() {
           {/* Print Style Injector */}
           <style>{`
             @media print {
+              @page {
+                size: A4 portrait;
+                margin: 12mm 15mm 12mm 15mm;
+              }
+              html, body {
+                background: white !important;
+                color: black !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+              }
               body * {
                 visibility: hidden !important;
               }
@@ -2081,7 +2164,7 @@ export default function CoverLetter() {
                 width: 100% !important;
                 max-width: 100% !important;
                 margin: 0 !important;
-                padding: 15mm 20mm !important;
+                padding: 10mm 15mm !important;
                 box-shadow: none !important;
                 border: none !important;
                 background: white !important;
@@ -2102,35 +2185,45 @@ export default function CoverLetter() {
               <div>
                 <h4 className="text-sm font-black flex items-center gap-1.5">
                   <span>[{currentCompany.companyName}]</span>
-                  <span>{t('A4 자기소개서 서식 미리보기')}</span>
+                  <span>{t('A4 자기소개서 서식')}</span>
                 </h4>
                 <p className="text-[11px] text-slate-400">
-                  {t('실제 한글(HWP)/입사지원서 서식 규격에 맞춘 A4 세로 인쇄 미리보기')}
+                  {t('실제 한글(HWP)/입사지원서 서식 규격에 맞춘 A4 세로 인쇄 및 PDF 저장')}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              {/* Print / PDF Button */}
+              {/* Real Print Button */}
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer"
-                title={t('A4 용지로 인쇄하거나 PDF 파일로 저장')}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+                title={t('프린터로 직접 인쇄하거나 브라우저 인쇄 대화상자 열기')}
               >
-                <Printer size={14} />
-                <span>{t('인쇄 / PDF 저장')}</span>
+                <Printer size={15} />
+                <span>{t('인쇄하기')}</span>
               </button>
 
-              {/* Copy Text Button */}
+              {/* Real PDF File Download Button */}
               <button
                 type="button"
-                onClick={handleCopyAll}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer"
-                title={t('서식 텍스트 전체 복사')}
+                disabled={isGeneratingPdf}
+                onClick={handleDownloadPdf}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                title={t('A4 서식 규격 PDF 파일(.pdf)로 즉시 다운로드')}
               >
-                <Copy size={13} />
-                <span className="hidden sm:inline">{t('전체 복사')}</span>
+                {isGeneratingPdf ? (
+                  <>
+                    <RefreshCw size={14} className="animate-spin" />
+                    <span>{t('PDF 생성 중...')}</span>
+                  </>
+                ) : (
+                  <>
+                    <Download size={14} />
+                    <span>{t('PDF 파일 저장')}</span>
+                  </>
+                )}
               </button>
 
               {/* Download TXT Button */}
@@ -2140,7 +2233,7 @@ export default function CoverLetter() {
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer"
                 title={t('텍스트 파일로 다운로드')}
               >
-                <Download size={13} />
+                <FileText size={13} />
                 <span className="hidden sm:inline">{t('텍스트 저장')}</span>
               </button>
 
