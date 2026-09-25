@@ -592,7 +592,7 @@ JSON 구조 규격:
               </div>
 
               <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
-                {t('시험 기간을 설정하시면 성장 다이어리 달력에 📝 시험 그림 아이콘이 자동으로 표시됩니다.')}
+                {t('시험 기간을 설정하시면 달력 날짜 상단에 학사 시험 일정(🎓)이 깔끔하게 표시됩니다. (다이어리 본문 내용과는 별도로 구분되어 표시됩니다.)')}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -848,20 +848,6 @@ JSON 구조 규격:
                 // Check for Exam on this day
                 const exam = getExamForDate(fullDateStr);
 
-                // Make exam badges modern emerald/teal styled
-                let examBadgeClass = isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30";
-                if (exam) {
-                  if (exam.name.includes("기말고사")) {
-                    examBadgeClass = exam.name.includes("1학기") 
-                      ? (isLightMode ? "bg-teal-100 text-teal-900 border-teal-300" : "bg-teal-500/15 text-teal-300 border-teal-500/25")
-                      : (isLightMode ? "bg-cyan-100 text-cyan-900 border-cyan-300" : "bg-cyan-500/15 text-cyan-300 border-cyan-500/25");
-                  } else {
-                    examBadgeClass = exam.name.includes("1학기")
-                      ? (isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/15 text-emerald-300 border-emerald-500/25")
-                      : (isLightMode ? "bg-teal-100 text-teal-900 border-teal-300" : "bg-teal-500/15 text-teal-300 border-teal-500/25");
-                  }
-                }
-
                 return (
                   <div
                     key={fullDateStr}
@@ -888,21 +874,31 @@ JSON 구조 규격:
                       )}
                     </div>
 
-                    {/* Cell Content: Exam Badge & Diary Entry */}
-                    <div className="space-y-1 my-1 flex-1 flex flex-col justify-center">
-                      {/* EXAM BADGE DISPLAY */}
-                      {exam && (
-                        <div className={`p-1 rounded-lg border text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-xs animate-pulse ${examBadgeClass}`}>
-                          <span>📝</span>
-                          <span className="truncate">{t(exam.name)}</span>
-                        </div>
-                      )}
+                    {/* Academic Exam Schedule Badge (학사 일정 표시용 - 다이어리와 분리된 상단 태그) */}
+                    {exam && (
+                      <div 
+                        title={`${t(exam.name)} 기간`}
+                        className={`w-full mt-0.5 px-1.5 py-0.5 rounded-md border text-[9px] sm:text-[10px] font-bold flex items-center gap-1 select-none pointer-events-none truncate ${
+                          exam.name.includes("1학기 중간")
+                            ? (isLightMode ? "bg-amber-100 text-amber-900 border-amber-300" : "bg-amber-500/20 text-amber-300 border-amber-500/30")
+                            : exam.name.includes("1학기 기말")
+                            ? (isLightMode ? "bg-rose-100 text-rose-900 border-rose-300" : "bg-rose-500/20 text-rose-300 border-rose-500/30")
+                            : exam.name.includes("2학기 중간")
+                            ? (isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/20 text-emerald-300 border-emerald-500/30")
+                            : (isLightMode ? "bg-indigo-100 text-indigo-900 border-indigo-300" : "bg-indigo-500/20 text-indigo-300 border-indigo-500/30")
+                        }`}
+                      >
+                        <GraduationCap size={11} className="shrink-0 opacity-80" />
+                        <span className="truncate">{t(exam.name)}</span>
+                      </div>
+                    )}
 
-                      {/* DIARY ENTRY DISPLAY */}
-                      {diaryEntries.length > 0 && (
+                    {/* Diary Entry Area */}
+                    <div className="flex-1 flex flex-col justify-center items-center my-1 w-full">
+                      {diaryEntries.length > 0 ? (
                         <div 
                           onClick={(e) => { e.stopPropagation(); handleOpenDayModal(fullDateStr); }}
-                          className={`p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[10px] sm:text-xs font-bold truncate shadow-xs text-center border transition-colors ${
+                          className={`w-full p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[10px] sm:text-xs font-bold truncate shadow-xs text-center border transition-colors ${
                             isLightMode 
                               ? "bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100 hover:border-emerald-300" 
                               : "bg-emerald-500/10 border-emerald-500/25 text-emerald-200 hover:bg-emerald-500/20 hover:border-emerald-500/40"
@@ -912,14 +908,12 @@ JSON 구조 규격:
                             📝 {language === 'ko' ? `다이어리 ${diaryEntries.length}개` : `${diaryEntries.length} Diaries`}
                           </span>
                         </div>
+                      ) : (
+                        <div className={`opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold text-center py-1 ${isLightMode ? "text-emerald-600" : "text-emerald-500"}`}>
+                          + {t('일기 쓰기')}
+                        </div>
                       )}
                     </div>
-                    {/* Hover add prompt if empty */}
-                    {diaryEntries.length === 0 && !exam && (
-                      <div className={`opacity-0 group-hover:opacity-100 transition text-[10px] font-bold text-center ${isLightMode ? "text-emerald-600" : "text-emerald-500"}`}>
-                        + {t('일기 쓰기')}
-                      </div>
-                    )}
                   </div>
                 );
               })}
@@ -1169,6 +1163,19 @@ JSON 구조 규격:
               </button>
             </div>
 
+            {/* Academic Exam Schedule Notice (학사 일정 안내) */}
+            {getExamForDate(selectedDate) && (
+              <div className={`mb-4 p-3 rounded-2xl border flex items-center gap-2.5 text-xs font-bold ${
+                isLightMode ? "bg-amber-50 border-amber-200 text-amber-900" : "bg-amber-500/15 border-amber-500/30 text-amber-300"
+              }`}>
+                <GraduationCap size={18} className="shrink-0 text-amber-500" />
+                <div>
+                  <span className="font-extrabold">[{t('학사 일정')}] </span>
+                  <span>{t(getExamForDate(selectedDate)!.name)} 기간입니다.</span>
+                </div>
+              </div>
+            )}
+
             {/* Add Diary Button at the top of list */}
             <div className="mb-4 flex-none">
               <button
@@ -1250,10 +1257,18 @@ JSON 구조 규격:
             className={`border-2 rounded-3xl p-6 max-w-xl w-full shadow-2xl space-y-4 animate-in max-h-[90vh] overflow-y-auto custom-scrollbar zoom-in-95 duration-150 ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-emerald-500/50 text-white"}`}
           >
             <div className={`flex items-center justify-between border-b pb-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
-              <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                <CalendarCheck size={20} className={isLightMode ? "text-emerald-500" : "text-emerald-500"} />
-                <span>{language === 'ko' ? `${selectedDate} 성장 다이어리 ${editingId ? '수정' : '작성'}` : `${editingId ? 'Edit' : 'Write'} Growth Diary (${selectedDate})`}</span>
-              </h3>
+              <div>
+                <h3 className={`text-lg font-bold flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                  <CalendarCheck size={20} className={isLightMode ? "text-emerald-500" : "text-emerald-500"} />
+                  <span>{language === 'ko' ? `${selectedDate} 성장 다이어리 ${editingId ? '수정' : '작성'}` : `${editingId ? 'Edit' : 'Write'} Growth Diary (${selectedDate})`}</span>
+                </h3>
+                {getExamForDate(selectedDate) && (
+                  <div className={`mt-1 text-xs font-semibold flex items-center gap-1.5 ${isLightMode ? "text-amber-700" : "text-amber-400"}`}>
+                    <GraduationCap size={13} className="shrink-0" />
+                    <span>[{t('학사 일정')}] {t(getExamForDate(selectedDate)!.name)} 기간</span>
+                  </div>
+                )}
+              </div>
               <button 
                 type="button" 
                 onClick={handleCloseFormModal}
