@@ -1495,36 +1495,29 @@ function generateFallbackCoaching(companyName: string, sectionTitle: string, ans
   const hasResult = /배웠|성장|향상|느꼈|인식|계기|성과|완성|합격|수상/.test(answer || '');
   const hasCompany = companyName && companyName !== '지원 기업' ? (answer || '').includes(companyName) : false;
 
-  let summary = "";
-  if (len < 100) {
-    summary = "초기 도입부 작성 단계입니다. 첫 문장은 핵심 역량과 결론을 먼저 제시하는 두괄식으로 시작해보세요.";
-  } else if (len < 300) {
-    summary = "상황 설명이 자연스럽습니다. 문제 해결을 위해 본인이 직접 시도한 구체적 행동(Action)에 분량을 집중해보세요.";
-  } else {
-    summary = "글의 뼈대가 잘 잡혀 있습니다. 군더더기 문장을 다듬고 성과와 입사 후 포부를 선명하게 강조해보세요.";
-  }
-
-  const praise = hasAction 
-    ? "스스로 겪은 실습과 프로젝트 경험에서 주도적으로 노력한 모습이 진솔하게 전달됩니다."
-    : "문장의 흐름이 차분하고 전달하고자 하는 메시지가 분명합니다.";
-
   const tips: string[] = [];
-  if (!hasNumbers) {
-    tips.push("수치화 보완: '많은 시간', '열심히' 대신 '3주 동안', '팀원 4명과 함께', '오차율 10% 개선'처럼 구체적인 숫자를 넣어보세요.");
-  }
-  if (!hasAction) {
-    tips.push("STAR 기법의 행동(A): 당시 상황에서 본인이 맡았던 구체적인 역할과 사용한 전공 기술/도구를 명확히 적어보세요.");
-  } else if (!hasResult) {
-    tips.push("결과(R) 강조: 활동의 끝에 '단순히 끝났다'보다 '이 과정을 통해 어떤 역량이 얼마나 성장했는지'를 꼭 명시해보세요.");
-  }
   if (!hasCompany && companyName && companyName !== '지원 기업') {
-    tips.push(`기업 연계: 본인의 강점이 [${companyName}]의 어떤 업무나 목표에 기여할 수 있는지 연결고리를 만들어보세요.`);
+    tips.push(`기업 연계: 본인의 강점이 [${companyName}]의 어떤 업무나 목표에 기여할 수 있는지 연결해보세요.`);
+  }
+  if (!hasNumbers && len > 50) {
+    tips.push("수치화: '많은 시간', '열심히' 대신 '3주간', '오차율 10% 개선'처럼 구체적인 숫자를 넣어보세요.");
+  }
+  if (!hasAction && len > 40) {
+    tips.push("행동(Action): 당시 상황에서 본인이 맡았던 역할과 사용한 전공 기술/도구를 구체적으로 적어보세요.");
+  } else if (!hasResult && len > 100) {
+    tips.push("결과(Result): 경험의 끝에 '어떤 역량이 얼마나 성장했는지' 배운 점을 꼭 명시해보세요.");
   }
   if (tips.length === 0) {
-    tips.push("표현 다듬기: 접속사(그리고, 그래서)를 줄이고, 문장을 짧고 간결하게 끊어 쓰면 가독성이 더욱 높아집니다.");
+    if (len < 60) {
+      tips.push("첫 문장은 핵심 전공 역량과 결론을 먼저 제시하는 두괄식으로 시작해보세요.");
+    } else {
+      tips.push("문장을 한 호흡에 읽히도록 짧게 끊고, 능동적인 종결어미(~했습니다)를 사용해보세요.");
+    }
   }
 
-  const nextStepHint = `이어서 본인의 경험을 바탕으로 [${companyName || '지원 기업'}]에 입사 후 어떤 가치를 만들어낼지 포부 1~2문장으로 매듭지어보세요.`;
+  const summary = tips[0] || "문장의 흐름이 좋습니다. 구체적인 행동을 더 강조해보세요.";
+  const praise = "";
+  const nextStepHint = "";
 
   return { summary, praise, tips, nextStepHint };
 }
