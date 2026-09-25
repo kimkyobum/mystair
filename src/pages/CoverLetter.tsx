@@ -33,6 +33,7 @@ import { useAuth, DiaryEntry } from '../context/AuthContext';
 import { checkAndCorrectKoreanSpelling, correctKoreanText } from '../utils/koreanSpellChecker';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import CoverLetterAiCoach from '../components/CoverLetterAiCoach';
 
 export interface CoverLetterSection {
   id: string;
@@ -237,6 +238,17 @@ export default function CoverLetter() {
 
   const sections = currentCompany.sections || DEFAULT_SECTIONS;
   const answers = currentCompany.answers || {};
+
+  // Active Section for Real-time AI Coach
+  const [activeSectionId, setActiveSectionId] = useState<string>('');
+
+  useEffect(() => {
+    if (sections.length > 0 && (!activeSectionId || !sections.some(s => s.id === activeSectionId))) {
+      setActiveSectionId(sections[0].id);
+    }
+  }, [sections, activeSectionId]);
+
+  const activeSection = sections.find(s => s.id === activeSectionId) || sections[0];
 
   const [savedTime, setSavedTime] = useState<string>(currentCompany.updatedAt || '');
 
@@ -1552,6 +1564,7 @@ ${formattedAnswer}
                     <textarea
                       rows={7}
                       value={currentVal}
+                      onFocus={() => setActiveSectionId(sec.id)}
                       onChange={e => handleChange(sec.id, e.target.value)}
                       placeholder={sec.placeholder}
                       className={`w-full p-4 text-sm sm:text-base font-normal outline-none leading-relaxed transition-colors resize-y bg-transparent ${
@@ -2516,6 +2529,16 @@ ${formattedAnswer}
           </div>
 
         </div>
+      )}
+
+      {/* Floating MyStair Alien AI Real-time Coach Widget */}
+      {!isA4PreviewOpen && currentCompany && (
+        <CoverLetterAiCoach
+          companyName={currentCompany.companyName}
+          sectionTitle={activeSection ? getCleanTitle(activeSection.title) : '자기소개서 문항'}
+          recommendedChars={activeSection ? activeSection.recommendedChars : 500}
+          currentAnswer={activeSection ? (answers[activeSection.id] || '') : ''}
+        />
       )}
 
     </div>

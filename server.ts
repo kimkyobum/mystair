@@ -247,12 +247,11 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
   const startIndex = Math.floor(Math.random() * keys.length);
   let lastError: any = null;
 
-  // We rotate through multiple valid Gemini models to avoid single-model free-tier limits (e.g. 20 req/day for 3.6-flash)
+  // We rotate through valid Gemini models according to skill guidelines
   const fallbackModels = [
+    "gemini-3.8-flash",
     "gemini-2.5-flash",
-    "gemini-1.5-flash",
-    "gemini-3.1-flash-lite",
-    "gemini-3.6-flash"
+    "gemini-3.1-flash-lite"
   ];
 
   for (const modelName of fallbackModels) {
@@ -1383,6 +1382,169 @@ ${text}
     });
   }
 });
+
+// POST /api/cover-letter/coach: 자기소개서 실시간 작성 보조 외계인 AI 코치 엔드포인트 (대필 금지, 실시간 코칭/첨삭)
+app.post("/api/cover-letter/coach", async (req, res) => {
+  try {
+    const {
+      companyName,
+      sectionTitle,
+      recommendedChars,
+      currentAnswer,
+      actionType,
+      userQuestion
+    } = req.body;
+
+    const answer = (currentAnswer || "").trim();
+
+    const systemInstruction = `너는 마이스터고 및 특성화고 학생들의 자기소개서 실시간 작성을 돕는 지혜롭고 친절한 우주 외계인 코치 'MyStair AI'야.
+[절대 규칙]:
+1. 절대 학생 대신 자소서를 통째로 써주지 마라 (대필 절대 금지).
+2. 학생이 직접 겪은 생생한 경험과 주체적인 노력이 드러나도록, 작성 중인 문장을 실시간으로 관찰하고 든든하게 '보조'하고 '코칭'해라.
+3. 말투는 친근하고 따뜻하며 용기를 주는 어조(존댓말)로, 직무 역량과 STAR 기법(상황-과제-행동-결과)을 꼼꼼히 짚어줘라.`;
+
+    let prompt = "";
+    if (actionType === "ask_question" && userQuestion) {
+      prompt = `[지원 기업]: ${companyName || '지원 기업'}
+[자기소개서 문항]: ${sectionTitle || '문항'} (권장 분량: ${recommendedChars || 500}자)
+[현재 학생이 작성 중인 내용]:
+"""
+${answer || '(작성 시작 전)'}
+"""
+
+[학생의 질문]: "${userQuestion}"
+
+[답변 가이드]:
+1. 학생의 질문에 대해 실질적이고 구체적인 팁을 2~4문장으로 친절하게 답변해주세요.
+2. 절대 전체 문단을 대신 지어내거나 작성하지 말고, 방향성과 키워드 힌트를 제시해주세요.`;
+    } else {
+      prompt = `[지원 기업]: ${companyName || '지원 기업'}
+[자기소개서 문항]: ${sectionTitle || '문항'} (권장 분량: ${recommendedChars || 500}자)
+[현재 학생이 작성 중인 내용]:
+"""
+${answer || '(아직 내용을 작성하지 않았음)'}
+"""
+
+학생이 작성 중인 내용을 실시간으로 분석하여, 글을 발전시킬 수 있는 따뜻한 칭찬과 실질적인 개선 팁을 JSON으로 제공해주세요.
+절대 글을 대신 써주지 말고, 오직 '코칭과 보조'에 집중하세요.
+
+반드시 다음 순수 JSON 형식으로만 응답하세요:
+{
+  "summary": "현재 작성 상태에 대한 한 줄 총평 (예: '의지와 열정이 잘 드러나지만, 구체적인 행동(Action)을 더 보강하면 좋아요!')",
+  "praise": "잘하고 있는 점 칭찬 1가지 (예: '전공 실습 과제에서 겪은 문제를 솔직하게 언급한 점이 훌륭해요!')",
+  "tips": [
+    "실시간 개선 팁 1 (예: '수치화: '많이 노력했다' 대신 '3주간 매일 2시간씩', '오류율 15% 감소'처럼 숫자로 구체화해보기')",
+    "실시간 개선 팁 2 (예: '결과(Result): 문제를 해결한 후 무엇을 배웠고 역량이 어떻게 향상되었는지 한 문장 덧붙이기')"
+  ],
+  "nextStepHint": "다음에 이어서 쓰면 좋을 내용 힌트 (예: '이어서 이 경험을 입사 후 지원 직무에서 어떻게 발휘할지 포부를 적어보세요!')"
+}`;
+    }
+
+    let geminiRes: any = null;
+    try {
+      geminiRes = await generateContentWithFallback(
+        [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction
+      );
+    } catch (aiErr: any) {
+      console.warn("Gemini API call failed for coach, falling back to intelligent heuristic coach engine:", aiErr?.message || aiErr);
+    }
+
+    const replyText = geminiRes?.text || "";
+
+    if (actionType === "ask_question") {
+      if (replyText) {
+        return res.json({ success: true, answer: replyText });
+      }
+      return res.json({
+        success: true,
+        answer: generateFallbackAnswer(userQuestion, companyName, sectionTitle, answer)
+      });
+    }
+
+    if (replyText) {
+      try {
+        const cleaned = replyText.replace(/```json/gi, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(cleaned);
+        return res.json({ success: true, feedback: parsed });
+      } catch (parseErr) {
+        console.warn("JSON parse failed for Gemini coach, using heuristic:", parseErr);
+      }
+    }
+
+    // Heuristic Smart Fallback Engine
+    const fallbackFeedback = generateFallbackCoaching(companyName, sectionTitle, answer, recommendedChars);
+    return res.json({ success: true, feedback: fallbackFeedback });
+  } catch (error: any) {
+    console.error("Cover letter coach API error:", error);
+    const safeFeedback = generateFallbackCoaching(
+      req.body?.companyName, 
+      req.body?.sectionTitle, 
+      req.body?.currentAnswer || '', 
+      req.body?.recommendedChars || 500
+    );
+    return res.json({ success: true, feedback: safeFeedback });
+  }
+});
+
+// Heuristic Fallback Coaching Helpers
+function generateFallbackCoaching(companyName: string, sectionTitle: string, answer: string, recommendedChars: number) {
+  const len = answer ? answer.length : 0;
+  const hasNumbers = /[0-9]+%?|일간|개월|시간|등|위|차|회/.test(answer || '');
+  const hasAction = /해결|극복|개발|제작|분석|기획|설계|수행|달성|개선|연구|실습|도전|협력|노력/.test(answer || '');
+  const hasResult = /배웠|성장|향상|느꼈|인식|계기|성과|완성|합격|수상/.test(answer || '');
+  const hasCompany = companyName && companyName !== '지원 기업' ? (answer || '').includes(companyName) : false;
+
+  let summary = "";
+  if (len < 100) {
+    summary = "초기 도입부 작성 단계입니다. 첫 문장은 핵심 역량과 결론을 먼저 제시하는 '두괄식'으로 시작해보세요!";
+  } else if (len < 300) {
+    summary = "상황 설명이 자연스럽습니다. 이제 문제 해결을 위해 본인이 직접 시도한 '구체적 행동(Action)'에 분량을 집중해보세요.";
+  } else {
+    summary = "전체적인 글의 뼈대가 잘 잡혀 있습니다. 군더더기 문장을 다듬고 성과와 입사 후 포부를 선명하게 강조해보세요.";
+  }
+
+  const praise = hasAction 
+    ? "스스로 겪은 실습/프로젝트 경험에서 주도적으로 노력한 모습이 진솔하게 전달됩니다."
+    : "문장의 흐름이 차분하고 전달하고자 하는 메시지가 분명합니다.";
+
+  const tips: string[] = [];
+  if (!hasNumbers) {
+    tips.push("수치화 보완: '많은 시간', '열심히' 대신 '3주 동안', '팀원 4명과 함께', '오차율 10% 개선'처럼 구체적 숫자를 넣어보세요.");
+  }
+  if (!hasAction) {
+    tips.push("STAR 기법의 행동(A): 당시 상황에서 본인이 맡았던 구체적인 역할과 사용한 전공 기술/도구를 명확히 적어보세요.");
+  } else if (!hasResult) {
+    tips.push("결과(R) 강조: 활동의 끝에 '단순히 끝났다'보다 '이 과정을 통해 어떤 역량이 얼마나 성장했는지'를 꼭 명시해보세요.");
+  }
+  if (!hasCompany && companyName && companyName !== '지원 기업') {
+    tips.push(`기업 연계: 본인의 강점이 [${companyName}]의 어떤 업무나 목표에 기여할 수 있는지 연결고리를 만들어보세요.`);
+  }
+  if (tips.length === 0) {
+    tips.push("표현 다듬기: 접속사(그리고, 그래서)를 줄이고, 문장을 짧고 간결하게 끊어 쓰면 가독성이 더욱 높아집니다.");
+  }
+
+  const nextStepHint = `이어서 본인의 경험을 바탕으로 [${companyName || '지원 기업'}]에 입사 후 어떤 가치를 만들어낼지 포부 1~2문장으로 매듭지어보세요.`;
+
+  return { summary, praise, tips, nextStepHint };
+}
+
+function generateFallbackAnswer(userQuestion: string, companyName: string, sectionTitle: string, answer: string) {
+  const q = (userQuestion || '').toLowerCase();
+  if (q.includes("시작") || q.includes("도입부") || q.includes("첫 문장")) {
+    return "💡 첫 문장은 '저는 [핵심 역량]을 바탕으로 귀사에 기여하고자 지원했습니다'처럼 두괄식으로 핵심을 먼저 던지는 것이 면접관의 시선을 사로잡는 데 가장 효과적입니다!";
+  }
+  if (q.includes("star") || q.includes("스타")) {
+    return "⭐ STAR 기법은 상황(S) 15%, 과제(T) 15%, 행동(A) 50%, 결과(R) 20%의 비율이 가장 이상적입니다. 특히 본인이 직접 주도한 '행동(Action)'에 가장 많은 분량을 투자하세요!";
+  }
+  if (q.includes("숫자") || q.includes("수치")) {
+    return "📊 수치화는 거창하지 않아도 됩니다! '실습 기간(예: 4주간)', '팀원 수(예: 3인 1조)', '성과(예: 결함률 20% 감소, 자격증 3개 취득)'처럼 객관적 단위를 문장에 섞어보세요.";
+  }
+  if (q.includes("어색") || q.includes("자연스러")) {
+    return "✍️ 전체 문맥이 진솔하고 명확합니다! 문장이 너무 길어지지 않게 한 문장에 하나의 생각만 담고, '생각합니다' 대신 '~했습니다'로 단정형 종결어미를 쓰면 훨씬 자신감 있게 느껴집니다.";
+  }
+  return `💬 [${sectionTitle}] 문항에서는 자신의 솔직한 경험과 노력을 구체적인 근거와 함께 서술하는 것이 핵심입니다. 작성하신 문장을 바탕으로 본인만의 직무 역량을 한 문장 더 강조해보세요!`;
+}
 
 // OGQ Market Assets API Proxy (응원/캐릭터 스티커 연동)
 const OGQ_API_KEY_FALLBACK = "ogqc_c3ad18e9908f34113fec37e0d6362884aa4b6e25f27a48b2283db046e0c6f238";
