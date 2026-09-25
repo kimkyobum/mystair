@@ -15,7 +15,6 @@ import {
   PlusCircle,
   Wand2,
   RefreshCw,
-  Camera,
   RotateCcw,
   Plus,
   Edit3,
@@ -1075,14 +1074,6 @@ ${formattedAnswer}
             <Plus size={14} strokeWidth={2.5} />
             <span>{t('새 자소서 작성')}</span>
           </button>
-
-          <Link
-            to="/interview"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition-all cursor-pointer"
-          >
-            <Camera size={14} />
-            <span className="hidden sm:inline">{t('AI 모의면접')}</span>
-          </Link>
 
           {savedTime && (
             <span className={`text-[11px] hidden sm:flex items-center gap-1 ${isLightMode ? 'text-slate-400' : 'text-slate-500'}`}>
