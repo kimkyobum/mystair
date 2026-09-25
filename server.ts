@@ -1489,37 +1489,58 @@ ${answer || '(아직 내용을 작성하지 않았음)'}
 
 // Heuristic Fallback Coaching Helpers
 function generateFallbackCoaching(companyName: string, sectionTitle: string, answer: string, recommendedChars: number) {
-  const len = answer ? answer.length : 0;
-  const hasNumbers = /[0-9]+%?|일간|개월|시간|등|위|차|회/.test(answer || '');
-  const hasAction = /해결|극복|개발|제작|분석|기획|설계|수행|달성|개선|연구|실습|도전|협력|노력/.test(answer || '');
-  const hasResult = /배웠|성장|향상|느꼈|인식|계기|성과|완성|합격|수상/.test(answer || '');
-  const hasCompany = companyName && companyName !== '지원 기업' ? (answer || '').includes(companyName) : false;
+  const trimmed = (answer || '').trim();
+  const len = trimmed.length;
+  const targetCompany = companyName || '지원 기업';
+  const cleanSection = sectionTitle || '자기소개서 문항';
 
-  const tips: string[] = [];
-  if (!hasCompany && companyName && companyName !== '지원 기업') {
-    tips.push(`기업 연계: 본인의 강점이 [${companyName}]의 어떤 업무나 목표에 기여할 수 있는지 연결해보세요.`);
-  }
-  if (!hasNumbers && len > 50) {
-    tips.push("수치화: '많은 시간', '열심히' 대신 '3주간', '오차율 10% 개선'처럼 구체적인 숫자를 넣어보세요.");
-  }
-  if (!hasAction && len > 40) {
-    tips.push("행동(Action): 당시 상황에서 본인이 맡았던 역할과 사용한 전공 기술/도구를 구체적으로 적어보세요.");
-  } else if (!hasResult && len > 100) {
-    tips.push("결과(Result): 경험의 끝에 '어떤 역량이 얼마나 성장했는지' 배운 점을 꼭 명시해보세요.");
-  }
-  if (tips.length === 0) {
-    if (len < 60) {
-      tips.push("첫 문장은 핵심 전공 역량과 결론을 먼저 제시하는 두괄식으로 시작해보세요.");
+  const hasNumbers = /[0-9]+%?|일간|개월|시간|등|위|차|회|개/.test(trimmed);
+  const hasAction = /해결|극복|개발|제작|분석|기획|설계|수행|달성|개선|연구|실습|도전|협력|노력|교체|점검|배선|코딩|정비/.test(trimmed);
+  const hasResult = /배웠|성장|향상|느꼈|인식|계기|성과|완성|합격|수상|보람|안전|직결/.test(trimmed);
+  const hasCompany = companyName && companyName !== '지원 기업' ? trimmed.includes(companyName) : false;
+
+  let speech = "";
+
+  if (len === 0) {
+    if (cleanSection.includes("성장과정")) {
+      speech = `[성장과정] 문항은 어릴 적 부모님 이야기보다 '마이스터고 진학 결심 계기'나 손에 익숙하지 않던 '첫 실습의 기억'을 적는 것이 가장 효과적이에요. 편하게 첫 문장을 시작해보세요! 🛸`;
+    } else if (cleanSection.includes("지원동기")) {
+      speech = `[지원동기]는 학교에서 갈고닦은 전공 실습 기술과 [${targetCompany}]의 직무가 만나는 지점을 적는 게 핵심이에요! 학교에서 가장 자신 있게 다뤘던 실습부터 떠올려보세요. 🎯`;
+    } else if (cleanSection.includes("장단점") || cleanSection.includes("성격")) {
+      speech = `[성격의 장단점]은 꼼꼼함이나 책임감 같은 직무 강점을 보여주는 문항이에요. 사소한 실수를 줄이기 위해 노력했던 실제 일화를 떠올려보세요! 💡`;
+    } else if (cleanSection.includes("포부") || cleanSection.includes("진로")) {
+      speech = `[입사 후 포부]는 뜬구름 잡는 다짐보다 신입 때 배울 현장 노하우부터 핵심 기술 인재로의 성장 로드맵을 구체적으로 적는 것이 포인트입니다! 🚀`;
     } else {
-      tips.push("문장을 한 호흡에 읽히도록 짧게 끊고, 능동적인 종결어미(~했습니다)를 사용해보세요.");
+      speech = `작성할 준비가 되셨나요? 🛸 머릿속에 떠오르는 생각을 다듬지 말고 일단 편하게 1~2문장만 적어보시면, 실시간으로 읽고 꼭 필요한 피드백을 들려드릴게요!`;
+    }
+  } else if (len < 70) {
+    speech = `지금 "${trimmed.slice(0, 35)}..."라고 첫 운을 떼셨네요! 🌱 시작이 아주 좋습니다. 이어서 어떤 전공 실습이었는지, 혹은 어떤 과제를 해결하려 했는지 당시의 구체적인 상황을 1~2문장만 더 덧붙여보세요.`;
+  } else if (len < 200) {
+    if (!hasNumbers) {
+      speech = `직접 주도적으로 노력한 실습 흐름이 잘 드러나고 있어요! 👍 여기서 '많은 시간', '열심히' 같은 추상적인 표현 대신 '3주 동안', '오차율 10% 개선'처럼 구체적인 숫자를 섞어주면 신뢰도가 2배로 높아집니다.`;
+    } else if (!hasCompany && targetCompany !== '지원 기업') {
+      speech = `상황과 행동이 아주 자연스럽게 적히고 있습니다! 👏 여기에 본인이 갈고닦은 이 전공 역량이 [${targetCompany}]의 현장에서 어떻게 기여할 수 있을지 한 줄로 연결해보세요.`;
+    } else {
+      speech = `글의 흐름이 진솔하고 안정적입니다! 💡 당시 문제 상황에서 본인이 맡았던 구체적인 역할(Action)과 사용했던 공구나 기술 명칭을 한두 문장 더 구체적으로 적어보세요.`;
+    }
+  } else {
+    // 200+ chars
+    if (!hasCompany && targetCompany !== '지원 기업') {
+      speech = `글의 뼈대가 탄탄하게 잘 잡혀 있습니다! 👏 마무리 부분에 이 실습 경험에서 배운 점이 [${targetCompany}]의 현장 안전이나 설비 운영에 어떻게 보탬이 될지 포부 1~2문장으로 매듭지어보세요.`;
+    } else if (!hasNumbers) {
+      speech = `경험의 전개와 배운 점이 아주 뚜렷해요! ✨ 실습 기간이나 팀원 수, 달성 수치 등 객관적인 숫자를 한두 군데 보완하고 접속사(그리고, 그래서)를 줄이면 문장이 훨씬 간결해집니다.`;
+    } else {
+      speech = `문장 전달력과 구성이 아주 훌륭합니다! 🚀 문장이 너무 길어지지 않게 한 호흡씩 마침표를 찍어주고, 종결어미를 단정형(~했습니다)으로 통일하면 자신감 넘치는 기술 인재의 인상을 줍니다.`;
     }
   }
 
-  const summary = tips[0] || "문장의 흐름이 좋습니다. 구체적인 행동을 더 강조해보세요.";
-  const praise = "";
-  const nextStepHint = "";
-
-  return { summary, praise, tips, nextStepHint };
+  return { 
+    speech,
+    summary: speech, 
+    praise: "", 
+    tips: [speech], 
+    nextStepHint: "" 
+  };
 }
 
 function generateFallbackAnswer(userQuestion: string, companyName: string, sectionTitle: string, answer: string) {
