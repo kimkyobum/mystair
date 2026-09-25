@@ -439,33 +439,14 @@ export default function CoverLetterAiCoach({
         </div>
       )}
 
-      {/* 2. Floating Alien Mascot Button (The user's beloved Alien!) */}
+      {/* 2. Floating Alien Mascot Alone */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="pointer-events-auto group relative flex items-center gap-2 p-1.5 pr-3.5 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer bg-slate-950/90 hover:bg-slate-900 border border-emerald-500/40 text-white"
+        className="pointer-events-auto p-0 bg-transparent border-0 outline-none cursor-pointer group transition-transform duration-300 hover:scale-115 active:scale-95 animate-float-alien"
         title={isOpen ? t('AI 코치 닫기') : t('MyStair AI 외계인 코치 열기')}
       >
-        {/* Glow Aura */}
-        <span className="absolute -inset-0.5 rounded-full bg-emerald-500/20 blur-xs group-hover:bg-emerald-500/35 transition-all"></span>
-
-        {/* Mascot Face Icon */}
-        <div className="relative w-9 h-9 rounded-full bg-slate-900 border border-emerald-400/50 flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-          <AlienUFOSvg className="w-7 h-7 drop-shadow-[0_0_6px_rgba(56,189,248,0.7)]" />
-        </div>
-
-        {/* Text Label + Status */}
-        <div className="relative flex flex-col text-left">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11.5px] font-black tracking-tight text-emerald-400">
-              MyStair AI
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          </div>
-          <span className="text-[9.5px] text-slate-400 font-medium">
-            {isOpen ? t('클릭하여 닫기') : t('실시간 자소서 코치')}
-          </span>
-        </div>
+        <AlienUFOSvg className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-[0_8px_18px_rgba(56,189,248,0.55)] transition-all group-hover:drop-shadow-[0_10px_24px_rgba(56,189,248,0.8)]" />
       </button>
 
     </div>

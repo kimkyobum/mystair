@@ -40,3 +40,16 @@ body {
 .animate-marquee {
   animation: marquee 20s linear infinite;
 }
+
+@keyframes float-alien {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+}
+
+.animate-float-alien {
+  animation: float-alien 3.2s ease-in-out infinite;
+}
