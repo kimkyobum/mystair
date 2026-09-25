@@ -782,6 +782,30 @@ JSON 구조 규격:
               </div>
             </div>
 
+            {/* Exam Schedule Legend Bar (사용자가 시험 일정을 직관적으로 파악할 수 있는 색상 범례) */}
+            <div className={`flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-2.5 pb-1 text-[11px] font-bold ${isLightMode ? "text-slate-600" : "text-slate-400"}`}>
+              <span className="flex items-center gap-1 text-[10px] sm:text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                <GraduationCap size={14} className="text-amber-500 shrink-0" />
+                <span>{t('시험 일정')}:</span>
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold shadow-2xs ${isLightMode ? "bg-amber-100/90 border-amber-300 text-amber-950" : "bg-amber-500/20 border-amber-500/40 text-amber-200"}`}>
+                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                <span>{t('1학기 중간고사')}</span>
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold shadow-2xs ${isLightMode ? "bg-rose-100/90 border-rose-300 text-rose-950" : "bg-rose-500/20 border-rose-500/40 text-rose-200"}`}>
+                <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+                <span>{t('1학기 기말고사')}</span>
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold shadow-2xs ${isLightMode ? "bg-teal-100/90 border-teal-300 text-teal-950" : "bg-teal-500/20 border-teal-500/40 text-teal-200"}`}>
+                <span className="w-2 h-2 rounded-full bg-teal-500 shrink-0" />
+                <span>{t('2학기 중간고사')}</span>
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold shadow-2xs ${isLightMode ? "bg-indigo-100/90 border-indigo-300 text-indigo-950" : "bg-indigo-500/20 border-indigo-500/40 text-indigo-200"}`}>
+                <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
+                <span>{t('2학기 기말고사')}</span>
+              </span>
+            </div>
+
             {/* Day Headers (Sleek sci-fi terminal styled pills) */}
             <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center flex-none my-2.5">
               {/* SUN */}
@@ -848,6 +872,47 @@ JSON 구조 규격:
                 // Check for Exam on this day
                 const exam = getExamForDate(fullDateStr);
 
+                // Determine exam styling for the cell
+                let cellExamStyle = "";
+                let examTagStyle = "";
+                let examShortName = "";
+
+                if (exam) {
+                  if (exam.name.includes("1학기 중간")) {
+                    cellExamStyle = isLightMode 
+                      ? "bg-amber-100/60 border-amber-300 hover:bg-amber-100/90 hover:border-amber-400 shadow-2xs" 
+                      : "bg-amber-950/35 border-amber-500/40 hover:bg-amber-900/40 hover:border-amber-400/80";
+                    examTagStyle = isLightMode
+                      ? "bg-amber-200/95 text-amber-950 border-amber-400"
+                      : "bg-amber-500/30 text-amber-200 border-amber-400/50";
+                    examShortName = "중간고사";
+                  } else if (exam.name.includes("1학기 기말")) {
+                    cellExamStyle = isLightMode 
+                      ? "bg-rose-100/60 border-rose-300 hover:bg-rose-100/90 hover:border-rose-400 shadow-2xs" 
+                      : "bg-rose-950/35 border-rose-500/40 hover:bg-rose-900/40 hover:border-rose-400/80";
+                    examTagStyle = isLightMode
+                      ? "bg-rose-200/95 text-rose-950 border-rose-400"
+                      : "bg-rose-500/30 text-rose-200 border-rose-400/50";
+                    examShortName = "기말고사";
+                  } else if (exam.name.includes("2학기 중간")) {
+                    cellExamStyle = isLightMode 
+                      ? "bg-teal-100/60 border-teal-300 hover:bg-teal-100/90 hover:border-teal-400 shadow-2xs" 
+                      : "bg-teal-950/35 border-teal-500/40 hover:bg-teal-900/40 hover:border-teal-400/80";
+                    examTagStyle = isLightMode
+                      ? "bg-teal-200/95 text-teal-950 border-teal-400"
+                      : "bg-teal-500/30 text-teal-200 border-teal-400/50";
+                    examShortName = "중간고사";
+                  } else {
+                    cellExamStyle = isLightMode 
+                      ? "bg-indigo-100/60 border-indigo-300 hover:bg-indigo-100/90 hover:border-indigo-400 shadow-2xs" 
+                      : "bg-indigo-950/35 border-indigo-500/40 hover:bg-indigo-900/40 hover:border-indigo-400/80";
+                    examTagStyle = isLightMode
+                      ? "bg-indigo-200/95 text-indigo-950 border-indigo-400"
+                      : "bg-indigo-500/30 text-indigo-200 border-indigo-400/50";
+                    examShortName = "기말고사";
+                  }
+                }
+
                 return (
                   <div
                     key={fullDateStr}
@@ -855,43 +920,39 @@ JSON 구조 규격:
                     className={`rounded-xl border-2 transition-all p-1.5 sm:p-2 flex flex-col justify-between min-h-0 cursor-pointer relative group ${isToday ? 'tour-target-diary-today' : ''} ${
                       isToday 
                         ? (isLightMode ? 'bg-emerald-50/90 border-emerald-500 ring-2 ring-emerald-500/20 shadow-md hover:border-emerald-600' : 'bg-emerald-950/45 border-emerald-500 ring-1 ring-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:border-emerald-500') 
+                        : exam
+                        ? cellExamStyle
                         : (isLightMode ? 'bg-white hover:bg-emerald-50/30 border-slate-200 hover:border-emerald-300 shadow-xs' : 'bg-slate-900/55 hover:bg-slate-800/85 border-white/15 hover:border-white/35 shadow-md hover:shadow-[0_4px_16px_rgba(255,255,255,0.05)]')
                     }`}
                   >
                     {/* Header line inside date cell */}
-                    <div className="flex items-center justify-between w-full">
-                      <span className={`text-xs sm:text-sm font-bold ${
-                        isSunday ? (isLightMode ? 'text-rose-600' : 'text-rose-400/90') : isSaturday ? (isLightMode ? 'text-sky-600' : 'text-sky-400/90') : (isLightMode ? 'text-slate-800' : 'text-slate-300')
-                      }`}>
-                        {dayNum}
-                      </span>
+                    <div className="flex items-center justify-between w-full gap-1">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className={`text-xs sm:text-sm font-black ${
+                          isSunday ? (isLightMode ? 'text-rose-600' : 'text-rose-400/90') : isSaturday ? (isLightMode ? 'text-sky-600' : 'text-sky-400/90') : (isLightMode ? 'text-slate-900' : 'text-slate-200')
+                        }`}>
+                          {dayNum}
+                        </span>
 
-                      {/* Today Badge */}
-                      {isToday && (
-                        <span className="bg-emerald-500 text-white text-[8px] font-black px-1 rounded border border-emerald-500 shadow-sm">
-                          TODAY
+                        {/* Today Badge */}
+                        {isToday && (
+                          <span className="bg-emerald-500 text-white text-[8px] font-black px-1 rounded border border-emerald-500 shadow-sm shrink-0">
+                            TODAY
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Clear, legible exam tag in top-right */}
+                      {exam && (
+                        <span 
+                          title={`${t(exam.name)} 기간`}
+                          className={`text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-2xs shrink-0 select-none ${examTagStyle}`}
+                        >
+                          <GraduationCap size={10} className="shrink-0" />
+                          <span className="truncate">{examShortName}</span>
                         </span>
                       )}
                     </div>
-
-                    {/* Academic Exam Schedule Badge (학사 일정 표시용 - 다이어리와 분리된 상단 태그) */}
-                    {exam && (
-                      <div 
-                        title={`${t(exam.name)} 기간`}
-                        className={`w-full mt-0.5 px-1.5 py-0.5 rounded-md border text-[9px] sm:text-[10px] font-bold flex items-center gap-1 select-none pointer-events-none truncate ${
-                          exam.name.includes("1학기 중간")
-                            ? (isLightMode ? "bg-amber-100 text-amber-900 border-amber-300" : "bg-amber-500/20 text-amber-300 border-amber-500/30")
-                            : exam.name.includes("1학기 기말")
-                            ? (isLightMode ? "bg-rose-100 text-rose-900 border-rose-300" : "bg-rose-500/20 text-rose-300 border-rose-500/30")
-                            : exam.name.includes("2학기 중간")
-                            ? (isLightMode ? "bg-emerald-100 text-emerald-900 border-emerald-300" : "bg-emerald-500/20 text-emerald-300 border-emerald-500/30")
-                            : (isLightMode ? "bg-indigo-100 text-indigo-900 border-indigo-300" : "bg-indigo-500/20 text-indigo-300 border-indigo-500/30")
-                        }`}
-                      >
-                        <GraduationCap size={11} className="shrink-0 opacity-80" />
-                        <span className="truncate">{t(exam.name)}</span>
-                      </div>
-                    )}
 
                     {/* Diary Entry Area */}
                     <div className="flex-1 flex flex-col justify-center items-center my-1 w-full">
@@ -900,8 +961,8 @@ JSON 구조 규격:
                           onClick={(e) => { e.stopPropagation(); handleOpenDayModal(fullDateStr); }}
                           className={`w-full p-1 sm:p-1.5 rounded-lg flex items-center justify-center text-[10px] sm:text-xs font-bold truncate shadow-xs text-center border transition-colors ${
                             isLightMode 
-                              ? "bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100 hover:border-emerald-300" 
-                              : "bg-emerald-500/10 border-emerald-500/25 text-emerald-200 hover:bg-emerald-500/20 hover:border-emerald-500/40"
+                              ? "bg-white/95 border-emerald-300 text-emerald-950 hover:bg-emerald-50 hover:border-emerald-500 shadow-xs" 
+                              : "bg-slate-900/90 border-emerald-500/40 text-emerald-200 hover:bg-emerald-950/40 hover:border-emerald-400"
                           }`}
                         >
                           <span className="truncate">
@@ -909,7 +970,11 @@ JSON 구조 규격:
                           </span>
                         </div>
                       ) : (
-                        <div className={`opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold text-center py-1 ${isLightMode ? "text-emerald-600" : "text-emerald-500"}`}>
+                        <div className={`opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-bold text-center py-1 ${
+                          isLightMode 
+                            ? (exam ? "text-amber-800" : "text-emerald-600") 
+                            : (exam ? "text-amber-300" : "text-emerald-400")
+                        }`}>
                           + {t('일기 쓰기')}
                         </div>
                       )}
