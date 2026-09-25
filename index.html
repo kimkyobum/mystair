@@ -1,7 +1,19 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="light">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('mystair_theme');
+          if (t === 'dark') {
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyStair (마이스테어) - 마이스터고·직업계고 맞춤형 AI 취업 및 진로 솔루션</title>
     

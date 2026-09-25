@@ -14,8 +14,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLightMode, setIsLightMode] = useState(() => {
-    return localStorage.getItem('mystair_light_mode') === 'true';
+  const [isLightMode, setIsLightMode] = useState<boolean>(() => {
+    // White/Light mode is the default mode
+    const savedTheme = localStorage.getItem('mystair_theme');
+    if (savedTheme === 'dark') return false;
+    if (savedTheme === 'light') return true;
+    
+    // Default to White (Light) Mode
+    return true;
   });
   
   const [backgroundType, setBackgroundType] = useState<BackgroundType>(() => {
@@ -28,6 +34,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   useEffect(() => {
+    localStorage.setItem('mystair_theme', isLightMode ? 'light' : 'dark');
     localStorage.setItem('mystair_light_mode', String(isLightMode));
     if (isLightMode) {
       document.documentElement.classList.add('light');

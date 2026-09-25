@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, BookOpen, Award, Briefcase, Users, User, Sparkles, HelpCircle, FileText, Camera, ChevronDown, ArrowRight } from 'lucide-react';
+import { Menu, X, BookOpen, Award, Briefcase, Users, User, Sparkles, HelpCircle, FileText, Camera, ChevronDown, ArrowRight, Sun, Moon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
-  const { isLightMode } = useTheme();
+  const { isLightMode, setIsLightMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [guideModalOpen, setGuideModalOpen] = useState(false);
   const [activeGuideTopic, setActiveGuideTopic] = useState<string | null>(null);
@@ -185,6 +185,24 @@ export default function Header() {
               <span className="inline sm:hidden">EN</span>
             </button>
           </div>
+
+          {/* Theme Toggle Button (White / Space Mode) */}
+          <button
+            onClick={() => setIsLightMode(!isLightMode)}
+            title={isLightMode ? t('우주(다크) 모드로 전환', 'Switch to Space Mode') : t('화이트(라이트) 모드로 전환', 'Switch to White Mode')}
+            aria-label={isLightMode ? t('우주 모드로 전환', 'Switch to Space Mode') : t('화이트 모드로 전환', 'Switch to White Mode')}
+            className={`p-1.5 sm:p-2 rounded-full border transition-all cursor-pointer min-h-[34px] min-w-[34px] flex items-center justify-center active:scale-95 shrink-0 ${
+              isLightMode
+                ? 'bg-white/60 hover:bg-white/90 border-slate-300/70 text-amber-500 shadow-xs'
+                : 'bg-white/10 hover:bg-white/20 border-white/20 text-teal-300'
+            }`}
+          >
+            {isLightMode ? (
+              <Sun size={16} className="text-amber-500 transition-transform hover:rotate-45" />
+            ) : (
+              <Moon size={16} className="text-teal-300 transition-transform hover:-rotate-12" />
+            )}
+          </button>
 
           {/* Mobile Menu Icon Button */}
           <button 
@@ -474,6 +492,25 @@ export default function Header() {
 
             {/* Bottom Actions */}
             <div className="pt-5 border-t border-white/10 flex flex-col gap-2.5 mt-5">
+              <button
+                onClick={() => {
+                  setIsLightMode(!isLightMode);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs sm:text-sm min-h-[44px] active:scale-98 transition-all whitespace-nowrap cursor-pointer"
+              >
+                {isLightMode ? (
+                  <>
+                    <Moon size={16} className="text-teal-400 shrink-0" />
+                    <span>{t('우주(다크) 모드로 변경', 'Switch to Space Mode')}</span>
+                  </>
+                ) : (
+                  <>
+                    <Sun size={16} className="text-amber-400 shrink-0" />
+                    <span>{t('화이트(라이트) 모드로 변경', 'Switch to White Mode')}</span>
+                  </>
+                )}
+              </button>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
