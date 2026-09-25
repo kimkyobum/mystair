@@ -25,7 +25,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Printer,
-  Eye
+  Eye,
+  FileDown
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -824,6 +825,173 @@ export default function CoverLetter() {
     }
   };
 
+  // 아래아한글 (.hwp) 표준 입사지원서 서식 파일 다운로드
+  const handleDownloadHwp = () => {
+    if (!currentCompany) return;
+
+    const safeCompany = (currentCompany.companyName || '자기소개서').replace(/[/\\?%*:|"<>]/g, '_').trim();
+    const candidateName = (userProfile?.name || user?.displayName || '지원자').replace(/[/\\?%*:|"<>]/g, '_').trim();
+    const todayStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    // 한글(HWP) 및 한컴오피스 표준 호환 HTML A4 서식 템플릿 생성
+    let content = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="ProgId" content="Hwp.Document">
+<meta name="Generator" content="MyStair Career Builder">
+<title>${safeCompany} 자기소개서 - ${candidateName}</title>
+<style>
+  @page {
+    size: 210mm 297mm;
+    margin: 20mm 15mm 20mm 15mm;
+    mso-page-orientation: portrait;
+  }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Batang', '바탕', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.75;
+    color: #111111;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+  .doc-title {
+    font-size: 20pt;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 5px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    color: #0f172a;
+  }
+  table.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+  }
+  table.info-table th {
+    background-color: #f1f5f9;
+    border: 1px solid #94a3b8;
+    padding: 8px 10px;
+    font-size: 10pt;
+    font-weight: bold;
+    text-align: center;
+    width: 20%;
+    color: #334155;
+  }
+  table.info-table td {
+    border: 1px solid #94a3b8;
+    padding: 8px 12px;
+    font-size: 10pt;
+    text-align: left;
+    width: 30%;
+    color: #0f172a;
+  }
+  .section-block {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+  }
+  .question-bar {
+    background-color: #f8fafc;
+    border: 1.5px solid #64748b;
+    border-bottom: 1px solid #94a3b8;
+    padding: 10px 14px;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #0f172a;
+  }
+  .question-num {
+    color: #059669;
+    margin-right: 6px;
+  }
+  .chars-badge {
+    font-size: 9pt;
+    color: #64748b;
+    font-weight: normal;
+    float: right;
+  }
+  .answer-box {
+    border: 1.5px solid #64748b;
+    border-top: none;
+    padding: 16px 18px;
+    font-size: 10.5pt;
+    line-height: 1.85;
+    color: #1e293b;
+    min-height: 120px;
+    word-break: keep-all;
+  }
+  .footer-note {
+    margin-top: 35px;
+    text-align: center;
+    font-size: 9.5pt;
+    color: #64748b;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 14px;
+  }
+</style>
+</head>
+<body>
+  <div class="doc-title">자 기 소 개 서</div>
+
+  <table class="info-table">
+    <tr>
+      <th>지 원 기 업</th>
+      <td>${currentCompany.companyName}</td>
+      <th>지 원 자</th>
+      <td>${candidateName}</td>
+    </tr>
+    <tr>
+      <th>작 성 일 자</th>
+      <td>${todayStr}</td>
+      <th>총 글 자 수</th>
+      <td>${totalChars}자 (공백제외 ${totalCharsNoSpace}자)</td>
+    </tr>
+  </table>
+`;
+
+    sections.forEach((sec, idx) => {
+      const qTitle = getCleanTitle(sec.title);
+      const answerText = (answers[sec.id] || '').trim();
+      const answerChars = answerText.length;
+      const formattedAnswer = answerText
+        ? answerText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')
+        : '<span style="color: #94a3b8;">(작성된 내용이 없습니다.)</span>';
+
+      content += `
+  <div class="section-block">
+    <div class="question-bar">
+      <span><span class="question-num">${idx + 1}.</span> ${qTitle}</span>
+      <span class="chars-badge">[권장: ${sec.recommendedChars}자 | 작성: ${answerChars}자]</span>
+    </div>
+    <div class="answer-box">
+${formattedAnswer}
+    </div>
+  </div>`;
+    });
+
+    content += `
+  <div class="footer-note">
+    위 내용은 본인이 직접 수행한 경험과 사실에 기초하여 정직하게 작성되었습니다. &nbsp;|&nbsp; 작성일: ${todayStr}
+  </div>
+</body>
+</html>`;
+
+    // UTF-8 BOM(\uFEFF)을 포함하여 한컴오피스/아래아한글에서 한글 깨짐 없이 즉시 열리도록 처리
+    const blob = new Blob(['\uFEFF' + content], { type: 'application/x-hwp;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const fileName = `${safeCompany}_자기소개서_${candidateName}.hwp`;
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(t(`📝 '${fileName}' 한글(HWP) 파일이 성공적으로 다운로드되었습니다!`), 'success');
+  };
+
   // 텍스트 파일 다운로드
   const handleDownloadText = () => {
     if (!currentCompany) return;
@@ -1031,8 +1199,37 @@ export default function CoverLetter() {
               </button>
             </div>
 
-            {/* Quick Action Toolbar (인쇄 미리보기, PDF 저장, 텍스트 다운로드, 초기화) */}
-            <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0">
+            {/* Quick Action Toolbar (한글 HWP 저장, PDF 저장, 인쇄, 텍스트 다운로드, 초기화) */}
+            <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0 flex-wrap justify-end">
+              <button
+                type="button"
+                onClick={handleDownloadHwp}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black transition-all cursor-pointer shadow-xs active:scale-95 ${
+                  isLightMode
+                    ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600"
+                    : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-500 font-black"
+                }`}
+                title={t('아래아한글(.hwp) 표준 입사지원서 서식 파일로 저장')}
+              >
+                <FileDown size={14} />
+                <span>{t('한글(HWP) 저장')}</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={isGeneratingPdf}
+                onClick={handleDownloadPdf}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                  isLightMode
+                    ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700"
+                    : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                }`}
+                title={t('A4 서식 규격 PDF 파일로 즉시 저장')}
+              >
+                <Download size={13} />
+                <span>{isGeneratingPdf ? t('생성 중...') : t('PDF 저장')}</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setIsA4PreviewOpen(true)}
@@ -1045,21 +1242,6 @@ export default function CoverLetter() {
               >
                 <Printer size={13} />
                 <span>{t('A4 인쇄')}</span>
-              </button>
-
-              <button
-                type="button"
-                disabled={isGeneratingPdf}
-                onClick={handleDownloadPdf}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                  isLightMode
-                    ? "bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-800"
-                    : "bg-emerald-950/40 hover:bg-emerald-900/60 border-emerald-800 text-emerald-300"
-                }`}
-                title={t('A4 서식 규격 PDF 파일로 즉시 저장')}
-              >
-                <Download size={13} />
-                <span>{isGeneratingPdf ? t('생성 중...') : t('PDF 저장')}</span>
               </button>
 
               <button
@@ -2194,15 +2376,15 @@ export default function CoverLetter() {
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              {/* Real Print Button */}
+              {/* Hangul (HWP) File Download Button - Primary */}
               <button
                 type="button"
-                onClick={() => window.print()}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
-                title={t('프린터로 직접 인쇄하거나 브라우저 인쇄 대화상자 열기')}
+                onClick={handleDownloadHwp}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+                title={t('아래아한글(.hwp) 표준 입사지원서 서식 파일로 저장')}
               >
-                <Printer size={15} />
-                <span>{t('인쇄하기')}</span>
+                <FileDown size={15} />
+                <span>{t('한글(HWP) 파일 저장')}</span>
               </button>
 
               {/* Real PDF File Download Button */}
@@ -2210,7 +2392,7 @@ export default function CoverLetter() {
                 type="button"
                 disabled={isGeneratingPdf}
                 onClick={handleDownloadPdf}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
                 title={t('A4 서식 규격 PDF 파일(.pdf)로 즉시 다운로드')}
               >
                 {isGeneratingPdf ? (
@@ -2221,9 +2403,20 @@ export default function CoverLetter() {
                 ) : (
                   <>
                     <Download size={14} />
-                    <span>{t('PDF 파일 저장')}</span>
+                    <span>{t('PDF 저장')}</span>
                   </>
                 )}
+              </button>
+
+              {/* Real Print Button */}
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+                title={t('프린터로 직접 인쇄하거나 브라우저 인쇄 대화상자 열기')}
+              >
+                <Printer size={15} />
+                <span>{t('인쇄하기')}</span>
               </button>
 
               {/* Download TXT Button */}
