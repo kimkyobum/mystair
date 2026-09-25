@@ -881,194 +881,111 @@ export default function CoverLetter() {
       <div className="max-w-[960px] mx-auto px-4 sm:px-6 pt-6 pb-20">
         
         {/* ============================================================== */}
-        {/* 1. COMPANY COVER LETTER COLLECTION BAR (기업별 자기소개서 컬렉션) */}
+        {/* UNIFIED COMPANY & ACTION COMMAND BAR (통합 지원 기업 및 툴바) */}
         {/* ============================================================== */}
-        <div className={`p-4 sm:p-5 rounded-2xl border mb-6 transition-all tour-target-cover-companies ${
-          isLightMode ? "bg-white border-slate-200 shadow-xs" : "bg-slate-900/90 border-slate-800"
+        <div className={`rounded-2xl border mb-6 transition-all shadow-xs overflow-hidden tour-target-cover-companies ${
+          isLightMode ? "bg-white border-slate-200" : "bg-slate-900 border-slate-800"
         }`}>
-          <div className="flex items-center justify-between gap-3 mb-3.5">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
-                <Building size={18} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className={`text-base sm:text-lg font-black ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                    {t('내 지원 기업 컬렉션')}
-                  </h2>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                    {companies.length}{t('개 기업')}
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {t('기업별로 질문 문항과 자소서를 개별 관리하세요. 클릭하여 해당 기업 자서소로 즉시 전환됩니다.')}
-                </p>
-              </div>
-            </div>
+          {/* Top row: Company Switcher Tabs + Document Actions */}
+          <div className={`px-4 sm:px-5 py-2.5 border-b flex flex-col md:flex-row md:items-center justify-between gap-3 ${
+            isLightMode ? "bg-slate-50/80 border-slate-200" : "bg-slate-800/40 border-slate-800"
+          }`}>
+            {/* Company Tabs */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+              <span className="text-xs font-bold text-slate-400 mr-1 hidden sm:inline shrink-0">
+                {t('지원 기업')}:
+              </span>
+              {companies.map(comp => {
+                const isActive = comp.id === activeCompanyId;
+                const answeredCount = comp.sections.filter(s => !!(comp.answers[s.id] || '').trim()).length;
+                const totalSecCount = comp.sections.length;
 
-            <button
-              type="button"
-              onClick={() => setIsAddCompanyModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer shrink-0"
-            >
-              <Plus size={14} strokeWidth={2.5} />
-              <span>{t('새 기업 추가')}</span>
-            </button>
-          </div>
-
-          {/* Horizontal Company Tab Chips List */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 scrollbar-thin">
-            {companies.map(comp => {
-              const isActive = comp.id === activeCompanyId;
-              const answeredCount = comp.sections.filter(s => !!(comp.answers[s.id] || '').trim()).length;
-              const totalSecCount = comp.sections.length;
-              const isCompleted = totalSecCount > 0 && answeredCount === totalSecCount;
-
-              return (
-                <div
-                  key={comp.id}
-                  onClick={() => handleSelectCompany(comp.id)}
-                  className={`group relative flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                    isActive
-                      ? isLightMode
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
-                        : "bg-emerald-500 text-slate-950 font-black border-emerald-500 shadow-sm"
-                      : isLightMode
-                        ? "bg-slate-50 hover:bg-white text-slate-700 border-slate-200 hover:border-emerald-300"
-                        : "bg-slate-800/80 hover:bg-slate-800 text-slate-300 border-slate-700 hover:border-emerald-500/50"
-                  }`}
-                >
-                  <Building2 size={13} className={isActive ? (isLightMode ? "text-white" : "text-slate-950") : "text-emerald-500"} />
-                  <span className="truncate max-w-[140px]">{comp.companyName || t('지원 기업')}</span>
-                  
-                  {/* Progress tag */}
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
-                    isActive
-                      ? isLightMode
-                        ? "bg-white/20 text-white"
-                        : "bg-slate-950/20 text-slate-950 font-bold"
-                      : isCompleted
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : isLightMode ? "bg-slate-200 text-slate-600" : "bg-slate-700 text-slate-300"
-                  }`}>
-                    {answeredCount}/{totalSecCount}
-                  </span>
-
-                  {/* Delete company button (only when more than 1 company exists) */}
-                  {companies.length > 1 && (
-                    <button
-                      type="button"
-                      title={t('이 기업 자기소개서 삭제')}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCompanyToDelete(comp);
-                      }}
-                      className={`p-0.5 rounded-md transition-colors cursor-pointer ml-1 ${
-                        isActive
-                          ? isLightMode
-                            ? "text-white/70 hover:text-white hover:bg-white/20"
-                            : "text-slate-950/60 hover:text-slate-950 hover:bg-black/10"
-                          : "text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50"
-                      }`}
-                    >
-                      <X size={12} />
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Quick '+' button at the end of tabs */}
-            <button
-              type="button"
-              onClick={() => setIsAddCompanyModalOpen(true)}
-              className={`flex items-center gap-1 px-3 py-2 rounded-xl border border-dashed text-xs font-bold transition-all cursor-pointer shrink-0 ${
-                isLightMode 
-                  ? "border-emerald-300 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-100 hover:border-emerald-500" 
-                  : "border-emerald-500/40 text-emerald-400 bg-emerald-950/20 hover:bg-emerald-950/40 hover:border-emerald-400"
-              }`}
-              title={t('새 기업 자기소개서 추가')}
-            >
-              <Plus size={14} />
-              <span>{t('기업 추가')}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* ============================================================== */}
-        {/* 2. ACTIVE COMPANY EDITOR HEADER (현재 지원 기업 정보 & 통계 & 액션) */}
-        {/* ============================================================== */}
-        <div className={`p-4 sm:p-5 rounded-2xl border mb-6 transition-all ${
-          isLightMode ? "bg-white border-slate-200 shadow-xs" : "bg-slate-900/90 border-slate-800"
-        }`}>
-          {/* Top Bar: Company Name Input Field + Quick Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-            {/* Direct Company Name Editor */}
-            <div className="flex-1 flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
-                <Building size={18} />
-              </div>
-              <div className="flex-1">
-                <label className="text-[10px] font-bold text-slate-400 block mb-0.5">
-                  {t('현재 작성 중인 지원 기업명')}
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={currentCompany.companyName}
-                    onChange={e => handleUpdateCompanyName(e.target.value)}
-                    placeholder={t('기업명을 입력하세요 (예: 삼성전자, 현대자동차)')}
-                    className={`flex-1 max-w-[420px] font-black text-lg sm:text-xl border rounded-xl px-3 py-1.5 outline-none transition-all ${
-                      isLightMode 
-                        ? "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-emerald-500" 
-                        : "bg-slate-800 border-slate-700 text-white focus:border-emerald-500"
+                return (
+                  <div
+                    key={comp.id}
+                    onClick={() => handleSelectCompany(comp.id)}
+                    className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                      isActive
+                        ? isLightMode
+                          ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                          : "bg-emerald-500 text-slate-950 font-black border-emerald-500 shadow-xs"
+                        : isLightMode
+                          ? "bg-white hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-emerald-300"
+                          : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
                     }`}
-                  />
-                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border shrink-0 ${
-                    isLightMode ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-emerald-950/60 border-emerald-800 text-emerald-300"
-                  }`}>
-                    {sections.length}{t('개 문항')}
-                  </span>
-                </div>
-              </div>
+                  >
+                    <Building2 size={13} className={isActive ? (isLightMode ? "text-white" : "text-slate-950") : "text-emerald-500"} />
+                    <span className="truncate max-w-[130px]">{comp.companyName || t('지원 기업')}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
+                      isActive
+                        ? isLightMode ? "bg-white/20 text-white" : "bg-slate-950/20 text-slate-950"
+                        : isLightMode ? "bg-slate-100 text-slate-600" : "bg-slate-700 text-slate-300"
+                    }`}>
+                      {answeredCount}/{totalSecCount}
+                    </span>
+
+                    {companies.length > 1 && (
+                      <button
+                        type="button"
+                        title={t('이 기업 자기소개서 삭제')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCompanyToDelete(comp);
+                        }}
+                        className={`p-0.5 rounded transition-colors ml-0.5 ${
+                          isActive
+                            ? isLightMode ? "text-white/70 hover:text-white hover:bg-white/20" : "text-slate-950/60 hover:text-slate-950"
+                            : "text-slate-400 hover:text-rose-500"
+                        }`}
+                      >
+                        <X size={12} />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAddCompanyModalOpen(true);
+                  setNewCompanyNameInput('');
+                }}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-dashed text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  isLightMode
+                    ? "border-emerald-300 text-emerald-700 bg-emerald-50/60 hover:bg-emerald-100"
+                    : "border-emerald-500/40 text-emerald-400 bg-emerald-950/20 hover:bg-emerald-950/40"
+                }`}
+                title={t('새 기업 자기소개서 추가')}
+              >
+                <Plus size={13} />
+                <span>{t('기업 추가')}</span>
+              </button>
             </div>
 
-            {/* Total characters badge */}
-            <div className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border shrink-0 text-xs font-bold ${
-              isLightMode ? "bg-slate-50 border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
-            }`}>
-              <span className="text-[11px] text-slate-400 font-normal">{t('총 글자수')}:</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{totalChars}자</span>
-              <span className="text-slate-300 dark:text-slate-600">/</span>
-              <span className="text-[11px] text-slate-400 font-normal">{t('공백제외')}:</span>
-              <span>{totalCharsNoSpace}자</span>
-            </div>
-          </div>
-
-          {/* Quick Utility Action Bar: Copy All, Download TXT, Save, Delete Company */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-3.5 text-xs">
-            <div className="flex items-center gap-2 flex-wrap">
+            {/* Quick Action Toolbar (미리보기, 복사, 다운로드, 초기화) */}
+            <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0">
               <button
                 type="button"
                 onClick={() => setIsA4PreviewOpen(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer ${
-                  isLightMode 
-                    ? "bg-sky-50 hover:bg-sky-100 border-sky-200 text-sky-700" 
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                  isLightMode
+                    ? "bg-sky-50 hover:bg-sky-100 border-sky-200 text-sky-700"
                     : "bg-sky-950/40 hover:bg-sky-900/60 border-sky-800 text-sky-300"
                 }`}
-                title={t('A4 한글 서식 문서 미리보기 및 인쇄')}
+                title={t('A4 서식 미리보기 및 인쇄')}
               >
                 <FileText size={13} />
-                <span>{t('A4 서식 미리보기')}</span>
+                <span>{t('A4 미리보기')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleCopyAll}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer ${
-                  isLightMode ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                  isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
                 }`}
-                title={t('이 기업의 모든 자기소개서 문항과 내용을 클립보드에 복사')}
+                title={t('전체 복사')}
               >
                 <Copy size={13} />
                 <span>{t('전체 복사')}</span>
@@ -1077,55 +994,66 @@ export default function CoverLetter() {
               <button
                 type="button"
                 onClick={handleDownloadText}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer ${
-                  isLightMode ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                  isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
                 }`}
-                title={t('텍스트 파일(.txt)로 저장')}
+                title={t('텍스트 파일로 저장')}
               >
                 <Download size={13} />
-                <span>{t('텍스트 다운로드')}</span>
+                <span>{t('다운로드')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsResetConfirmOpen(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold transition-all cursor-pointer ${
-                  isLightMode ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-400"
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                  isLightMode ? "bg-white hover:bg-slate-100 border-slate-200 text-slate-500" : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-400"
                 }`}
-                title={t('기본 5개 질문으로 문항 초기화')}
+                title={t('기본 5개 질문으로 복원')}
               >
                 <RotateCcw size={12} />
-                <span>{t('기본 문항 복원')}</span>
+                <span className="hidden sm:inline">{t('복원')}</span>
               </button>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2">
-              {companies.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => setCompanyToDelete(currentCompany)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all cursor-pointer"
-                  title={t('현재 선택된 기업의 자기소개서를 컬렉션에서 삭제')}
-                >
-                  <Trash2 size={13} />
-                  <span>{t('이 기업 삭제')}</span>
-                </button>
-              )}
+          {/* Bottom row: Inline Company Name Title & Stats */}
+          <div className="px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 flex-1 min-w-0">
+              <span className="text-xs font-bold text-slate-400 shrink-0">
+                {t('현재 지원 기업')}:
+              </span>
+              <input
+                type="text"
+                value={currentCompany.companyName}
+                onChange={e => handleUpdateCompanyName(e.target.value)}
+                placeholder={t('기업명을 입력하세요 (예: 삼성전자, 한국항공우주산업)')}
+                className={`font-black text-base sm:text-lg border-b border-transparent hover:border-slate-300 focus:border-emerald-500 px-1 py-0.5 outline-none transition-all flex-1 max-w-[340px] bg-transparent ${
+                  isLightMode ? "text-slate-900" : "text-white"
+                }`}
+              />
+              <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                isLightMode ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-emerald-950/60 border-emerald-800 text-emerald-300"
+              }`}>
+                {sections.length}{t('개 문항')}
+              </span>
+            </div>
 
-              <button
-                type="button"
-                onClick={() => handleSave(false)}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
-              >
-                <Save size={13} />
-                <span>{t('저장하기')}</span>
-              </button>
+            {/* Total characters stat badge */}
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold self-start sm:self-auto shrink-0 ${
+              isLightMode ? "bg-slate-50 border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
+            }`}>
+              <span className="text-slate-400 font-normal">{t('총 글자수')}:</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{totalChars}자</span>
+              <span className="text-slate-300 dark:text-slate-600">/</span>
+              <span className="text-slate-400 font-normal">{t('공백제외')}:</span>
+              <span>{totalCharsNoSpace}자</span>
             </div>
           </div>
         </div>
 
         {/* ============================================================== */}
-        {/* 3. COVER LETTER QUESTIONS & ANSWER BOXES (해당 기업 문항 리스트) */}
+        {/* 2. COVER LETTER QUESTIONS & ANSWER BOXES (해당 기업 문항 리스트) */}
         {/* ============================================================== */}
         <div className="space-y-6">
           {sections.map((sec, index) => {
@@ -1141,19 +1069,19 @@ export default function CoverLetter() {
               <div 
                 id={`section-${sec.id}`}
                 key={sec.id}
-                className={`rounded-2xl border transition-all scroll-mt-24 ${
+                className={`rounded-2xl border transition-all scroll-mt-24 shadow-xs overflow-hidden ${
                   isLightMode 
-                    ? "bg-white border-slate-200 shadow-xs hover:border-slate-300" 
+                    ? "bg-white border-slate-200 hover:border-slate-300 shadow-sm shadow-slate-100" 
                     : "bg-slate-900/90 border-slate-800 hover:border-slate-700 shadow-xs"
                 }`}
               >
-                {/* Header: Sequential Question Title + Right Controls ([내 경험], [수정], [삭제]) */}
-                <div className={`px-4 sm:px-5 py-3 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-                  isLightMode ? "border-slate-100 bg-slate-50/50 rounded-t-2xl" : "border-slate-800/80 bg-slate-800/30 rounded-t-2xl"
+                {/* Header: Sequential Question Title + Right Action Buttons */}
+                <div className={`px-4 sm:px-6 py-3.5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                  isLightMode ? "border-slate-100 bg-slate-50/60" : "border-slate-800/80 bg-slate-800/30"
                 }`}>
-                  {/* Title & Recommended Chars or Inline Edit Mode */}
+                  {/* Left: Question title & recommended chars */}
                   {isEditingThis ? (
-                    <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 py-1">
+                    <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 py-0.5">
                       <div className="flex items-center gap-1.5 flex-1">
                         <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 shrink-0">
                           {index + 1}.
@@ -1203,12 +1131,17 @@ export default function CoverLetter() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h2 className={`text-base font-extrabold ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                        {index + 1}. {getCleanTitle(sec.title)}
-                      </h2>
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border shrink-0 ${
-                        isLightMode ? "bg-white border-slate-200 text-slate-600" : "bg-slate-800 border-slate-700 text-slate-300"
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-black text-xs shrink-0">
+                          {index + 1}
+                        </span>
+                        <h2 className={`text-base sm:text-lg font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                          {getCleanTitle(sec.title)}
+                        </h2>
+                      </div>
+                      <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${
+                        isLightMode ? "bg-white border-slate-200 text-slate-600 shadow-2xs" : "bg-slate-800 border-slate-700 text-slate-300"
                       }`}>
                         {sec.recommendedChars}{t('자 권장')}
                       </span>
@@ -1220,8 +1153,8 @@ export default function CoverLetter() {
                     </div>
                   )}
 
-                  {/* Right Header Buttons: [내 경험], [수정], [문항 삭제] */}
-                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
+                  {/* Right Header Buttons: [내 경험], [문항 수정], [문항 삭제] */}
+                  <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
                     {/* [내 경험] 토글 버튼 및 팝업 창 */}
                     <div className="relative">
                       <button
@@ -1327,14 +1260,13 @@ export default function CoverLetter() {
                       )}
                     </div>
 
-                    {/* [문항 수정] 버튼 */}
                     {!isEditingThis && (
                       <button
                         type="button"
                         onClick={() => handleStartEdit(sec)}
                         className={`text-xs font-bold flex items-center gap-1 px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer ${
                           isLightMode 
-                            ? "bg-white text-slate-600 border-slate-200 hover:bg-slate-50" 
+                            ? "bg-white text-slate-600 border-slate-200 hover:bg-slate-100" 
                             : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
                         }`}
                         title={t('질문 제목 및 권장 글자수 변경')}
@@ -1344,7 +1276,6 @@ export default function CoverLetter() {
                       </button>
                     )}
 
-                    {/* [문항 삭제] (X) 버튼 */}
                     <button
                       type="button"
                       onClick={() => handleDeleteSection(sec.id, sec.title)}
@@ -1362,7 +1293,7 @@ export default function CoverLetter() {
 
                 {/* Spell Check Notification Banner with Undo */}
                 {notif && (
-                  <div className={`px-4 sm:px-5 py-2.5 text-xs flex items-center justify-between border-b animate-in fade-in duration-200 ${
+                  <div className={`px-4 sm:px-6 py-2.5 text-xs flex items-center justify-between border-b animate-in fade-in duration-200 ${
                     notif.includes('오류가 발견되지 않았습니다')
                       ? isLightMode ? "bg-amber-50 border-amber-200 text-amber-900" : "bg-amber-950/40 border-amber-800 text-amber-300"
                       : isLightMode ? "bg-emerald-50 border-emerald-200 text-emerald-900" : "bg-emerald-950/40 border-emerald-800 text-emerald-300"
@@ -1394,82 +1325,91 @@ export default function CoverLetter() {
                   </div>
                 )}
 
-                {/* Clean Textarea Input Box with Quick Action Header */}
-                <div className="p-4 sm:p-5 space-y-2">
-                  <div className="flex items-center justify-between pb-1">
-                    <span className="text-xs font-semibold text-slate-400">
-                      {t('내용 작성')}
-                    </span>
-
-                    {/* Prominent in-box [오타 수정] button */}
-                    <button
-                      type="button"
-                      disabled={isFixing || !currentVal.trim()}
-                      onClick={() => handleAutoFixSpelling(sec.id)}
-                      className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
-                        isFixing
-                          ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
-                          : !currentVal.trim()
-                            ? "opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700"
-                            : isLightMode
-                              ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600 active:scale-95"
-                              : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black border-emerald-500 active:scale-95"
+                {/* Focused Writing Canvas */}
+                <div className="p-4 sm:p-5">
+                  <div className={`rounded-xl border transition-all overflow-hidden focus-within:ring-2 focus-within:border-emerald-500 ${
+                    isLightMode 
+                      ? "bg-slate-50/50 border-slate-200 focus-within:bg-white focus-within:ring-emerald-500/20" 
+                      : "bg-slate-800/40 border-slate-700 focus-within:bg-slate-800/80 focus-within:ring-emerald-500/30"
+                  }`}>
+                    <textarea
+                      rows={7}
+                      value={currentVal}
+                      onChange={e => handleChange(sec.id, e.target.value)}
+                      placeholder={sec.placeholder}
+                      className={`w-full p-4 text-sm sm:text-base font-normal outline-none leading-relaxed transition-colors resize-y bg-transparent ${
+                        isLightMode ? "text-slate-900 placeholder-slate-400" : "text-slate-100 placeholder-slate-500"
                       }`}
-                      title={t('클릭 시 이 박스 안의 모든 오타와 띄어쓰기를 즉시 자동 교정합니다')}
-                    >
-                      {isFixing ? (
-                        <>
-                          <RefreshCw size={13} className="animate-spin text-amber-600" />
-                          <span>{t('수정 중...')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 size={13} />
-                          <span>{t('오타 수정')}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                    />
 
-                  <textarea
-                    rows={6}
-                    value={currentVal}
-                    onChange={e => handleChange(sec.id, e.target.value)}
-                    placeholder={sec.placeholder}
-                    className={`w-full border-2 rounded-xl p-4 text-sm font-medium outline-none leading-relaxed transition-all resize-y ${
-                      isLightMode 
-                        ? "bg-slate-50/70 border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:shadow-xs" 
-                        : "bg-slate-800/70 border-slate-700 text-white placeholder-slate-500 focus:border-emerald-500 focus:bg-slate-800"
-                    }`}
-                  />
+                    {/* Integrated Editor Toolbar & Character Stats Footer */}
+                    <div className={`px-4 py-2.5 border-t flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs ${
+                      isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/60 border-slate-700"
+                    }`}>
+                      {/* Left: Live Character Count & Progress Bar */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`font-black text-sm ${
+                            charCount > 0 
+                              ? "text-emerald-600 dark:text-emerald-400" 
+                              : isLightMode ? "text-slate-400" : "text-slate-500"
+                          }`}>
+                            {charCount}자
+                          </span>
+                          <span className="text-slate-400 font-medium">
+                            / {sec.recommendedChars}자
+                          </span>
+                          <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${
+                            charCount >= sec.recommendedChars * 0.8
+                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                              : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                          }`}>
+                            {Math.round((charCount / sec.recommendedChars) * 100)}%
+                          </span>
+                        </div>
+                        <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                        <span className="text-[11px] text-slate-400 hidden sm:inline">
+                          {t('공백제외')} {charCountNoSpace}자
+                        </span>
+                      </div>
 
-                  {/* Character Counter right in each box */}
-                  <div className="flex items-center justify-between pt-1 px-1 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className={`font-black text-sm transition-colors ${
-                        charCount > 0 
-                          ? "text-emerald-600 dark:text-emerald-400" 
-                          : isLightMode ? "text-slate-400" : "text-slate-500"
-                      }`}>
-                        {charCount}자
-                      </span>
-                      <span className={isLightMode ? "text-slate-300" : "text-slate-600"}>/</span>
-                      <span className={`text-[11px] ${isLightMode ? "text-slate-400" : "text-slate-500"}`}>
-                        {t('공백제외')} {charCountNoSpace}자
-                      </span>
-                      <span className={isLightMode ? "text-slate-300" : "text-slate-600"}>•</span>
-                      <span className={`text-[11px] ${charCount >= sec.recommendedChars * 0.7 ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-400"}`}>
-                        {Math.round((charCount / sec.recommendedChars) * 100)}% {t('달성')}
-                      </span>
+                      {/* Right: Spell Check Button & Status */}
+                      <div className="flex items-center justify-end gap-2 shrink-0">
+                        {charCount > sec.recommendedChars + 100 && (
+                          <span className="text-rose-500 font-bold text-[11px] mr-1">
+                            {t('⚠️ 권장 분량 초과')}
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          disabled={isFixing || !currentVal.trim()}
+                          onClick={() => handleAutoFixSpelling(sec.id)}
+                          className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
+                            isFixing
+                              ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
+                              : !currentVal.trim()
+                                ? "opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                                : isLightMode
+                                  ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600 active:scale-95 shadow-xs"
+                                  : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black border-emerald-500 active:scale-95 shadow-xs"
+                          }`}
+                          title={t('이 문항의 모든 오타와 맞춤법을 즉시 자동 교정합니다')}
+                        >
+                          {isFixing ? (
+                            <>
+                              <RefreshCw size={13} className="animate-spin text-amber-600" />
+                              <span>{t('수정 중...')}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Wand2 size={13} />
+                              <span>{t('오타 수정')}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
-
-                    <span className="text-[11px] text-slate-400">
-                      {charCount > sec.recommendedChars + 100 ? (
-                        <span className="text-rose-500 font-bold">{t('⚠️ 권장 분량 초과')}</span>
-                      ) : (
-                        t('자동 저장 중')
-                      )}
-                    </span>
                   </div>
                 </div>
               </div>
