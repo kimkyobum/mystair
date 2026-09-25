@@ -6,19 +6,21 @@ import {
   Copy, 
   Check, 
   ThumbsUp, 
-  Sparkles,
   RefreshCw,
   Plus
 } from 'lucide-react';
 import { AlienUFOSvg } from './FloatingAliens';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
+import { useAuth, UserProfileData, DiaryEntry } from '../context/AuthContext';
 
 export interface CoverLetterAiCoachProps {
   companyName: string;
   sectionTitle: string;
   recommendedChars: number;
   currentAnswer: string;
+  userProfile?: UserProfileData | null;
+  diaries?: DiaryEntry[];
 }
 
 interface ChatMessage {
@@ -32,17 +34,20 @@ export default function CoverLetterAiCoach({
   companyName,
   sectionTitle,
   recommendedChars,
-  currentAnswer
+  currentAnswer,
+  userProfile: propUserProfile,
+  diaries: propDiaries
 }: CoverLetterAiCoachProps) {
   const { isLightMode } = useTheme();
   const { t } = useLanguage();
+  const { user, userProfile: authProfile } = useAuth();
 
-  // 대화창 열림 여부 (기본: 닫힘 -> 외계인+말풍선 상태)
+  // 대화창 열림 여부
   const [isOpenChat, setIsOpenChat] = useState<boolean>(false);
   // 외부 말풍선 표시 여부
   const [showSpeechBubble, setShowSpeechBubble] = useState<boolean>(true);
 
-  // 실시간 외계인 조언 텍스트
+  // 실시간 외계인 조언 텍스트 (이모지 없음)
   const [feedbackSpeech, setFeedbackSpeech] = useState<string>('');
   const [isLoadingFeedback, setIsLoadingFeedback] = useState<boolean>(false);
 
@@ -56,6 +61,44 @@ export default function CoverLetterAiCoach({
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastAnalyzedTextRef = useRef<string>('');
 
+  // 유저 프로필 및 다이어리 통합 (prop -> authContext -> localStorage 순서로 철저히 복구)
+  const getEffectiveUserData = () => {
+    const uid = user?.uid || 'local-user';
+    let profile: any = propUserProfile || authProfile || {};
+
+    if (!profile.name || !profile.major) {
+      try {
+        const savedMyPage = localStorage.getItem(`mystair_mypage_data_${uid}`);
+        if (savedMyPage) {
+          const parsed = JSON.parse(savedMyPage);
+          profile = { ...profile, ...parsed };
+        }
+      } catch {}
+      try {
+        const savedMock = localStorage.getItem('mystair_mock_user');
+        if (savedMock) {
+          const parsedMock = JSON.parse(savedMock);
+          if (!profile.name && parsedMock.displayName) profile.name = parsedMock.displayName;
+        }
+      } catch {}
+    }
+
+    let diariesList: DiaryEntry[] = propDiaries || [];
+    if (diariesList.length === 0) {
+      try {
+        const savedDiaries = localStorage.getItem(`mystair_local_diaries_${uid}`);
+        if (savedDiaries) {
+          diariesList = JSON.parse(savedDiaries);
+        }
+      } catch {}
+    }
+
+    return { profile, diariesList };
+  };
+
+  const { profile: effectiveProfile, diariesList: effectiveDiaries } = getEffectiveUserData();
+  const studentName = effectiveProfile?.name || '지원자';
+
   // 시간 포맷 (오전/오후 H:MM)
   const getCurrentTimeStr = () => {
     const now = new Date();
@@ -66,19 +109,23 @@ export default function CoverLetterAiCoach({
     return `${period} ${displayHours}:${minutes}`;
   };
 
-  // 초기 웰컴 메시지 세팅
+  // 초기 웰컴 메시지 (노션 AI 스타일: "안녕하세요, 김교범님! 무엇을 도와드릴까요?")
   useEffect(() => {
     if (messages.length === 0) {
+      const greeting = studentName && studentName !== '지원자'
+        ? `안녕하세요, ${studentName}님! 무엇을 도와드릴까요?\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 궁금한 점이나 피드백을 편하게 질문해 주세요.`
+        : `안녕하세요! 무엇을 도와드릴까요?\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 무엇이든 편하게 물어보세요.`;
+
       setMessages([
         {
           id: 'welcome-1',
           sender: 'ai',
-          text: `안녕하세요! 마이스터고·특성화고 취업 멘토 MyStair AI 코치입니다.\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 무엇이든 편하게 물어보세요.`,
+          text: greeting,
           time: getCurrentTimeStr()
         }
       ]);
     }
-  }, [sectionTitle]);
+  }, [sectionTitle, studentName]);
 
   // 스크롤 최하단 자동 이동
   useEffect(() => {
@@ -104,7 +151,9 @@ export default function CoverLetterAiCoach({
           sectionTitle,
           recommendedChars,
           currentAnswer: trimmed,
-          actionType: 'realtime_feedback'
+          actionType: 'realtime_feedback',
+          userProfile: effectiveProfile,
+          diaries: effectiveDiaries
         })
       });
 
@@ -112,7 +161,8 @@ export default function CoverLetterAiCoach({
         const data = await res.json();
         const speech = data?.feedback?.speech || data?.feedback?.summary || (data?.feedback?.tips && data.feedback.tips[0]) || '';
         if (speech) {
-          setFeedbackSpeech(speech);
+          // 이모지 완벽 정제
+          setFeedbackSpeech(speech.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim());
         }
       }
     } catch (err) {
@@ -143,7 +193,7 @@ export default function CoverLetterAiCoach({
     fetchFeedback(true);
   }, [sectionTitle, companyName]);
 
-  // 질문 전송 처리
+  // 질문 전송 처리 (마이페이지 및 다이어리 정보 함께 전송)
   const handleSendMessage = async (queryText?: string) => {
     const query = (queryText || inputQuestion).trim();
     if (!query || isAnswering) return;
@@ -170,16 +220,19 @@ export default function CoverLetterAiCoach({
           recommendedChars,
           currentAnswer,
           actionType: 'ask_question',
-          userQuestion: query
+          userQuestion: query,
+          userProfile: effectiveProfile,
+          diaries: effectiveDiaries
         })
       });
 
       if (res.ok) {
         const data = await res.json();
+        let cleanedAnswer = (data.answer || t('실천 가능한 문장으로 구체적인 살을 붙여보세요.')).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
         const aiMsg: ChatMessage = {
           id: `ai-${Date.now()}`,
           sender: 'ai',
-          text: data.answer || t('실천 가능한 문장으로 구체적인 살을 붙여보세요.'),
+          text: cleanedAnswer,
           time: getCurrentTimeStr()
         };
         setMessages(prev => [...prev, aiMsg]);
@@ -215,7 +268,7 @@ export default function CoverLetterAiCoach({
       {
         id: `welcome-${Date.now()}`,
         sender: 'ai',
-        text: `대화가 초기화되었습니다. [${sectionTitle || '자기소개서'}] 작성 중 궁금한 점을 언제든 편하게 물어보세요!`,
+        text: `대화가 초기화되었습니다. [${sectionTitle || '자기소개서'}] 작성 중 고민되는 점을 편하게 질문해 주세요.`,
         time: getCurrentTimeStr()
       }
     ]);
@@ -228,10 +281,10 @@ export default function CoverLetterAiCoach({
     setTimeout(() => setCopiedId(null), 1800);
   };
 
-  // 외계인 말풍선 텍스트
+  // 외계인 말풍선 텍스트 (이모지 없음)
   const defaultSpeech = currentAnswer.trim().length === 0
-    ? t(`머릿속에 떠오르는 생각을 다듬지 말고 일단 편하게 적어보세요! 실시간으로 읽고 보완할 점을 바로 짚어드릴게요. 🛸`)
-    : t(`작성하신 내용을 살펴보고 있어요! 잠시만 기다려주세요.`);
+    ? t(`머릿속에 떠오르는 생각을 다듬지 말고 편하게 적어보세요. 실시간으로 읽고 보완할 점을 바로 짚어드리겠습니다.`)
+    : t(`작성하신 내용을 살펴보고 있습니다. 잠시만 기다려주세요.`);
   const speechText = feedbackSpeech || defaultSpeech;
 
   return (
@@ -283,7 +336,7 @@ export default function CoverLetterAiCoach({
             {messages.map((msg) => (
               <div key={msg.id} className="space-y-1">
                 {msg.sender === 'user' ? (
-                  /* 사용자 메시지: 우측의 깔끔한 소프트 그레이 알약 버블 */
+                  /* 사용자 메시지: 우측 알약 버블 */
                   <div className="flex justify-end">
                     <div className={`px-3.5 py-2 rounded-2xl rounded-tr-xs text-[13px] leading-relaxed max-w-[85%] ${
                       isLightMode 
@@ -303,7 +356,7 @@ export default function CoverLetterAiCoach({
                       {msg.text}
                     </p>
 
-                    {/* 노션 AI 하단 아이콘 (복사, 따봉) */}
+                    {/* 노션 AI 하단 아이콘 (복사, 좋아요) */}
                     <div className="flex items-center gap-1.5 pt-1 text-slate-400 dark:text-slate-500">
                       <button
                         type="button"
@@ -343,7 +396,7 @@ export default function CoverLetterAiCoach({
             <div ref={messagesEndRef} />
           </div>
 
-          {/* 빠른 질문 추천 칩 (노션 스타일 상단) */}
+          {/* 빠른 질문 추천 칩 (다이어리 및 소재 추천) */}
           <div className="px-3 py-1 flex items-center gap-1 overflow-x-auto no-scrollbar shrink-0">
             <button
               type="button"
@@ -354,12 +407,12 @@ export default function CoverLetterAiCoach({
                   : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
               }`}
             >
-              <Sparkles size={10} className="text-emerald-500" />
+              <Plus size={10} className="text-slate-400" />
               {t('지금 어때?')}
             </button>
             <button
               type="button"
-              onClick={() => handleSendMessage('나 뭐 써야 할지 모르겠어')}
+              onClick={() => handleSendMessage('내 다이어리 기록 중 어떤 소재를 쓰면 좋을까?')}
               className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
                 isLightMode 
                   ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600" 
@@ -367,7 +420,7 @@ export default function CoverLetterAiCoach({
               }`}
             >
               <Plus size={10} className="text-slate-400" />
-              {t('소재 추천')}
+              {t('다이어리 소재 추천')}
             </button>
             <button
               type="button"
@@ -435,8 +488,8 @@ export default function CoverLetterAiCoach({
           onClick={() => setIsOpenChat(true)}
           className={`pointer-events-auto group relative mb-3 p-4 sm:p-4.5 rounded-2xl rounded-br-xs shadow-2xl border transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 max-w-[320px] sm:max-w-[360px] cursor-pointer hover:scale-[1.02] active:scale-[0.99] ${
             isLightMode 
-              ? "bg-white text-slate-800 border-slate-200/90 shadow-slate-300/40 hover:border-emerald-400/60" 
-              : "bg-slate-900 text-slate-100 border-slate-700/90 shadow-black/60 hover:border-emerald-500/60"
+              ? "bg-white text-slate-800 border-slate-200/90 shadow-slate-300/40 hover:border-slate-400/60" 
+              : "bg-slate-900 text-slate-100 border-slate-700/90 shadow-black/60 hover:border-slate-500/60"
           }`}
           title={t('클릭하여 대화창 열기')}
         >
@@ -451,8 +504,8 @@ export default function CoverLetterAiCoach({
 
           {isLoadingFeedback ? (
             <div className="flex items-center gap-2 text-slate-400 text-xs py-0.5">
-              <RefreshCw size={12} className="animate-spin text-emerald-500 shrink-0" />
-              <span>{t('작성 내용을 읽고 있어요...')}</span>
+              <RefreshCw size={12} className="animate-spin text-slate-400 shrink-0" />
+              <span>{t('작성 내용을 읽고 있습니다...')}</span>
             </div>
           ) : (
             <div className="space-y-1">
@@ -460,8 +513,8 @@ export default function CoverLetterAiCoach({
                 {speechText}
               </p>
               <div className="flex items-center justify-end pt-1">
-                <span className="text-[10px] text-slate-400 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">
-                  {t('클릭하여 질문하기 💬')}
+                <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                  {t('클릭하여 질문하기')}
                 </span>
               </div>
             </div>

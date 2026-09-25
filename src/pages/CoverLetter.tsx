@@ -2538,6 +2538,8 @@ ${formattedAnswer}
           sectionTitle={activeSection ? getCleanTitle(activeSection.title) : '자기소개서 문항'}
           recommendedChars={activeSection ? activeSection.recommendedChars : 500}
           currentAnswer={activeSection ? (answers[activeSection.id] || '') : ''}
+          userProfile={userProfile}
+          diaries={diaries}
         />
       )}
 
