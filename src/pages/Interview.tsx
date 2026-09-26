@@ -102,6 +102,7 @@ export interface BehaviorMetrics {
   voiceLoudnessScore: number;    // 목소리 크기 및 음량 성량 (75~98%)
   fidgetingCount: number;        // 손 올리기/손톱 물어뜯기/얼굴 만지기 의심 횟수
   blinkRatePerMin: number;       // 분당 눈 깜빡임 빈도 (정상: 15~20회)
+  totalBlinkCount: number;       // 총 눈 깜빡임 누적 횟수
   distractingHabits: string[];   // 감지된 거슬리는 산만한 행동 태그
   behaviorVerdict: string;       // 종합 행동 평가 코멘트
   shoulderStatus: 'level' | 'left_tilted' | 'right_tilted' | 'moving'; // 어깨 수평 상태
@@ -154,12 +155,13 @@ export default function Interview() {
     voiceLoudnessScore: 88,
     fidgetingCount: 0,
     blinkRatePerMin: 18,
+    totalBlinkCount: 0,
     distractingHabits: [],
-    behaviorVerdict: '카메라 정면 응시와 바른 상체 자세가 안정적으로 유지되고 있습니다.',
+    behaviorVerdict: '어깨 수평과 시선이 안정적으로 감지되고 있습니다.',
     shoulderStatus: 'level',
-    shoulderMessage: '양쪽 어깨 수평이 바르게 유지되고 있습니다.',
-    expressionStatus: 'good',
-    expressionMessage: '자연스럽고 편안한 호감형 표정입니다.'
+    shoulderMessage: '양쪽 어깨 수평이 고르게 유지되는 상태입니다.',
+    expressionStatus: 'neutral',
+    expressionMessage: '단정하고 차분한 기본 표정을 유지하고 있습니다.'
   });
 
   // 내 화면 크기 확대 모드 (사용자 요청: 내 화면이 너무 작을 때 넓게 확장)
@@ -202,6 +204,7 @@ export default function Interview() {
   const [recentDeductionsLog, setRecentDeductionsLog] = useState<{ id: number; text: string; time: string }[]>([]);
   const prevTorsoDataRef = useRef<Uint8ClampedArray | null>(null);
   const blinkTimestampsRef = useRef<number[]>([]);
+  const totalBlinkCountRef = useRef<number>(0);
   const lastEyeLumaRef = useRef<number | null>(null);
   const eyeLumaBaselineRef = useRef<number | null>(null);
   const lastBlinkTimeRef = useRef<number>(0);
@@ -212,6 +215,13 @@ export default function Interview() {
   const prevEyeDarkRef = useRef<number | null>(null);
   const lastStateUpdateTimeRef = useRef<number>(0);
   const prevShoulderMotionDataRef = useRef<Uint8ClampedArray | null>(null);
+  const smoothShoulderDiffRef = useRef<number>(0);
+  const shoulderStatusHoldRef = useRef<{ status: 'level' | 'left_tilted' | 'right_tilted' | 'moving'; until: number }>({ status: 'level', until: 0 });
+  const expressionStatusHoldRef = useRef<{ status: 'good' | 'neutral' | 'tense'; until: number }>({ status: 'neutral', until: 0 });
+  const expressionHistoryRef = useRef<('good' | 'neutral' | 'tense')[]>([]);
+  const faceBaselineRef = useRef<{ browLuma: number; cheekLuma: number; mouthVar: number } | null>(null);
+  const smoothPostureStabilityRef = useRef<number>(94);
+  const smoothEyeContactRef = useRef<number>(92);
 
   // 상단 제어 바: 마이크 음소거 / 카메라 끄기 토글
   const [isMicMuted, setIsMicMuted] = useState<boolean>(false);
@@ -618,11 +628,6 @@ export default function Interview() {
               let eyeOffTrack = false;
               let postureUnstable = false;
               let fidgetDetected = false;
-              let blinkRapid = false;
-              let currentShoulderStatus: 'level' | 'left_tilted' | 'right_tilted' | 'moving' = 'level';
-              let currentShoulderMessage = '양쪽 어깨 수평이 바르게 유지되고 있습니다.';
-              let currentExprStatus: 'good' | 'neutral' | 'tense' = 'neutral';
-              let currentExprMessage = '단정하고 차분한 기본 표정';
               const reasons: string[] = [];
 
               // A. 카메라 시선 분석 (Gaze & Centroid)
@@ -658,7 +663,7 @@ export default function Interview() {
                 const motion = sampleCount > 0 ? (diffSum / sampleCount) : 0;
                 if (motion > 9.5) {
                   postureUnstable = true;
-                  reasons.push('상체 흔들림');
+                  reasons.push('상체 움직임');
                 }
               }
               prevTorsoDataRef.current = new Uint8ClampedArray(data);
@@ -686,15 +691,15 @@ export default function Interview() {
               const chinRatio = chinTotal > 0 ? (chinSkinPixels / chinTotal) : 0;
               const now = Date.now();
               if (chinRatio > 0.44) {
-                if (now - lastFidgetTimeRef.current > 1800) {
+                if (now - lastFidgetTimeRef.current > 2000) {
                   fidgetDetected = true;
                   lastFidgetTimeRef.current = now;
-                  triggerDeductionAlert('손버릇 감지 (얼굴/턱 만짐)');
+                  triggerDeductionAlert('손버릇 감지 (얼굴/턱 접촉)');
                 }
-                reasons.push('얼굴/턱 만지는 손버릇');
+                reasons.push('얼굴/턱 접촉');
               }
 
-              // D. 눈 깜빡임 실시간 고감도 검출 (Eye Area Dynamic Luma & Dark Pixels)
+              // D. 눈 깜빡임 실시간 정밀 감지 및 누적 횟수 계산
               const eyeMinX = Math.max(0, Math.round(cx - 20));
               const eyeMaxX = Math.min(160, Math.round(cx + 20));
               const eyeMinY = Math.max(0, Math.round(cy - 14));
@@ -717,7 +722,7 @@ export default function Interview() {
               if (eyeLumaBaselineRef.current === null) {
                 eyeLumaBaselineRef.current = currentEyeLuma;
               } else {
-                eyeLumaBaselineRef.current = eyeLumaBaselineRef.current * 0.90 + currentEyeLuma * 0.10;
+                eyeLumaBaselineRef.current = eyeLumaBaselineRef.current * 0.94 + currentEyeLuma * 0.06;
               }
 
               // 순간 밝기 변화, 동공 픽셀 덮임, 베이스라인 편차로 눈 깜빡임 감지
@@ -725,36 +730,26 @@ export default function Interview() {
               const baselineDiff = Math.abs(currentEyeLuma - eyeLumaBaselineRef.current);
               const darkDiff = prevEyeDarkRef.current !== null ? Math.abs(darkPixels - prevEyeDarkRef.current) : 0;
 
-              if ((instantDiff > 1.6 || baselineDiff > 2.0 || darkDiff >= 2) && (now - lastBlinkTimeRef.current > 150)) {
+              // 깜빡임 1회당 정직하게 누적 카운트 (200ms 디바운스로 다중 카운트 방지)
+              if ((instantDiff > 1.8 || baselineDiff > 2.2 || darkDiff >= 2) && (now - lastBlinkTimeRef.current > 200)) {
                 lastBlinkTimeRef.current = now;
                 blinkTimestampsRef.current.push(now);
+                totalBlinkCountRef.current += 1;
               }
               lastEyeLumaRef.current = currentEyeLuma;
               prevEyeDarkRef.current = darkPixels;
 
-              // 7초 슬라이딩 윈도우로 분당 깜빡임 즉각 환산 (사용자 반응성 극대화)
-              blinkTimestampsRef.current = blinkTimestampsRef.current.filter(t => now - t < 7000);
+              // 10초 슬라이딩 윈도우로 분당 속도 계산 (급격한 널뛰기 방지)
+              blinkTimestampsRef.current = blinkTimestampsRef.current.filter(t => now - t < 10000);
               const recentBlinkCount = blinkTimestampsRef.current.length;
-              let currentBlinkRate = 16;
-              if (recentBlinkCount > 0) {
-                currentBlinkRate = Math.min(65, Math.round((recentBlinkCount / 7) * 60));
-              } else {
-                const timeSinceLastBlink = (now - lastBlinkTimeRef.current) / 1000;
-                if (timeSinceLastBlink > 6.5) {
-                  currentBlinkRate = Math.max(5, Math.round(60 / timeSinceLastBlink));
-                } else {
-                  currentBlinkRate = 16;
-                }
-              }
+              const currentBlinkRate = Math.min(50, Math.round((recentBlinkCount / 10) * 60));
+              const currentTotalBlinks = totalBlinkCountRef.current;
 
-              if (currentBlinkRate >= 25 || recentBlinkCount >= 3) {
-                blinkRapid = true;
+              if (currentBlinkRate >= 28) {
                 reasons.push(`눈 깜빡임 잦음 (${currentBlinkRate}회/분)`);
-              } else if (currentBlinkRate <= 7 && (now - lastBlinkTimeRef.current > 6500)) {
-                reasons.push(`시선 응시 고정/경직 (${currentBlinkRate}회/분)`);
               }
 
-              // E. 어깨 수평 및 상체 움직임/들썩임 실시간 정밀 분석
+              // E. 어깨 수평 및 상체 들썩임 분석 (EMA 필터 및 히스테리시스로 급변 방지)
               const topBgIdx = (4 * 160 + 80) * 4;
               const bgLum = data[topBgIdx] * 0.299 + data[topBgIdx + 1] * 0.587 + data[topBgIdx + 2] * 0.114;
 
@@ -807,40 +802,71 @@ export default function Interview() {
 
               const avgLeftY = leftEdgeCount > 0 ? (leftEdgeYSum / leftEdgeCount) : Math.round(cy + 28);
               const avgRightY = rightEdgeCount > 0 ? (rightEdgeYSum / rightEdgeCount) : Math.round(cy + 28);
-              const shoulderDiff = avgLeftY - avgRightY; // Y가 작을수록 화면상 높은 위치 (올라간 어깨)
+              const rawShoulderDiff = avgLeftY - avgRightY;
 
               let shoulderMoving = false;
               if (prevLeftShoulderYRef.current !== null && prevRightShoulderYRef.current !== null) {
                 const dL = Math.abs(avgLeftY - prevLeftShoulderYRef.current);
                 const dR = Math.abs(avgRightY - prevRightShoulderYRef.current);
-                if (dL > 1.7 || dR > 1.7) {
+                if (dL > 2.0 || dR > 2.0) {
                   shoulderMoving = true;
                 }
               }
               prevLeftShoulderYRef.current = avgLeftY;
               prevRightShoulderYRef.current = avgRightY;
 
+              // 어깨 차이에 지수 이동 평균(EMA) 적용하여 급변(Flicker) 차단
+              smoothShoulderDiffRef.current = smoothShoulderDiffRef.current * 0.85 + rawShoulderDiff * 0.15;
+              const sDiff = smoothShoulderDiffRef.current;
+
+              let targetShoulderStatus: 'level' | 'left_tilted' | 'right_tilted' | 'moving' = 'level';
               if (shoulderMoving) {
-                currentShoulderStatus = 'moving';
-                currentShoulderMessage = '어깨 들썩임 및 움직임 감지 (차분하게 힘을 빼고 고정하세요)';
-                reasons.push('어깨 움직임/들썩임');
-              } else if (shoulderDiff < -2.4) {
-                currentShoulderStatus = 'left_tilted';
-                currentShoulderMessage = '왼쪽 어깨가 올라가 있습니다. 양쪽 수평을 맞춰보세요.';
-                reasons.push('왼쪽 어깨 올라감');
-              } else if (shoulderDiff > 2.4) {
-                currentShoulderStatus = 'right_tilted';
-                currentShoulderMessage = '오른쪽 어깨가 올라가 있습니다. 양쪽 수평을 맞춰보세요.';
-                reasons.push('오른쪽 어깨 올라감');
+                targetShoulderStatus = 'moving';
+              } else if (sDiff < -2.6) {
+                targetShoulderStatus = 'left_tilted';
+              } else if (sDiff > 2.6) {
+                targetShoulderStatus = 'right_tilted';
+              } else if (Math.abs(sDiff) < 1.7) {
+                targetShoulderStatus = 'level';
               } else {
-                currentShoulderStatus = 'level';
-                currentShoulderMessage = '양쪽 어깨 수평이 바르게 유지되고 있습니다.';
+                targetShoulderStatus = shoulderStatusHoldRef.current.status;
               }
 
-              // F. 표정 분석 (웃음/미소 vs 찡그림/울상 vs 차분함)
-              // 1) 미간 (Glabella) 밝기 - 찡그리거나 울 때 미간 주름으로 인한 그림자 발생
+              // 최소 850ms 유지하여 화면 번쩍임 방지
+              if (now > shoulderStatusHoldRef.current.until || targetShoulderStatus === shoulderStatusHoldRef.current.status) {
+                if (targetShoulderStatus !== shoulderStatusHoldRef.current.status) {
+                  shoulderStatusHoldRef.current = { status: targetShoulderStatus, until: now + 850 };
+                }
+              }
+              const currentShoulderStatus = shoulderStatusHoldRef.current.status;
+
+              let currentShoulderMessage = '양쪽 어깨 수평이 고르게 유지되는 상태입니다.';
+              if (currentShoulderStatus === 'moving') {
+                currentShoulderMessage = '어깨의 움직임 및 들썩임이 감지되었습니다.';
+                reasons.push('어깨 움직임');
+              } else if (currentShoulderStatus === 'left_tilted') {
+                currentShoulderMessage = '왼쪽 어깨가 우측보다 다소 올라가 있습니다.';
+                reasons.push('왼쪽 어깨 경사');
+              } else if (currentShoulderStatus === 'right_tilted') {
+                currentShoulderMessage = '오른쪽 어깨가 좌측보다 다소 올라가 있습니다.';
+                reasons.push('오른쪽 어깨 경사');
+              }
+
+              // F. 표정 분석 (미소/웃음 vs 찡그림/울상 vs 단정하고 차분함 디폴트)
+              // 1) 이마 밝기
+              let foreheadSum = 0, fCount = 0;
+              for (let fy = Math.max(0, Math.round(cy - 20)); fy <= Math.max(4, Math.round(cy - 14)); fy += 2) {
+                for (let fx = Math.max(0, Math.round(cx - 10)); fx <= Math.min(159, Math.round(cx + 10)); fx += 2) {
+                  const idx = (fy * 160 + fx) * 4;
+                  foreheadSum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                  fCount++;
+                }
+              }
+              const avgForehead = fCount > 0 ? (foreheadSum / fCount) : 100;
+
+              // 2) 미간 (Glabella) 밝기 - 찡그릴 때 그림자 발생
               let glabellaLumaSum = 0, gCount = 0;
-              for (let gy = Math.max(0, Math.round(cy - 13)); gy <= Math.max(5, Math.round(cy - 6)); gy += 2) {
+              for (let gy = Math.max(0, Math.round(cy - 14)); gy <= Math.max(5, Math.round(cy - 7)); gy += 2) {
                 for (let gx = Math.max(0, Math.round(cx - 6)); gx <= Math.min(159, Math.round(cx + 6)); gx += 2) {
                   const idx = (gy * 160 + gx) * 4;
                   glabellaLumaSum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
@@ -849,9 +875,9 @@ export default function Interview() {
               }
               const avgGlabella = gCount > 0 ? (glabellaLumaSum / gCount) : 100;
 
-              // 2) 볼 광대뼈 부위 밝기 - 웃을 때 볼이 올라가며 광대뼈 하이라이트 발생
+              // 3) 볼(광대뼈) 부위 밝기
               let cheekLumaSum = 0, cCount = 0;
-              for (let cky = Math.max(0, Math.round(cy + 6)); cky <= Math.min(118, Math.round(cy + 13)); cky += 2) {
+              for (let cky = Math.max(0, Math.round(cy + 5)); cky <= Math.min(118, Math.round(cy + 13)); cky += 2) {
                 for (let ckx of [Math.max(0, Math.round(cx - 15)), Math.min(159, Math.round(cx + 15))]) {
                   const idx = (cky * 160 + ckx) * 4;
                   cheekLumaSum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
@@ -860,7 +886,7 @@ export default function Interview() {
               }
               const avgCheek = cCount > 0 ? (cheekLumaSum / cCount) : 100;
 
-              // 3) 입 영역 밝기 분산 및 밝기 - 치아 노출/웃음 시 분산 대폭 증가
+              // 4) 입 영역 픽셀 밝기 및 분산 (입 벌림, 치아 노출 등)
               let mouthPixels: number[] = [];
               for (let my = Math.max(0, Math.round(cy + 13)); my <= Math.min(118, Math.round(cy + 24)); my += 2) {
                 for (let mx = Math.max(0, Math.round(cx - 15)); mx <= Math.min(159, Math.round(cx + 15)); mx += 2) {
@@ -875,56 +901,97 @@ export default function Interview() {
                 mouthVar = Math.sqrt(mouthPixels.reduce((a, b) => a + (b - mouthMean) ** 2, 0) / mouthPixels.length);
               }
 
-              const avgFaceLuma = (avgGlabella + avgCheek + mouthMean) / 3;
-
-              // 표정 판정 로직:
-              // 1. 웃음/미소: 치아 노출로 입 분산 증가 (mouthVar > 10.5) 또는 광대뼈 하이라이트 (avgCheek > avgFaceLuma * 1.025)
-              // 2. 찡그림/울상: 미간 주름으로 인한 급격한 그림자 (avgGlabella < avgCheek * 0.86 또는 avgCheek - avgGlabella > 8.0)
-              // 3. 차분함: 중립적인 안정된 표정
-              if (mouthVar > 10.5 || avgCheek > avgFaceLuma * 1.025 || (mouthMean > avgFaceLuma * 1.02 && mouthVar > 8.5)) {
-                currentExprStatus = 'good';
-                currentExprMessage = '환하고 자연스러운 호감형 미소 (웃음)';
-              } else if (avgGlabella < avgCheek * 0.86 || (avgCheek - avgGlabella > 8.0) || avgGlabella < avgFaceLuma * 0.88) {
-                currentExprStatus = 'tense';
-                currentExprMessage = '찡그림·울상 감지 (입꼬리를 올리고 편안하게 웃어보세요)';
-                reasons.push('찡그린 표정/울상');
+              // 사용자 개별 얼굴 베이스라인 자동 학습 (조명 차이 보정)
+              if (!faceBaselineRef.current) {
+                faceBaselineRef.current = {
+                  browLuma: avgGlabella,
+                  cheekLuma: avgCheek,
+                  mouthVar: mouthVar
+                };
               } else {
-                currentExprStatus = 'neutral';
-                currentExprMessage = '단정하고 차분한 기본 표정';
+                faceBaselineRef.current.browLuma = faceBaselineRef.current.browLuma * 0.97 + avgGlabella * 0.03;
+                faceBaselineRef.current.cheekLuma = faceBaselineRef.current.cheekLuma * 0.97 + avgCheek * 0.03;
+                faceBaselineRef.current.mouthVar = faceBaselineRef.current.mouthVar * 0.97 + mouthVar * 0.03;
               }
 
-              // 실시간 상태 업데이트 (120ms 스로틀링하여 쾌적한 8Hz 고속 반응 보장)
-              if (now - lastStateUpdateTimeRef.current >= 120) {
+              const baseMouthVar = Math.max(4.0, faceBaselineRef.current.mouthVar);
+              const baseBrow = Math.max(10, faceBaselineRef.current.browLuma);
+
+              // 정밀 표정 판정:
+              // 1. 밝은 미소 (웃음): 치아 노출/입꼬리 당김으로 입 내부 분산이 베이스라인 대비 35% 이상 높거나 절대 분산 13.0 초과
+              // 2. 찡그림/울상: 미간 찌푸림으로 미간 밝기가 평상시 대비 12% 이상 어두워짐
+              // 3. 차분함 (디폴트): 안정적인 기본 무표정
+              let rawExprStatus: 'good' | 'neutral' | 'tense' = 'neutral';
+              const isSmile = (mouthVar > 13.0) || (mouthVar > baseMouthVar * 1.35 && mouthVar > 8.0);
+              const isFrown = (avgGlabella < baseBrow * 0.88 && (avgForehead - avgGlabella) > 10);
+
+              if (isSmile) {
+                rawExprStatus = 'good';
+              } else if (isFrown) {
+                rawExprStatus = 'tense';
+              } else {
+                rawExprStatus = 'neutral';
+              }
+
+              // 최근 8회 프레임 다수결 투표로 표정 흔들림 방지
+              expressionHistoryRef.current.push(rawExprStatus);
+              if (expressionHistoryRef.current.length > 8) {
+                expressionHistoryRef.current.shift();
+              }
+              const goodVotes = expressionHistoryRef.current.filter(s => s === 'good').length;
+              const tenseVotes = expressionHistoryRef.current.filter(s => s === 'tense').length;
+              
+              let majorityExpr: 'good' | 'neutral' | 'tense' = 'neutral';
+              if (goodVotes >= 5) {
+                majorityExpr = 'good';
+              } else if (tenseVotes >= 5) {
+                majorityExpr = 'tense';
+              } else {
+                majorityExpr = 'neutral';
+              }
+
+              // 표정 상태 변경 시 최소 1100ms 유지하여 급변 차단
+              if (now > expressionStatusHoldRef.current.until || majorityExpr === expressionStatusHoldRef.current.status) {
+                if (majorityExpr !== expressionStatusHoldRef.current.status) {
+                  expressionStatusHoldRef.current = { status: majorityExpr, until: now + 1100 };
+                }
+              }
+              const currentExprStatus = expressionStatusHoldRef.current.status;
+
+              let currentExprMessage = '단정하고 차분한 기본 표정을 유지하고 있습니다.';
+              if (currentExprStatus === 'good') {
+                currentExprMessage = '밝고 긍정적인 미소 표정이 감지되었습니다.';
+              } else if (currentExprStatus === 'tense') {
+                currentExprMessage = '미간 찌푸림 또는 긴장된 표정이 감지되었습니다.';
+                reasons.push('찡그린 표정');
+              }
+
+              // 200ms 주기로 부드럽게 점수 및 UI 상태 업데이트
+              if (now - lastStateUpdateTimeRef.current >= 200) {
                 lastStateUpdateTimeRef.current = now;
 
                 setRealtimeBehavior(prev => {
-                  let newEye = prev.eyeContactScore;
-                  if (eyeOffTrack) {
-                    newEye = Math.max(22, prev.eyeContactScore - 12);
-                  } else {
-                    newEye = Math.min(97, prev.eyeContactScore + 2);
-                  }
+                  const targetEye = eyeOffTrack ? 45 : 96;
+                  const targetPosture = (postureUnstable || shoulderMoving || currentShoulderStatus !== 'level') ? 60 : 96;
 
-                  let newPosture = prev.postureStability;
-                  if (postureUnstable || shoulderMoving || currentShoulderStatus !== 'level') {
-                    newPosture = Math.max(25, prev.postureStability - 14);
-                  } else {
-                    newPosture = Math.min(96, prev.postureStability + 2);
-                  }
+                  // 지수 평활화로 점수 급변 완화
+                  smoothEyeContactRef.current = Math.round(smoothEyeContactRef.current * 0.85 + targetEye * 0.15);
+                  smoothPostureStabilityRef.current = Math.round(smoothPostureStabilityRef.current * 0.85 + targetPosture * 0.15);
 
                   const newFidgetCount = fidgetDetected ? prev.fidgetingCount + 1 : prev.fidgetingCount;
 
-                  let verdict = '카메라 정면 응시와 바른 상체 자세가 안정적으로 유지되고 있습니다.';
+                  let verdict = '어깨 수평과 시선이 안정적으로 감지되고 있습니다.';
                   if (reasons.length > 0) {
-                    verdict = `${reasons.join(', ')} 감지됨. 차분하게 호흡하며 자세를 유지하세요.`;
+                    verdict = `${reasons.join(' · ')} 감지됨`;
                   }
 
                   return {
-                    eyeContactScore: Math.round(newEye),
-                    postureStability: Math.round(newPosture),
+                    eyeContactScore: Math.max(30, Math.min(98, smoothEyeContactRef.current)),
+                    postureStability: Math.max(30, Math.min(98, smoothPostureStabilityRef.current)),
                     voiceLoudnessScore: micVolume > 15 ? Math.min(98, 80 + Math.round(micVolume * 0.2)) : prev.voiceLoudnessScore,
                     fidgetingCount: newFidgetCount,
                     blinkRatePerMin: currentBlinkRate,
+                    totalBlinkCount: currentTotalBlinks,
                     distractingHabits: reasons,
                     behaviorVerdict: verdict,
                     shoulderStatus: currentShoulderStatus,
@@ -935,7 +1002,7 @@ export default function Interview() {
                 });
 
                 if (reasons.length > 0) {
-                  setLiveFidgetWarning(`실시간 코칭: ${reasons.join(' • ')}`);
+                  setLiveFidgetWarning(reasons.join(' • '));
                 } else {
                   setLiveFidgetWarning('');
                 }
@@ -1582,8 +1649,8 @@ export default function Interview() {
                         : realtimeBehavior.shoulderStatus === 'moving'
                           ? '들썩임 감지'
                           : realtimeBehavior.shoulderStatus === 'left_tilted'
-                            ? '좌측 올라감'
-                            : '우측 올라감'}
+                            ? '좌측 높음'
+                            : '우측 높음'}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-snug line-clamp-2">
@@ -1591,35 +1658,29 @@ export default function Interview() {
                   </p>
                 </div>
 
-                {/* 2. 눈 깜빡임 (Eye Blinking) */}
+                {/* 2. 눈 깜빡임 (Eye Blinking - 누적 횟수 표기) */}
                 <div className={`p-3 rounded-2xl border transition-all ${
-                  realtimeBehavior.blinkRatePerMin >= 8 && realtimeBehavior.blinkRatePerMin <= 24
+                  realtimeBehavior.blinkRatePerMin <= 26
                     ? (isLightMode ? 'bg-emerald-50/50 border-emerald-200/60' : 'bg-emerald-950/20 border-emerald-900/40')
                     : (isLightMode ? 'bg-amber-50/60 border-amber-200/70' : 'bg-amber-950/20 border-amber-900/40')
                 }`}>
                   <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-                      <Eye size={13} className={realtimeBehavior.blinkRatePerMin >= 8 && realtimeBehavior.blinkRatePerMin <= 24 ? 'text-emerald-500' : 'text-amber-500'} />
+                      <Eye size={13} className={realtimeBehavior.blinkRatePerMin <= 26 ? 'text-emerald-500' : 'text-amber-500'} />
                       눈 깜빡임
                     </span>
                     <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                      realtimeBehavior.blinkRatePerMin >= 8 && realtimeBehavior.blinkRatePerMin <= 24
+                      realtimeBehavior.blinkRatePerMin <= 26
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
                         : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
                     }`}>
-                      {realtimeBehavior.blinkRatePerMin >= 25 
-                        ? `🚨 과도함 (${realtimeBehavior.blinkRatePerMin}회/분)`
-                        : realtimeBehavior.blinkRatePerMin <= 7
-                          ? `⚠️ 응시 고정 (${realtimeBehavior.blinkRatePerMin}회/분)`
-                          : `✨ 정상 (${realtimeBehavior.blinkRatePerMin}회/분)`}
+                      총 {realtimeBehavior.totalBlinkCount}회
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-snug line-clamp-2">
-                    {realtimeBehavior.blinkRatePerMin >= 25 
-                      ? '긴장으로 잦은 깜빡임 (심호흡하고 편안히 시선 고정)' 
-                      : realtimeBehavior.blinkRatePerMin <= 7
-                        ? '시선이 너무 굳어 있음 (가끔 편안하게 깜빡이세요)'
-                        : '자연스럽고 편안한 눈 깜빡임 리듬 유지 중'}
+                    {realtimeBehavior.totalBlinkCount === 0 
+                      ? '시선이 안정적으로 집중된 상태입니다.'
+                      : `총 ${realtimeBehavior.totalBlinkCount}회 감지됨 (분당 약 ${realtimeBehavior.blinkRatePerMin}회 속도)`}
                   </p>
                 </div>
 
@@ -1639,13 +1700,13 @@ export default function Interview() {
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
                         : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
                     }`}>
-                      {realtimeBehavior.fidgetingCount === 0 ? '✨ 단정함' : `⚠️ ${realtimeBehavior.fidgetingCount}회 주의`}
+                      {realtimeBehavior.fidgetingCount === 0 ? '0회 감지' : `총 ${realtimeBehavior.fidgetingCount}회 감지`}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-snug line-clamp-2">
                     {realtimeBehavior.fidgetingCount === 0 
-                      ? '손이 무릎 위에 단정하게 놓임' 
-                      : '얼굴/턱 만짐 주의 (손 무릎에 두기)'}
+                      ? '손이 화면 하단에 안정적으로 위치함' 
+                      : `얼굴/턱 접촉 동작이 총 ${realtimeBehavior.fidgetingCount}회 감지되었습니다.`}
                   </p>
                 </div>
 
@@ -1676,10 +1737,10 @@ export default function Interview() {
                           : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
                     }`}>
                       {realtimeBehavior.expressionStatus === 'good' 
-                        ? '😊 밝은 미소 (웃음)' 
+                        ? '😊 밝은 미소' 
                         : realtimeBehavior.expressionStatus === 'neutral' 
                           ? '😐 차분함' 
-                          : '😟 찡그림/울상'}
+                          : '😟 찡그림'}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-snug line-clamp-2">
@@ -1688,20 +1749,20 @@ export default function Interview() {
                 </div>
               </div>
 
-              {/* 실시간 한 줄 코칭 피드백 바 (Under Screen Real-Time Coaching Ticker) */}
+              {/* 실시간 감지 현황 알림 바 (훈계형 코칭 대신 객관적 감지 정보 제공) */}
               <div className={`p-3 rounded-2xl flex items-center gap-2.5 text-xs font-medium border ${
-                isLightMode ? 'bg-indigo-50/70 border-indigo-100 text-indigo-900' : 'bg-indigo-950/30 border-indigo-900/40 text-indigo-200'
+                isLightMode ? 'bg-slate-50 border-slate-200/80 text-slate-800' : 'bg-slate-800/60 border-slate-700 text-slate-200'
               }`}>
-                <span className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 font-bold">
-                  💡
+                <span className="w-6 h-6 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                  📊
                 </span>
                 <span className="flex-1 leading-relaxed">
-                  <strong className="font-bold mr-1">{t('실시간 코칭')}:</strong>
+                  <strong className="font-bold mr-1.5 text-indigo-600 dark:text-indigo-400">{t('실시간 분석 현황')}:</strong>
                   {realtimeBehavior.distractingHabits.length > 0 
-                    ? `${realtimeBehavior.distractingHabits[0]}에 유의하세요. ${realtimeBehavior.shoulderStatus !== 'level' ? realtimeBehavior.shoulderMessage : ''}` 
+                    ? `${realtimeBehavior.distractingHabits.join(' · ')} 감지 상태 (${realtimeBehavior.shoulderMessage})` 
                     : realtimeBehavior.expressionStatus === 'good'
-                      ? '자연스러운 미소와 바른 어깨 수평을 훌륭하게 유지하고 있습니다. 이 자세를 유지하며 답변하세요.'
-                      : '어깨 수평과 시선이 안정적입니다. 답변할 때 입꼬리를 살짝 올려 호감형 인상을 보여주세요.'}
+                      ? '양쪽 어깨 수평 양호 · 밝은 미소 표정 · 정면 시선이 안정적으로 감지되고 있습니다.'
+                      : '양쪽 어깨 수평 양호 · 차분한 기본 표정 · 정면 시선이 바르게 유지되고 있습니다.'}
                 </span>
               </div>
 
