@@ -1833,12 +1833,16 @@ app.post("/api/evaluate-interview", async (req, res) => {
       voiceLoudnessScore = 88,
       fidgetingCount = 0,
       blinkRatePerMin = 18,
-      distractingHabits = []
+      distractingHabits = [],
+      shoulderStatus = 'level',
+      shoulderMessage = '양쪽 어깨 수평이 바르게 유지되고 있습니다.',
+      expressionStatus = 'good',
+      expressionMessage = '자연스럽고 편안한 호감형 표정입니다.'
     } = behaviorMetrics || {};
 
     const prompt = `
 당신은 마이스터고 및 직업계고 학생 채용을 전문으로 하는 대기업/공기업 50대 베테랑 기술 면접관입니다.
-지원자가 제시한 면접 질문 답변과 실시간 카메라 행동 분석 지표(목소리 크기, 시선, 손톱 만지기나 얼굴 손대기 등 거슬리는 습관, 자세, 눈 깜빡임)를 종합 평가하고,
+지원자가 제시한 면접 질문 답변과 실시간 카메라 행동 분석 지표(목소리 크기, 시선, 어깨 수평, 손톱 만지기나 얼굴 손대기 등 거슬리는 습관, 자세, 눈 깜빡임, 표정)를 종합 평가하고,
 실제 사람이 직접 묻는 것처럼 실전 꼬리 질문 2개를 생성해 주세요.
 
 [지원 정보]
@@ -1854,20 +1858,23 @@ app.post("/api/evaluate-interview", async (req, res) => {
 
 [실시간 카메라 영상 및 음성 행동 분석 수치]
 - 시선 유지도 (Eye Contact): ${eyeContactScore}%
+- 어깨 수평 상태: ${shoulderStatus === 'level' ? '수평 양호' : '어깨 기울어짐 발생'} (${shoulderMessage})
 - 자세 안정도 (Posture Stability): ${postureStability}%
 - 목소리 성량/크기 (Voice Loudness): ${voiceLoudnessScore}%
 - 거슬리는 산만한 행동 횟수 (얼굴/입 손대기, 손톱 물어뜯기 등): ${fidgetingCount}회
 - 분당 눈 깜빡임: ${blinkRatePerMin}회 (정상: 15~20회)
+- 표정 진단: ${expressionStatus === 'good' ? '자연스러운 호감형 미소' : expressionStatus === 'neutral' ? '차분한 기본 표정' : '긴장으로 굳은 표정'} (${expressionMessage})
 - 감지된 거슬리는 습관: ${distractingHabits.length > 0 ? distractingHabits.join(", ") : "특이사항 없음"}
 
-[엄격한 태도 감점 및 위기감 평가 원칙]
-- 실제 대기업/공기업 임원 면접에서는 비언어적 산만함(얼굴 손대기, 손톱 만지기, 시선 회피, 눈 깜빡임 과다)이 있으면 즉시 탈락 또는 치명적 감점을 부여합니다.
+[엄격한 태도 감점 및 현실적 평가 원칙]
+- 실제 대기업/공기업 면접에서는 비언어적 산만함(얼굴 손대기, 손톱 만지기, 시선 회피, 눈 깜빡임 과다, 어깨 비대칭)을 중요한 태도 지표로 평가합니다.
 - 시선 유지도 70% 미만: 15~25점 감점
+- 어깨 수평 불량/상체 기울어짐: 8~15점 감점
 - 자세 안정도 70% 미만: 15~20점 감점
-- 손버릇(얼굴/턱/손톱 만지기)이 1회 이상 감지되면: 즉시 20~30점 감점
-- 눈 깜빡임이 30회/분 이상으로 과도하면: 10~15점 감점
-- 태도 불량이 심각하면 점수를 가차 없이 45~65점대(D/F등급 탈락 위기)로 강등하여 강한 위기감과 경각심을 부여하세요.
-- 태도가 훌륭하고 답변이 충실할 때만 85~95점을 부여하세요.
+- 손버릇(얼굴/턱/손톱 만지기)이 1회 이상 감지되면: 즉시 15~25점 감점
+- 눈 깜빡임이 28회/분 이상으로 과도하면: 8~12점 감점
+- 밝은 표정과 바른 어깨 수평, 성실한 답변이 어우러질 때 85~95점의 높은 점수를 부여하세요.
+- 태도 불량이 심각하면 점수를 50~65점대로 감점하여 구체적인 개선 피드백을 제공하세요.
 
 [꼬리 질문 생성 원칙]
 1. 지원자가 경험이나 프로젝트를 언급했다면: "그 경험을 통해 최종적으로 본인이 얻게 된 점이나 역량이 구체적으로 무엇인가?"
@@ -1965,6 +1972,16 @@ app.post("/api/evaluate-interview", async (req, res) => {
     if (blinkRatePerMin && blinkRatePerMin > 28) {
       baseScore -= 12;
       penaltyItems.push(`긴장성 과도한 눈 깜빡임(-12점)`);
+    }
+    if (shoulderStatus && shoulderStatus !== 'level') {
+      baseScore -= 10;
+      penaltyItems.push(`어깨 수평 비대칭(-10점)`);
+    }
+    if (expressionStatus === 'tense') {
+      baseScore -= 6;
+      penaltyItems.push(`긴장으로 굳은 표정(-6점)`);
+    } else if (expressionStatus === 'good') {
+      baseScore += 3;
     }
     const finalScore = Math.max(42, Math.min(96, baseScore));
 
