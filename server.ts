@@ -8,6 +8,7 @@ import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 import { Pool } from "pg";
 import { correctKoreanText } from "./src/utils/koreanSpellChecker";
+import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
 
 dotenv.config();
 
@@ -1740,6 +1741,83 @@ app.get("/api/ogq/stickers", async (req, res) => {
   }
 });
 
+// Realistic Human-Like Korean Male Interviewer Voice (MsEdge Neural TTS)
+const ttsAudioCache = new Map<string, Buffer>();
+
+async function generateMaleInterviewAudio(text: string, voice: 'injoon' | 'bongjin' = 'injoon'): Promise<Buffer> {
+  const cacheKey = `${voice}:${text}`;
+  if (ttsAudioCache.has(cacheKey)) {
+    return ttsAudioCache.get(cacheKey)!;
+  }
+  const voiceName = voice === 'bongjin' ? 'ko-KR-BongJinNeural' : 'ko-KR-InJoonNeural';
+  const tts = new MsEdgeTTS();
+  try {
+    await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const { audioStream } = tts.toStream(text);
+    const audioBuffer = await new Promise<Buffer>((resolve, reject) => {
+      const chunks: Buffer[] = [];
+      const timer = setTimeout(() => {
+        try { tts.close(); } catch {}
+        reject(new Error("TTS generation timeout"));
+      }, 9000);
+      audioStream.on("data", (c: Buffer) => chunks.push(c));
+      audioStream.on("end", () => {
+        clearTimeout(timer);
+        try { tts.close(); } catch {}
+        resolve(Buffer.concat(chunks));
+      });
+      audioStream.on("error", (err: any) => {
+        clearTimeout(timer);
+        try { tts.close(); } catch {}
+        reject(err);
+      });
+    });
+
+    if (ttsAudioCache.size > 150) {
+      const first = ttsAudioCache.keys().next().value;
+      if (first) ttsAudioCache.delete(first);
+    }
+    ttsAudioCache.set(cacheKey, audioBuffer);
+    return audioBuffer;
+  } catch (err) {
+    try { tts.close(); } catch {}
+    throw err;
+  }
+}
+
+// Interview TTS Endpoints (GET and POST)
+app.get("/api/interview-tts", async (req, res) => {
+  try {
+    let rawText = String(req.query.text || "").trim();
+    try { rawText = decodeURIComponent(rawText); } catch {}
+    if (!rawText) return res.status(400).send("text query parameter required");
+    const voice = req.query.voice === 'bongjin' ? 'bongjin' : 'injoon';
+    const audio = await generateMaleInterviewAudio(rawText, voice);
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return res.send(audio);
+  } catch (err: any) {
+    console.error("Interview TTS GET error:", err?.message || err);
+    return res.status(500).json({ error: "TTS failed" });
+  }
+});
+
+app.post("/api/interview-tts", async (req, res) => {
+  try {
+    const { text, voice = 'injoon' } = req.body || {};
+    if (!text || !text.trim()) return res.status(400).json({ error: "text is required" });
+    const audio = await generateMaleInterviewAudio(text.trim(), voice === 'bongjin' ? 'bongjin' : 'injoon');
+    return res.json({
+      audioBase64: audio.toString("base64"),
+      format: "audio/mp3",
+      voiceUsed: voice === 'bongjin' ? "ko-KR-BongJinNeural (50대 베테랑 남성)" : "ko-KR-InJoonNeural (신뢰감 넘치는 40대 남성)"
+    });
+  } catch (err: any) {
+    console.error("Interview TTS POST error:", err?.message || err);
+    return res.status(500).json({ error: "TTS failed" });
+  }
+});
+
 // AI 모의면접 답변 실시간 평가 API (행동 분석 및 꼬리 질문 전용 AI 엔진)
 app.post("/api/evaluate-interview", async (req, res) => {
   try {
@@ -1754,12 +1832,13 @@ app.post("/api/evaluate-interview", async (req, res) => {
       postureStability = 92,
       voiceLoudnessScore = 88,
       fidgetingCount = 0,
+      blinkRatePerMin = 18,
       distractingHabits = []
     } = behaviorMetrics || {};
 
     const prompt = `
-당신은 마이스터고 및 직업계고 학생 채용을 전문으로 하는 대기업/공기업 50대 중장년 베테랑 기술 면접관입니다.
-지원자가 제시한 면접 질문에 대한 답변과 실시간 카메라 행동 분석 지표(목소리 크기, 시선, 손톱 만지기나 얼굴 손대기 등 거슬리는 습관, 자세)를 결합하여 종합 평가하고,
+당신은 마이스터고 및 직업계고 학생 채용을 전문으로 하는 대기업/공기업 50대 베테랑 기술 면접관입니다.
+지원자가 제시한 면접 질문 답변과 실시간 카메라 행동 분석 지표(목소리 크기, 시선, 손톱 만지기나 얼굴 손대기 등 거슬리는 습관, 자세, 눈 깜빡임)를 종합 평가하고,
 실제 사람이 직접 묻는 것처럼 실전 꼬리 질문 2개를 생성해 주세요.
 
 [지원 정보]
@@ -1778,17 +1857,26 @@ app.post("/api/evaluate-interview", async (req, res) => {
 - 자세 안정도 (Posture Stability): ${postureStability}%
 - 목소리 성량/크기 (Voice Loudness): ${voiceLoudnessScore}%
 - 거슬리는 산만한 행동 횟수 (얼굴/입 손대기, 손톱 물어뜯기 등): ${fidgetingCount}회
+- 분당 눈 깜빡임: ${blinkRatePerMin}회 (정상: 15~20회)
 - 감지된 거슬리는 습관: ${distractingHabits.length > 0 ? distractingHabits.join(", ") : "특이사항 없음"}
+
+[엄격한 태도 감점 및 위기감 평가 원칙]
+- 실제 대기업/공기업 임원 면접에서는 비언어적 산만함(얼굴 손대기, 손톱 만지기, 시선 회피, 눈 깜빡임 과다)이 있으면 즉시 탈락 또는 치명적 감점을 부여합니다.
+- 시선 유지도 70% 미만: 15~25점 감점
+- 자세 안정도 70% 미만: 15~20점 감점
+- 손버릇(얼굴/턱/손톱 만지기)이 1회 이상 감지되면: 즉시 20~30점 감점
+- 눈 깜빡임이 30회/분 이상으로 과도하면: 10~15점 감점
+- 태도 불량이 심각하면 점수를 가차 없이 45~65점대(D/F등급 탈락 위기)로 강등하여 강한 위기감과 경각심을 부여하세요.
+- 태도가 훌륭하고 답변이 충실할 때만 85~95점을 부여하세요.
 
 [꼬리 질문 생성 원칙]
 1. 지원자가 경험이나 프로젝트를 언급했다면: "그 경험을 통해 최종적으로 본인이 얻게 된 점이나 역량이 구체적으로 무엇인가?"
 2. 협업이나 갈등 상황과 연계하여: "그 과정에서 동료나 조원과 의견 충돌이나 다툼은 없었는지, 어떻게 조율했는가?"
-위 두 가지 질문 맥락을 포함하여 현장 면접관의 어조로 꼬리 질문 2개를 작성하세요.
 
 다음 JSON 형식으로만 엄격하게 응답해 주세요:
 {
-  "score": 80~95 사이의 종합 점수(숫자),
-  "comment": "답변 내용과 목소리 크기, 시선, 손톱/손동작 태도를 결합한 전체적인 총평(2~3문장)",
+  "score": 45~95 사이의 종합 점수(숫자),
+  "comment": "답변 내용과 목소리 크기, 시선, 손톱/손동작 태도를 결합한 냉철하고 현실적인 총평(2~3문장)",
   "followUpQuestions": [
     "경험을 통해 무엇을 얻었는지 묻는 실전 꼬리 질문 1",
     "동료/친구와의 갈등이나 소통 과정을 묻는 실전 꼬리 질문 2"
@@ -1798,7 +1886,7 @@ app.post("/api/evaluate-interview", async (req, res) => {
 }
 `;
 
-    const systemInstruction = "너는 친절하면서도 전문적인 마이스터고 취업 면접관입니다. 학생의 행동과 답변을 균형 있게 분석하고 실시간 꼬리 질문을 JSON으로 제시합니다.";
+    const systemInstruction = "너는 실전 채용 현장의 냉철하면서도 전문적인 50대 남성 기술 면접관입니다. 학생의 행동과 답변을 현실감 있게 평가하고 태도 불량 시 엄격히 감점합니다.";
 
     let aiResult: any = null;
 
@@ -1841,8 +1929,8 @@ app.post("/api/evaluate-interview", async (req, res) => {
           "그 과정에서 동료나 조원과 의견 충돌이나 다툼은 없었습니까? 어떻게 조율했나요?"
         ]);
         return res.json({
-          score: parsed.score || 88,
-          comment: parsed.comment || "자신의 경험을 바탕으로 솔직하고 진중하게 답변하셨습니다.",
+          score: parsed.score ?? 78,
+          comment: parsed.comment || "자신의 경험을 바탕으로 솔직하게 답변하셨습니다.",
           followUpQuestions: returnedFollowUps,
           goodPoints: parsed.goodPoints || ["실제 경험을 바탕으로 진솔하게 설명함", "직무에 대한 열정이 드러남"],
           improvePoints: parsed.improvePoints || ["결과 수치를 함께 제시하면 설득력이 높아집니다", "두괄식 문장 구성을 추천합니다"]
@@ -1852,27 +1940,60 @@ app.post("/api/evaluate-interview", async (req, res) => {
       }
     }
 
-    // AI 키가 없거나 대체 시 작동하는 정밀 행동-답변 연계 평가 엔진
+    // AI 키가 없거나 대체 시 작동하는 정밀 행동-답변 연계 평가 엔진 (엄격한 감점 룰 적용)
     const ansLen = (answer || "").length;
-    const baseScore = Math.min(95, Math.max(83, 80 + Math.floor(ansLen / 25) + (eyeContactScore >= 90 ? 2 : 0) - (fidgetingCount > 0 ? 2 : 0)));
+    let baseScore = 88;
+    if (ansLen < 30) baseScore -= 12;
+    else if (ansLen > 100) baseScore += 5;
+
+    const penaltyItems: string[] = [];
+    if (eyeContactScore < 70) {
+      const p = Math.min(25, Math.round((70 - eyeContactScore) * 0.9));
+      baseScore -= p;
+      penaltyItems.push(`카메라 시선 불안정(-${p}점)`);
+    }
+    if (postureStability < 70) {
+      const p = Math.min(22, Math.round((70 - postureStability) * 0.8));
+      baseScore -= p;
+      penaltyItems.push(`상체 흔들림 및 자세 불량(-${p}점)`);
+    }
+    if (fidgetingCount > 0) {
+      const p = Math.min(30, fidgetingCount * 12 + 10);
+      baseScore -= p;
+      penaltyItems.push(`얼굴/턱/손톱 만지는 산만한 손버릇 ${fidgetingCount}회 감지(-${p}점)`);
+    }
+    if (blinkRatePerMin && blinkRatePerMin > 28) {
+      baseScore -= 12;
+      penaltyItems.push(`긴장성 과도한 눈 깜빡임(-12점)`);
+    }
+    const finalScore = Math.max(42, Math.min(96, baseScore));
 
     const fallbackFollowUps = [
       "그 경험이나 프로젝트를 수행하면서 최종적으로 본인이 얻게 된 가장 큰 기술적 역량은 무엇이었나요?",
       "그 과정에서 함께 작업하던 조원이나 친구와 의견 충돌은 없었습니까? 어떻게 풀어나갔나요?"
     ];
 
+    let verdictComment = "";
+    if (penaltyItems.length > 0) {
+      verdictComment = `⚠️ [경고: 태도 감점 발생] ${penaltyItems.join(", ")}으로 인해 최종 면접 점수가 크게 깎였습니다. 실제 기업 면접관은 불필요한 손동작과 불안정한 시선을 가장 먼저 감점 처리합니다. 단정히 자세를 고정하고 카메라 렌즈를 주시하세요.`;
+    } else {
+      verdictComment = `카메라 렌즈를 향한 시선 유지와 바른 상체 자세가 안정적입니다. 자신감 있는 어조로 기술적 역량을 신뢰감 있게 전달하셨습니다.`;
+    }
+
     return res.json({
-      score: baseScore,
-      comment: `목소리 성량(${voiceLoudnessScore}%)과 시선(${eyeContactScore}%)이 전반적으로 양호합니다. ${fidgetingCount > 0 ? "다만 손을 얼굴에 대거나 손톱을 만지는 거슬리는 습관은 실제 면접에서 감점 요인이 되니 손을 무릎에 단정히 고정하세요." : "바른 자세와 침착한 시선으로 면접관에게 신뢰를 주는 답변입니다."}`,
+      score: finalScore,
+      comment: verdictComment,
       followUpQuestions: fallbackFollowUps,
       goodPoints: [
-        `카메라 렌즈를 향한 시선 유지와 당당한 어조 (시선 점수: ${eyeContactScore}%)`,
-        "실습 및 학창 시절 경험을 바탕으로 구체적인 사례를 언급함"
+        `전공 실습 및 학창 시절 경험을 바탕으로 구체적인 사례를 언급함`,
+        finalScore >= 80 ? `당당하고 침착한 카메라 시선 유지 (${eyeContactScore}%)` : `위기 상황에서도 답변을 끝까지 완주하려는 태도`
       ],
-      improvePoints: [
-        fidgetingCount > 0 ? "손으로 턱이나 입, 손톱을 만지는 불필요한 손동작 고치기" : "눈을 너무 자주 깜빡이지 않도록 호흡을 가다듬기",
-        "답변 첫 문장에 핵심 결론을 먼저 제시하는 두괄식 구조 연습하기"
-      ]
+      improvePoints: penaltyItems.length > 0 
+        ? penaltyItems.map(p => `${p}을(를) 즉시 고쳐 실전 감점을 방지하세요.`)
+        : [
+            "답변 첫 문장에 핵심 결론을 먼저 제시하는 두괄식 구조 연습하기",
+            "직무와 연계된 구체적 수치나 설비 명칭을 한 번 더 강조하기"
+          ]
     });
   } catch (err: any) {
     console.error("evaluate-interview error", err);

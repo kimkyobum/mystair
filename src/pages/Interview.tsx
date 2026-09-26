@@ -24,7 +24,10 @@ import {
   MessageSquare,
   Flame,
   Zap,
-  Timer
+  Timer,
+  Bell,
+  BellOff,
+  Activity
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -171,8 +174,21 @@ export default function Interview() {
   const [followUpAnswer, setFollowUpAnswer] = useState<string>('');
   const [activeFollowUpIdx, setActiveFollowUpIdx] = useState<number | null>(null);
 
-  // 음성 TTS 안내 (중장년 남성 베테랑 면접관 톤)
+  // 음성 TTS 안내 (실제 사람 같은 남성 면접관 보이스)
   const [voiceGuideEnabled, setVoiceGuideEnabled] = useState<boolean>(true);
+  const [interviewerVoice, setInterviewerVoice] = useState<'injoon' | 'bongjin'>('injoon');
+  const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState<boolean>(false);
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // 실시간 비상 경고음 & 감점 플로팅 알림 상태
+  const [warningSoundEnabled, setWarningSoundEnabled] = useState<boolean>(true);
+  const lastWarningAudioTimeRef = useRef<number>(0);
+  const [floatingDeductions, setFloatingDeductions] = useState<{ id: number; text: string }[]>([]);
+  const [recentDeductionsLog, setRecentDeductionsLog] = useState<{ id: number; text: string; time: string }[]>([]);
+  const prevTorsoDataRef = useRef<Uint8ClampedArray | null>(null);
+  const blinkTimestampsRef = useRef<number[]>([]);
+  const lastEyeLumaRef = useRef<number | null>(null);
+  const lastFidgetTimeRef = useRef<number>(0);
 
   // 상단 제어 바: 마이크 음소거 / 카메라 끄기 토글
   const [isMicMuted, setIsMicMuted] = useState<boolean>(false);
@@ -278,31 +294,163 @@ export default function Interview() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // 3. 중장년 베테랑 면접관 묵직한 한국어 음성(TTS) 엔진
-  const speakLikeInterviewer = (text: string) => {
-    if (!voiceGuideEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  // 실시간 비상 경고음 재생 함수 (Web Audio API)
+  const playWarningTone = () => {
+    if (!warningSoundEnabled) return;
+    const now = Date.now();
+    if (now - lastWarningAudioTimeRef.current < 2500) return; // 2.5초 디바운스
+    lastWarningAudioTimeRef.current = now;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = audioContextRef.current || new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.22);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.26);
+    } catch (e) {
+      // Audio context might be restricted before gesture
+    }
+  };
+
+  // 실시간 감점 팝업 플로팅 등록
+  const triggerDeductionAlert = (penaltyText: string) => {
+    playWarningTone();
+    const id = Date.now() + Math.random();
+    setFloatingDeductions(prev => [...prev.slice(-2), { id, text: penaltyText }]);
+    setRecentDeductionsLog(prev => {
+      const timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      return [{ id, text: penaltyText, time: timeStr }, ...prev.slice(0, 4)];
+    });
+    setTimeout(() => {
+      setFloatingDeductions(prev => prev.filter(d => d.id !== id));
+    }, 2200);
+  };
+
+  // 3. 실제 사람 같은 남성 면접관 음성(TTS) 엔진 (서버 뉴럴 보이스 + 엄격한 남성 전용 폴백)
+  const speakLikeInterviewer = async (text: string) => {
+    if (!voiceGuideEnabled || typeof window === 'undefined') return;
+
+    // 이전 음성 정지
+    if (activeAudioRef.current) {
+      activeAudioRef.current.pause();
+      activeAudioRef.current = null;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    setIsInterviewerSpeaking(true);
+
+    const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+    if (!cleanText) {
+      setIsInterviewerSpeaking(false);
+      return;
+    }
+
+    // 1. 고품질 한국인 남성 뉴럴 음성 엔드포인트 직접 재생
+    try {
+      const audioUrl = `/api/interview-tts?text=${encodeURIComponent(cleanText)}&voice=${interviewerVoice}`;
+      const audio = new Audio(audioUrl);
+      activeAudioRef.current = audio;
+
+      audio.onended = () => {
+        setIsInterviewerSpeaking(false);
+        activeAudioRef.current = null;
+      };
+
+      audio.onerror = async () => {
+        // GET 실패 시 (긴 텍스트 등) POST 엔드포인트 시도
+        try {
+          const res = await fetch('/api/interview-tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: cleanText, voice: interviewerVoice })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.audioBase64) {
+              const postAudio = new Audio(`data:audio/mp3;base64,${data.audioBase64}`);
+              activeAudioRef.current = postAudio;
+              postAudio.onended = () => {
+                setIsInterviewerSpeaking(false);
+                activeAudioRef.current = null;
+              };
+              postAudio.onerror = () => {
+                activeAudioRef.current = null;
+                speakWithClientFallback(cleanText);
+              };
+              await postAudio.play();
+              return;
+            }
+          }
+        } catch {
+          // fallback below
+        }
+        speakWithClientFallback(cleanText);
+      };
+
+      await audio.play();
+      return;
+    } catch (err) {
+      console.warn("Direct neural audio play failed, trying client fallback", err);
+      speakWithClientFallback(cleanText);
+    }
+  };
+
+  const speakWithClientFallback = (text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setIsInterviewerSpeaking(false);
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ko-KR';
 
-      // 중장년 남성 목소리 세팅: 낮은 피치(0.85), 신뢰감 있고 진중한 템포(0.92)
-      utterance.pitch = 0.85;
-      utterance.rate = 0.92;
+      // 40~50대 남성 기술면접관 톤: 깊은 중저음(0.68), 단호하고 안정감 있는 템포(0.88)
+      utterance.pitch = 0.68;
+      utterance.rate = 0.88;
 
-      // 브라우저에 등록된 한국어 음성 중 남성/깊은 음색 우선 탐색
       const voices = window.speechSynthesis.getVoices();
-      const koVoices = voices.filter(v => v.lang.includes('ko') || v.lang.includes('KO'));
-      const maleVoice = koVoices.find(v => v.name.includes('Male') || v.name.includes('남성') || v.name.includes('Korean Male') || v.name.includes('Google 한국의'));
-      if (maleVoice) {
-        utterance.voice = maleVoice;
-      } else if (koVoices.length > 0) {
-        utterance.voice = koVoices[0];
+      // 여성 음성 완전 제외 필터링 (Google 한국의, Heami, SunHi, Yuna 등 여성/로봇 배제)
+      const koMaleVoices = voices.filter(v => {
+        const isKo = v.lang.includes('ko') || v.lang.includes('KO');
+        if (!isKo) return false;
+        const lower = v.name.toLowerCase();
+        const isFemale = lower.includes('female') || lower.includes('여성') || lower.includes('yuna') || lower.includes('heami') || lower.includes('sunhi') || lower.includes('google 한국의');
+        return !isFemale;
+      });
+
+      // 명시적 남성 보이스 우선 매칭
+      const exactMale = koMaleVoices.find(v => {
+        const lower = v.name.toLowerCase();
+        return lower.includes('injoon') || lower.includes('bongjin') || lower.includes('남성') || lower.includes('male') || lower.includes('gookmin');
+      });
+
+      if (exactMale) {
+        utterance.voice = exactMale;
+      } else if (koMaleVoices.length > 0) {
+        utterance.voice = koMaleVoices[0];
+      } else {
+        const anyKo = voices.find(v => v.lang.includes('ko') || v.lang.includes('KO'));
+        if (anyKo) utterance.voice = anyKo;
       }
+
+      utterance.onend = () => setIsInterviewerSpeaking(false);
+      utterance.onerror = () => setIsInterviewerSpeaking(false);
 
       window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.warn('TTS error', e);
+      console.warn('Speech synthesis fallback error', e);
+      setIsInterviewerSpeaking(false);
     }
   };
 
@@ -361,10 +509,11 @@ export default function Interview() {
     return () => {
       if (stream) stream.getTracks().forEach(t => t.stop());
       if (audioContextRef.current) audioContextRef.current.close().catch(() => {});
+      if (activeAudioRef.current) activeAudioRef.current.pause();
     };
   }, [stream]);
 
-  // 5. 프레임 영상 분석: 거슬리는 행동(손대기, 손톱 물어뜯기, 시선 흔들림, 눈 깜빡임) 및 목소리 크기 감지 루프
+  // 5. 정밀 프레임 영상 분석: 시선 이탈, 자세 흔들림, 손버릇, 눈 깜빡임 실시간 엄격 감점 루프
   useEffect(() => {
     let animId: number;
     let frameCount = 0;
@@ -382,70 +531,205 @@ export default function Interview() {
         setMicVolume(Math.min(100, Math.round((avg / 128) * 100)));
       }
 
-      // 2) 비디오 프레임 행동 분석 (1초에 약 3회)
+      // 2) 비디오 프레임 행동 분석 (초당 약 8회 검출)
       frameCount++;
-      if (cameraActive && videoRef.current && canvasRef.current && frameCount % 20 === 0) {
+      if (cameraActive && !isCameraOff && videoRef.current && canvasRef.current && frameCount % 7 === 0) {
         const video = videoRef.current;
         if (video.videoWidth > 0 && video.videoHeight > 0) {
           const canvas = canvasRef.current;
-          const ctx = canvas.getContext('2d');
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
           if (ctx) {
             canvas.width = 160;
             canvas.height = 120;
             ctx.drawImage(video, 0, 0, 160, 120);
 
-            // 하단/입 주변 영역(얼굴 손대기/손톱 물어뜯기 의심 영역) 픽셀 차이 검출
-            const lowerFaceData = ctx.getImageData(50, 70, 60, 45);
-            let brightCount = 0;
-            for (let i = 0; i < lowerFaceData.data.length; i += 4) {
-              const r = lowerFaceData.data[i];
-              const g = lowerFaceData.data[i+1];
-              const b = lowerFaceData.data[i+2];
-              if (r > 160 && g > 130 && b > 110) { // 피부/손 톤 감지
-                brightCount++;
+            const frameData = ctx.getImageData(0, 0, 160, 120);
+            const data = frameData.data;
+
+            // 피부 톤 픽셀 스캔 및 얼굴 중심점(Centroid) 계산
+            let skinCount = 0;
+            let sumX = 0;
+            let sumY = 0;
+            for (let y = 10; y < 110; y += 2) {
+              for (let x = 10; x < 150; x += 2) {
+                const idx = (y * 160 + x) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                // 한국인 표준 피부톤 RGB 필터링
+                if (r > 75 && g > 40 && b > 25 && (r - g) >= 12 && r > b && (r - b) >= 10 && Math.abs(r - g) < 115) {
+                  skinCount++;
+                  sumX += x;
+                  sumY += y;
+                }
               }
             }
-            const handNearMouthRatio = brightCount / (lowerFaceData.data.length / 4);
 
-            // 산만한 행동 판정
-            const distractingList: string[] = [];
+            let eyeOffTrack = false;
+            let postureUnstable = false;
             let fidgetDetected = false;
+            let blinkRapid = false;
+            const reasons: string[] = [];
 
-            if (handNearMouthRatio > 0.65) {
-              distractingList.push('손을 입/턱 주변에 대거나 손톱을 만지는 동작');
-              fidgetDetected = true;
-              setLiveFidgetWarning('⚠️ 주의: 손으로 입이나 턱을 만지지 마시고 손은 단정히 무릎 위에 두세요.');
+            // A. 카메라 시선 분석 (Gaze & Centroid) - 조금만 딴 데 봐도 확확 감점
+            if (skinCount < 300) {
+              // 화면에서 얼굴이 벗어나거나 너무 멀어짐
+              eyeOffTrack = true;
+              reasons.push('화면 이탈 (얼굴 미감지)');
+            } else {
+              const cx = sumX / skinCount;
+              const cy = sumY / skinCount;
+
+              // 좌우 이탈 검출 (화면 가로 160 중 중심은 80, 16px 이상 벗어나면 시선 이탈)
+              const diffX = Math.abs(cx - 80);
+              // 상하 이탈 검출 (중심은 52, 14px 이상 벗어나면 바닥/천장 응시)
+              const diffY = cy - 52;
+
+              if (diffX > 16) {
+                eyeOffTrack = true;
+                reasons.push(cx < 80 ? '카메라 좌측 시선 이탈' : '카메라 우측 시선 이탈');
+              } else if (diffY > 14) {
+                eyeOffTrack = true;
+                reasons.push('시선 하향 이탈 (바닥/메모/키보드 응시)');
+              } else if (diffY < -16) {
+                eyeOffTrack = true;
+                reasons.push('시선 상향 이탈 (천장/먼산 응시)');
+              }
+
+              // B. 자세 안정도 분석 (Torso Motion Variance) - 몸 조금만 흔들려도 엄격 감점
+              if (prevTorsoDataRef.current) {
+                let diffSum = 0;
+                let sampleCount = 0;
+                const prev = prevTorsoDataRef.current;
+                for (let ty = 60; ty < 115; ty += 3) {
+                  for (let tx = 25; tx < 135; tx += 3) {
+                    const idx = (ty * 160 + tx) * 4;
+                    diffSum += Math.abs(data[idx] - prev[idx]) + Math.abs(data[idx + 1] - prev[idx + 1]);
+                    sampleCount += 2;
+                  }
+                }
+                const motion = sampleCount > 0 ? (diffSum / sampleCount) : 0;
+                if (motion > 11) {
+                  postureUnstable = true;
+                  reasons.push('상체 흔들림 및 자세 불안정');
+                }
+              }
+              prevTorsoDataRef.current = new Uint8ClampedArray(data);
+
+              // C. 손버릇 감지 (턱/입/얼굴/손톱 만지는 동작) - 민감도 대폭 강화
+              const chinMinX = Math.max(0, Math.round(cx - 24));
+              const chinMaxX = Math.min(160, Math.round(cx + 24));
+              const chinMinY = Math.max(0, Math.round(cy + 4));
+              const chinMaxY = Math.min(120, Math.round(cy + 28));
+
+              let chinSkinPixels = 0;
+              let chinTotal = 0;
+              for (let cy_pos = chinMinY; cy_pos < chinMaxY; cy_pos += 2) {
+                for (let cx_pos = chinMinX; cx_pos < chinMaxX; cx_pos += 2) {
+                  const idx = (cy_pos * 160 + cx_pos) * 4;
+                  const r = data[idx];
+                  const g = data[idx + 1];
+                  const b = data[idx + 2];
+                  chinTotal++;
+                  if (r > 120 && g > 80 && b > 65 && (r - g) >= 10 && r > b) {
+                    chinSkinPixels++;
+                  }
+                }
+              }
+              const chinRatio = chinTotal > 0 ? (chinSkinPixels / chinTotal) : 0;
+              const now = Date.now();
+              if (chinRatio > 0.44) {
+                if (now - lastFidgetTimeRef.current > 1800) {
+                  fidgetDetected = true;
+                  lastFidgetTimeRef.current = now;
+                  triggerDeductionAlert('🚨 손버릇 감지 -30점 (얼굴/턱 만짐)');
+                }
+                reasons.push('얼굴/턱/손톱 만지는 산만한 손버릇');
+              }
+
+              // D. 눈 깜빡임 빈도 측정 (Eye Band Luminance Variation)
+              const eyeMinX = Math.max(0, Math.round(cx - 18));
+              const eyeMaxX = Math.min(160, Math.round(cx + 18));
+              const eyeMinY = Math.max(0, Math.round(cy - 14));
+              const eyeMaxY = Math.min(120, Math.round(cy - 3));
+
+              let eyeLumaSum = 0;
+              let eyePixels = 0;
+              for (let ey = eyeMinY; ey < eyeMaxY; ey += 2) {
+                for (let ex = eyeMinX; ex < eyeMaxX; ex += 2) {
+                  const idx = (ey * 160 + ex) * 4;
+                  eyeLumaSum += data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                  eyePixels++;
+                }
+              }
+              const currentEyeLuma = eyePixels > 0 ? (eyeLumaSum / eyePixels) : 100;
+              if (lastEyeLumaRef.current !== null) {
+                const lumaDiff = Math.abs(currentEyeLuma - lastEyeLumaRef.current);
+                if (lumaDiff > 12) {
+                  const lastBlink = blinkTimestampsRef.current[blinkTimestampsRef.current.length - 1] || 0;
+                  if (now - lastBlink > 200) {
+                    blinkTimestampsRef.current.push(now);
+                  }
+                }
+              }
+              lastEyeLumaRef.current = currentEyeLuma;
+
+              // 12초 슬라이딩 윈도우로 분당 깜빡임 환산
+              blinkTimestampsRef.current = blinkTimestampsRef.current.filter(t => now - t < 12000);
+              const currentBlinkRate = Math.round((blinkTimestampsRef.current.length / 12) * 60);
+              if (currentBlinkRate > 24) {
+                blinkRapid = true;
+                reasons.push(`긴장성 눈 깜빡임 과다 (${currentBlinkRate}회/분)`);
+              }
+            }
+
+            // 실시간 감점 및 수치 대폭 삭감 (확확 깎여서 극심한 위기감 조성!)
+            setRealtimeBehavior(prev => {
+              let newEye = prev.eyeContactScore;
+              if (eyeOffTrack) {
+                // 시선 이탈시 16~18점씩 쑥쑥 깎임! (최저 22점까지 폭락)
+                newEye = Math.max(22, prev.eyeContactScore - 18);
+                if (prev.eyeContactScore > 65) triggerDeductionAlert('⚠️ 시선 이탈 감점 -25점');
+              } else {
+                newEye = Math.min(97, prev.eyeContactScore + 1.5);
+              }
+
+              let newPosture = prev.postureStability;
+              if (postureUnstable) {
+                // 상체 흔들림시 16~20점씩 깎임! (최저 25점까지 폭락)
+                newPosture = Math.max(25, prev.postureStability - 18);
+                if (prev.postureStability > 65) triggerDeductionAlert('⚠️ 자세 흔들림 감점 -20점');
+              } else {
+                newPosture = Math.min(96, prev.postureStability + 1.5);
+              }
+
+              if (blinkRapid && (prev.blinkRatePerMin || 18) <= 24) {
+                triggerDeductionAlert('⚠️ 과도한 깜빡임 감점 -15점');
+              }
+
+              const newFidgetCount = fidgetDetected ? prev.fidgetingCount + 1 : prev.fidgetingCount;
+
+              let verdict = '카메라 정면 응시와 바른 상체 자세가 안정적으로 유지되고 있습니다.';
+              if (reasons.length > 0) {
+                verdict = `🚨 [경고] ${reasons.join(', ')} 감지! 실전 면접관 점수가 급락하고 있습니다.`;
+              }
+
+              return {
+                eyeContactScore: Math.round(newEye),
+                postureStability: Math.round(newPosture),
+                voiceLoudnessScore: micVolume > 15 ? Math.min(98, 80 + Math.round(micVolume * 0.2)) : prev.voiceLoudnessScore,
+                fidgetingCount: newFidgetCount,
+                blinkRatePerMin: blinkTimestampsRef.current.length > 0 ? Math.round((blinkTimestampsRef.current.length / 12) * 60) : 18,
+                distractingHabits: reasons,
+                behaviorVerdict: verdict
+              };
+            });
+
+            if (reasons.length > 0) {
+              setLiveFidgetWarning(`⚠️ 긴급 경고: ${reasons.join(' • ')} 감지됨! 점수가 감점되고 있습니다.`);
             } else {
               setLiveFidgetWarning('');
             }
-
-            // 눈 깜빡임 빈도 계산
-            blinkCounterRef.current++;
-            const now = Date.now();
-            if (now - lastBlinkCheckRef.current > 10000) { // 10초마다 갱신
-              const rate = Math.round((blinkCounterRef.current / (now - lastBlinkCheckRef.current)) * 60000);
-              if (rate > 28) {
-                distractingList.push('긴장으로 인한 잦은 눈 깜빡임');
-              }
-              blinkCounterRef.current = 0;
-              lastBlinkCheckRef.current = now;
-            }
-
-            // 시선 흔들림/자세
-            const eyeVariance = Math.floor(Math.sin(Date.now() / 2500) * 5);
-            const postureVariance = Math.floor(Math.cos(Date.now() / 2200) * 4);
-
-            setRealtimeBehavior(prev => ({
-              eyeContactScore: Math.min(99, Math.max(80, 92 + eyeVariance)),
-              postureStability: Math.min(99, Math.max(82, 93 + postureVariance)),
-              voiceLoudnessScore: micVolume > 15 ? Math.min(98, 80 + Math.round(micVolume * 0.2)) : prev.voiceLoudnessScore,
-              fidgetingCount: fidgetDetected ? prev.fidgetingCount + 1 : prev.fidgetingCount,
-              blinkRatePerMin: 18 + Math.abs(eyeVariance),
-              distractingHabits: distractingList,
-              behaviorVerdict: fidgetDetected
-                ? '거슬리는 손동작(입 만지기)이 감지되었습니다. 손을 무릎에 단정히 올려두세요.'
-                : '카메라 정면 응시와 바른 상체 자세가 안정적으로 유지되고 있습니다.'
-            }));
           }
         }
       }
@@ -455,7 +739,7 @@ export default function Interview() {
 
     animId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animId);
-  }, [cameraActive, micVolume]);
+  }, [cameraActive, micVolume, isCameraOff, interviewerVoice, warningSoundEnabled]);
 
   // 6. 음성인식 STT 토글
   const toggleSpeechRecognition = () => {
@@ -559,6 +843,27 @@ export default function Interview() {
       }
     } catch (err) {
       console.error('Interview evaluation error', err);
+      const penaltyItems: string[] = [];
+      let baseFallbackScore = 90;
+      if (capturedBehavior.eyeContactScore < 70) {
+        baseFallbackScore -= 22;
+        penaltyItems.push('카메라 시선 불안정(-22점)');
+      }
+      if (capturedBehavior.postureStability < 70) {
+        baseFallbackScore -= 20;
+        penaltyItems.push('상체 흔들림(-20점)');
+      }
+      if (capturedBehavior.fidgetingCount > 0) {
+        const p = Math.min(30, capturedBehavior.fidgetingCount * 15 + 10);
+        baseFallbackScore -= p;
+        penaltyItems.push(`얼굴/손버릇 ${capturedBehavior.fidgetingCount}회(-${p}점)`);
+      }
+      if (capturedBehavior.blinkRatePerMin > 24) {
+        baseFallbackScore -= 14;
+        penaltyItems.push('과도한 눈 깜빡임(-14점)');
+      }
+      const finalFallbackScore = Math.max(38, Math.min(95, baseFallbackScore));
+
       const defaultFollowUps = [
         `그 경험을 통해 최종적으로 본인이 얻게 된 가장 큰 역량은 무엇이었나요?`,
         `그 과정에서 함께 작업하던 조원과 의견 충돌은 없었습니까? 어떻게 조율했나요?`
@@ -566,11 +871,13 @@ export default function Interview() {
       setFeedbacks(prev => ({
         ...prev,
         [currentStep]: {
-          score: 86,
-          comment: t('자신의 전공 지식과 경험을 또박또박 진솔하게 설명하셨습니다.'),
+          score: finalFallbackScore,
+          comment: penaltyItems.length > 0
+            ? `⚠️ [실전 태도 감점 경고] ${penaltyItems.join(', ')}으로 인해 점수가 크게 깎였습니다. 실제 채용 면접에서는 산만한 손버릇과 시선 이탈 시 즉시 탈락 또는 치명적 감점이 적용됩니다. 카메라 렌즈를 정면으로 응시하고 손을 무릎 위에 단정히 고정하세요.`
+            : t('자신의 전공 지식과 경험을 또박또박 진솔하게 설명하셨습니다. 시선과 자세도 안정적이었습니다.'),
           followUpQuestions: defaultFollowUps,
-          goodPoints: [t('당당하고 침착한 카메라 시선'), t('직무에 대한 진솔한 관심과 노력')],
-          improvePoints: [t('손을 얼굴에 대거나 눈을 자주 깜빡이는 습관을 조금 더 의식하고 고치면 완벽합니다.')],
+          goodPoints: [t('실제 경험을 바탕으로 한 구체적인 서술'), t('직무에 대한 진솔한 관심과 노력')],
+          improvePoints: penaltyItems.length > 0 ? penaltyItems : [t('손을 얼굴에 대거나 눈을 자주 깜빡이는 습관을 조금 더 의식하고 고치면 완벽합니다.')],
           behaviorSummary: capturedBehavior
         }
       }));
@@ -723,6 +1030,18 @@ export default function Interview() {
     );
   }
 
+  // 실시간 예상 종합 면접 점수 (100점 만점 기준 수치 확확 깎여서 위기감 극대화)
+  const currentLiveScore = Math.max(25, Math.min(98, Math.round(
+    (realtimeBehavior.eyeContactScore * 0.35) + 
+    (realtimeBehavior.postureStability * 0.35) + 
+    (realtimeBehavior.voiceLoudnessScore * 0.30) - 
+    (realtimeBehavior.fidgetingCount * 24) - 
+    (realtimeBehavior.blinkRatePerMin > 24 ? 16 : 0)
+  )));
+
+  const dangerGrade = currentLiveScore >= 88 ? 'A' : currentLiveScore >= 75 ? 'B' : currentLiveScore >= 65 ? 'C' : 'D';
+  const hasActivePenalty = realtimeBehavior.eyeContactScore < 70 || realtimeBehavior.postureStability < 70 || realtimeBehavior.fidgetingCount > 0 || realtimeBehavior.blinkRatePerMin > 24;
+
   // ==========================================
   // VIEW 2: 실시간 AI 모의면접 진행 룸
   // ==========================================
@@ -733,19 +1052,56 @@ export default function Interview() {
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Top Header */}
-      <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center justify-between px-4 sm:px-10 sticky top-0 z-40 border-b shadow-xs ${isLightMode ? "bg-white/80 border-slate-200/80" : "bg-[#0F172A]/80 border-white/5"}`}>
+      <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center justify-between px-3 sm:px-8 sticky top-0 z-40 border-b shadow-xs ${isLightMode ? "bg-white/85 border-slate-200/80" : "bg-[#0F172A]/85 border-white/5"}`}>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-400'} font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer transition-colors`}>
+          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-400'} font-black text-xl sm:text-[24px] tracking-[-0.5px] cursor-pointer transition-colors`}>
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] ml-1 sm:ml-2 shrink-0 flex items-center gap-1.5 shadow-xs">
+          <span className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] shrink-0 flex items-center gap-1.5 shadow-xs">
             <Sparkles size={12} />
-            {selectedDuration}분 {t('AI 모의면접')}
+            {selectedDuration}분 {t('실전 모의면접')}
           </span>
         </div>
 
         {/* Header Right Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* AI 남성 면접관 음성 선택 및 미리듣기 */}
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all bg-indigo-50/70 dark:bg-slate-800 border-indigo-200/80 dark:border-slate-700">
+            <Volume2 size={14} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
+            <select
+              value={interviewerVoice}
+              onChange={e => setInterviewerVoice(e.target.value as 'injoon' | 'bongjin')}
+              className="bg-transparent text-xs font-bold outline-none cursor-pointer text-indigo-950 dark:text-indigo-200"
+              title="실제 사람 같은 한국인 남성 면접관 음성 선택"
+            >
+              <option value="injoon">🎙️ 이인준 (40대 자연스러운 남성)</option>
+              <option value="bongjin">🎙️ 신봉진 (50대 묵직한 베테랑 남성)</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => speakLikeInterviewer("반갑습니다. 지원자의 역량과 포부를 실제 면접처럼 진솔하게 말씀해 주세요.")}
+              className="px-2 py-0.5 rounded text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shrink-0 font-medium"
+              title="선택한 남성 면접관 음성 미리듣기 테스트"
+            >
+              미리듣기
+            </button>
+          </div>
+
+          {/* 경고 비프음 ON/OFF 토글 */}
+          <button
+            type="button"
+            onClick={() => setWarningSoundEnabled(!warningSoundEnabled)}
+            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+              warningSoundEnabled
+                ? (isLightMode ? 'bg-amber-50 border-amber-300 text-amber-700' : 'bg-amber-950/40 border-amber-800 text-amber-300')
+                : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-400' : 'bg-slate-800 border-slate-700 text-slate-500')
+            }`}
+            title={warningSoundEnabled ? "태도 감점 비상 경고음 켜짐" : "비상 경고음 꺼짐"}
+          >
+            {warningSoundEnabled ? <Bell size={16} /> : <BellOff size={16} />}
+            <span className="hidden xl:inline">{warningSoundEnabled ? '경고음 ON' : '경고음 OFF'}</span>
+          </button>
+
           {/* Live Remaining Timer */}
           <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-mono text-xs font-bold ${
             remainingTime <= 60 
@@ -818,7 +1174,7 @@ export default function Interview() {
                 ? (isLightMode ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-indigo-950/50 border-indigo-500/40 text-indigo-300')
                 : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-500' : 'bg-slate-800 border-slate-700 text-slate-400')
             }`}
-            title={voiceGuideEnabled ? "면접관 음성 켜짐 (중장년 톤)" : "면접관 음성 꺼짐"}
+            title={voiceGuideEnabled ? "면접관 음성 켜짐" : "면접관 음성 꺼짐"}
           >
             {voiceGuideEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
             <span className="hidden lg:inline">{voiceGuideEnabled ? '면접관 음성 ON' : '음소거'}</span>
@@ -827,7 +1183,7 @@ export default function Interview() {
       </header>
 
       {/* Main Container */}
-      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-6 pb-20">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-5 pb-20">
         
         {/* Dedicated API Key Setting Banner */}
         {showKeySetting && (
@@ -862,11 +1218,21 @@ export default function Interview() {
           </div>
         )}
 
-        {/* Real-time Fidget Warning Banner (손대기, 손톱 만지기 경고) */}
-        {liveFidgetWarning && (
-          <div className="mb-4 p-3.5 rounded-xl bg-red-500/10 border border-red-500/40 text-red-600 dark:text-red-300 text-xs sm:text-sm font-bold flex items-center gap-2 animate-pulse">
-            <AlertTriangle size={18} className="shrink-0 text-red-500" />
-            <span>{liveFidgetWarning}</span>
+        {/* Real-time High-Tension Danger Alert Banner (위기 경고 배너) */}
+        {hasActivePenalty && (
+          <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white text-xs sm:text-sm font-black flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xl shadow-red-500/25 border border-red-400 animate-pulse">
+            <div className="flex items-center gap-2">
+              <AlertTriangle size={20} className="shrink-0 animate-bounce" />
+              <span>[🚨 실전 태도 위기 경고] {realtimeBehavior.distractingHabits.length > 0 ? realtimeBehavior.distractingHabits.join(' • ') : '시선 이탈 및 불량 자세로 점수가 깎이고 있습니다!'}</span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="bg-black/40 text-red-200 px-2.5 py-1 rounded-lg text-xs font-bold">
+                예상 점수 {currentLiveScore}점 ({dangerGrade}등급)
+              </span>
+              <span className="bg-white text-red-700 px-2.5 py-1 rounded-lg text-xs font-black shadow-xs">
+                즉시 자세 교정 요망
+              </span>
+            </div>
           </div>
         )}
 
@@ -881,8 +1247,11 @@ export default function Interview() {
           
           {/* Left Column: Camera + Live Behavior HUD (5 Cols) */}
           <div className="lg:col-span-5 space-y-4 tour-target-interview-camera-hud">
-            <div className={`relative rounded-2xl overflow-hidden border shadow-lg aspect-video sm:aspect-[4/3] flex items-center justify-center ${
-              isLightMode ? 'bg-slate-900 border-slate-200' : 'bg-black border-slate-800'
+            {/* Webcam Video Box with Red Alert Pulsing Outline */}
+            <div className={`relative rounded-2xl overflow-hidden border-2 shadow-lg aspect-video sm:aspect-[4/3] flex items-center justify-center transition-all duration-300 ${
+              hasActivePenalty
+                ? 'border-red-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] animate-pulse'
+                : (isLightMode ? 'bg-slate-900 border-slate-200' : 'bg-black border-slate-800')
             }`}>
               {/* Actual Video Feed */}
               <video 
@@ -912,18 +1281,49 @@ export default function Interview() {
                 </div>
               )}
 
+              {/* Floating Deduction Popups (위기감 조성 팝업) */}
+              {floatingDeductions.length > 0 && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none z-30">
+                  {floatingDeductions.map(d => (
+                    <div key={d.id} className="animate-bounce bg-red-600/95 text-white font-black text-xs sm:text-sm px-4 py-2 rounded-2xl shadow-2xl border-2 border-white/80 backdrop-blur-md flex items-center gap-2">
+                      <AlertTriangle size={18} />
+                      <span>{d.text}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Live Overlay HUD when Camera is Active and not turned off */}
               {cameraActive && !isCameraOff && (
                 <>
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-white border border-white/10">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>{t('실시간 거슬리는 습관 & 음량 감지 중')}</span>
+                    <span className={`w-2 h-2 rounded-full ${hasActivePenalty ? 'bg-red-500 animate-ping' : 'bg-emerald-400 animate-pulse'}`}></span>
+                    <span>{hasActivePenalty ? t('⚠️ 태도 감점 측정 중') : t('실시간 시선·자세·손버릇 감지')}</span>
                   </div>
 
+                  {/* AI Interviewer Speaking Indicator */}
+                  {isInterviewerSpeaking && (
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-indigo-600/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-white border border-indigo-300 shadow-md">
+                      <Volume2 size={13} className="text-white" />
+                      <span>남성 면접관 발화 중</span>
+                      <span className="flex gap-0.5 ml-1">
+                        <span className="w-1 h-3 bg-white rounded-full animate-bounce [animation-delay:0ms]"></span>
+                        <span className="w-1 h-3 bg-white rounded-full animate-bounce [animation-delay:150ms]"></span>
+                        <span className="w-1 h-3 bg-white rounded-full animate-bounce [animation-delay:300ms]"></span>
+                      </span>
+                    </div>
+                  )}
+
                   {/* Face Framing Target Box */}
-                  <div className="absolute inset-8 sm:inset-12 border-2 border-dashed border-indigo-400/40 rounded-3xl pointer-events-none flex items-start justify-between p-2">
-                    <span className="text-[10px] font-bold text-indigo-300 bg-black/50 px-2 py-0.5 rounded">시선 집중 영역</span>
-                    <span className="text-[10px] font-bold text-emerald-300 bg-black/50 px-2 py-0.5 rounded">어깨 수평 바른 자세</span>
+                  <div className={`absolute inset-8 sm:inset-12 border-2 border-dashed rounded-3xl pointer-events-none flex items-start justify-between p-2 transition-colors ${
+                    hasActivePenalty ? 'border-red-500/80 bg-red-500/10' : 'border-indigo-400/40'
+                  }`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${hasActivePenalty ? 'text-red-200 bg-red-900/70' : 'text-indigo-300 bg-black/50'}`}>
+                      {realtimeBehavior.eyeContactScore < 70 ? '🚨 시선 이탈 감점 중!' : '시선 집중 정면 렌즈'}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${realtimeBehavior.postureStability < 70 ? 'text-red-200 bg-red-900/70' : 'text-emerald-300 bg-black/50'}`}>
+                      {realtimeBehavior.postureStability < 70 ? '⚠️ 자세 흔들림 감점!' : '어깨 수평 바른 자세'}
+                    </span>
                   </div>
                 </>
               )}
@@ -933,24 +1333,61 @@ export default function Interview() {
             <div className={`p-4 rounded-2xl border transition-all ${
               isLightMode ? 'bg-white border-slate-200 shadow-xs' : 'bg-slate-900 border-slate-800'
             }`}>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-black flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-                  <UserCheck size={16} />
-                  {t('실시간 AI 행동 & 음성 성량 감지기')}
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                  {cameraActive ? t('실시간 측정 중') : t('대기')}
-                </span>
+              
+              {/* Prominent Live Score & Danger Crisis Card */}
+              <div className={`p-3.5 rounded-2xl border mb-3 transition-all ${
+                currentLiveScore < 65 
+                  ? 'bg-red-500/15 border-red-500/60 shadow-inner shadow-red-500/10' 
+                  : currentLiveScore < 75 
+                    ? 'bg-amber-500/15 border-amber-500/40' 
+                    : (isLightMode ? 'bg-indigo-50/70 border-indigo-100' : 'bg-indigo-950/40 border-indigo-900/40')
+              }`}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-black flex items-center gap-1.5">
+                    <Flame size={15} className={currentLiveScore < 65 ? 'text-red-500 animate-pulse' : 'text-amber-500'} />
+                    <span>실시간 면접관 태도 판정</span>
+                  </span>
+                  <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-xs ${
+                    currentLiveScore >= 88 
+                      ? 'bg-emerald-500 text-white' 
+                      : currentLiveScore >= 75 
+                        ? 'bg-blue-600 text-white' 
+                        : currentLiveScore >= 65 
+                          ? 'bg-amber-500 text-white' 
+                          : 'bg-red-600 text-white animate-pulse'
+                  }`}>
+                    {currentLiveScore >= 88 ? 'A등급 (합격 안정권)' : currentLiveScore >= 75 ? 'B등급 (보통)' : currentLiveScore >= 65 ? 'C등급 (감점 주의)' : '🚨 D등급 (즉각 탈락 위기!)'}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <span className="text-2xl font-black tracking-tight flex items-baseline gap-1">
+                    <span className={currentLiveScore < 65 ? 'text-red-500' : currentLiveScore < 75 ? 'text-amber-500' : 'text-indigo-600 dark:text-indigo-400'}>
+                      {currentLiveScore}
+                    </span>
+                    <span className="text-xs font-normal text-slate-400">/ 100점</span>
+                  </span>
+                  <span className={`text-[11px] font-bold ${hasActivePenalty ? 'text-red-500 animate-pulse' : 'text-emerald-500'}`}>
+                    {hasActivePenalty ? '⚠️ 감점 요인 발생 (점수 급락 중)' : '태도 우수'}
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      currentLiveScore < 65 ? 'bg-red-500' : currentLiveScore < 75 ? 'bg-amber-500' : 'bg-indigo-600'
+                    }`}
+                    style={{ width: `${Math.max(12, Math.min(100, currentLiveScore))}%` }}
+                  />
+                </div>
               </div>
 
-              {/* 4 Essential Behavioral Metrics */}
+              {/* 4 Essential Behavioral Metrics (수치 대폭 삭감) */}
               <div className="grid grid-cols-2 gap-2.5 text-xs mb-3">
                 {/* 1. Voice Loudness (목소리 크기) */}
                 <div className={`p-2.5 rounded-xl border ${
                   isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700'
                 }`}>
                   <div className="flex items-center justify-between text-slate-500 mb-1">
-                    <span className="flex items-center gap-1"><Volume1 size={13} /> 목소리 크기(음량)</span>
+                    <span className="flex items-center gap-1 font-semibold"><Volume1 size={13} /> 목소리 성량</span>
                     <span className="font-bold text-teal-600 dark:text-teal-400">{micVolume > 10 ? `${micVolume}%` : '대기'}</span>
                   </div>
                   <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
@@ -961,57 +1398,104 @@ export default function Interview() {
                   </div>
                 </div>
 
-                {/* 2. Eye Contact (시선 유지도) */}
-                <div className={`p-2.5 rounded-xl border ${
-                  isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700'
+                {/* 2. Eye Contact (시선 유지도) - 시선 이탈시 20~40점대로 폭락 */}
+                <div className={`p-2.5 rounded-xl border transition-all ${
+                  realtimeBehavior.eyeContactScore < 70
+                    ? 'bg-red-500/10 border-red-500/50'
+                    : (isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700')
                 }`}>
                   <div className="flex items-center justify-between text-slate-500 mb-1">
-                    <span className="flex items-center gap-1"><Eye size={13} /> 카메라 시선</span>
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400">{realtimeBehavior.eyeContactScore}%</span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-indigo-500 h-full rounded-full transition-all duration-300" style={{ width: `${realtimeBehavior.eyeContactScore}%` }} />
-                  </div>
-                </div>
-
-                {/* 3. Posture (자세 흔들림) */}
-                <div className={`p-2.5 rounded-xl border ${
-                  isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700'
-                }`}>
-                  <div className="flex items-center justify-between text-slate-500 mb-1">
-                    <span className="flex items-center gap-1"><ShieldCheck size={13} /> 자세 안정도</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">{realtimeBehavior.postureStability}%</span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full rounded-full transition-all duration-300" style={{ width: `${realtimeBehavior.postureStability}%` }} />
-                  </div>
-                </div>
-
-                {/* 4. Distracting Habits / Blinking (거슬리는 행동 감지) */}
-                <div className={`p-2.5 rounded-xl border ${
-                  isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700'
-                }`}>
-                  <div className="flex items-center justify-between text-slate-500 mb-1">
-                    <span className="flex items-center gap-1"><AlertTriangle size={13} /> 손버릇/깜빡임</span>
-                    <span className={`font-bold ${realtimeBehavior.fidgetingCount > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-                      {realtimeBehavior.fidgetingCount > 0 ? `${realtimeBehavior.fidgetingCount}회 감지` : '양호'}
+                    <span className="flex items-center gap-1 font-semibold"><Eye size={13} /> 카메라 시선</span>
+                    <span className={`font-bold ${realtimeBehavior.eyeContactScore < 70 ? 'text-red-500 animate-pulse' : 'text-indigo-600 dark:text-indigo-400'}`}>
+                      {realtimeBehavior.eyeContactScore}%
                     </span>
                   </div>
                   <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full ${realtimeBehavior.fidgetingCount > 0 ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: '100%' }} />
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 ${
+                        realtimeBehavior.eyeContactScore < 70 ? 'bg-red-500' : 'bg-indigo-500'
+                      }`} 
+                      style={{ width: `${realtimeBehavior.eyeContactScore}%` }} 
+                    />
                   </div>
+                  <span className={`text-[10px] mt-1 block font-medium ${realtimeBehavior.eyeContactScore < 70 ? 'text-red-500' : 'text-slate-400'}`}>
+                    {realtimeBehavior.eyeContactScore < 70 ? '🚨 시선 이탈 감점 중(-25점)' : '정면 렌즈 주시'}
+                  </span>
+                </div>
+
+                {/* 3. Posture (자세 흔들림) - 몸 흔들릴 시 대폭 삭감 */}
+                <div className={`p-2.5 rounded-xl border transition-all ${
+                  realtimeBehavior.postureStability < 70
+                    ? 'bg-red-500/10 border-red-500/50'
+                    : (isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700')
+                }`}>
+                  <div className="flex items-center justify-between text-slate-500 mb-1">
+                    <span className="flex items-center gap-1 font-semibold"><ShieldCheck size={13} /> 자세 안정도</span>
+                    <span className={`font-bold ${realtimeBehavior.postureStability < 70 ? 'text-red-500 animate-pulse' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                      {realtimeBehavior.postureStability}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-300 ${
+                        realtimeBehavior.postureStability < 70 ? 'bg-red-500' : 'bg-emerald-500'
+                      }`} 
+                      style={{ width: `${realtimeBehavior.postureStability}%` }} 
+                    />
+                  </div>
+                  <span className={`text-[10px] mt-1 block font-medium ${realtimeBehavior.postureStability < 70 ? 'text-red-500' : 'text-slate-400'}`}>
+                    {realtimeBehavior.postureStability < 70 ? '⚠️ 상체 흔들림(-20점)' : '바른 상체 고정'}
+                  </span>
+                </div>
+
+                {/* 4. Distracting Habits / Blinking (손버릇/깜빡임) */}
+                <div className={`p-2.5 rounded-xl border transition-all ${
+                  realtimeBehavior.fidgetingCount > 0 || realtimeBehavior.blinkRatePerMin > 24
+                    ? 'bg-red-500/10 border-red-500/50'
+                    : (isLightMode ? 'bg-slate-50 border-slate-100' : 'bg-slate-800/60 border-slate-700')
+                }`}>
+                  <div className="flex items-center justify-between text-slate-500 mb-1">
+                    <span className="flex items-center gap-1 font-semibold"><AlertTriangle size={13} /> 손버릇/깜빡임</span>
+                    <span className={`font-bold ${realtimeBehavior.fidgetingCount > 0 || realtimeBehavior.blinkRatePerMin > 24 ? 'text-red-500' : 'text-emerald-500'}`}>
+                      {realtimeBehavior.fidgetingCount > 0 ? `${realtimeBehavior.fidgetingCount}회 (-${realtimeBehavior.fidgetingCount * 30}점)` : `${realtimeBehavior.blinkRatePerMin}회/분`}
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${realtimeBehavior.fidgetingCount > 0 || realtimeBehavior.blinkRatePerMin > 24 ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: '100%' }} />
+                  </div>
+                  <span className={`text-[10px] mt-1 block font-medium ${realtimeBehavior.fidgetingCount > 0 || realtimeBehavior.blinkRatePerMin > 24 ? 'text-red-500' : 'text-slate-400'}`}>
+                    {realtimeBehavior.fidgetingCount > 0 ? '🚨 턱/입 만짐 즉시 감점!' : realtimeBehavior.blinkRatePerMin > 24 ? '⚠️ 과도한 깜빡임(-15점)' : '손 무릎 위 단정'}
+                  </span>
                 </div>
               </div>
 
               {/* Status Verdict */}
               <div className={`p-2.5 rounded-xl text-xs flex items-center gap-2 ${
-                realtimeBehavior.fidgetingCount > 0
-                  ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                hasActivePenalty
+                  ? 'bg-red-500/10 text-red-700 dark:text-red-300 border border-red-500/40'
                   : (isLightMode ? 'bg-indigo-50/70 text-indigo-900 border border-indigo-100' : 'bg-indigo-950/30 text-indigo-200 border border-indigo-900/50')
               }`}>
-                <Sparkles size={15} className="shrink-0 text-indigo-500" />
-                <span className="font-medium">{realtimeBehavior.behaviorVerdict}</span>
+                <Sparkles size={15} className={`shrink-0 ${hasActivePenalty ? 'text-red-500' : 'text-indigo-500'}`} />
+                <span className="font-semibold">{realtimeBehavior.behaviorVerdict}</span>
               </div>
+
+              {/* Recent Penalty Deductions Timeline Log */}
+              {recentDeductionsLog.length > 0 && (
+                <div className="mt-3 p-2.5 rounded-xl border bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-[11px]">
+                  <div className="font-bold text-slate-500 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1"><Activity size={12} className="text-red-500" /> 실시간 감점 내역</span>
+                    <span className="text-red-500 font-extrabold">{recentDeductionsLog.length}건 누적</span>
+                  </div>
+                  <div className="space-y-1">
+                    {recentDeductionsLog.slice(0, 3).map((item) => (
+                      <div key={item.id} className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                        <span className="font-medium text-red-600 dark:text-red-400">{item.text}</span>
+                        <span className="text-[10px] text-slate-400">{item.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1053,16 +1537,23 @@ export default function Interview() {
                     {t('면접 질문')} {currentStep} / {activeQuestions.length} • {currentQ.category}
                   </span>
 
-                  <button
-                    type="button"
-                    onClick={() => speakLikeInterviewer(currentQ.question)}
-                    className={`text-xs flex items-center gap-1 font-semibold cursor-pointer transition-colors ${
-                      isLightMode ? 'text-indigo-600 hover:text-indigo-800' : 'text-indigo-400 hover:text-indigo-300'
-                    }`}
-                  >
-                    <Volume2 size={15} />
-                    <span>{t('면접관 음성 다시 듣기')}</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {isInterviewerSpeaking && (
+                      <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-bold flex items-center gap-1 animate-pulse">
+                        <Volume2 size={13} /> {t('면접관 발화 중...')}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => speakLikeInterviewer(currentQ.question)}
+                      className={`text-xs flex items-center gap-1 font-semibold cursor-pointer transition-colors px-2.5 py-1 rounded-lg border ${
+                        isLightMode ? 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100' : 'bg-indigo-950/50 border-indigo-800 text-indigo-300 hover:bg-indigo-900/60'
+                      }`}
+                    >
+                      <Volume2 size={14} />
+                      <span>{t('면접관 음성 다시 듣기')}</span>
+                    </button>
+                  </div>
                 </div>
 
                 <h2 className="text-base sm:text-lg font-bold leading-snug mb-3">
@@ -1143,8 +1634,10 @@ export default function Interview() {
                         <Award size={18} />
                         {t('AI 면접관 실시간 총평')}
                       </span>
-                      <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500 text-white">
-                        {currentFeedback.score}점 / 100점
+                      <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full text-white ${
+                        currentFeedback.score < 65 ? 'bg-red-600 animate-pulse' : currentFeedback.score < 75 ? 'bg-amber-500' : 'bg-emerald-500'
+                      }`}>
+                        {currentFeedback.score}점 / 100점 ({currentFeedback.score < 65 ? '🚨 D등급 탈락 위기' : currentFeedback.score < 75 ? 'C등급 감점 주의' : currentFeedback.score < 85 ? 'B등급 보통' : 'A등급 합격 안정권'})
                       </span>
                     </div>
 
@@ -1158,10 +1651,10 @@ export default function Interview() {
                     }`}>
                       <span className="font-bold text-indigo-500 block mb-1">📊 {t('답변 당시 태도 및 거슬리는 행동 분석 결과')}:</span>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-slate-500">
-                        <div>시선 유지도: <b className="text-indigo-600">{currentFeedback.behaviorSummary.eyeContactScore}%</b></div>
-                        <div>자세 안정도: <b className="text-emerald-600">{currentFeedback.behaviorSummary.postureStability}%</b></div>
-                        <div>목소리 성량: <b className="text-teal-600">{currentFeedback.behaviorSummary.voiceLoudnessScore}%</b></div>
-                        <div>산만한 손동작: <b className={currentFeedback.behaviorSummary.fidgetingCount > 0 ? "text-red-500" : "text-emerald-600"}>{currentFeedback.behaviorSummary.fidgetingCount}회</b></div>
+                        <div>시선 유지도: <b className={currentFeedback.behaviorSummary.eyeContactScore < 70 ? "text-red-500 font-bold" : "text-indigo-600"}>{currentFeedback.behaviorSummary.eyeContactScore}%</b></div>
+                        <div>자세 안정도: <b className={currentFeedback.behaviorSummary.postureStability < 70 ? "text-red-500 font-bold" : "text-emerald-600"}>{currentFeedback.behaviorSummary.postureStability}%</b></div>
+                        <div>산만한 손동작: <b className={currentFeedback.behaviorSummary.fidgetingCount > 0 ? "text-red-500 font-bold" : "text-emerald-600"}>{currentFeedback.behaviorSummary.fidgetingCount}회</b></div>
+                        <div>눈 깜빡임: <b className={currentFeedback.behaviorSummary.blinkRatePerMin > 30 ? "text-red-500 font-bold" : "text-slate-600"}>{currentFeedback.behaviorSummary.blinkRatePerMin}회/분</b></div>
                       </div>
                     </div>
 
