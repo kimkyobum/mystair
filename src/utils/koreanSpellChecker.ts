@@ -554,7 +554,7 @@ export async function checkAndCorrectKoreanSpelling(text: string): Promise<{
 
       if (keys.length > 0) {
         const apiKey = keys[Math.floor(Math.random() * keys.length)];
-        const fallbackModels = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-3.1-flash-lite'];
+        const fallbackModels = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-3.1-flash-lite'];
         for (const modelName of fallbackModels) {
           try {
             const ai = new GoogleGenAI({ apiKey });

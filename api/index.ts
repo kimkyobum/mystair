@@ -118,9 +118,8 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
 
   const fallbackModels = [
     "gemini-2.5-flash",
-    "gemini-1.5-flash",
-    "gemini-3.1-flash-lite",
-    "gemini-3.6-flash"
+    "gemini-3.8-flash",
+    "gemini-3.1-flash-lite"
   ];
 
   for (const modelName of fallbackModels) {
@@ -452,9 +451,15 @@ router.post("/chat", async (req, res) => {
     contents.push({ role: "user", parts: [{ text: message }] });
 
     const geminiRes = await generateContentWithFallback(contents, systemInstruction);
-    return res.json({ reply: geminiRes.text });
+    const replyText = geminiRes.text || "";
+    return res.json({ response: replyText, reply: replyText });
   } catch (e: any) {
     console.error("Chat API error:", e);
+    const errStr = String(e?.message || e);
+    if (errStr.includes("429") || errStr.includes("RESOURCE_EXHAUSTED") || errStr.includes("Quota exceeded")) {
+      const quotaMsg = "⏳ API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다. 약 30초~1분 후에 다시 질문해 주시면 친절하게 답변해 드릴게요! 😊";
+      return res.json({ response: quotaMsg, reply: quotaMsg });
+    }
     return res.status(500).json({ error: "답변 생성 실패", message: e?.message });
   }
 });

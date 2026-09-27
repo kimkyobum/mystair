@@ -398,9 +398,8 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
 
     const fallbackModels = [
       "gemini-2.5-flash",
-      "gemini-1.5-flash",
-      "gemini-3.1-flash-lite",
-      "gemini-3.6-flash"
+      "gemini-3.8-flash",
+      "gemini-3.1-flash-lite"
     ];
 
     for (const modelName of fallbackModels) {
@@ -508,8 +507,9 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           const contentType = res.headers.get('content-type') || '';
           if (contentType.includes('application/json')) {
             const data = await res.json();
-            if (data.response) {
-              responseText = data.response;
+            const textResponse = data.response || data.reply;
+            if (textResponse) {
+              responseText = textResponse;
               fetchSuccess = true;
             }
           }
