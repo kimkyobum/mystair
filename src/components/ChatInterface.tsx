@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw, Trash2, MessageSquare, ArrowRight, History } from 'lucide-react';
+import { ArrowUp, Sparkles, ThumbsUp, ThumbsDown, Copy, MoreHorizontal, Check, RefreshCw, Trash2, MessageSquare, ArrowRight, History, Key } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from '@google/genai';
@@ -24,6 +24,14 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [customApiKey, setCustomApiKey] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '';
+    }
+    return '';
+  });
+  const [keyInputVal, setKeyInputVal] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -127,12 +135,16 @@ export default function ChatInterface() {
   };
 
   const generateClientGemini = async (text: string, profile: any, diaries: any, historyMessages: Message[] = []) => {
+    const storedUserKey = typeof window !== 'undefined' ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '') : '';
     const keys = [
+      customApiKey,
+      storedUserKey,
       import.meta.env.VITE_GEMINI_API_KEY,
       import.meta.env.VITE_GEMINI_API_KEY2,
       import.meta.env.VITE_GEMINI_API_KEY3,
       import.meta.env.VITE_GEMINI_API_KEY4,
-      (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : ''),
+      (typeof process !== 'undefined' ? (process.env.GEMINI_API_KEY || (process.env as any).GOOGLE_API_KEY) : ''),
+      (typeof process !== 'undefined' ? process.env.VITE_GEMINI_API_KEY : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY2 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY3 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY4 : '')
@@ -150,7 +162,7 @@ export default function ChatInterface() {
     });
 
     if (keys.length === 0) {
-      throw new Error('Vercel/Render 환경변수 설정에서 VITE_GEMINI_API_KEY 또는 GEMINI_API_KEY를 올바르게 설정해주셔야 AI 응답이 가능합니다.');
+      throw new Error('NO_API_KEY_CONFIGURED');
     }
 
     const profileText = profile
@@ -491,9 +503,13 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
       let fetchSuccess = false;
 
       try {
+        const storedKey = customApiKey || (typeof window !== 'undefined' ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '') : '');
         const res = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(storedKey ? { 'x-gemini-api-key': storedKey } : {})
+          },
           body: JSON.stringify({
             message: text,
             chatHistory: chatHistory,
@@ -513,6 +529,11 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               fetchSuccess = true;
             }
           }
+        } else {
+          try {
+            const errData = await res.json();
+            console.warn('/api/chat endpoint returned non-OK status:', res.status, errData);
+          } catch {}
         }
       } catch (e) {
         console.warn('Server endpoint /api/chat unavailable, switching to client direct API...', e);
@@ -531,8 +552,8 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
               : "⏳ **API 사용량이 한꺼번에 몰려 잠시 재충전 중입니다.**\n\nGoogle Gemini 무료 플랜의 분당 답변 수가 초과되었습니다. **약 30초~1분 후에** 다시 질문해 주시면 바로 답변해 드릴게요! 😊";
           } else {
             responseText = language === 'en'
-              ? `⚠️ AI Configuration Notice:\n\nPlease register **VITE_GEMINI_API_KEY** or **GEMINI_API_KEY** in the environment variables to activate AI responses.\n\n(Details: ${errStr})`
-              : `⚠️ AI 설정 안내:\n\nVercel 또는 Render 환경 변수(Environment Variables)에 **VITE_GEMINI_API_KEY** 또는 **GEMINI_API_KEY**를 추가 등록해주시면 AI 응답이 작동합니다.\n\n(상세 원인: ${errStr})`;
+              ? `⚠️ **AI Connection Guide**\n\nIf you have already configured the API key in Vercel, please check:\n1. 🚀 **Redeploy Needed**: After adding environment variables in Vercel, you must click **Redeploy** on the latest deployment for them to take effect.\n2. 🔑 **Variable Name**: Ensure it is named **GEMINI_API_KEY** or **VITE_GEMINI_API_KEY**.\n\n👉 **Immediate Fix**: You can also click the [🔑 Enter Gemini API Key Directly] button below to start chatting right now without redeploying!`
+              : `⚠️ **AI 연결 안내**\n\nVercel 환경 변수에 이미 키를 등록하셨는데도 이 안내가 뜬다면 아래 **2가지**를 확인해 주세요:\n\n1. 🚀 **Vercel 재배포(Redeploy) 확인**: Vercel에 환경 변수를 새로 추가한 뒤에는 반드시 **Redeploy(재배포)**를 눌러주셔야 새 설정이 배포 사이트에 반영됩니다.\n   - Vercel 대시보드 > **Deployments** 탭 > 최신 배포 오른쪽 **\`···\`** > **\`Redeploy\`** 클릭\n\n2. 🔑 **환경 변수 이름 확인**: 이름이 **\`GEMINI_API_KEY\`** 또는 **\`VITE_GEMINI_API_KEY\`** 로 정확히 저장되어 있는지 확인해 주세요.\n\n✨ **기다리지 않고 지금 바로 대화하려면?**\n아래 **[🔑 Gemini API 키 직접 입력하기]** 버튼을 눌러 본인의 Gemini API 키를 입력하시면 재배포 없이 즉시 AI 답변이 작동합니다!`;
           }
         }
       }
@@ -1090,6 +1111,21 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           </div>
           
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setKeyInputVal(customApiKey);
+                setShowApiKeyModal(true);
+              }}
+              className={`flex items-center justify-center gap-1.5 ${
+                customApiKey
+                  ? (isLightMode ? "text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border-emerald-300" : "text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-500/40")
+                  : (isLightMode ? "text-slate-600 bg-slate-100 hover:bg-slate-200 border-slate-300" : "text-white/70 bg-white/5 hover:bg-white/10 border-white/10")
+              } text-xs sm:text-[13px] font-semibold px-3 py-2 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
+              title={t('Gemini API 키 설정', 'Gemini API Key Settings')}
+            >
+              <Key size={13} className="shrink-0 text-amber-400" />
+              <span>{customApiKey ? t('API 키 등록됨', 'API Key Set') : t('API 키 설정', 'API Key')}</span>
+            </button>
             <button 
               onClick={() => setShowHistory(true)}
               className={`flex items-center justify-center gap-1.5 ${isLightMode ? "text-slate-700 bg-white hover:bg-teal-50 hover:text-emerald-700 border-slate-300 hover:border-teal-300" : "text-white/90 bg-teal-500/15 hover:bg-teal-500/25 border-teal-500/30 hover:border-teal-500/50 hover:text-white"} text-xs sm:text-[13px] font-semibold px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full border cursor-pointer transition-all active:scale-95 shadow-sm min-h-[44px] sm:min-h-[38px]`}
@@ -1188,17 +1224,33 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                     </div>
 
                     {!msg.isStreaming && msg.content && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`flex items-center gap-3 px-1 sm:px-2 text-sm ${isLightMode ? "text-slate-500" : "text-white/40"}`}>
-                        <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="좋아요">
-                          <ThumbsUp size={16} />
-                        </button>
-                        <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="싫어요">
-                          <ThumbsDown size={16} />
-                        </button>
-                        <button onClick={() => handleCopyText(msg.id, cleanNoticeText(msg.content))} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
-                          {copiedId === msg.id ? <Check size={16} className="text-teal-500" /> : <Copy size={16} />}
-                        </button>
-                      </motion.div>
+                      <div className="flex flex-col gap-2">
+                        {msg.content.includes("⚠️") && (msg.content.includes("API") || msg.content.includes("Vercel")) && (
+                          <div className="mt-1 mb-1.5 flex flex-wrap items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setKeyInputVal(customApiKey);
+                                setShowApiKeyModal(true);
+                              }}
+                              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-teal-500 via-emerald-600 to-teal-600 text-white shadow-md hover:from-teal-600 hover:to-emerald-700 active:scale-95 transition-all cursor-pointer"
+                            >
+                              <Key size={14} className="text-amber-300 shrink-0" />
+                              <span>{t('🔑 Gemini API 키 직접 입력하기', '🔑 Enter Gemini API Key Directly')}</span>
+                            </button>
+                          </div>
+                        )}
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`flex items-center gap-3 px-1 sm:px-2 text-sm ${isLightMode ? "text-slate-500" : "text-white/40"}`}>
+                          <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="좋아요">
+                            <ThumbsUp size={16} />
+                          </button>
+                          <button className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="싫어요">
+                            <ThumbsDown size={16} />
+                          </button>
+                          <button onClick={() => handleCopyText(msg.id, cleanNoticeText(msg.content))} className={`p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors cursor-pointer ${isLightMode ? "hover:bg-slate-100 text-slate-500 hover:text-slate-800" : "hover:bg-white/10 text-white/50 hover:text-white"}`} aria-label="텍스트 복사">
+                            {copiedId === msg.id ? <Check size={16} className="text-teal-500" /> : <Copy size={16} />}
+                          </button>
+                        </motion.div>
+                      </div>
                     )}
                   </div>
                 )}
@@ -1290,6 +1342,130 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
           </form>
         </div>
       </motion.div>
+
+      {/* 2. Gemini API Key Configuration Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showApiKeyModal && (
+            <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 select-none">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+                onClick={() => setShowApiKeyModal(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.92, y: 15 }}
+                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                className={`relative w-full max-w-lg p-6 sm:p-7 rounded-3xl border shadow-2xl z-10 ${
+                  isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-900 border-white/15 text-white"
+                }`}
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-2xl bg-teal-500/20 text-teal-400 flex items-center justify-center border border-teal-500/30 shrink-0">
+                      <Key size={18} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base sm:text-lg">{t('Google Gemini API 키 직접 설정', 'Set Google Gemini API Key')}</h3>
+                      <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-white/50"}`}>{t('API 키를 입력하면 Vercel 재배포 없이 즉시 AI 대화가 가능합니다.', 'Enter your key to chat with AI immediately without redeploying.')}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowApiKeyModal(false)}
+                    className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer text-sm"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className={`block text-xs font-bold mb-2 ${isLightMode ? "text-slate-700" : "text-white/80"}`}>
+                      {t('Gemini API 키 (AIzaSy...)', 'Gemini API Key (AIzaSy...)')}
+                    </label>
+                    <input
+                      type="password"
+                      value={keyInputVal}
+                      onChange={(e) => setKeyInputVal(e.target.value)}
+                      placeholder="AIzaSy..."
+                      className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none font-mono transition-all ${
+                        isLightMode
+                          ? "bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900"
+                          : "bg-slate-800 border-white/15 focus:border-teal-400 text-white"
+                      }`}
+                    />
+                  </div>
+
+                  <div className={`p-3.5 rounded-2xl text-xs space-y-1.5 ${isLightMode ? "bg-amber-50/80 border border-amber-200 text-amber-900" : "bg-amber-500/10 border border-amber-500/20 text-amber-200"}`}>
+                    <p className="font-bold flex items-center gap-1.5">
+                      <span>💡</span>
+                      <span>{t('안내 사항', 'Information')}</span>
+                    </p>
+                    <p className="leading-relaxed">
+                      Google AI Studio (aistudio.google.com)에서 <strong>무료</strong>로 발급받으신 키를 입력하세요. 브라우저 로컬 저장소에만 안전하게 보관됩니다.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 gap-2">
+                    {customApiKey ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          localStorage.removeItem('gemini_api_key');
+                          localStorage.removeItem('VITE_GEMINI_API_KEY');
+                          setCustomApiKey('');
+                          setKeyInputVal('');
+                        }}
+                        className="text-xs text-rose-500 hover:text-rose-600 underline cursor-pointer p-1"
+                      >
+                        {t('등록된 키 삭제', 'Remove Stored Key')}
+                      </button>
+                    ) : <div />}
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowApiKeyModal(false)}
+                        className={`px-4 py-2.5 rounded-xl text-xs font-semibold border cursor-pointer transition-all ${
+                          isLightMode ? "bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700" : "bg-white/10 hover:bg-white/15 border-white/10 text-white"
+                        }`}
+                      >
+                        {t('취소', 'Cancel')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const trimmed = keyInputVal.trim();
+                          if (trimmed) {
+                            localStorage.setItem('gemini_api_key', trimmed);
+                            setCustomApiKey(trimmed);
+                            setShowApiKeyModal(false);
+                            // Auto retry last message if exists
+                            const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+                            if (lastUserMsg) {
+                              sendMessageToAI(lastUserMsg.content, messages);
+                            }
+                          }
+                        }}
+                        disabled={!keyInputVal.trim()}
+                        className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white shadow-md cursor-pointer disabled:opacity-40 transition-all active:scale-95"
+                      >
+                        {t('저장하고 AI 대화 시작', 'Save & Start AI Chat')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

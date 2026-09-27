@@ -161,9 +161,13 @@ JSON 구조 규격:
 4. 오직 학생이 직접 실천한 객관적 사실 중심의 단정한 어조로 작성해줘.`;
 
     try {
+      const storedKey = typeof window !== 'undefined' ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '') : '';
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(storedKey ? { 'x-gemini-api-key': storedKey } : {})
+        },
         body: JSON.stringify({
           message,
           chatHistory: [],

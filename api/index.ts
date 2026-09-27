@@ -92,10 +92,12 @@ function findCompanyUrl(companyObj: any, links: any[]): string {
 async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
   const keys = [
     process.env.GEMINI_API_KEY,
+    process.env.VITE_GEMINI_API_KEY,
     process.env.GEMINI_API_KEY2,
     process.env.GEMINI_API_KEY3,
     process.env.GEMINI_API_KEY4,
-    process.env.VITE_GEMINI_API_KEY
+    process.env.GOOGLE_API_KEY,
+    process.env.API_KEY,
   ].filter((key): key is string => {
     if (!key) return false;
     const trimmed = key.trim();
