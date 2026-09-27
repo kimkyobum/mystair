@@ -1741,25 +1741,80 @@ app.get("/api/ogq/stickers", async (req, res) => {
   }
 });
 
-// Realistic Human-Like Korean Male Interviewer Voice (MsEdge Neural TTS)
+// Realistic Human-Like Korean Interviewer Voices (MsEdge Neural TTS)
 const ttsAudioCache = new Map<string, Buffer>();
 
-async function generateMaleInterviewAudio(text: string, voice: 'injoon' | 'bongjin' = 'injoon'): Promise<Buffer> {
-  const cacheKey = `${voice}:${text}`;
+const SERVER_VOICE_PROFILES: Record<string, { voice: string; pitch?: string; rate?: string; label: string }> = {
+  injoon: {
+    voice: "ko-KR-InJoonNeural",
+    label: "이인준 (40대 신뢰감 있는 남성 면접관)"
+  },
+  bongjin: {
+    voice: "ko-KR-BongJinNeural",
+    label: "신봉진 (50대 묵직한 베테랑 남성 면접관)"
+  },
+  hyunsu: {
+    voice: "ko-KR-HyunsuNeural",
+    label: "김현수 (30대 스마트하고 또렷한 남성 면접관)"
+  },
+  sunhi: {
+    voice: "ko-KR-SunHiNeural",
+    label: "박선희 (30대 단정하고 명확한 여성 면접관)"
+  },
+  jimin: {
+    voice: "ko-KR-JiMinNeural",
+    label: "정지민 (40대 부드럽고 차분한 여성 면접관)"
+  },
+  seohyeon: {
+    voice: "ko-KR-SeoHyeonNeural",
+    label: "강서현 (20대 정중하고 세련된 여성 면접관)"
+  },
+  strict_bongjin: {
+    voice: "ko-KR-BongJinNeural",
+    pitch: "-6Hz",
+    rate: "-8%",
+    label: "최준혁 (엄격한 50대 압박 면접관)"
+  },
+  gentle_injoon: {
+    voice: "ko-KR-InJoonNeural",
+    pitch: "+4Hz",
+    rate: "-4%",
+    label: "한도윤 (따뜻하고 편안한 인성 면접관)"
+  },
+  energetic_hyunsu: {
+    voice: "ko-KR-HyunsuNeural",
+    pitch: "+2Hz",
+    rate: "+8%",
+    label: "이지훈 (열정적인 실무 기술 면접관)"
+  },
+  professional_sunhi: {
+    voice: "ko-KR-SunHiNeural",
+    pitch: "+0Hz",
+    rate: "-2%",
+    label: "오윤아 (냉철하고 꼼꼼한 인사총괄 면접관)"
+  }
+};
+
+async function generateMaleInterviewAudio(text: string, voiceKey: string = 'injoon'): Promise<Buffer> {
+  const profile = SERVER_VOICE_PROFILES[voiceKey] || SERVER_VOICE_PROFILES.injoon;
+  const cacheKey = `${voiceKey}:${text}`;
   if (ttsAudioCache.has(cacheKey)) {
     return ttsAudioCache.get(cacheKey)!;
   }
-  const voiceName = voice === 'bongjin' ? 'ko-KR-BongJinNeural' : 'ko-KR-InJoonNeural';
   const tts = new MsEdgeTTS();
   try {
-    await tts.setMetadata(voiceName, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
-    const { audioStream } = tts.toStream(text);
+    await tts.setMetadata(profile.voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const options: any = {};
+    if (profile.pitch) options.pitch = profile.pitch;
+    if (profile.rate) options.rate = profile.rate;
+
+    const { audioStream } = tts.toStream(text, Object.keys(options).length > 0 ? options : undefined);
     const audioBuffer = await new Promise<Buffer>((resolve, reject) => {
       const chunks: Buffer[] = [];
       const timer = setTimeout(() => {
         try { tts.close(); } catch {}
         reject(new Error("TTS generation timeout"));
-      }, 9000);
+      }, 9500);
       audioStream.on("data", (c: Buffer) => chunks.push(c));
       audioStream.on("end", () => {
         clearTimeout(timer);
@@ -1773,7 +1828,7 @@ async function generateMaleInterviewAudio(text: string, voice: 'injoon' | 'bongj
       });
     });
 
-    if (ttsAudioCache.size > 150) {
+    if (ttsAudioCache.size > 200) {
       const first = ttsAudioCache.keys().next().value;
       if (first) ttsAudioCache.delete(first);
     }
@@ -1791,7 +1846,7 @@ app.get("/api/interview-tts", async (req, res) => {
     let rawText = String(req.query.text || "").trim();
     try { rawText = decodeURIComponent(rawText); } catch {}
     if (!rawText) return res.status(400).send("text query parameter required");
-    const voice = req.query.voice === 'bongjin' ? 'bongjin' : 'injoon';
+    const voice = String(req.query.voice || 'injoon');
     const audio = await generateMaleInterviewAudio(rawText, voice);
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");
@@ -1806,11 +1861,12 @@ app.post("/api/interview-tts", async (req, res) => {
   try {
     const { text, voice = 'injoon' } = req.body || {};
     if (!text || !text.trim()) return res.status(400).json({ error: "text is required" });
-    const audio = await generateMaleInterviewAudio(text.trim(), voice === 'bongjin' ? 'bongjin' : 'injoon');
+    const audio = await generateMaleInterviewAudio(text.trim(), String(voice || 'injoon'));
+    const profile = SERVER_VOICE_PROFILES[voice] || SERVER_VOICE_PROFILES.injoon;
     return res.json({
       audioBase64: audio.toString("base64"),
       format: "audio/mp3",
-      voiceUsed: voice === 'bongjin' ? "ko-KR-BongJinNeural (50대 베테랑 남성)" : "ko-KR-InJoonNeural (신뢰감 넘치는 40대 남성)"
+      voiceUsed: profile.label
     });
   } catch (err: any) {
     console.error("Interview TTS POST error:", err?.message || err);

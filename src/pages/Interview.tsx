@@ -37,6 +37,42 @@ import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 
+export type InterviewerVoiceKey = 
+  | 'injoon' 
+  | 'bongjin' 
+  | 'hyunsu' 
+  | 'sunhi' 
+  | 'jimin' 
+  | 'seohyeon' 
+  | 'strict_bongjin' 
+  | 'gentle_injoon' 
+  | 'energetic_hyunsu' 
+  | 'professional_sunhi';
+
+export interface InterviewerVoiceOption {
+  id: InterviewerVoiceKey;
+  name: string;
+  role: string;
+  category: '남성 면접관' | '여성 면접관' | '특화 면접관';
+  gender: 'male' | 'female';
+  pitch: number;
+  rate: number;
+  icon: string;
+}
+
+export const INTERVIEWER_VOICE_LIST: InterviewerVoiceOption[] = [
+  { id: 'injoon', name: '이인준', role: '신뢰감 있는 40대 남성', category: '남성 면접관', gender: 'male', pitch: 0.88, rate: 0.95, icon: '🎙️' },
+  { id: 'bongjin', name: '신봉진', role: '묵직한 50대 베테랑 남성', category: '남성 면접관', gender: 'male', pitch: 0.72, rate: 0.90, icon: '🎙️' },
+  { id: 'hyunsu', name: '김현수', role: '스마트하고 또렷한 30대 남성', category: '남성 면접관', gender: 'male', pitch: 0.96, rate: 1.00, icon: '🎙️' },
+  { id: 'sunhi', name: '박선희', role: '단정하고 명확한 30대 여성', category: '여성 면접관', gender: 'female', pitch: 1.08, rate: 0.98, icon: '🎧' },
+  { id: 'jimin', name: '정지민', role: '부드럽고 차분한 40대 여성', category: '여성 면접관', gender: 'female', pitch: 1.02, rate: 0.92, icon: '🎧' },
+  { id: 'seohyeon', name: '강서현', role: '정중하고 세련된 20대 여성', category: '여성 면접관', gender: 'female', pitch: 1.15, rate: 1.02, icon: '🎧' },
+  { id: 'strict_bongjin', name: '최준혁', role: '엄격한 50대 압박 심층 면접관', category: '특화 면접관', gender: 'male', pitch: 0.65, rate: 0.85, icon: '⚡' },
+  { id: 'gentle_injoon', name: '한도윤', role: '따뜻하고 편안한 인성 면접관', category: '특화 면접관', gender: 'male', pitch: 0.92, rate: 0.90, icon: '🌱' },
+  { id: 'energetic_hyunsu', name: '이지훈', role: '열정적인 실무 현장 면접관', category: '특화 면접관', gender: 'male', pitch: 1.02, rate: 1.08, icon: '🔥' },
+  { id: 'professional_sunhi', name: '오윤아', role: '냉철하고 꼼꼼한 인사총괄 면접관', category: '특화 면접관', gender: 'female', pitch: 1.05, rate: 0.95, icon: '📊' },
+];
+
 interface InterviewQuestion {
   id: number;
   question: string;
@@ -191,9 +227,9 @@ export default function Interview() {
   const [followUpAnswer, setFollowUpAnswer] = useState<string>('');
   const [activeFollowUpIdx, setActiveFollowUpIdx] = useState<number | null>(null);
 
-  // 음성 TTS 안내 (실제 사람 같은 남성 면접관 보이스)
+  // 음성 TTS 안내 (다양한 페르소나의 실제 사람 같은 고품질 면접관 보이스)
   const [voiceGuideEnabled, setVoiceGuideEnabled] = useState<boolean>(true);
-  const [interviewerVoice, setInterviewerVoice] = useState<'injoon' | 'bongjin'>('injoon');
+  const [interviewerVoice, setInterviewerVoice] = useState<InterviewerVoiceKey>('injoon');
   const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState<boolean>(false);
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -443,33 +479,33 @@ export default function Interview() {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ko-KR';
 
-      // 40~50대 남성 기술면접관 톤: 깊은 중저음(0.68), 단호하고 안정감 있는 템포(0.88)
-      utterance.pitch = 0.68;
-      utterance.rate = 0.88;
+      const currentProfile = INTERVIEWER_VOICE_LIST.find(v => v.id === interviewerVoice) || INTERVIEWER_VOICE_LIST[0];
+      utterance.pitch = currentProfile.pitch;
+      utterance.rate = currentProfile.rate;
 
       const voices = window.speechSynthesis.getVoices();
-      // 여성 음성 완전 제외 필터링 (Google 한국의, Heami, SunHi, Yuna 등 여성/로봇 배제)
-      const koMaleVoices = voices.filter(v => {
-        const isKo = v.lang.includes('ko') || v.lang.includes('KO');
-        if (!isKo) return false;
-        const lower = v.name.toLowerCase();
-        const isFemale = lower.includes('female') || lower.includes('여성') || lower.includes('yuna') || lower.includes('heami') || lower.includes('sunhi') || lower.includes('google 한국의');
-        return !isFemale;
-      });
+      const koVoices = voices.filter(v => v.lang.includes('ko') || v.lang.includes('KO'));
 
-      // 명시적 남성 보이스 우선 매칭
-      const exactMale = koMaleVoices.find(v => {
-        const lower = v.name.toLowerCase();
-        return lower.includes('injoon') || lower.includes('bongjin') || lower.includes('남성') || lower.includes('male') || lower.includes('gookmin');
-      });
-
-      if (exactMale) {
-        utterance.voice = exactMale;
-      } else if (koMaleVoices.length > 0) {
-        utterance.voice = koMaleVoices[0];
+      if (currentProfile.gender === 'female') {
+        const femaleVoice = koVoices.find(v => {
+          const lower = v.name.toLowerCase();
+          return lower.includes('female') || lower.includes('여성') || lower.includes('sunhi') || lower.includes('yuna') || lower.includes('heami') || lower.includes('seohyeon') || lower.includes('jimin');
+        });
+        if (femaleVoice) {
+          utterance.voice = femaleVoice;
+        } else if (koVoices.length > 0) {
+          utterance.voice = koVoices[0];
+        }
       } else {
-        const anyKo = voices.find(v => v.lang.includes('ko') || v.lang.includes('KO'));
-        if (anyKo) utterance.voice = anyKo;
+        const maleVoice = koVoices.find(v => {
+          const lower = v.name.toLowerCase();
+          return lower.includes('male') || lower.includes('남성') || lower.includes('injoon') || lower.includes('bongjin') || lower.includes('hyunsu') || lower.includes('gookmin');
+        });
+        if (maleVoice) {
+          utterance.voice = maleVoice;
+        } else if (koVoices.length > 0) {
+          utterance.voice = koVoices[0];
+        }
       }
 
       utterance.onend = () => setIsInterviewerSpeaking(false);
@@ -1343,23 +1379,45 @@ export default function Interview() {
 
         {/* Header Right Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* AI 남성 면접관 음성 선택 및 미리듣기 */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all bg-indigo-50/70 dark:bg-slate-800 border-indigo-200/80 dark:border-slate-700">
+          {/* AI 면접관 음성 선택 및 미리듣기 */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all bg-indigo-50/70 dark:bg-slate-800 border-indigo-200/80 dark:border-slate-700 shadow-xs">
             <Volume2 size={14} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
             <select
               value={interviewerVoice}
-              onChange={e => setInterviewerVoice(e.target.value as 'injoon' | 'bongjin')}
-              className="bg-transparent text-xs font-bold outline-none cursor-pointer text-indigo-950 dark:text-indigo-200"
-              title="실제 사람 같은 한국인 남성 면접관 음성 선택"
+              onChange={e => setInterviewerVoice(e.target.value as InterviewerVoiceKey)}
+              className="bg-transparent text-xs font-bold outline-none cursor-pointer text-indigo-950 dark:text-indigo-200 max-w-[130px] sm:max-w-[200px] truncate"
+              title="실제 사람 같은 한국인 면접관 음성 선택"
             >
-              <option value="injoon">🎙️ 이인준 (40대 자연스러운 남성)</option>
-              <option value="bongjin">🎙️ 신봉진 (50대 묵직한 베테랑 남성)</option>
+              <optgroup label="남성 면접관">
+                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '남성 면접관').map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.icon} {v.name} ({v.role})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="여성 면접관">
+                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '여성 면접관').map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.icon} {v.name} ({v.role})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="심층 특화 면접관">
+                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '특화 면접관').map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.icon} {v.name} ({v.role})
+                  </option>
+                ))}
+              </optgroup>
             </select>
             <button
               type="button"
-              onClick={() => speakLikeInterviewer("반갑습니다. 지원자의 역량과 포부를 실제 면접처럼 진솔하게 말씀해 주세요.")}
-              className="px-2 py-0.5 rounded text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shrink-0 font-medium"
-              title="선택한 남성 면접관 음성 미리듣기 테스트"
+              onClick={() => {
+                const profile = INTERVIEWER_VOICE_LIST.find(v => v.id === interviewerVoice) || INTERVIEWER_VOICE_LIST[0];
+                speakLikeInterviewer(`반갑습니다. 저는 면접관 ${profile.name}입니다. 지원자의 역량과 포부를 실제 면접처럼 진솔하게 말씀해 주세요.`);
+              }}
+              className="px-2 py-0.5 rounded text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shrink-0 font-medium transition-colors"
+              title="선택한 면접관 음성 미리듣기 테스트"
             >
               미리듣기
             </button>

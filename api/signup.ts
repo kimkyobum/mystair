@@ -19,17 +19,20 @@ if (pool) {
   `).catch(err => console.error("Error creating users table in api/signup:", err));
 }
 
-const USERS_FILE = path.join(process.cwd(), "Data", "users_registry.json");
+// Safe fallback storage in /tmp or in-memory (strictly never touching /Data)
+const USERS_FILE = path.join("/tmp", "users_registry.json");
+const inMemoryUsers: any[] = [];
 
 function getLocalUsers(): any[] {
   try {
     if (fs.existsSync(USERS_FILE)) {
-      return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+      const fileData = JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+      if (Array.isArray(fileData)) return fileData;
     }
   } catch (e) {
-    console.error("Error reading users_registry.json:", e);
+    // Ignore read errors
   }
-  return [];
+  return inMemoryUsers;
 }
 
 function saveLocalUsers(users: any[]) {
@@ -40,7 +43,7 @@ function saveLocalUsers(users: any[]) {
     }
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
   } catch (e) {
-    console.error("Error writing users_registry.json:", e);
+    // If filesystem write fails (e.g. read-only environment), in-memory array still holds the user
   }
 }
 
@@ -97,7 +100,7 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    // 2. Local JSON file check
+    // 2. Local fallback check
     const localUsers = getLocalUsers();
     if (localUsers.some(u => u.email === normalizedEmail)) {
       return res.status(400).json({ message: "이미 가입된 이메일입니다." });
@@ -106,6 +109,7 @@ export default async function handler(req: any, res: any) {
     const newUser = { uid, email: normalizedEmail, password, displayName };
     localUsers.push(newUser);
     saveLocalUsers(localUsers);
+    inMemoryUsers.push(newUser);
 
     return res.status(200).json({ status: "success", uid, email: normalizedEmail, displayName });
   } catch (error: any) {

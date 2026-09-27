@@ -7,17 +7,20 @@ const pool = process.env.DATABASE_URL ? new Pool({
   ssl: process.env.DATABASE_URL.includes("render.com") ? { rejectUnauthorized: false } : undefined
 }) : null;
 
-const USERS_FILE = path.join(process.cwd(), "Data", "users_registry.json");
+// Safe fallback storage in /tmp or in-memory (strictly never touching /Data)
+const USERS_FILE = path.join("/tmp", "users_registry.json");
+const inMemoryUsers: any[] = [];
 
 function getLocalUsers(): any[] {
   try {
     if (fs.existsSync(USERS_FILE)) {
-      return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+      const fileData = JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
+      if (Array.isArray(fileData)) return fileData;
     }
   } catch (e) {
-    console.error("Error reading users_registry.json:", e);
+    // Ignore read errors
   }
-  return [];
+  return inMemoryUsers;
 }
 
 export default async function handler(req: any, res: any) {
@@ -59,37 +62,34 @@ export default async function handler(req: any, res: any) {
               status: "success",
               uid: user.uid,
               email: user.email,
-              displayName: user.display_name || user.email.split('@')[0]
+              displayName: user.display_name
             });
           } else {
-            return res.status(400).json({ message: "비밀번호가 올바르지 않습니다." });
+            return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
           }
-        } else {
-          return res.status(400).json({ message: "등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요." });
         }
       } catch (dbErr) {
         console.error("PG login error:", dbErr);
       }
     }
 
-    // 2. Local JSON file check
+    // 2. Local fallback check
     const localUsers = getLocalUsers();
-    const found = localUsers.find(u => u.email === normalizedEmail);
-
-    if (found) {
-      if (found.password === password) {
+    const user = localUsers.find(u => u.email === normalizedEmail);
+    if (user) {
+      if (user.password === password) {
         return res.status(200).json({
           status: "success",
-          uid: found.uid,
-          email: found.email,
-          displayName: found.displayName || found.email.split('@')[0]
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || user.email.split('@')[0]
         });
       } else {
-        return res.status(400).json({ message: "비밀번호가 올바르지 않습니다." });
+        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
       }
-    } else {
-      return res.status(400).json({ message: "등록되지 않은 이메일입니다. 회원가입을 먼저 진행해주세요." });
     }
+
+    return res.status(400).json({ message: "가입되지 않은 이메일이거나 비밀번호가 올바르지 않습니다." });
   } catch (error: any) {
     console.error("Login handler error:", error);
     return res.status(500).json({ message: "로그인 처리 중 오류가 발생했습니다." });

@@ -41,7 +41,7 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === "DELETE") {
       const userId = (req.query?.userId as string) || "default_user";
-      const diaryId = req.query?.diaryId as string;
+      const diaryId = (req.query?.diaryId || req.query?.id) as string;
 
       if (memoryDiaries[userId] && diaryId) {
         memoryDiaries[userId] = memoryDiaries[userId].filter(d => d.id !== diaryId);
