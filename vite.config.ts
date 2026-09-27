@@ -31,6 +31,14 @@ export default defineConfig(({ mode }) => {
     process.env.VITE_GEMINI_API_KEY4 ||
     process.env.GEMINI_API_KEY4 ||
     '';
+  const ogqKey =
+    env.OGQ_API_KEY ||
+    env.VITE_OGQ_API_KEY ||
+    process.env.OGQ_API_KEY ||
+    process.env.VITE_OGQ_API_KEY ||
+    env.INTERVIEW_API_KEY ||
+    process.env.INTERVIEW_API_KEY ||
+    '';
 
   return {
     plugins: [react(), tailwindcss()],
@@ -41,6 +49,11 @@ export default defineConfig(({ mode }) => {
       'process.env.GEMINI_API_KEY3': JSON.stringify(geminiKey3),
       'process.env.GEMINI_API_KEY4': JSON.stringify(geminiKey4),
       'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(geminiKey),
+      'process.env.OGQ_API_KEY': JSON.stringify(ogqKey),
+      'process.env.VITE_OGQ_API_KEY': JSON.stringify(ogqKey),
+      'import.meta.env.VITE_OGQ_API_KEY': JSON.stringify(ogqKey),
+      'process.env.INTERVIEW_API_KEY': JSON.stringify(ogqKey),
+      'import.meta.env.VITE_INTERVIEW_API_KEY': JSON.stringify(ogqKey),
     },
     resolve: {
       alias: {

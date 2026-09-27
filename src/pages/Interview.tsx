@@ -163,7 +163,13 @@ export default function Interview() {
 
   // 사용자 지정 전용 AI API 키
   const [dedicatedApiKey, setDedicatedApiKey] = useState<string>(() => {
-    return localStorage.getItem('mystair_interview_ai_key') || 'ogqc_c3ad18e9908f34113fec37e0d6362884aa4b6e25f27a48b2283db046e0c6f238';
+    return (
+      (typeof window !== 'undefined' ? localStorage.getItem('mystair_interview_ai_key') : '') ||
+      import.meta.env.VITE_OGQ_API_KEY ||
+      import.meta.env.VITE_INTERVIEW_API_KEY ||
+      (typeof process !== 'undefined' ? (process.env.OGQ_API_KEY || (process.env as any).INTERVIEW_API_KEY) : '') ||
+      'ogqc_c3ad18e9908f34113fec37e0d6362884aa4b6e25f27a48b2283db046e0c6f238'
+    );
   });
   const [showKeySetting, setShowKeySetting] = useState<boolean>(false);
 
