@@ -410,6 +410,8 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
 
     const fallbackModels = [
       "gemini-2.5-flash",
+      "gemini-flash-latest",
+      "gemini-2.0-flash",
       "gemini-3.8-flash",
       "gemini-3.1-flash-lite"
     ];

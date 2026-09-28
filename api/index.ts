@@ -120,6 +120,8 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
 
   const fallbackModels = [
     "gemini-2.5-flash",
+    "gemini-flash-latest",
+    "gemini-2.0-flash",
     "gemini-3.8-flash",
     "gemini-3.1-flash-lite"
   ];
@@ -422,7 +424,7 @@ router.delete("/diaries/:id?", (req, res) => {
 });
 
 // 8. Chat
-router.post("/chat", async (req, res) => {
+const handleChat = async (req: express.Request, res: express.Response) => {
   try {
     const { message, chatHistory, userProfile, diaries } = req.body || {};
     if (!message || !String(message).trim()) {
@@ -464,7 +466,12 @@ router.post("/chat", async (req, res) => {
     }
     return res.status(500).json({ error: "답변 생성 실패", message: e?.message });
   }
-});
+};
+
+router.post("/chat", handleChat);
+router.post("/api/chat", handleChat);
+app.post("/api/chat", handleChat);
+app.post("/chat", handleChat);
 
 // 9. Check Spelling
 router.post("/check-spelling", async (req, res) => {
