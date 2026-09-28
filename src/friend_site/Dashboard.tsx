@@ -60,6 +60,26 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
     {
       q: t("기록한 소중한 데이터는 안전한가요?", "Is my recorded valuable data safe?"),
       a: t("학생들이 정성껏 쌓아올린 모든 커리어 기록들은 안전하게 보호되며, 언제든 대시보드에서 편안하게 꺼내어 수정하고 활용하실 수 있습니다.", "All the career records that students have carefully accumulated are securely protected, and you can comfortably retrieve, edit, and use them anytime from the dashboard.")
+    },
+    {
+      q: t("AI 모의면접 기능은 어떻게 진행되나요?", "How does the AI mock interview work?"),
+      a: t("실제 채용 면접과 유사하게 음성 질문을 듣고 마이크로 답변하며 실전 감각을 기를 수 있습니다. 면접 후에는 AI가 답변의 STAR 구조, 직무 논리성, 태도 등을 다각도로 정밀 분석하여 맞춤 피드백을 제공합니다.", "Similar to actual job interviews, you listen to voice questions and answer via microphone to practice. After the interview, AI deeply analyzes your STAR structure, job relevance, and attitude to provide customized feedback.")
+    },
+    {
+      q: t("나에게 맞는 맞춤 기업 추천은 어떤 기준으로 이루어지나요?", "How are personalized company recommendations made?"),
+      a: t("학생의 고등학교 전공, 희망 직무, 보유 자격증뿐만 아니라 MBTI 및 홀랜드(Holland) 직업적성검사 데이터를 종합 분석하여 대기업·공기업·우수 중견기업 중 가장 적합한 기업들을 추천해 드립니다.", "By comprehensively analyzing your major, desired career, certifications, MBTI, and Holland career aptitude test results, we recommend the most well-matched large enterprises, public corporations, and promising companies.")
+    },
+    {
+      q: t("마이스테어(MyStair) 서비스 이용 요금은 얼마인가요?", "How much does the MyStair service cost?"),
+      a: t("마이스테어의 성장 다이어리, AI 진로 코칭, 실전 모의면접, 자격증 일정 및 기업 탐색 등 모든 핵심 기능은 특성화고·마이스터고 및 모든 학생들에게 100% 무료로 제공됩니다.", "All core features including growth diary, AI career coaching, mock interview, certification tracker, and company discovery are 100% free for all students.")
+    },
+    {
+      q: t("AI가 생성한 자소서 내용이 과장되거나 표절 시비가 생기지 않나요?", "Does AI-generated content cause exaggeration or plagiarism issues?"),
+      a: t("마이스테어 AI는 철저한 '사실 기반(Fact-based)' 원칙을 준수합니다. 없는 스펙이나 허위 성과를 지어내지 않고, 학생이 다이어리에 직접 기록한 실제 경험만을 기업이 선호하는 STAR 구조로 자연스럽고 매끄럽게 정돈해 줍니다.", "MyStair AI strictly adheres to a fact-based principle. It never fabricates unperformed experiences, and only arranges the student's authentic diary entries into the clear STAR format preferred by recruiters.")
+    },
+    {
+      q: t("모바일 스마트폰이나 태블릿에서도 이용할 수 있나요?", "Can I use it on smartphones or tablets?"),
+      a: t("네! 완벽한 반응형 웹 디자인으로 제작되어 PC는 물론 모바일 스마트폰, 태블릿 브라우저에서도 언제 어디서나 다이어리 기록, 기업 탐색, AI 상담을 편리하게 이용하실 수 있습니다.", "Yes! Built with a fully responsive web design, you can conveniently write diaries, explore companies, and chat with AI anytime on PCs, mobile smartphones, and tablets.")
     }
   ];
 
