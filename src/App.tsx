@@ -40,22 +40,22 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      {showMarketing ? (
-        <MarketingApp 
-          onLoginSuccess={handleLoginSuccess} 
-          isLoggedIn={isLoggedIn}
-          onReturnToMainApp={handleReturnToMainApp}
-          onLogoutOtherAccount={handleLogoutOtherAccount}
-        />
-      ) : (
-        <AuthProvider>
-          <ChatProvider>
-            <ThemeProvider>
+      <ThemeProvider>
+        {showMarketing ? (
+          <MarketingApp 
+            onLoginSuccess={handleLoginSuccess} 
+            isLoggedIn={isLoggedIn}
+            onReturnToMainApp={handleReturnToMainApp}
+            onLogoutOtherAccount={handleLogoutOtherAccount}
+          />
+        ) : (
+          <AuthProvider>
+            <ChatProvider>
               <AppWrapper />
-            </ThemeProvider>
-          </ChatProvider>
-        </AuthProvider>
-      )}
+            </ChatProvider>
+          </AuthProvider>
+        )}
+      </ThemeProvider>
     </LanguageProvider>
   );
 }
