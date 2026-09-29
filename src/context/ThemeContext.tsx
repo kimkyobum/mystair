@@ -15,13 +15,12 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLightMode, setIsLightMode] = useState<boolean>(() => {
-    // White/Light mode is the default mode
     const savedTheme = localStorage.getItem('mystair_theme');
-    if (savedTheme === 'dark') return false;
     if (savedTheme === 'light') return true;
+    if (savedTheme === 'dark') return false;
     
-    // Default to White (Light) Mode
-    return true;
+    // Default to Black (Dark/Space) Mode
+    return false;
   });
   
   const [backgroundType, setBackgroundType] = useState<BackgroundType>(() => {
