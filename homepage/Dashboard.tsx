@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowUpRight, Users, ChevronDown, Compass, Cpu, Network, LayoutTemplate, ArrowRight } from 'lucide-react';
+import { 
+  ArrowUpRight, Users, ChevronDown, Compass, Cpu, Network, 
+  LayoutTemplate, ArrowRight, ShieldCheck, Mail, MapPin, 
+  CheckCircle2, Globe, FileText, Database, Sparkles, School
+} from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { useTheme } from '../src/context/ThemeContext';
 import PrivacyPolicyModal from './PrivacyPolicyModal';
@@ -497,31 +501,248 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
       </section>
 
       {/* Footer */}
-      <footer className={`mt-32 pt-12 border-t pb-12 transition-colors ${
-        isLightMode ? 'border-slate-200/90 text-slate-900' : 'border-white/10 text-white'
-      }`}>
+      <footer className={`mt-32 pt-16 border-t pb-16 transition-colors ${
+        isLightMode ? 'border-slate-200/90 text-slate-900 bg-slate-100/50' : 'border-white/10 text-white bg-black/40'
+      } -mx-4 sm:-mx-6 px-4 sm:px-8 rounded-t-3xl backdrop-blur-md`}>
         <FadeIn>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12 text-center md:text-left">
-            <div className="w-full">
-              <h2 className={`text-2xl font-bold mb-2 ${isLightMode ? 'text-slate-900' : 'text-white'}`}>MyStair</h2>
-              <p className={`text-sm mb-4 ${isLightMode ? 'text-slate-600' : 'text-gray-400'}`}>{t('구미전자공업고등학교 학생들이 만든 웹사이트입니다', 'A website built by students of Gumi Electronic Technical High School')}</p>
-              <div className={`flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 text-xs ${
-                isLightMode ? 'text-slate-500' : 'text-gray-500'
-              }`}>
-                <span>{t('© 2026 MyStair Inc. All rights reserved. 마이스터고 학생들의 눈부시고 찬란한 내일을 진심으로 응원합니다.', '© 2026 MyStair Inc. All rights reserved. Sincerely supporting the bright future of vocational high school students.')}</span>
-                <button 
-                  onClick={() => setShowPrivacyModal(true)}
-                  className={`${isLightMode ? 'text-teal-600 hover:text-teal-700' : 'text-teal-400 hover:text-teal-300'} underline font-semibold transition-colors cursor-pointer pointer-events-auto`}
-                >
-                  {t('개인정보처리방침', 'Privacy Policy')}
-                </button>
-                <button 
-                  onClick={() => setShowCopyrightModal(true)}
-                  className={`${isLightMode ? 'text-teal-600 hover:text-teal-700' : 'text-teal-400 hover:text-teal-300'} underline font-semibold transition-colors cursor-pointer pointer-events-auto`}
-                >
-                  {t('저작권 정보', 'Copyright Information')}
-                </button>
+          {/* Top Multi-column Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 pb-12 border-b border-inherit">
+            {/* Col 1: Brand & Overview (2 spans on lg) */}
+            <div className="lg:col-span-2 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2.5 mb-3">
+                  <svg width="26" height="26" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 shrink-0">
+                    <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+                    <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+                  </svg>
+                  <span className={`text-2xl font-black tracking-tight ${isLightMode ? 'text-slate-950' : 'text-white'}`}>
+                    MyStair <span className="text-xs font-normal text-teal-500 ml-1 tracking-normal border border-teal-500/30 px-1.5 py-0.5 rounded-full">v2.6 Live</span>
+                  </span>
+                </div>
+                <p className={`text-sm leading-relaxed mb-4 max-w-sm ${isLightMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                  {t(
+                    '마이스터고 및 특성화고 학생들의 일상적인 실습·학습 기록을 바탕으로 STAR 기법 기반의 맞춤형 자기소개서와 실전 취업 포트폴리오를 설계해 주는 지능형 AI 커리어 코칭 플랫폼입니다.',
+                    'An intelligent AI career coaching platform that designs customized cover letters and portfolios based on STAR techniques using daily practice records for vocational high school students.'
+                  )}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border font-medium ${
+                    isLightMode ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
+                  }`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    {t('서비스 정상 운영 중', 'All Systems Operational')}
+                  </span>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border font-medium ${
+                    isLightMode ? 'bg-slate-50 text-slate-700 border-slate-200' : 'bg-white/5 text-gray-300 border-white/10'
+                  }`}>
+                    <ShieldCheck className="w-3.5 h-3.5 text-teal-500" />
+                    {t('SSL 256-bit 데이터 보안 암호화', '256-bit SSL Encrypted')}
+                  </span>
+                </div>
               </div>
+            </div>
+
+            {/* Col 2: 주요 기능 (Core Platform) */}
+            <div>
+              <h4 className={`text-xs font-bold uppercase tracking-wider mb-4 ${isLightMode ? 'text-slate-900' : 'text-teal-400'}`}>
+                {t('핵심 서비스', 'Core Features')}
+              </h4>
+              <ul className={`space-y-2.5 text-xs font-medium ${isLightMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('성장 캘린더 & 실습 다이어리', 'Practice Diary & Calendar')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('AI STAR 자소서 생성 코치', 'AI STAR Cover Letter Coach')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('AI 실전 모의면접 & 음성 분석', 'AI Mock Interview & Speech')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('NCS 기반 맞춤 기업 탐색', 'NCS Target Company Search')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('MBTI & 홀랜드 직무적성검사', 'MBTI & Holland Career Test')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={onNavigateToLogin} className="hover:text-teal-500 transition-colors flex items-center gap-1.5 cursor-pointer text-left">
+                    <span>• {t('Q-Net 국가기술자격증 일정', 'Q-Net National Certifications')}</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Col 3: 공공데이터 & 파트너십 (Data Integrations) */}
+            <div>
+              <h4 className={`text-xs font-bold uppercase tracking-wider mb-4 ${isLightMode ? 'text-slate-900' : 'text-teal-400'}`}>
+                {t('연계 기관 & 공공데이터', 'Data & Open APIs')}
+              </h4>
+              <ul className={`space-y-2.5 text-xs font-medium ${isLightMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                <li>
+                  <a href="https://www.q-net.or.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('한국산업인력공단 (Q-Net)', 'HRD Korea (Q-Net)')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.ncs.go.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('NCS 국가직무능력표준', 'National Competency Standards')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.meister.go.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('마이스터넷 (MeisterNet)', 'MeisterNet System')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.hifive.go.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('하이파이브 포털 (Hi-Five)', 'Hi-Five Portal')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.work24.go.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('고용노동부 고용24', 'Ministry of Employment & Labor')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.data.go.kr" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <span>• {t('공공데이터포털 Open API', 'Public Data Portal')}</span>
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Col 4: 리소스 및 고객지원 (Support & School) */}
+            <div>
+              <h4 className={`text-xs font-bold uppercase tracking-wider mb-4 ${isLightMode ? 'text-slate-900' : 'text-teal-400'}`}>
+                {t('프로젝트 & 지원', 'Project & Support')}
+              </h4>
+              <ul className={`space-y-2.5 text-xs font-medium ${isLightMode ? 'text-slate-600' : 'text-gray-400'}`}>
+                <li>
+                  <a href="/creators.html" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <Users className="w-3.5 h-3.5 text-teal-500" />
+                    <span>{t('만든 사람들 (개발팀 소개)', 'Creators & Dev Team')}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/map.html" target="_blank" rel="noopener noreferrer" className="hover:text-teal-500 transition-colors flex items-center gap-1">
+                    <School className="w-3.5 h-3.5 text-teal-500" />
+                    <span>{t('전국 마이스터고 지도 탐색', 'Nationwide Meister Map')}</span>
+                  </a>
+                </li>
+                <li>
+                  <button onClick={() => setShowPrivacyModal(true)} className="hover:text-teal-500 transition-colors flex items-center gap-1 cursor-pointer">
+                    <FileText className="w-3.5 h-3.5 text-teal-500" />
+                    <span>{t('개인정보처리방침', 'Privacy Policy')}</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => setShowCopyrightModal(true)} className="hover:text-teal-500 transition-colors flex items-center gap-1 cursor-pointer">
+                    <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                    <span>{t('오픈소스 & 3D 저작권 정보', 'Open Source & 3D Licenses')}</span>
+                  </button>
+                </li>
+                <li className="pt-2 border-t border-inherit">
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Mail className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+                    <a href="mailto:contact.mystair@gmail.com" className="hover:text-teal-500 transition-colors break-all">
+                      contact.mystair@gmail.com
+                    </a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Middle: Business & Project Operator Details (Like real production portals) */}
+          <div className={`py-6 text-[11px] leading-relaxed border-b border-inherit ${
+            isLightMode ? 'text-slate-500' : 'text-gray-400'
+          }`}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="font-semibold mb-1 text-xs text-inherit">
+                  {t('운영 및 프로젝트 주관 정보', 'Platform & Organization Info')}
+                </p>
+                <p>
+                  <span className="font-medium">{t('프로젝트명', 'Project')}:</span> MyStair (마이스테어) |{' '}
+                  <span className="font-medium">{t('소속', 'Institution')}:</span> 구미전자공업고등학교 Mystair 프로젝트팀 |{' '}
+                  <span className="font-medium">{t('총괄 기획 및 개발', 'Core Team')}:</span> 김교범 (Frontend / Main Page), 박영진 (Backend / Data System), 노현우 (Planning / Promotion Page)
+                </p>
+                <p className="flex items-center gap-1 mt-0.5">
+                  <MapPin className="w-3 h-3 inline-block shrink-0 text-teal-500" />
+                  <span>{t('소재지', 'Address')}: 경상북도 구미시 거의1길 45 (거의동 528) 구미전자공업고등학교 | 우편번호: 39180</span>
+                </p>
+              </div>
+
+              <div>
+                <p className="font-semibold mb-1 text-xs text-inherit">
+                  {t('기술 인프라 및 법적 고지', 'Technical Infrastructure & Legal Notice')}
+                </p>
+                <p>
+                  <span className="font-medium">{t('인프라 & AI 엔진', 'Infra & AI')}:</span> Google Cloud Platform (GCP), Google Gemini AI Engine, Firebase Auth & Firestore |{' '}
+                  <span className="font-medium">{t('호스팅', 'Hosting')}:</span> Asia-East1 (Seoul/Taiwan Multi-region)
+                </p>
+                <p className="mt-0.5">
+                  {t(
+                    '본 웹서비스는 직업계고 학생들의 자발적 취업 역량 향상과 교내외 실습 포트폴리오 관리를 위해 연구 개발된 비영리 교육 솔루션입니다.',
+                    'This service is a non-profit educational career solution developed to support vocational high school students in managing portfolios and enhancing employment capabilities.'
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
+            <div className={`${isLightMode ? 'text-slate-500' : 'text-gray-400'} text-center sm:text-left`}>
+              <p>
+                © 2026 <span className="font-bold text-teal-500">MyStair Project Team</span>. All rights reserved.
+              </p>
+              <p className="text-[11px] mt-0.5 opacity-80">
+                {t(
+                  '구미전자공업고등학교 학생들의 창의적 아이디어로 구축된 마이스터고 맞춤 커리어 플랫폼입니다.',
+                  'A custom vocational career platform built with creative ideas of Gumi Electronic Technical High School students.'
+                )}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+              <button 
+                onClick={() => setShowPrivacyModal(true)}
+                className={`${isLightMode ? 'text-teal-600 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'} font-semibold underline transition-colors cursor-pointer pointer-events-auto`}
+              >
+                {t('개인정보처리방침', 'Privacy Policy')}
+              </button>
+              <span className="opacity-30">•</span>
+              <button 
+                onClick={() => setShowCopyrightModal(true)}
+                className={`${isLightMode ? 'text-teal-600 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'} font-semibold underline transition-colors cursor-pointer pointer-events-auto`}
+              >
+                {t('저작권 및 라이선스', 'Copyright & Licenses')}
+              </button>
+              <span className="opacity-30">•</span>
+              <a 
+                href="/creators.html" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={`${isLightMode ? 'text-teal-600 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'} font-semibold underline transition-colors`}
+              >
+                {t('개발진 소개', 'Team')}
+              </a>
             </div>
           </div>
         </FadeIn>
