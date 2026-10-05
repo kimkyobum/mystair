@@ -7,15 +7,15 @@ import MarketingApp from './friend_site/App';
 import AppWrapper from './AppWrapper';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem('isLoggedIn') === 'true';
-  });
+  // Always reset to the landing/promotional homepage on refresh or initial load
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [viewingPromo, setViewingPromo] = useState(true);
 
-  const [viewingPromo, setViewingPromo] = useState(() => {
-    const loggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
-    if (!loggedIn) return true;
-    return sessionStorage.getItem('viewingPromo') === 'true';
-  });
+  useEffect(() => {
+    // Clear any previous session state so refreshing always exits to the promo homepage
+    sessionStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('viewingPromo');
+  }, []);
 
   const handleLoginSuccess = () => {
     sessionStorage.setItem('isLoggedIn', 'true');
