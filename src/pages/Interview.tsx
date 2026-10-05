@@ -36,7 +36,9 @@ import {
   TrendingUp,
   BarChart3,
   ThumbsUp,
-  FileText
+  FileText,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -238,6 +240,7 @@ export default function Interview() {
   const [voiceGuideEnabled, setVoiceGuideEnabled] = useState<boolean>(true);
   const [interviewerVoice, setInterviewerVoice] = useState<InterviewerVoiceKey>('injoon');
   const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState<boolean>(false);
+  const [showVoiceMenu, setShowVoiceMenu] = useState<boolean>(false);
   const activeAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // 상단 제어 바: 마이크 음소거 / 카메라 끄기 토글
@@ -1302,38 +1305,75 @@ export default function Interview() {
         </div>
 
         {/* Header Right Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* AI 면접관 음성 선택 및 미리듣기 */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all bg-indigo-50/70 dark:bg-slate-800 border-indigo-200/80 dark:border-slate-700 shadow-xs">
-            <Volume2 size={14} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
-            <select
-              value={interviewerVoice}
-              onChange={e => setInterviewerVoice(e.target.value as InterviewerVoiceKey)}
-              className="bg-transparent text-xs font-bold outline-none cursor-pointer text-indigo-950 dark:text-indigo-200 max-w-[130px] sm:max-w-[200px] truncate"
-              title="실제 사람 같은 한국인 면접관 음성 선택"
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* AI 면접관 음성 선택 커스텀 드롭다운 */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowVoiceMenu(prev => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                isLightMode 
+                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50' 
+                  : 'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'
+              }`}
             >
-              <optgroup label="남성 면접관">
-                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '남성 면접관').map(v => (
-                  <option key={v.id} value={v.id}>
-                    {v.icon} {v.name} ({v.role})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="여성 면접관">
-                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '여성 면접관').map(v => (
-                  <option key={v.id} value={v.id}>
-                    {v.icon} {v.name} ({v.role})
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="심층 특화 면접관">
-                {INTERVIEWER_VOICE_LIST.filter(v => v.category === '특화 면접관').map(v => (
-                  <option key={v.id} value={v.id}>
-                    {v.icon} {v.name} ({v.role})
-                  </option>
-                ))}
-              </optgroup>
-            </select>
+              <Volume2 size={14} className="text-indigo-500 shrink-0" />
+              <span>{INTERVIEWER_VOICE_LIST.find(v => v.id === interviewerVoice)?.name || '이인준'} 면접관</span>
+              <ChevronDown size={13} className={`text-slate-400 transition-transform duration-150 ${showVoiceMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showVoiceMenu && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setShowVoiceMenu(false)} 
+                />
+                <div className={`absolute right-0 mt-2 w-64 rounded-2xl border shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100 max-h-[380px] overflow-y-auto custom-scrollbar ${
+                  isLightMode ? 'bg-white border-slate-200 text-slate-900 shadow-slate-300/50' : 'bg-slate-900 border-slate-700 text-white shadow-black/80'
+                }`}>
+                  <div className="px-2 py-1 text-[11px] font-black text-slate-400">
+                    {t('면접관 음성 선택')}
+                  </div>
+                  
+                  {(['남성 면접관', '여성 면접관', '특화 면접관'] as const).map(category => (
+                    <div key={category} className="mt-1.5">
+                      <div className="px-2 py-0.5 text-[10px] font-extrabold text-indigo-400 bg-indigo-500/10 rounded-md mb-1">
+                        {category}
+                      </div>
+                      <div className="space-y-0.5">
+                        {INTERVIEWER_VOICE_LIST.filter(v => v.category === category).map(v => {
+                          const isSelected = interviewerVoice === v.id;
+                          return (
+                            <button
+                              key={v.id}
+                              type="button"
+                              onClick={() => {
+                                setInterviewerVoice(v.id);
+                                setShowVoiceMenu(false);
+                              }}
+                              className={`w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center justify-between transition-colors cursor-pointer ${
+                                isSelected 
+                                  ? 'bg-indigo-600 text-white shadow-xs' 
+                                  : (isLightMode ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-300')
+                              }`}
+                            >
+                              <div className="flex items-center gap-1.5 truncate min-w-0 pr-1">
+                                <span>{v.icon}</span>
+                                <span className="font-extrabold shrink-0">{v.name}</span>
+                                <span className={`text-[11px] font-normal truncate ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>
+                                  ({v.role})
+                                </span>
+                              </div>
+                              {isSelected && <Check size={14} className="shrink-0" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Remaining Timer */}
@@ -1362,16 +1402,16 @@ export default function Interview() {
         </div>
       </header>
 
-      {/* Main Wide Container (Single Column Cinema Layout) */}
-      <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16 space-y-4 flex-1">
+      {/* Main Container: Compact, viewport-friendly layout */}
+      <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 pt-3 pb-8 space-y-3 flex-1">
         
         {/* Question Step Tabs */}
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1">
-          <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-0.5">
+          <div className="flex items-center gap-1.5">
             {activeQuestions.map((q, idx) => (
               <span
                 key={q.id}
-                className={`px-3 py-1 rounded-xl text-xs font-bold shrink-0 transition-all ${
+                className={`px-2.5 py-1 rounded-xl text-xs font-bold shrink-0 transition-all ${
                   currentStep === idx + 1
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
                     : currentStep > idx + 1
@@ -1389,8 +1429,8 @@ export default function Interview() {
           </div>
         </div>
 
-        {/* 1. 초대형 와이드 카메라 화면 (FULL-WIDTH EXPANDED) */}
-        <div className={`relative rounded-3xl overflow-hidden border shadow-2xl w-full aspect-[16/9] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] lg:min-h-[580px] flex items-center justify-center transition-all bg-slate-950 ${
+        {/* 1. 카메라 화면 (적당한 높이로 축소하여 질문 및 답변 자막이 한 화면에 온전히 들어오도록 조정) */}
+        <div className={`relative rounded-2xl overflow-hidden border shadow-xl w-full h-[220px] sm:h-[260px] md:h-[280px] flex items-center justify-center transition-all bg-slate-950 ${
           isLightMode ? 'border-slate-200/90 shadow-slate-200/50' : 'border-slate-800 shadow-black/60'
         }`}>
           {/* Actual Crisp Video Feed */}
@@ -1406,19 +1446,19 @@ export default function Interview() {
           />
 
           {(!cameraActive || isCameraOff) && (
-            <div className="flex flex-col items-center justify-center text-center p-8 text-slate-400">
-              <div className="w-20 h-20 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-4">
-                <CameraOff size={32} className="text-slate-400" />
+            <div className="flex flex-col items-center justify-center text-center p-6 text-slate-400">
+              <div className="w-14 h-14 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-2.5">
+                <CameraOff size={24} className="text-slate-400" />
               </div>
-              <p className="text-base font-bold text-slate-200 mb-1">
-                {isCameraOff ? t('사용자에 의해 카메라가 꺼졌습니다') : t('카메라가 꺼져 있습니다')}
+              <p className="text-sm font-bold text-slate-200 mb-1">
+                {isCameraOff ? t('카메라가 꺼져 있습니다') : t('카메라가 꺼져 있습니다')}
               </p>
               <button
                 type="button"
                 onClick={isCameraOff ? toggleCameraOff : startCamera}
-                className="mt-3 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-2 shadow-md transition-colors"
+                className="mt-2 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1.5 shadow-md transition-colors"
               >
-                <Camera size={16} />
+                <Camera size={14} />
                 <span>{t('카메라 켜기')}</span>
               </button>
             </div>
@@ -1428,46 +1468,46 @@ export default function Interview() {
           {cameraActive && !isCameraOff && (
             <>
               {/* Subtle Viewfinder Frame Corners */}
-              <div className="absolute top-5 left-5 w-8 h-8 border-t-2 border-l-2 border-white/50 pointer-events-none rounded-tl-lg" />
-              <div className="absolute top-5 right-5 w-8 h-8 border-t-2 border-r-2 border-white/50 pointer-events-none rounded-tr-lg" />
-              <div className="absolute bottom-5 left-5 w-8 h-8 border-b-2 border-l-2 border-white/50 pointer-events-none rounded-bl-lg" />
-              <div className="absolute bottom-5 right-5 w-8 h-8 border-b-2 border-r-2 border-white/50 pointer-events-none rounded-br-lg" />
+              <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-white/50 pointer-events-none rounded-tl-md" />
+              <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-white/50 pointer-events-none rounded-tr-md" />
+              <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-white/50 pointer-events-none rounded-bl-md" />
+              <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-white/50 pointer-events-none rounded-br-md" />
 
               {/* Status Top Left */}
-              <div className="absolute top-5 left-5 ml-4 mt-2 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-xs font-bold text-white">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>{t('실시간 모의면접 연결됨')}</span>
+              <div className="absolute top-3.5 left-3.5 ml-2 mt-1 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[11px] font-bold text-white">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>{t('실시간 모의면접')}</span>
               </div>
 
               {/* Speaking Indicator Top Right */}
               {isInterviewerSpeaking && (
-                <div className="absolute top-5 right-5 mr-4 mt-2 flex items-center gap-2 bg-indigo-600/90 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-white border border-indigo-300 shadow-md animate-pulse">
-                  <Volume2 size={15} />
-                  <span>면접관 질문 발화 중</span>
+                <div className="absolute top-3.5 right-3.5 mr-2 mt-1 flex items-center gap-1.5 bg-indigo-600/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold text-white border border-indigo-300 shadow-md animate-pulse">
+                  <Volume2 size={13} />
+                  <span>면접관 질문 중</span>
                 </div>
               )}
 
               {/* Camera / Mic Controls Bottom Right */}
-              <div className="absolute bottom-5 right-5 flex items-center gap-2">
+              <div className="absolute bottom-3.5 right-3.5 flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={toggleMicMute}
-                  className={`p-2.5 rounded-xl backdrop-blur-md border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  className={`p-2 rounded-xl backdrop-blur-md border text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                     isMicMuted ? 'bg-red-500/80 text-white border-red-400' : 'bg-black/50 text-white border-white/20 hover:bg-black/70'
                   }`}
                   title={isMicMuted ? "마이크 켜기" : "마이크 끄기"}
                 >
-                  {isMicMuted ? <MicOff size={16} /> : <Mic size={16} />}
+                  {isMicMuted ? <MicOff size={15} /> : <Mic size={15} />}
                 </button>
                 <button
                   type="button"
                   onClick={toggleCameraOff}
-                  className={`p-2.5 rounded-xl backdrop-blur-md border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                  className={`p-2 rounded-xl backdrop-blur-md border text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                     isCameraOff ? 'bg-amber-500/80 text-white border-amber-400' : 'bg-black/50 text-white border-white/20 hover:bg-black/70'
                   }`}
                   title={isCameraOff ? "카메라 켜기" : "카메라 끄기"}
                 >
-                  {isCameraOff ? <CameraOff size={16} /> : <Camera size={16} />}
+                  {isCameraOff ? <CameraOff size={15} /> : <Camera size={15} />}
                 </button>
               </div>
             </>
@@ -1475,55 +1515,53 @@ export default function Interview() {
         </div>
 
         {/* 2. 카메라 바로 아래 [면접관 질문 박스] */}
-        <div className={`p-5 sm:p-6 rounded-3xl border shadow-lg transition-all ${
+        <div className={`p-4 sm:p-5 rounded-2xl border shadow-lg transition-all ${
           isLightMode ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
         }`}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-black bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                면접 질문 {currentStep} / {activeQuestions.length} • {currentQ?.category}
-              </span>
-            </div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+              면접 질문 {currentStep} / {activeQuestions.length} • {currentQ?.category}
+            </span>
 
             <button
               type="button"
               onClick={() => {
                 if (currentQ) speakLikeInterviewer(currentQ.question);
               }}
-              className="self-start sm:self-auto px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1.5 shadow-sm transition-colors"
+              className="px-2.5 py-1 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1 shadow-xs transition-colors"
             >
-              <Volume2 size={14} />
-              <span>면접관 음성 다시 듣기</span>
+              <Volume2 size={13} />
+              <span>다시 듣기</span>
             </button>
           </div>
 
-          <h2 className={`text-lg sm:text-xl md:text-2xl font-black leading-snug tracking-tight mb-3 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+          <h2 className={`text-base sm:text-lg md:text-xl font-black leading-snug tracking-tight mb-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
             "{currentQ?.question}"
           </h2>
 
-          <p className={`text-xs font-medium flex items-center gap-1.5 p-2.5 rounded-xl border ${
+          <p className={`text-xs font-medium flex items-center gap-1.5 p-2 rounded-xl border ${
             isLightMode ? "bg-indigo-50/70 border-indigo-100 text-indigo-900" : "bg-indigo-950/40 border-indigo-800/40 text-indigo-300"
           }`}>
-            <span>🎯 답변 가이드:</span>
+            <span>🎯 힌트:</span>
             <span>{currentQ?.hint}</span>
           </p>
         </div>
 
         {/* 3. 나의 실시간 답변(자막) 박스 (실시간 STT & 5초 침묵 자동 다음 질문 진행) */}
-        <div className={`p-5 sm:p-6 rounded-3xl border shadow-lg space-y-3 transition-all ${
+        <div className={`p-4 sm:p-5 rounded-2xl border shadow-lg space-y-2.5 transition-all ${
           isLightMode ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
               <span className={`w-2.5 h-2.5 rounded-full ${isRecording ? 'bg-red-500 animate-ping' : 'bg-slate-500'}`} />
-              <span>{isRecording ? t('마이크로 답변을 말씀해 주세요 (실시간 자막 생성 중)') : t('마이크 준비')}</span>
+              <span>{isRecording ? t('실시간 음성 자막 기록 중...') : t('마이크 준비')}</span>
             </div>
 
             {/* 5초 침묵 후 자동 전환 인디케이터 */}
             {autoNextCountdown !== null && (
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold border border-purple-500/30 animate-pulse">
-                <Clock size={13} />
-                <span>{autoNextCountdown}초 후 다음 질문으로 자동 이동</span>
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold border border-purple-500/30 animate-pulse">
+                <Clock size={12} />
+                <span>{autoNextCountdown}초 후 다음 질문 자동 이동</span>
               </div>
             )}
           </div>
@@ -1531,14 +1569,14 @@ export default function Interview() {
           {/* Real-time speech subtitle textarea */}
           <div className="relative">
             <textarea
-              rows={3}
+              rows={2}
               value={currentAnswer}
               onChange={e => {
                 setCurrentAnswer(e.target.value);
                 lastSpeechTimestampRef.current = Date.now();
               }}
-              placeholder="마이크를 켜고 실제 면접처럼 말씀하시면 여기에 실시간으로 자막이 기록됩니다. (답변 완료 후 5초가 지나면 자동으로 다음 질문으로 이동합니다.)"
-              className={`w-full p-4 rounded-2xl border text-sm sm:text-base outline-none resize-none font-medium leading-relaxed ${
+              placeholder="마이크를 켜고 말씀하시면 실시간으로 자막이 기록됩니다. (답변 종료 후 약 5초간 침묵 시 다음 질문으로 자동 이동)"
+              className={`w-full p-3 rounded-xl border text-xs sm:text-sm outline-none resize-none font-medium leading-relaxed ${
                 isLightMode 
                   ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500' 
                   : 'bg-slate-950/80 border-slate-800 text-white focus:border-indigo-500'
@@ -1547,18 +1585,18 @@ export default function Interview() {
           </div>
 
           {/* Action Row */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-            <span className="text-xs text-slate-400 font-medium">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-0.5">
+            <span className="text-[11px] text-slate-400 font-medium">
               💡 문장이 끝나고(~했습니다, ~다.) 약 5초간 말씀이 없으시면 자동으로 다음 질문으로 진행됩니다.
             </span>
 
             <button
               type="button"
               onClick={handleProceedNextQuestion}
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl font-black text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md cursor-pointer flex items-center justify-center gap-2 shrink-0 active:scale-98 transition-all"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md cursor-pointer flex items-center justify-center gap-1.5 shrink-0 active:scale-98 transition-all"
             >
-              <span>{currentStep === activeQuestions.length ? '면접 완료 및 결과 리포트 보기' : '다음 질문으로 넘어가기'}</span>
-              <ChevronRight size={16} />
+              <span>{currentStep === activeQuestions.length ? '면접 완료 및 결과 보기' : '다음 질문으로 넘어가기'}</span>
+              <ChevronRight size={15} />
             </button>
           </div>
         </div>
@@ -1566,57 +1604,24 @@ export default function Interview() {
       </div>
 
       {/* ======================================================== */}
-      {/* MODAL 1: 실전 모의면접 시작 전 뿌연 화면 & 준비 확인 다이얼로그 */}
+      {/* MODAL 1: 간략한 시작 확인 모달 (네 / 아니요) */}
       {/* ======================================================== */}
       {isPrepModalOpen && (
-        <div className="fixed inset-0 z-50 backdrop-blur-xl bg-slate-950/75 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-          <div className={`w-full max-w-md p-6 sm:p-8 rounded-3xl border shadow-2xl relative overflow-hidden text-center transition-all ${
-            isLightMode ? 'bg-white/95 border-indigo-100 text-slate-900' : 'bg-slate-900/95 border-indigo-500/30 text-white'
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/75 flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className={`w-full max-w-xs sm:max-w-sm p-6 sm:p-7 rounded-2xl border shadow-2xl text-center transition-all ${
+            isLightMode ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-700 text-white'
           }`}>
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30 animate-bounce [animation-duration:2.5s]">
-              <Sparkles size={30} />
-            </div>
-
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-2">
-              {selectedDuration}분 {t('실전 모의면접을')}
-              <br />
-              {t('시작하시겠습니까?')}
+            <h2 className="text-xl font-black mb-6">
+              시작하시겠습니까?
             </h2>
 
-            <p className={`text-xs sm:text-sm mb-6 leading-relaxed ${isLightMode ? 'text-slate-600' : 'text-slate-300'}`}>
-              {t('선택하신')} <strong className="text-indigo-500 font-bold">{selectedDuration}분 코스 (총 {activeQuestions.length}문항)</strong>{t('로 실전 AI 기술면접이 진행됩니다.')}
-              <br />
-              {t('준비가 되셨다면 아래')} <strong>[네, 시작할게요]</strong> {t('버튼을 눌러주세요.')}
-            </p>
-
-            <div className={`p-3.5 rounded-2xl mb-6 text-xs flex flex-col gap-2 text-left border ${
-              isLightMode ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700/60 text-slate-300'
-            }`}>
-              <div className="flex items-center gap-2">
-                <span className="text-emerald-500 font-bold">✓</span>
-                <span>{t('초대형 와이드 카메라 & 실시간 음성 자막 활성화')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-emerald-500 font-bold">✓</span>
-                <span>{t('답변 완료 후 5초 침묵 시 다음 질문으로 자동 진행')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-indigo-400 font-bold">⏱</span>
-                <span>{t('시작 버튼을 누르면 3초 카운트다운 후 면접이 시작됩니다.')}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2.5">
+            <div className="flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={handleConfirmCountdown}
-                className="w-full py-3.5 px-6 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 py-3 px-6 rounded-xl font-black text-sm text-white bg-indigo-600 hover:bg-indigo-500 active:scale-95 shadow-md cursor-pointer transition-all"
               >
-                <Play size={16} fill="currentColor" />
-                <span>{t('네, 시작할게요!')}</span>
+                네
               </button>
 
               <button
@@ -1625,11 +1630,13 @@ export default function Interview() {
                   setIsPrepModalOpen(false);
                   setSelectedDuration(null);
                 }}
-                className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                  isLightMode ? 'text-slate-500 hover:bg-slate-100' : 'text-slate-400 hover:bg-slate-800'
+                className={`flex-1 py-3 px-6 rounded-xl font-black text-sm active:scale-95 cursor-pointer transition-all border ${
+                  isLightMode 
+                    ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700' 
+                    : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
                 }`}
               >
-                {t('코스 시간 다시 고르기')}
+                아니요
               </button>
             </div>
           </div>
@@ -1637,28 +1644,16 @@ export default function Interview() {
       )}
 
       {/* ======================================================== */}
-      {/* MODAL 2: 3, 2, 1 카운트다운 오버레이 애니메이션 */}
+      {/* MODAL 2: 심플한 하얀색 폰트 숫자 3, 2, 1 카운트다운 */}
       {/* ======================================================== */}
       {countdown !== null && (
-        <div className="fixed inset-0 z-50 backdrop-blur-2xl bg-slate-950/80 flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-150">
-          <div className="text-center flex flex-col items-center justify-center">
-            <span className="text-xs sm:text-sm font-bold tracking-widest text-indigo-400 uppercase mb-4 animate-pulse">
-              {t('면접관이 입장하고 있습니다...')}
-            </span>
-            
-            <div 
-              key={countdown}
-              className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-indigo-500/40 bg-gradient-to-tr from-indigo-600/30 to-purple-600/30 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-indigo-500/50 transform animate-in zoom-in-75 duration-300"
-            >
-              <span className="text-7xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-indigo-200 to-purple-400 drop-shadow-lg">
-                {countdown}
-              </span>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-300 mt-6 font-medium">
-              {t('바른 자세와 카메라 정면 아이컨택을 유지해 주세요.')}
-            </p>
-          </div>
+        <div className="fixed inset-0 z-50 backdrop-blur-md bg-black/85 flex items-center justify-center select-none animate-in fade-in duration-100">
+          <span 
+            key={countdown}
+            className="text-8xl sm:text-9xl md:text-[140px] font-black text-white drop-shadow-[0_10px_35px_rgba(255,255,255,0.4)] transform animate-in zoom-in-75 duration-200"
+          >
+            {countdown}
+          </span>
         </div>
       )}
 
