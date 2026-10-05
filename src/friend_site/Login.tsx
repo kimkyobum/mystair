@@ -455,42 +455,37 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] h-screen w-full font-sans bg-black overflow-hidden flex">
-      {/* Background: Spline Iframe full width to track cursor everywhere */}
-      <div className="absolute inset-0 z-0 hidden md:block w-full h-full overflow-hidden">
+    <div className="fixed inset-0 z-[100] h-screen w-full font-sans bg-black overflow-hidden flex flex-col md:flex-row">
+      {/* Left side: Spline 3D Interactive Robot */}
+      <div className="hidden md:flex md:w-[50%] lg:w-[55%] h-full bg-black relative items-center justify-center overflow-hidden">
         <iframe 
           src="https://my.spline.design/robotfollowcursorforlandingpage-xEAezW31ESPydMaGMIwVZ55C/" 
           frameBorder="0" 
-          style={{ width: '170vw', height: '100vh', marginLeft: '-65vw' }}
+          className="w-full h-full border-0 pointer-events-auto scale-110"
+          style={{ width: '100%', height: '100%' }}
           title="Spline 3D Robot"
         ></iframe>
       </div>
 
-      {/* Overlay: Layout */}
-      <div className="relative z-10 flex w-full h-full pointer-events-none">
-        {/* Left side (empty space for Spline) */}
-        <div className="hidden md:block w-[30%] h-full"></div>
+      {/* Right side: Login Form */}
+      <div className="w-full md:w-[50%] lg:w-[45%] h-full bg-white flex flex-col justify-center items-center relative overflow-y-auto py-8 z-10 shadow-2xl">
+        {/* Back button */}
+        <button 
+          onClick={onBack}
+          className="absolute top-4 right-4 sm:top-8 sm:right-8 text-gray-500 hover:text-black transition-colors z-20 px-3 py-1.5 rounded-lg text-sm sm:text-base font-semibold cursor-pointer"
+        >{t('login.back')}</button>
 
-        {/* Right side: Login Form */}
-        <div className="w-full md:w-[70%] h-full flex flex-col justify-center items-center relative pointer-events-none overflow-y-auto py-8">
-          <div className="absolute inset-0 bg-white pointer-events-none"></div>
-          {/* Back button */}
-          <button 
-            onClick={onBack}
-            className="absolute top-4 right-4 sm:top-8 sm:right-8 text-gray-500 hover:text-black transition-colors z-10 pointer-events-auto px-3 py-1.5 rounded-lg text-sm sm:text-base"
-          >{t('login.back')}</button>
-
-          <div className="w-full max-w-sm px-6 sm:px-8 relative z-10 pointer-events-auto my-auto">
-            <div className="flex justify-center mb-6 sm:mb-8">
-              <div className="flex items-center group cursor-pointer">
-                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
-                  <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
-                  <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
-                </svg>
-              </div>
+        <div className="w-full max-w-sm px-6 sm:px-8 relative z-10 my-auto">
+          <div className="flex justify-center mb-6 sm:mb-8">
+            <div className="flex items-center group cursor-pointer">
+              <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400 group-hover:rotate-180 group-hover:scale-110 transition-transform duration-500 ease-out">
+                <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+                <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+              </svg>
             </div>
-            
-            <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">
+          </div>
+          
+          <h1 className="text-3xl font-bold text-center mb-2 text-gray-900">
             {step === 'signup' ? t('login.title.signup') : t('login.title.login')}
           </h1>
           <p className="text-gray-500 text-center mb-10 text-sm">
@@ -685,7 +680,6 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
               </div>
             </form>
           )}
-          </div>
         </div>
       </div>
 

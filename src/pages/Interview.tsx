@@ -267,6 +267,10 @@ export default function Interview() {
   const faceBaselineRef = useRef<{ browLuma: number; cheekLuma: number; mouthVar: number } | null>(null);
   const smoothPostureStabilityRef = useRef<number>(94);
   const smoothEyeContactRef = useRef<number>(92);
+  const consecutiveOffGazeFramesRef = useRef<number>(0);
+  const consecutiveTiltFramesRef = useRef<number>(0);
+  const lastTiltTimeRef = useRef<number>(0);
+  const chinBaselineRatioRef = useRef<number | null>(null);
 
   // 마이크 음소거 토글
   const toggleMicMute = () => {
@@ -623,83 +627,20 @@ export default function Interview() {
               cx = Math.max(35, Math.min(125, cx));
               cy = Math.max(25, Math.min(65, cy));
 
+              // 1. 카메라 시선 이탈 (정면 응시 지속성 정밀 검출)
               const diffX = Math.abs(cx - 80);
               const diffY = cy - 48;
-              let eyeOffTrack = (skinCount < 20) || (diffX > 22) || (diffY > 18) || (diffY < -20);
-              if (eyeOffTrack && Math.random() < 0.05) {
-                eyeDeviationCountRef.current += 1;
-              }
-
-              // 자세 안정도
-              if (prevTorsoDataRef.current) {
-                let diffSum = 0, sampleCount = 0;
-                const prev = prevTorsoDataRef.current;
-                for (let ty = 60; ty < 115; ty += 4) {
-                  for (let tx = 25; tx < 135; tx += 4) {
-                    const idx = (ty * 160 + tx) * 4;
-                    diffSum += Math.abs(data[idx] - prev[idx]) + Math.abs(data[idx + 1] - prev[idx + 1]);
-                    sampleCount += 2;
-                  }
+              const isLookingAway = (skinCount < 20) || (diffX > 26) || (diffY > 22) || (diffY < -24);
+              if (isLookingAway) {
+                consecutiveOffGazeFramesRef.current += 1;
+                if (consecutiveOffGazeFramesRef.current === 18) { // 약 1.5초 이상 연속 시선 이탈 시 1회 카운트
+                  eyeDeviationCountRef.current += 1;
                 }
-                const motion = sampleCount > 0 ? (diffSum / sampleCount) : 0;
-                if (motion > 9.5 && Math.random() < 0.08) {
-                  postureUnstableCountRef.current += 1;
-                }
-              }
-              prevTorsoDataRef.current = new Uint8ClampedArray(data);
-
-              // 손버릇 감지
-              const chinMinX = Math.max(0, Math.round(cx - 24));
-              const chinMaxX = Math.min(160, Math.round(cx + 24));
-              const chinMinY = Math.max(0, Math.round(cy + 4));
-              const chinMaxY = Math.min(120, Math.round(cy + 28));
-              let chinSkinPixels = 0, chinTotal = 0;
-              for (let cy_pos = chinMinY; cy_pos < chinMaxY; cy_pos += 2) {
-                for (let cx_pos = chinMinX; cx_pos < chinMaxX; cx_pos += 2) {
-                  const idx = (cy_pos * 160 + cx_pos) * 4;
-                  chinTotal++;
-                  if (data[idx] > 90 && data[idx + 1] > 55 && data[idx + 2] > 40 && (data[idx] - data[idx + 1]) >= 6 && data[idx] > data[idx + 2]) {
-                    chinSkinPixels++;
-                  }
-                }
-              }
-              const chinRatio = chinTotal > 0 ? (chinSkinPixels / chinTotal) : 0;
-              const now = Date.now();
-              if (chinRatio > 0.44 && now - lastFidgetTimeRef.current > 2500) {
-                lastFidgetTimeRef.current = now;
-                fidgetingCountRef.current += 1;
+              } else {
+                consecutiveOffGazeFramesRef.current = 0;
               }
 
-              // 눈 깜빡임
-              const eyeMinX = Math.max(0, Math.round(cx - 20));
-              const eyeMaxX = Math.min(160, Math.round(cx + 20));
-              const eyeMinY = Math.max(0, Math.round(cy - 14));
-              const eyeMaxY = Math.min(120, Math.round(cy - 2));
-              let eyeLumaSum = 0, eyePixels = 0, darkPixels = 0;
-              for (let ey = eyeMinY; ey < eyeMaxY; ey += 2) {
-                for (let ex = eyeMinX; ex < eyeMaxX; ex += 2) {
-                  const idx = (ey * 160 + ex) * 4;
-                  const luma = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
-                  eyeLumaSum += luma;
-                  eyePixels++;
-                  if (luma < 60) darkPixels++;
-                }
-              }
-              const currentEyeLuma = eyePixels > 0 ? (eyeLumaSum / eyePixels) : 100;
-              if (eyeLumaBaselineRef.current === null) eyeLumaBaselineRef.current = currentEyeLuma;
-              else eyeLumaBaselineRef.current = eyeLumaBaselineRef.current * 0.94 + currentEyeLuma * 0.06;
-
-              const instantDiff = lastEyeLumaRef.current !== null ? Math.abs(currentEyeLuma - lastEyeLumaRef.current) : 0;
-              const darkDiff = prevEyeDarkRef.current !== null ? Math.abs(darkPixels - prevEyeDarkRef.current) : 0;
-              if ((instantDiff > 1.8 || darkDiff >= 2) && (now - lastBlinkTimeRef.current > 220)) {
-                lastBlinkTimeRef.current = now;
-                totalBlinkCountRef.current += 1;
-                blinkTimestampsRef.current.push(now);
-              }
-              lastEyeLumaRef.current = currentEyeLuma;
-              prevEyeDarkRef.current = darkPixels;
-
-              // 어깨 기울기 감지
+              // 2. 어깨 수평 및 상체 자세 안정도
               let leftEdgeYSum = 0, leftEdgeCount = 0, rightEdgeYSum = 0, rightEdgeCount = 0;
               for (let sx = Math.max(6, Math.round(cx - 52)); sx <= Math.max(12, Math.round(cx - 20)); sx += 4) {
                 leftEdgeYSum += Math.round(cy + 28);
@@ -712,12 +653,80 @@ export default function Interview() {
               const avgLeftY = leftEdgeCount > 0 ? (leftEdgeYSum / leftEdgeCount) : Math.round(cy + 28);
               const avgRightY = rightEdgeCount > 0 ? (rightEdgeYSum / rightEdgeCount) : Math.round(cy + 28);
               const rawShoulderDiff = avgLeftY - avgRightY;
-              smoothShoulderDiffRef.current = smoothShoulderDiffRef.current * 0.85 + rawShoulderDiff * 0.15;
-              if (Math.abs(smoothShoulderDiffRef.current) > 2.8 && Math.random() < 0.05) {
-                shoulderTiltedCountRef.current += 1;
+              smoothShoulderDiffRef.current = smoothShoulderDiffRef.current * 0.88 + rawShoulderDiff * 0.12;
+              
+              const isTilted = Math.abs(smoothShoulderDiffRef.current) > 3.2;
+              if (isTilted) {
+                consecutiveTiltFramesRef.current += 1;
+                const now = Date.now();
+                if (consecutiveTiltFramesRef.current === 20 && (now - lastTiltTimeRef.current > 3500)) {
+                  lastTiltTimeRef.current = now;
+                  shoulderTiltedCountRef.current += 1;
+                }
+              } else {
+                consecutiveTiltFramesRef.current = 0;
               }
 
-              // 표정 미소 검출
+              // 3. 손버릇 및 얼굴 접촉 (손을 턱/얼굴로 올리는 동작 정밀 감지)
+              const chinMinX = Math.max(0, Math.round(cx - 22));
+              const chinMaxX = Math.min(160, Math.round(cx + 22));
+              const chinMinY = Math.max(0, Math.round(cy + 8));
+              const chinMaxY = Math.min(120, Math.round(cy + 30));
+              let chinSkinPixels = 0, chinTotal = 0;
+              for (let cy_pos = chinMinY; cy_pos < chinMaxY; cy_pos += 2) {
+                for (let cx_pos = chinMinX; cx_pos < chinMaxX; cx_pos += 2) {
+                  const idx = (cy_pos * 160 + cx_pos) * 4;
+                  chinTotal++;
+                  if (data[idx] > 105 && data[idx + 1] > 65 && data[idx + 2] > 45 && (data[idx] - data[idx + 1]) >= 8) {
+                    chinSkinPixels++;
+                  }
+                }
+              }
+              const currentChinRatio = chinTotal > 0 ? (chinSkinPixels / chinTotal) : 0;
+              if (chinBaselineRatioRef.current === null) {
+                chinBaselineRatioRef.current = currentChinRatio;
+              } else {
+                chinBaselineRatioRef.current = chinBaselineRatioRef.current * 0.98 + currentChinRatio * 0.02;
+              }
+
+              const now = Date.now();
+              // 베이스라인 대비 40% 이상 급격히 손이 턱/얼굴 영역으로 침범할 때만 감지
+              const isTouchingFace = currentChinRatio > 0.55 && (currentChinRatio - (chinBaselineRatioRef.current || 0)) > 0.22;
+              if (isTouchingFace && (now - lastFidgetTimeRef.current > 4000)) {
+                lastFidgetTimeRef.current = now;
+                fidgetingCountRef.current += 1;
+              }
+
+              // 4. 눈 깜빡임 (센서 노이즈 필터링 및 자연스러운 깜빡임 측정)
+              const eyeMinX = Math.max(0, Math.round(cx - 18));
+              const eyeMaxX = Math.min(160, Math.round(cx + 18));
+              const eyeMinY = Math.max(0, Math.round(cy - 12));
+              const eyeMaxY = Math.min(120, Math.round(cy - 2));
+              let eyeLumaSum = 0, eyePixels = 0;
+              for (let ey = eyeMinY; ey < eyeMaxY; ey += 2) {
+                for (let ex = eyeMinX; ex < eyeMaxX; ex += 2) {
+                  const idx = (ey * 160 + ex) * 4;
+                  const luma = data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114;
+                  eyeLumaSum += luma;
+                  eyePixels++;
+                }
+              }
+              const currentEyeLuma = eyePixels > 0 ? (eyeLumaSum / eyePixels) : 100;
+              if (eyeLumaBaselineRef.current === null) {
+                eyeLumaBaselineRef.current = currentEyeLuma;
+              } else {
+                eyeLumaBaselineRef.current = eyeLumaBaselineRef.current * 0.95 + currentEyeLuma * 0.05;
+              }
+
+              const lumaDrop = (eyeLumaBaselineRef.current || currentEyeLuma) - currentEyeLuma;
+              if (lumaDrop > 3.8 && (now - lastBlinkTimeRef.current > 320)) {
+                lastBlinkTimeRef.current = now;
+                totalBlinkCountRef.current += 1;
+                blinkTimestampsRef.current.push(now);
+              }
+              lastEyeLumaRef.current = currentEyeLuma;
+
+              // 5. 표정 미소 및 단정함 검출
               let mouthPixels: number[] = [];
               for (let my = Math.max(0, Math.round(cy + 13)); my <= Math.min(118, Math.round(cy + 24)); my += 2) {
                 for (let mx = Math.max(0, Math.round(cx - 15)); mx <= Math.min(159, Math.round(cx + 15)); mx += 2) {
@@ -737,18 +746,18 @@ export default function Interview() {
               if (now - lastStateUpdateTimeRef.current >= 300) {
                 lastStateUpdateTimeRef.current = now;
                 setRealtimeBehavior({
-                  eyeContactScore: eyeOffTrack ? 55 : 94,
-                  postureStability: Math.abs(smoothShoulderDiffRef.current) > 2.8 ? 68 : 95,
+                  eyeContactScore: isLookingAway ? 60 : 95,
+                  postureStability: isTilted ? 70 : 96,
                   voiceLoudnessScore: micVolume > 15 ? Math.min(98, 80 + Math.round(micVolume * 0.2)) : 85,
                   fidgetingCount: fidgetingCountRef.current,
-                  blinkRatePerMin: Math.min(50, Math.round((blinkTimestampsRef.current.filter(t => now - t < 10000).length / 10) * 60)),
+                  blinkRatePerMin: Math.min(45, Math.round((blinkTimestampsRef.current.filter(t => now - t < 10000).length / 10) * 60)),
                   totalBlinkCount: totalBlinkCountRef.current,
                   distractingHabits: [],
-                  behaviorVerdict: '안정적인 실시간 모의면접 진행 중',
-                  shoulderStatus: smoothShoulderDiffRef.current < -2.6 ? 'left_tilted' : smoothShoulderDiffRef.current > 2.6 ? 'right_tilted' : 'level',
-                  shoulderMessage: '어깨 수평 감지 상태',
+                  behaviorVerdict: '실시간 모의면접 진행 중',
+                  shoulderStatus: smoothShoulderDiffRef.current < -2.8 ? 'left_tilted' : smoothShoulderDiffRef.current > 2.8 ? 'right_tilted' : 'level',
+                  shoulderMessage: '어깨 수평 감지',
                   expressionStatus: mouthVar > 12.0 ? 'good' : 'neutral',
-                  expressionMessage: '표정 감지 상태'
+                  expressionMessage: '표정 감지'
                 });
               }
             }
@@ -926,8 +935,8 @@ export default function Interview() {
   // ==========================================
   if (!selectedDuration) {
     return (
-      <div className={`min-h-screen flex items-center justify-center p-4 font-sans ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
-        <div className="max-w-3xl w-full text-center space-y-8 animate-in fade-in zoom-in duration-300">
+      <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden flex items-center justify-center p-4 font-sans custom-scrollbar ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
+        <div className="max-w-3xl w-full text-center space-y-8 py-8 animate-in fade-in zoom-in duration-300">
           
           <div className="space-y-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
@@ -1046,7 +1055,7 @@ export default function Interview() {
     const candidateName = userProfile?.name || '지원자';
 
     return (
-      <div className={`min-h-screen py-10 px-4 sm:px-8 font-sans ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
+      <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden py-10 px-4 sm:px-8 font-sans custom-scrollbar ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300">
           
           {/* Header Banner */}
@@ -1287,7 +1296,7 @@ export default function Interview() {
   // VIEW 2: 초대형 와이드 카메라 + 실제 면접 인터페이스
   // ==========================================
   return (
-    <div className={`min-h-screen flex flex-col bg-transparent font-sans relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
+    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden flex flex-col bg-transparent font-sans relative custom-scrollbar ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
       
       {/* Hidden canvas for video analysis */}
       <canvas ref={canvasRef} className="hidden" />
@@ -1328,15 +1337,15 @@ export default function Interview() {
                   className="fixed inset-0 z-40" 
                   onClick={() => setShowVoiceMenu(false)} 
                 />
-                <div className={`absolute right-0 mt-2 w-64 rounded-2xl border shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100 max-h-[380px] overflow-y-auto custom-scrollbar ${
-                  isLightMode ? 'bg-white border-slate-200 text-slate-900 shadow-slate-300/50' : 'bg-slate-900 border-slate-700 text-white shadow-black/80'
+                <div className={`absolute right-0 mt-2 w-72 rounded-2xl border shadow-2xl p-2.5 z-50 animate-in fade-in zoom-in-95 duration-100 max-h-[420px] overflow-y-auto no-scrollbar ${
+                  isLightMode ? 'bg-white border-slate-200 text-slate-900 shadow-slate-300/50' : 'bg-slate-900/95 backdrop-blur-xl border-slate-700 text-white shadow-black/80'
                 }`}>
-                  <div className="px-2 py-1 text-[11px] font-black text-slate-400">
-                    {t('면접관 음성 선택')}
+                  <div className="px-2 py-1 text-[11px] font-black text-slate-400 border-b border-slate-700/40 pb-1.5 mb-1">
+                    {t('AI 면접관 보이스 선택')}
                   </div>
                   
                   {(['남성 면접관', '여성 면접관', '특화 면접관'] as const).map(category => (
-                    <div key={category} className="mt-1.5">
+                    <div key={category} className="mt-2">
                       <div className="px-2 py-0.5 text-[10px] font-extrabold text-indigo-400 bg-indigo-500/10 rounded-md mb-1">
                         {category}
                       </div>
@@ -1402,11 +1411,11 @@ export default function Interview() {
         </div>
       </header>
 
-      {/* Main Container: Compact, viewport-friendly layout */}
-      <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 pt-3 pb-8 space-y-3 flex-1">
+      {/* Main Container: Prominent interview viewport layout */}
+      <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 pt-2 pb-8 space-y-3.5 flex-1 flex flex-col justify-start">
         
         {/* Question Step Tabs */}
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-0.5">
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-0.5 no-scrollbar">
           <div className="flex items-center gap-1.5">
             {activeQuestions.map((q, idx) => (
               <span
@@ -1429,9 +1438,9 @@ export default function Interview() {
           </div>
         </div>
 
-        {/* 1. 카메라 화면 (적당한 높이로 축소하여 질문 및 답변 자막이 한 화면에 온전히 들어오도록 조정) */}
-        <div className={`relative rounded-2xl overflow-hidden border shadow-xl w-full h-[220px] sm:h-[260px] md:h-[280px] flex items-center justify-center transition-all bg-slate-950 ${
-          isLightMode ? 'border-slate-200/90 shadow-slate-200/50' : 'border-slate-800 shadow-black/60'
+        {/* 1. 크고 시원한 카메라 화면 */}
+        <div className={`relative rounded-2xl overflow-hidden border shadow-2xl w-full h-[320px] sm:h-[380px] md:h-[420px] flex items-center justify-center transition-all bg-slate-950 ${
+          isLightMode ? 'border-slate-200/90 shadow-slate-200/50' : 'border-slate-800 shadow-black/70'
         }`}>
           {/* Actual Crisp Video Feed */}
           <video 
@@ -1447,8 +1456,8 @@ export default function Interview() {
 
           {(!cameraActive || isCameraOff) && (
             <div className="flex flex-col items-center justify-center text-center p-6 text-slate-400">
-              <div className="w-14 h-14 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-2.5">
-                <CameraOff size={24} className="text-slate-400" />
+              <div className="w-16 h-16 rounded-full bg-slate-800/80 border border-white/10 flex items-center justify-center mb-3">
+                <CameraOff size={28} className="text-slate-400" />
               </div>
               <p className="text-sm font-bold text-slate-200 mb-1">
                 {isCameraOff ? t('카메라가 꺼져 있습니다') : t('카메라가 꺼져 있습니다')}
@@ -1456,7 +1465,7 @@ export default function Interview() {
               <button
                 type="button"
                 onClick={isCameraOff ? toggleCameraOff : startCamera}
-                className="mt-2 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1.5 shadow-md transition-colors"
+                className="mt-2.5 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer flex items-center gap-1.5 shadow-md transition-colors"
               >
                 <Camera size={14} />
                 <span>{t('카메라 켜기')}</span>
@@ -1514,7 +1523,7 @@ export default function Interview() {
           )}
         </div>
 
-        {/* 2. 카메라 바로 아래 [면접관 질문 박스] */}
+        {/* 2. 면접관 질문 박스 (깔끔하게 질문만 표시) */}
         <div className={`p-4 sm:p-5 rounded-2xl border shadow-lg transition-all ${
           isLightMode ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
         }`}>
@@ -1535,26 +1544,19 @@ export default function Interview() {
             </button>
           </div>
 
-          <h2 className={`text-base sm:text-lg md:text-xl font-black leading-snug tracking-tight mb-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+          <h2 className={`text-base sm:text-lg md:text-xl font-black leading-snug tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
             "{currentQ?.question}"
           </h2>
-
-          <p className={`text-xs font-medium flex items-center gap-1.5 p-2 rounded-xl border ${
-            isLightMode ? "bg-indigo-50/70 border-indigo-100 text-indigo-900" : "bg-indigo-950/40 border-indigo-800/40 text-indigo-300"
-          }`}>
-            <span>🎯 힌트:</span>
-            <span>{currentQ?.hint}</span>
-          </p>
         </div>
 
-        {/* 3. 나의 실시간 답변(자막) 박스 (실시간 STT & 5초 침묵 자동 다음 질문 진행) */}
+        {/* 3. 나의 실시간 음성 자막 박스 (실시간 STT 자막) */}
         <div className={`p-4 sm:p-5 rounded-2xl border shadow-lg space-y-2.5 transition-all ${
           isLightMode ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
               <span className={`w-2.5 h-2.5 rounded-full ${isRecording ? 'bg-red-500 animate-ping' : 'bg-slate-500'}`} />
-              <span>{isRecording ? t('실시간 음성 자막 기록 중...') : t('마이크 준비')}</span>
+              <span>{isRecording ? t('실시간 음성 자막 기록 중...') : t('마이크 대기')}</span>
             </div>
 
             {/* 5초 침묵 후 자동 전환 인디케이터 */}
@@ -1575,8 +1577,8 @@ export default function Interview() {
                 setCurrentAnswer(e.target.value);
                 lastSpeechTimestampRef.current = Date.now();
               }}
-              placeholder="마이크를 켜고 말씀하시면 실시간으로 자막이 기록됩니다. (답변 종료 후 약 5초간 침묵 시 다음 질문으로 자동 이동)"
-              className={`w-full p-3 rounded-xl border text-xs sm:text-sm outline-none resize-none font-medium leading-relaxed ${
+              placeholder="답변을 말씀하시면 실시간으로 자막이 기록됩니다."
+              className={`w-full p-3.5 rounded-xl border text-xs sm:text-sm outline-none resize-none font-medium leading-relaxed custom-scrollbar ${
                 isLightMode 
                   ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500' 
                   : 'bg-slate-950/80 border-slate-800 text-white focus:border-indigo-500'
@@ -1585,15 +1587,11 @@ export default function Interview() {
           </div>
 
           {/* Action Row */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-0.5">
-            <span className="text-[11px] text-slate-400 font-medium">
-              💡 문장이 끝나고(~했습니다, ~다.) 약 5초간 말씀이 없으시면 자동으로 다음 질문으로 진행됩니다.
-            </span>
-
+          <div className="flex items-center justify-end pt-1">
             <button
               type="button"
               onClick={handleProceedNextQuestion}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md cursor-pointer flex items-center justify-center gap-1.5 shrink-0 active:scale-98 transition-all"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl font-black text-xs sm:text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md cursor-pointer flex items-center justify-center gap-1.5 shrink-0 active:scale-98 transition-all"
             >
               <span>{currentStep === activeQuestions.length ? '면접 완료 및 결과 보기' : '다음 질문으로 넘어가기'}</span>
               <ChevronRight size={15} />

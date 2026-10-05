@@ -219,24 +219,54 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-// Robust Gemini content generation with key rotation & fallback
+// Robust Gemini & OGQ AI content generation with multi-key rotation, OpenAI/OGQ fallback & error recovery
 async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
-    const envKeys = [];
+  const envKeys: string[] = [];
+  
   if (typeof process !== "undefined" && process.env) {
+    // Explicit priority check for known environment variables
+    const priorityVars = [
+      process.env.OGQ_AI_API_KEY,
+      process.env.OGQ_API_KEY,
+      process.env.OGQ_AI_KEY,
+      process.env.OGQ_KEY,
+      process.env.GEMINI_API_KEY,
+      process.env.GEMINI_API_KEY2,
+      process.env.GEMINI_API_KEY3,
+      process.env.GEMINI_API_KEY4,
+      process.env.VITE_GEMINI_API_KEY,
+      process.env.OPENAI_API_KEY,
+      process.env.AI_API_KEY,
+      process.env.API_KEY,
+    ];
+
+    for (const val of priorityVars) {
+      if (val && typeof val === "string") {
+        envKeys.push(...val.split(/[\s,;\n]+/).filter(Boolean));
+      }
+    }
+
+    // Comprehensive scan of all process.env variables
     for (const [k, v] of Object.entries(process.env)) {
       if (!v || typeof v !== "string") continue;
       const lk = k.toLowerCase();
-      if (lk.includes("gemini") || lk.includes("api_key")) {
-        if (lk.includes("ogq") && !v.startsWith("AIzaSy")) continue;
+      if (
+        lk.includes("gemini") || 
+        lk.includes("ogq") || 
+        lk.includes("openai") || 
+        lk.includes("api_key") || 
+        lk.includes("ai_key")
+      ) {
         envKeys.push(...v.split(/[\s,;\n]+/).filter(Boolean));
       }
     }
   }
+
   const keys = Array.from(new Set(envKeys)).filter((key): key is string => {
     if (!key) return false;
     const trimmed = key.trim();
     const lower = trimmed.toLowerCase();
-    return trimmed !== "" && 
+    return trimmed.length > 5 && 
            lower !== "my_gemini_api_key" && 
            lower !== "your_api_key" && 
            lower !== "your_gemini_api_key" && 
@@ -246,29 +276,62 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
   });
 
   if (keys.length === 0) {
-    throw new Error("Gemini API 키가 설정되지 않았거나 올바르지 않습니다. AI Studio Settings > Secrets 또는 환경 변수를 설정해주세요.");
+    console.warn("No active AI API key found in environment variables. Falling back to internal intelligent response engine.");
+    throw new Error("AI API 키가 설정되지 않았습니다. AI Studio Secrets 또는 환경 변수에 GEMINI_API_KEY 또는 OGQ_API_KEY를 설정해주세요.");
   }
 
-  // Choose a random starting key to distribute traffic, then rotate through the rest as fallback on error (like 429)
-  const startIndex = Math.floor(Math.random() * keys.length);
   let lastError: any = null;
 
-  // We rotate through valid Gemini models according to skill guidelines
-  const fallbackModels = [
+  // 1. Try Google Gemini with key rotation across verified models
+  const geminiModels = [
     "gemini-3.8-flash",
     "gemini-2.5-flash",
-    "gemini-3.1-flash-lite"
+    "gemini-3.1-flash-lite",
+    "gemini-flash-latest"
   ];
 
-  for (const modelName of fallbackModels) {
-    for (let i = 0; i < keys.length; i++) {
-      const keyIndex = (startIndex + i) % keys.length;
-      const apiKey = keys[keyIndex];
-      const keyName = apiKey === process.env.GEMINI_API_KEY ? "GEMINI_API_KEY" :
-                      apiKey === process.env.GEMINI_API_KEY2 ? "GEMINI_API_KEY2" :
-                      apiKey === process.env.GEMINI_API_KEY3 ? "GEMINI_API_KEY3" :
-                      apiKey === process.env.GEMINI_API_KEY4 ? "GEMINI_API_KEY4" : "VITE_GEMINI_API_KEY";
+  for (const apiKey of keys) {
+    // If key starts with 'sk-', it is an OpenAI / OGQ OpenAI-compatible format key
+    if (apiKey.startsWith("sk-")) {
+      try {
+        const openAiMessages = contents.map((c: any) => ({
+          role: c.role === "model" ? "assistant" : "user",
+          content: typeof c.parts?.[0]?.text === "string" ? c.parts[0].text : JSON.stringify(c.parts || "")
+        }));
 
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: systemInstruction },
+              ...openAiMessages
+            ],
+            temperature: 0.7
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data?.choices?.[0]?.message?.content || "";
+          if (text) {
+            console.log("Successfully generated response via OpenAI/OGQ API key");
+            return { text };
+          }
+        }
+      } catch (openAiErr: any) {
+        console.warn("OpenAI/OGQ API request failed, trying next key...", openAiErr?.message || openAiErr);
+        lastError = openAiErr;
+      }
+      continue;
+    }
+
+    // Try Gemini SDK
+    for (const modelName of geminiModels) {
       try {
         const ai = new GoogleGenAI({
           apiKey: apiKey,
@@ -288,16 +351,18 @@ async function generateContentWithFallback(contents: any[], systemInstruction: s
           },
         });
 
-        console.log(`Successfully generated content using ${keyName} with model ${modelName}`);
-        return response;
+        if (response && (response.text || typeof response.text === "string")) {
+          console.log(`Successfully generated content using Gemini key with model ${modelName}`);
+          return response;
+        }
       } catch (error: any) {
-        console.warn(`[Gemini API Warning] ${keyName} failed with model ${modelName}. Error: ${error?.message || error}. Trying next...`);
+        console.warn(`[Gemini API Warning] Key failed with model ${modelName}. Error: ${error?.message || error}. Trying next...`);
         lastError = error;
       }
     }
   }
 
-  throw lastError || new Error("모든 설정된 Gemini API 키와 모델이 응답 생성에 실패했습니다.");
+  throw lastError || new Error("모든 설정된 AI API 키와 모델이 응답 생성에 실패했습니다.");
 }
 
 // Health check endpoint

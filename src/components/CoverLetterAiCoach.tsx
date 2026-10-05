@@ -228,7 +228,8 @@ export default function CoverLetterAiCoach({
 
       if (res.ok) {
         const data = await res.json();
-        let cleanedAnswer = (data.answer || t('실천 가능한 문장으로 구체적인 살을 붙여보세요.')).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+        const rawAns = data.answer || data.response || data.feedback?.speech || data.feedback?.summary || data.text || '';
+        let cleanedAnswer = (rawAns || t('실천 가능한 문장으로 구체적인 살을 붙여보세요.')).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
         const aiMsg: ChatMessage = {
           id: `ai-${Date.now()}`,
           sender: 'ai',
