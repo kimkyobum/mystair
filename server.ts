@@ -2118,6 +2118,180 @@ app.post("/api/evaluate-interview", async (req, res) => {
   }
 });
 
+// 종합 면접 답변 정밀 분석 및 문항별 채점 API
+app.post("/api/evaluate-interview-final", async (req, res) => {
+  try {
+    const { answers = [], userProfile = {}, behaviorScore = 85 } = req.body || {};
+    const studentName = userProfile?.name || '지원자';
+    const studentMajor = userProfile?.major || '전공기술';
+
+    // Heuristic generator function in case of AI unavailability
+    const computeHeuristicEvaluation = () => {
+      let totalContentScore = 0;
+      const questionEvaluations = answers.map((item: any, idx: number) => {
+        const text = (item.answer || '').trim();
+        const len = text.length;
+        const hasNumbers = /[0-9]+%?|일간|개월|시간|개|차|회|단계/.test(text);
+        const hasTechWords = /설비|회로|공정|도면|용접|프로그래밍|코드|센서|plc|안전|점검|오류|원인|분석|개선|해결|매뉴얼|부품|작업|기능사/.test(text.toLowerCase());
+        const hasStructure = /첫째|둘째|이유는|결과적으로|배운|노력했|느꼈|기여하/.test(text);
+        const hasEnding = /습니다|했습니다|입니다|됩니다|않습니다|있습니다|합니다|생각합니다/.test(text);
+
+        let qScore = 70;
+        const strengths: string[] = [];
+        const improvements: string[] = [];
+
+        if (len === 0 || text === '답변 없음' || text === '답변 기록 없음') {
+          qScore = 50;
+          strengths.push("질문을 경청함");
+          improvements.push("침묵 대신 핵심 키워드라도 자신감 있게 구술하는 연습이 필요합니다.");
+        } else {
+          if (len >= 30) qScore += 8;
+          if (len >= 70) qScore += 7;
+          if (len >= 130) qScore += 5;
+
+          if (hasNumbers) {
+            qScore += 4;
+            strengths.push("구체적인 수치나 기간을 언급하여 신뢰도를 높임");
+          } else {
+            improvements.push("수치화된 데이터(예: 3주간, 오차율 10% 개선 등)를 추가하면 설득력이 배가됩니다.");
+          }
+
+          if (hasTechWords) {
+            qScore += 4;
+            strengths.push("전공 및 현장 실무 용어를 적절하게 활용함");
+          } else {
+            improvements.push("학교 실습에서 다룬 설비나 공구, 기술 명칭을 직접 언급해 보세요.");
+          }
+
+          if (hasStructure) {
+            qScore += 3;
+            strengths.push("원인과 해결, 배운 점으로 이어지는 논리적 전개");
+          } else {
+            improvements.push("두괄식(결론 먼저)으로 서두를 시작하고 STAR(상황-과제-행동-결과)로 정리하세요.");
+          }
+
+          if (hasEnding) {
+            strengths.push("신뢰감을 주는 단정하고 예의 바른 어미 사용");
+          } else {
+            improvements.push("말끝을 흐리지 말고 '~했습니다'로 또렷하게 마무리하세요.");
+          }
+        }
+
+        qScore = Math.min(98, Math.max(50, qScore));
+        totalContentScore += qScore;
+
+        return {
+          questionId: item.questionId || (idx + 1),
+          question: item.question,
+          category: item.category || "역량",
+          userAnswer: text || "답변 미기록",
+          score: qScore,
+          strengths: strengths.length > 0 ? strengths : ["진솔하고 솔직한 답변 태도"],
+          improvements: improvements.length > 0 ? improvements : ["현장 적용 방안을 한 문장 더 덧붙이기"],
+          modelAnswerTip: `${item.category || '직무'} 질문에는 자신의 전공 실습 경험에서 부딪혔던 문제와 구체적인 해결 행동(Action), 그리고 그 결과 배운 교훈을 연결해 두괄식으로 답변하는 것이 모범 공식입니다.`
+        };
+      });
+
+      const avgContentScore = answers.length > 0 ? Math.round(totalContentScore / answers.length) : 75;
+      const combinedScore = Math.round((behaviorScore * 0.45) + (avgContentScore * 0.55));
+      const grade = combinedScore >= 90 ? 'A+' : combinedScore >= 80 ? 'A' : combinedScore >= 70 ? 'B' : combinedScore >= 60 ? 'C' : 'D';
+
+      return {
+        contentScore: avgContentScore,
+        behaviorScore: behaviorScore,
+        finalCombinedScore: combinedScore,
+        finalGrade: grade,
+        overallVerdict: `${studentName} 지원자님은 ${studentMajor} 전공 실습 역량을 바탕으로 전반적으로 성실하고 진솔하게 답변하셨습니다. 행동 분석 점수(${behaviorScore}점)와 답변 내용 점수(${avgContentScore}점)를 종합한 결과 실전 합격 가능성이 우수한 편입니다.`,
+        dimensionScores: {
+          jobRelevance: Math.min(30, Math.round(avgContentScore * 0.3)),
+          logicalStructure: Math.min(30, Math.round(avgContentScore * 0.28)),
+          problemSolving: Math.min(20, Math.round(avgContentScore * 0.21)),
+          expression: Math.min(20, Math.round(avgContentScore * 0.21))
+        },
+        questionEvaluations
+      };
+    };
+
+    // Prepare AI Prompt
+    const questionsBlock = answers.map((a: any, i: number) => `
+[질문 ${i + 1}] (${a.category}): ${a.question}
+[지원자 답변]: "${a.answer || '(답변 없음)'}"
+`).join("\n");
+
+    const prompt = `
+당신은 대기업 및 공기업 기술직 채용을 총괄하는 20년 경력의 베테랑 기술 면접위원장입니다.
+지원자(${studentName}, ${studentMajor})가 실전 모의면접에서 구술/작성한 모든 답변을 정밀 분석하여
+문항별 채점 점수(100점 만점 기준)와 종합 평가를 JSON 형식으로 제공해 주세요.
+
+[지원자 답변 내역]
+${questionsBlock}
+
+[태도/행동 점수]: ${behaviorScore}점 / 100점
+
+[평가 기준]
+1. 직무 및 전공 적합성: 마이스터고 실습 및 전공 역량이 명확히 드러나는가? (30점)
+2. 논리적 답변 구성: 두괄식으로 핵심을 먼저 제시하고 STAR 구조로 명확한가? (30점)
+3. 위기 대처 및 협업 태도: 갈등이나 돌발 상황에서 안전과 협력을 지키는가? (20점)
+4. 표현력 및 설득력: 수치화된 성과와 명확한 어조로 설득력 있게 전달하는가? (20점)
+
+반드시 다음 순수 JSON 형식으로만 응답하세요:
+{
+  "contentScore": 50~98 사이의 답변 종합 점수 (숫자),
+  "finalCombinedScore": 50~98 사이의 행동+답변 종합 점수 (숫자),
+  "finalGrade": "A+" | "A" | "B" | "C" | "D",
+  "overallVerdict": "지원자의 답변 전반에 대한 2~3문장의 날카롭고 유익한 면접 총평",
+  "dimensionScores": {
+    "jobRelevance": 0~30 사이 점수,
+    "logicalStructure": 0~30 사이 점수,
+    "problemSolving": 0~20 사이 점수,
+    "expression": 0~20 사이 점수
+  },
+  "questionEvaluations": [
+    {
+      "questionId": 질문 번호 (숫자),
+      "score": 50~98 사이 점수 (숫자),
+      "verdict": "해당 문항 답변에 대한 한 줄 평가",
+      "strengths": ["지원자가 잘 전달한 핵심 포인트 1~2개"],
+      "improvements": ["부족하거나 보완하면 좋은 실질적 조언 1~2개"],
+      "modelAnswerTip": "이 질문에서 면접관이 듣고 싶었던 모범 답변 핵심 방향"
+    }
+  ]
+}
+`;
+
+    const systemInstruction = "너는 대기업 및 공기업의 냉철하고 전문적인 기술 면접위원장입니다. 이모지 없이 진정성 있고 전문적인 면접 채점표를 JSON으로 출력하세요.";
+
+    let aiResult: any = null;
+    try {
+      aiResult = await generateContentWithFallback(
+        [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction
+      );
+    } catch (aiErr: any) {
+      console.warn("AI evaluation call failed, using heuristic evaluation:", aiErr?.message || aiErr);
+    }
+
+    if (aiResult && aiResult.text) {
+      try {
+        const cleaned = aiResult.text.replace(/```json/gi, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(cleaned);
+        if (parsed.questionEvaluations && Array.isArray(parsed.questionEvaluations)) {
+          return res.json({ success: true, evaluation: parsed });
+        }
+      } catch (parseErr) {
+        console.warn("JSON parse error in evaluate-interview-final, falling back to heuristic", parseErr);
+      }
+    }
+
+    const fallbackEval = computeHeuristicEvaluation();
+    return res.json({ success: true, evaluation: fallbackEval });
+  } catch (error: any) {
+    console.error("evaluate-interview-final error:", error);
+    return res.status(500).json({ error: "면접 최종 평가 중 오류가 발생했습니다." });
+  }
+});
+
+
 
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
