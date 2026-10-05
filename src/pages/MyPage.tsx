@@ -1902,13 +1902,13 @@ export default function MyPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-                  <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5">1순위: {modalPrimaryHollandMeta.name}</span>
-                    <p className="text-slate-600 dark:text-slate-300">{modalPrimaryHollandMeta.desc}</p>
+                  <div className={`p-2.5 rounded-xl border ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-800/80 border-slate-700 text-white"}`}>
+                    <span className="font-bold text-emerald-500 block mb-0.5">1순위: {modalPrimaryHollandMeta.name}</span>
+                    <p className={isLightMode ? "text-slate-600" : "text-slate-300"}>{modalPrimaryHollandMeta.desc}</p>
                   </div>
-                  <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <span className="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">2순위: {modalSecondaryHollandMeta.name}</span>
-                    <p className="text-slate-600 dark:text-slate-300">{modalSecondaryHollandMeta.desc}</p>
+                  <div className={`p-2.5 rounded-xl border ${isLightMode ? "bg-white border-slate-200 text-slate-900" : "bg-slate-800/80 border-slate-700 text-white"}`}>
+                    <span className={`font-bold block mb-0.5 ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>2순위: {modalSecondaryHollandMeta.name}</span>
+                    <p className={isLightMode ? "text-slate-600" : "text-slate-300"}>{modalSecondaryHollandMeta.desc}</p>
                   </div>
                 </div>
               </div>
@@ -1916,14 +1916,14 @@ export default function MyPage() {
               {/* RIASEC Percentages */}
               {hollandResult?.percentages && (
                 <div className="space-y-2">
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('RIASEC 적합도 지표')}</div>
+                  <div className={`text-xs font-bold uppercase tracking-wider ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>{t('RIASEC 적합도 지표')}</div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
                     {Object.keys(hollandResult.percentages).map(k => {
                       const val = hollandResult.percentages[k];
                       return (
-                        <div key={k} className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 text-center">
-                          <span className="font-bold text-slate-500 block">{k}</span>
-                          <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{val}%</span>
+                        <div key={k} className={`p-2 rounded-lg text-center border ${isLightMode ? "bg-slate-50 border-slate-200 text-slate-800" : "bg-slate-800/60 border-slate-700 text-slate-200"}`}>
+                          <span className="font-bold text-slate-400 block">{k}</span>
+                          <span className="font-extrabold text-emerald-500">{val}%</span>
                         </div>
                       );
                     })}
@@ -1933,7 +1933,7 @@ export default function MyPage() {
 
               {/* Memo Note */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">{t('진로 지도 소견 메모')}</label>
+                <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>{t('진로 지도 소견 메모')}</label>
                 <textarea
                   value={profile.hollandNote}
                   onChange={e => setProfile({ ...profile, hollandNote: e.target.value })}
@@ -1946,10 +1946,10 @@ export default function MyPage() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className={`pt-4 border-t flex items-center justify-between ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
               <Link
                 to="/holland"
-                className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-emerald-500 hover:underline flex items-center gap-1"
               >
                 <span>{t('검사 다시하기')}</span>
                 <ExternalLink size={12} />

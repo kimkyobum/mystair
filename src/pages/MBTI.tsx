@@ -139,7 +139,7 @@ export default function MBTI() {
   const percent = Math.round(((currentIndex) / mbtiQuestions.length) * 100);
 
   return (
-    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-[#0F172A] font-sans flex flex-col relative">
+    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans flex flex-col relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
       <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-sm sticky top-0 z-50 border-b ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
         <div className="flex items-center gap-4">
           <Link to="/" className={`font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
@@ -157,44 +157,63 @@ export default function MBTI() {
       <Link 
         to="/mypage" 
         title={t('마이페이지로 돌아가기')}
-        className="hidden sm:flex absolute top-[92px] left-10 px-3.5 h-[44px] rounded-xl justify-center items-center gap-1.5 text-[13px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40"
+        className={`hidden sm:flex absolute top-[92px] left-10 px-3.5 h-[44px] rounded-xl justify-center items-center gap-1.5 text-[13px] font-bold shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40 border ${
+          isLightMode ? "bg-white border-slate-200 text-slate-700 hover:bg-slate-50" : "bg-slate-900/80 border-slate-700/50 text-slate-300 hover:bg-slate-800"
+        }`}
       >
         <span>←</span>
         <span>{t('마이페이지')}</span>
       </Link>
 
       <main className="flex-1 flex justify-center items-center py-10 px-5">
-        <div className="w-full max-w-[680px] bg-white rounded-3xl shadow-[0_10px_30px_-5px_rgba(15,23,42,0.08),0_0_0_1px_rgba(226,232,240,0.8)] p-6 sm:p-10 transition-all duration-300">
+        <div className={`w-full max-w-[680px] rounded-3xl p-6 sm:p-10 transition-all duration-300 border ${
+          isLightMode 
+            ? "bg-white text-slate-900 border-slate-200 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.08)]" 
+            : "bg-slate-900/90 text-slate-100 border-slate-800 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+        }`}>
           
           {screen === 'start' && (
             <div className="text-center py-5">
-              <h1 className="text-[28px] font-extrabold text-[#0F172A] mb-3 leading-tight">{t('32가지 MBTI 진로 적성 검사')}</h1>
-              <p className="text-[#64748B] text-[15px] leading-relaxed mb-8">{t('나의 성격 유형(E/I, S/N, T/F, J/P)과 자아 지표(A/T)를 정밀 분석하여 나에게 꼭 맞는 맞춤형 직무를 추천해 드립니다.')}</p>
+              <h1 className={`text-[28px] font-extrabold mb-3 leading-tight ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>{t('32가지 MBTI 진로 적성 검사')}</h1>
+              <p className={`text-[15px] leading-relaxed mb-8 ${isLightMode ? "text-[#64748B]" : "text-slate-400"}`}>{t('나의 성격 유형(E/I, S/N, T/F, J/P)과 자아 지표(A/T)를 정밀 분석하여 나에게 꼭 맞는 맞춤형 직무를 추천해 드립니다.')}</p>
               
               <div className="flex justify-center gap-3 mb-9 flex-wrap">
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('⏱ 소요시간 약 7분')}</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('📝 총 60문항')}</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('🎯 32가지 정밀 성격 분석')}</div>
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-[#F1F5F9] text-[#0F172A] border-slate-200" : "bg-slate-800 text-slate-200 border-slate-700"
+                }`}>{t('⏱ 소요시간 약 7분')}</div>
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-[#F1F5F9] text-[#0F172A] border-slate-200" : "bg-slate-800 text-slate-200 border-slate-700"
+                }`}>{t('📝 총 60문항')}</div>
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-[#F1F5F9] text-[#0F172A] border-slate-200" : "bg-slate-800 text-slate-200 border-slate-700"
+                }`}>{t('🎯 32가지 정밀 성격 분석')}</div>
               </div>
 
-              <button onClick={startQuiz} className="bg-[#0F172A] text-white border-none py-4 px-10 text-[16px] font-bold rounded-2xl cursor-pointer transition-all duration-200 shadow-[0_4px_12px_rgba(15,23,42,0.15)] w-full max-w-[300px] hover:bg-[#1E293B] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(15,23,42,0.2)]">{t('검사 시작하기')}</button>
+              <button 
+                onClick={startQuiz} 
+                className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white border-none py-4 px-10 text-[16px] font-bold rounded-2xl cursor-pointer transition-all duration-200 shadow-lg shadow-teal-500/20 w-full max-w-[300px] hover:-translate-y-0.5"
+              >
+                {t('검사 시작하기')}
+              </button>
             </div>
           )}
 
           {screen === 'quiz' && (
             <div>
               <div className="mb-8">
-                <div className="flex justify-between items-center text-[14px] font-bold text-[#0F172A] mb-2.5">
+                <div className={`flex justify-between items-center text-[14px] font-bold mb-2.5 ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>
                   <span>{t('문항')} {currentIndex + 1} / {mbtiQuestions.length}</span>
                   <span className="text-[#14b8a6]">{percent}%</span>
                 </div>
-                <div className="w-full h-2.5 bg-[#F1F5F9] rounded-full overflow-hidden">
+                <div className={`w-full h-2.5 rounded-full overflow-hidden ${isLightMode ? "bg-[#F1F5F9]" : "bg-slate-800"}`}>
                   <div className="h-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] transition-all duration-300 rounded-full" style={{ width: `${percent}%` }}></div>
                 </div>
               </div>
 
               <div className="min-h-[110px] flex items-center mb-7">
-                <div className="text-[17px] sm:text-[20px] font-bold text-[#0F172A] leading-relaxed break-keep">{q ? t(q.text) : ''}</div>
+                <div className={`text-[17px] sm:text-[20px] font-bold leading-relaxed break-keep ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>
+                  {q ? t(q.text) : ''}
+                </div>
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -208,21 +227,25 @@ export default function MBTI() {
                   <button 
                     key={opt.val}
                     onClick={() => selectOption(opt.val)}
-                    className={`bg-white border-2 px-5 py-4 rounded-xl text-left text-[15px] font-semibold transition-all duration-200 flex items-center justify-between
+                    className={`border-2 px-5 py-4 rounded-xl text-left text-[15px] font-semibold transition-all duration-200 flex items-center justify-between
                       ${answers[currentIndex] === opt.val 
-                        ? 'border-[#14b8a6] bg-[#f0fdfa] text-teal-800' 
-                        : 'border-[#E2E8F0] text-[#0F172A] hover:border-[#14b8a6] hover:bg-[#F8FAFC] hover:translate-x-1'}`}
+                        ? (isLightMode ? 'border-[#14b8a6] bg-[#f0fdfa] text-teal-800' : 'border-teal-500 bg-teal-950/40 text-teal-200 shadow-md shadow-teal-500/10')
+                        : (isLightMode ? 'border-[#E2E8F0] bg-white text-[#0F172A] hover:border-[#14b8a6] hover:bg-[#F8FAFC]' : 'border-slate-800 bg-slate-800/60 text-slate-200 hover:border-teal-500/60 hover:bg-slate-800')}`}
                   >
                     {opt.label}
                   </button>
                 ))}
               </div>
 
-              <div className="flex justify-between mt-7 pt-5 border-t border-[#E2E8F0]">
+              <div className={`flex justify-between mt-7 pt-5 border-t ${isLightMode ? "border-[#E2E8F0]" : "border-slate-800"}`}>
                 <button 
                   onClick={prevQuestion} 
                   disabled={currentIndex === 0}
-                  className="bg-transparent border border-[#E2E8F0] px-5 py-2.5 rounded-lg text-[#64748B] text-[14px] font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:not-disabled:bg-[#F1F5F9] hover:not-disabled:text-[#0F172A]"
+                  className={`border px-5 py-2.5 rounded-lg text-[14px] font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                    isLightMode 
+                      ? "border-[#E2E8F0] text-[#64748B] hover:not-disabled:bg-[#F1F5F9] hover:not-disabled:text-[#0F172A]" 
+                      : "border-slate-700 text-slate-400 hover:not-disabled:bg-slate-800 hover:not-disabled:text-white"
+                  }`}
                 >
                   {t('← 이전 문항')}
                 </button>
@@ -232,12 +255,12 @@ export default function MBTI() {
 
           {screen === 'result' && result && (
             <div>
-              <div className="text-center pb-6 mb-6 border-b-2 border-dashed border-[#E2E8F0]">
+              <div className={`text-center pb-6 mb-6 border-b-2 border-dashed ${isLightMode ? "border-[#E2E8F0]" : "border-slate-800"}`}>
                 <div className="inline-block bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white px-[18px] py-1.5 rounded-full text-[13px] font-bold mb-3">
                   {t('진로 적성 진단 결과')}
                 </div>
-                <h2 className="text-[28px] font-extrabold text-[#0F172A] mb-1.5">MBTI: {result.fullType}</h2>
-                <p className="text-[15px] text-[#64748B] font-semibold">"{t(mbtiMeta[result.baseType].alias)}"</p>
+                <h2 className={`text-[28px] font-extrabold mb-1.5 ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>MBTI: {result.fullType}</h2>
+                <p className={`text-[15px] font-semibold ${isLightMode ? "text-[#64748B]" : "text-slate-400"}`}>"{t(mbtiMeta[result.baseType].alias)}"</p>
               </div>
 
               <div className="mb-8">
@@ -245,11 +268,11 @@ export default function MBTI() {
                   const item = result.ratios[key];
                   return (
                     <div key={key} className="mb-3.5">
-                      <div className="flex justify-between text-[14px] font-bold mb-1.5 text-[#0F172A]">
+                      <div className={`flex justify-between text-[14px] font-bold mb-1.5 ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>
                         <span>{item.label}</span>
-                        <span>{item.val}% {t('선호도')}</span>
+                        <span className="text-teal-400">{item.val}% {t('선호도')}</span>
                       </div>
-                      <div className="h-3 bg-[#F1F5F9] rounded-full overflow-hidden">
+                      <div className={`h-3 rounded-full overflow-hidden ${isLightMode ? "bg-[#F1F5F9]" : "bg-slate-800"}`}>
                         <div className="h-full bg-[#14b8a6] rounded-full transition-all duration-700 ease-out" style={{ width: `${item.val}%` }}></div>
                       </div>
                     </div>
@@ -258,31 +281,33 @@ export default function MBTI() {
               </div>
 
               <div>
-                <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('💡 성격 핵심 특성')}</h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-4">{t(mbtiMeta[result.baseType].desc)}</p>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed m-0">
+                <div className={`rounded-2xl p-6 mb-4 border ${isLightMode ? "bg-[#F8FAFC] border-[#E2E8F0]" : "bg-slate-800/70 border-slate-700"}`}>
+                  <h3 className={`text-[17px] font-extrabold mb-2.5 flex items-center gap-2 ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>{t('💡 성격 핵심 특성')}</h3>
+                  <p className={`text-[14px] leading-relaxed mb-4 ${isLightMode ? "text-[#64748B]" : "text-slate-300"}`}>{t(mbtiMeta[result.baseType].desc)}</p>
+                  <p className={`text-[14px] leading-relaxed m-0 ${isLightMode ? "text-[#64748B]" : "text-slate-300"}`}>
                     {result.typeA === 'A' 
-                      ? <><strong className="text-[#0F172A]">{t('자기확신형 (-A):')}</strong> {t('스트레스 저항력이 높으며 유연하고 자신감이 넘칩니다. 정서적으로 안정감이 느껴집니다.')}</>
-                      : <><strong className="text-[#0F172A]">{t('신중형 (-T):')}</strong> {t('성공 욕구가 강하고 자아 성찰적입니다. 섬세하고 신중한 완성도를 추구합니다.')}</>
+                      ? <><strong className={isLightMode ? "text-[#0F172A]" : "text-teal-300"}>{t('자기확신형 (-A):')}</strong> {t('스트레스 저항력이 높으며 유연하고 자신감이 넘칩니다. 정서적으로 안정감이 느껴집니다.')}</>
+                      : <><strong className={isLightMode ? "text-[#0F172A]" : "text-teal-300"}>{t('신중형 (-T):')}</strong> {t('성공 욕구가 강하고 자아 성찰적입니다. 섬세하고 신중한 완성도를 추구합니다.')}</>
                     }
                   </p>
                 </div>
-                <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('🎯 추천 적성 직무 및 분야')}</h3>
+                <div className={`rounded-2xl p-6 mb-4 border ${isLightMode ? "bg-[#F8FAFC] border-[#E2E8F0]" : "bg-slate-800/70 border-slate-700"}`}>
+                  <h3 className={`text-[17px] font-extrabold mb-2.5 flex items-center gap-2 ${isLightMode ? "text-[#0F172A]" : "text-white"}`}>{t('🎯 추천 적성 직무 및 분야')}</h3>
                   <div className="flex flex-wrap gap-1.5">
                     {mbtiMeta[result.baseType].jobs.map((job: string) => (
-                      <span key={job} className="bg-white border border-[#E2E8F0] text-[#0F172A] px-3 py-1.5 rounded-lg text-[13px] font-semibold">{t(job)}</span>
+                      <span key={job} className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold border ${
+                        isLightMode ? "bg-white border-[#E2E8F0] text-[#0F172A]" : "bg-slate-900 border-slate-700 text-teal-300"
+                      }`}>{t(job)}</span>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              <div className={`mt-8 pt-6 border-t space-y-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
                 {/* Primary Action Button */}
                 <Link 
                   to="/mypage" 
-                  className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
                 >
                   <User size={16} />
                   <span>{t('마이페이지에서 결과 확인하기')}</span>
@@ -293,7 +318,11 @@ export default function MBTI() {
                   <button 
                     type="button"
                     onClick={copyResults} 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className={`py-2.5 px-3 rounded-xl border font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isLightMode 
+                        ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700" 
+                        : "border-slate-700 bg-slate-800 hover:bg-slate-700/70 text-slate-200"
+                    }`}
                   >
                     <Copy size={14} className="text-slate-400" />
                     <span>{t('결과 복사')}</span>
@@ -302,7 +331,11 @@ export default function MBTI() {
                   <button 
                     type="button"
                     onClick={restartQuiz} 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className={`py-2.5 px-3 rounded-xl border font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isLightMode 
+                        ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700" 
+                        : "border-slate-700 bg-slate-800 hover:bg-slate-700/70 text-slate-200"
+                    }`}
                   >
                     <RotateCcw size={14} className="text-slate-400" />
                     <span>{t('다시 검사')}</span>
@@ -310,7 +343,11 @@ export default function MBTI() {
 
                   <Link 
                     to="/" 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-center"
+                    className={`py-2.5 px-3 rounded-xl border font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-center ${
+                      isLightMode 
+                        ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700" 
+                        : "border-slate-700 bg-slate-800 hover:bg-slate-700/70 text-slate-200"
+                    }`}
                   >
                     <Home size={14} className="text-slate-400" />
                     <span>{t('메인으로')}</span>
@@ -324,7 +361,7 @@ export default function MBTI() {
       </main>
 
       {toastMsg && (
-        <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 bg-[#0F172A] text-white px-6 py-3 rounded-full text-[14px] font-semibold shadow-[0_10px_25px_rgba(0,0,0,0.2)] z-[200]">
+        <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 bg-[#0F172A] text-white border border-slate-700 px-6 py-3 rounded-full text-[14px] font-semibold shadow-[0_10px_25px_rgba(0,0,0,0.5)] z-[200]">
           {toastMsg}
         </div>
       )}

@@ -303,19 +303,23 @@ export default function CoverLetterAiCoach({
         >
           {/* 노션 AI 스타일 초간결 헤더 */}
           <div className={`px-4 py-2.5 flex items-center justify-between border-b ${
-            isLightMode ? "border-slate-100 bg-white" : "border-slate-800 bg-slate-900"
+            isLightMode ? "border-slate-100 bg-white" : "border-slate-800 bg-slate-900/90"
           }`}>
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
-              <span className="font-semibold text-slate-700 dark:text-slate-300">MyStair AI</span>
-              <span>·</span>
-              <span className="text-[11px] truncate max-w-[130px]">{sectionTitle || '실시간 코칭'}</span>
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className={`font-bold ${isLightMode ? "text-slate-800" : "text-white"}`}>MyStair AI</span>
+              <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>·</span>
+              <span className={`text-[11px] font-semibold truncate max-w-[130px] ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
+                {sectionTitle || '실시간 코칭'}
+              </span>
             </div>
 
             <div className="flex items-center gap-0.5 text-slate-400">
               <button
                 type="button"
                 onClick={handleResetChat}
-                className="p-1 rounded-md hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className={`p-1 rounded-md transition-colors cursor-pointer ${
+                  isLightMode ? "hover:text-slate-800 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
+                }`}
                 title={t('대화 초기화')}
               >
                 <RotateCcw size={13} />
@@ -323,7 +327,9 @@ export default function CoverLetterAiCoach({
               <button
                 type="button"
                 onClick={() => setIsOpenChat(false)}
-                className="p-1 rounded-md hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className={`p-1 rounded-md transition-colors cursor-pointer ${
+                  isLightMode ? "hover:text-slate-800 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
+                }`}
                 title={t('닫기')}
               >
                 <X size={15} />
@@ -338,10 +344,10 @@ export default function CoverLetterAiCoach({
                 {msg.sender === 'user' ? (
                   /* 사용자 메시지: 우측 알약 버블 */
                   <div className="flex justify-end">
-                    <div className={`px-3.5 py-2 rounded-2xl rounded-tr-xs text-[13px] leading-relaxed max-w-[85%] ${
+                    <div className={`px-3.5 py-2 rounded-2xl rounded-tr-xs text-[13px] leading-relaxed max-w-[85%] font-medium ${
                       isLightMode 
-                        ? "bg-slate-100 text-slate-800" 
-                        : "bg-slate-800 text-slate-100"
+                        ? "bg-indigo-600 text-white shadow-xs" 
+                        : "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                     }`}>
                       {msg.text}
                     </div>
@@ -349,26 +355,32 @@ export default function CoverLetterAiCoach({
                 ) : (
                   /* AI 메시지: 박스 없이 배경 위에 직접 자연스럽게 배치되는 타이포그래피 */
                   <div className="space-y-1.5 pr-2">
-                    <div className="text-[10px] text-slate-400 dark:text-slate-500">
+                    <div className={`text-[11px] font-bold ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
                       MyStair AI · {msg.time}
                     </div>
-                    <p className="leading-relaxed whitespace-pre-line text-slate-800 dark:text-slate-200 font-normal">
+                    <p className={`leading-relaxed whitespace-pre-line font-medium ${
+                      isLightMode ? "text-slate-900" : "text-slate-100"
+                    }`}>
                       {msg.text}
                     </p>
 
                     {/* 노션 AI 하단 아이콘 (복사, 좋아요) */}
-                    <div className="flex items-center gap-1.5 pt-1 text-slate-400 dark:text-slate-500">
+                    <div className="flex items-center gap-1.5 pt-1 text-slate-400">
                       <button
                         type="button"
                         onClick={() => handleCopyText(msg.id, msg.text)}
-                        className="p-1 rounded hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        className={`p-1 rounded transition-colors cursor-pointer ${
+                          isLightMode ? "hover:text-slate-800 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
+                        }`}
                         title={t('복사')}
                       >
                         {copiedId === msg.id ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
                       </button>
                       <button
                         type="button"
-                        className="p-1 rounded hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        className={`p-1 rounded transition-colors cursor-pointer ${
+                          isLightMode ? "hover:text-slate-800 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
+                        }`}
                         title={t('좋아요')}
                       >
                         <ThumbsUp size={12} />
@@ -382,13 +394,13 @@ export default function CoverLetterAiCoach({
             {/* 생각 중 인디케이터 */}
             {isAnswering && (
               <div className="space-y-1 pr-2">
-                <div className="text-[10px] text-slate-400 dark:text-slate-500">
+                <div className={`text-[11px] font-bold ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
                   MyStair AI · {t('답변 생성 중...')}
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-400 text-xs py-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             )}
@@ -401,10 +413,10 @@ export default function CoverLetterAiCoach({
             <button
               type="button"
               onClick={() => handleSendMessage('지금 쓴 내용 어때?')}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
                 isLightMode 
-                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600" 
-                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700" 
+                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
               }`}
             >
               <Plus size={10} className="text-slate-400" />
@@ -413,10 +425,10 @@ export default function CoverLetterAiCoach({
             <button
               type="button"
               onClick={() => handleSendMessage('내 다이어리 기록 중 어떤 소재를 쓰면 좋을까?')}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
                 isLightMode 
-                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600" 
-                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700" 
+                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
               }`}
             >
               <Plus size={10} className="text-slate-400" />
@@ -425,10 +437,10 @@ export default function CoverLetterAiCoach({
             <button
               type="button"
               onClick={() => handleSendMessage('첫 문장 어떻게 시작할까?')}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold shrink-0 transition-colors cursor-pointer border flex items-center gap-1 ${
                 isLightMode 
-                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600" 
-                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                  ? "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700" 
+                  : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
               }`}
             >
               <Plus size={10} className="text-slate-400" />
@@ -443,10 +455,10 @@ export default function CoverLetterAiCoach({
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className={`rounded-2xl border p-2 flex flex-col gap-1.5 transition-all focus-within:ring-1 focus-within:ring-slate-400 ${
+              className={`rounded-2xl border p-2 flex flex-col gap-1.5 transition-all focus-within:ring-1 focus-within:ring-indigo-500 ${
                 isLightMode 
-                  ? "bg-slate-50/70 border-slate-200/90" 
-                  : "bg-slate-800/60 border-slate-700/80"
+                  ? "bg-slate-50/90 border-slate-200" 
+                  : "bg-slate-800/80 border-slate-700"
               }`}
             >
               <input
@@ -454,11 +466,13 @@ export default function CoverLetterAiCoach({
                 value={inputQuestion}
                 onChange={(e) => setInputQuestion(e.target.value)}
                 placeholder={t('MyStair AI에게 질문하기...')}
-                className="w-full px-1.5 py-1 bg-transparent text-[13px] outline-none text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
+                className={`w-full px-1.5 py-1 bg-transparent text-[13px] outline-none font-medium ${
+                  isLightMode ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-slate-400"
+                }`}
               />
 
               <div className="flex items-center justify-between pt-0.5">
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 px-1">
+                <span className={`text-[10px] font-bold px-1 ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
                   {sectionTitle ? `[${sectionTitle}]` : '실시간 코치'}
                 </span>
 
@@ -467,8 +481,8 @@ export default function CoverLetterAiCoach({
                   disabled={isAnswering || !inputQuestion.trim()}
                   className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${
                     inputQuestion.trim() && !isAnswering
-                      ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm"
-                      : "bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed opacity-50"
+                      ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm"
+                      : (isLightMode ? "bg-slate-200 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-700 text-slate-500 cursor-not-allowed opacity-50")
                   }`}
                   title={t('전송')}
                 >

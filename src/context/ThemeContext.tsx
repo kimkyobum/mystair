@@ -37,8 +37,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     localStorage.setItem('mystair_light_mode', String(isLightMode));
     if (isLightMode) {
       document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
     } else {
       document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
     }
   }, [isLightMode]);
 

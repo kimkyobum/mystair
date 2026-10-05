@@ -183,55 +183,71 @@ export default function Certificates() {
       </div>
 
       {selectedModalItem && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-[4px] flex justify-center items-center z-[1000] p-5" onClick={() => setSelectedModalItem(null)}>
-          <div className="bg-white border border-slate-100 w-full max-w-[650px] max-h-[90vh] rounded-[24px] overflow-y-auto light-scrollbar p-8 relative text-slate-800 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <button className="absolute top-6 right-6 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 border-none w-9 h-9 rounded-full text-[18px] font-bold text-slate-500 cursor-pointer flex items-center justify-center transition-colors" onClick={() => setSelectedModalItem(null)}>✕</button>
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex justify-center items-center z-[1000] p-4 sm:p-5" onClick={() => setSelectedModalItem(null)}>
+          <div 
+            className={`w-full max-w-[650px] max-h-[90vh] rounded-[24px] overflow-y-auto p-6 sm:p-8 relative shadow-2xl border transition-all ${
+              isLightMode 
+                ? "bg-white border-slate-200 text-slate-800" 
+                : "bg-slate-900/95 border-slate-800 text-slate-100 backdrop-blur-xl"
+            }`} 
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              className={`absolute top-5 right-5 w-9 h-9 rounded-full text-[16px] font-bold cursor-pointer flex items-center justify-center transition-colors border ${
+                isLightMode 
+                  ? "bg-slate-100 hover:bg-slate-200 text-slate-600 border-slate-200" 
+                  : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
+              }`} 
+              onClick={() => setSelectedModalItem(null)}
+            >
+              ✕
+            </button>
             
-            <span className="inline-block bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white px-3 py-1 rounded-xl text-[12px] font-bold mb-3">
+            <span className="inline-block bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white px-3 py-1 rounded-xl text-[12px] font-bold mb-3 shadow-sm shadow-teal-500/20">
               {t(selectedModalItem.qualification_type)}
             </span>
-            <h2 className="text-[26px] font-extrabold text-slate-900 mb-4">{t(selectedModalItem.name)}</h2>
+            <h2 className={`text-[24px] sm:text-[26px] font-extrabold mb-4 ${isLightMode ? "text-slate-900" : "text-white"}`}>{t(selectedModalItem.name)}</h2>
 
-            <div className="flex flex-col gap-4">
-              <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('📝 자격증 개요')}</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.description)}</div>
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('📝 자격증 개요')}</div>
+                <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.description)}</div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('📋 응시 자격 조건')}</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.eligibility)}</div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('⭐ 난이도')}</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.difficulty)}</div>
-                </div>
-                <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('📊 평균 합격률')}</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.pass_rate)}</div>
-                </div>
+              <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('📋 응시 자격 조건')}</div>
+                <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.eligibility)}</div>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('💰 필기 응시료')}</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.written_exam_fee)}</div>
+                <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                  <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('⭐ 난이도')}</div>
+                  <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.difficulty)}</div>
                 </div>
-                <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                  <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('🛠️ 실기 응시료')}</div>
-                  <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{t(selectedModalItem.practical_exam_fee)}</div>
+                <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                  <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('📊 평균 합격률')}</div>
+                  <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.pass_rate)}</div>
                 </div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('🏢 우대 및 가산점 반영 기업')}</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.advantage_companies || []).map((c: string) => t(c)).join(', ')}</div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                  <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('💰 필기 응시료')}</div>
+                  <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.written_exam_fee)}</div>
+                </div>
+                <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                  <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('🛠️ 실기 응시료')}</div>
+                  <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{t(selectedModalItem.practical_exam_fee)}</div>
+                </div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-[14px] border border-slate-100">
-                <div className="text-[13px] font-bold text-emerald-600 mb-1.5">{t('🔗 연계 / 관련 자격증')}</div>
-                <div className="text-[15px] text-slate-800 font-semibold leading-relaxed">{(selectedModalItem.related_certificates || []).map((c: string) => t(c)).join(', ')}</div>
+              <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('🏢 우대 및 가산점 반영 기업')}</div>
+                <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{(selectedModalItem.advantage_companies || []).map((c: string) => t(c)).join(', ')}</div>
+              </div>
+              <div className={`p-4 rounded-[14px] border ${isLightMode ? "bg-slate-50 border-slate-100" : "bg-slate-800/60 border-slate-700/60"}`}>
+                <div className="text-[13px] font-bold text-emerald-500 mb-1.5">{t('🔗 연계 / 관련 자격증')}</div>
+                <div className={`text-[14px] sm:text-[15px] font-semibold leading-relaxed ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>{(selectedModalItem.related_certificates || []).map((c: string) => t(c)).join(', ')}</div>
               </div>
             </div>
 
-            <a href={selectedModalItem.application_site} target="_blank" rel="noreferrer" className="block w-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white text-center py-4 rounded-[14px] text-[16px] font-bold no-underline mt-6 hover:opacity-90">
+            <a href={selectedModalItem.application_site} target="_blank" rel="noreferrer" className="block w-full bg-gradient-to-r from-[#14b8a6] to-[#10b981] hover:from-teal-600 hover:to-emerald-600 text-white text-center py-4 rounded-[14px] text-[16px] font-bold no-underline mt-6 shadow-lg shadow-teal-500/20 transition-all hover:-translate-y-0.5">
               {t('👉 공식 접수 사이트 바로가기')}
             </a>
           </div>

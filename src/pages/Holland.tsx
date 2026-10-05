@@ -125,16 +125,16 @@ export default function Holland() {
   const percent = Math.round(((currentIndex) / hollandQuestions.length) * 100);
 
   return (
-    <div className="h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent text-[#0F172A] font-sans flex flex-col relative">
-      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-sm sticky top-0 z-50 border-b ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
+    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans flex flex-col relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
+      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-6 sm:px-10 shadow-sm sticky top-0 z-50 border-b ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
         <div className="flex items-center gap-4">
-          <Link to="/" className={`font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
+          <Link to="/" className={`font-black text-[24px] sm:text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
           <span className="bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
             Holland
           </span>
-          <span className="text-[#94A3B8] text-[14px] font-medium border-l border-[#334155] pl-4 hidden sm:block">
+          <span className="text-slate-400 text-[14px] font-medium border-l border-slate-700 pl-4 hidden sm:block">
             {t('전국 마이스터고 맞춤형 직업적성검사')}
           </span>
         </div>
@@ -143,44 +143,75 @@ export default function Holland() {
       <Link 
         to="/mypage" 
         title={t('마이페이지로 돌아가기')}
-        className="hidden sm:flex absolute top-[92px] left-10 px-3.5 h-[44px] rounded-xl justify-center items-center gap-1.5 text-[13px] font-bold bg-slate-900/80 border border-slate-700/50 text-slate-300 shadow-md hover:border-[#14b8a6] hover:text-[#14b8a6] hover:-translate-y-0.5 transition-all duration-200 z-40"
+        className={`hidden sm:flex absolute top-[92px] left-10 px-3.5 h-[44px] rounded-xl justify-center items-center gap-1.5 text-[13px] font-bold shadow-md hover:border-emerald-500 hover:text-emerald-400 hover:-translate-y-0.5 transition-all duration-200 z-40 ${
+          isLightMode 
+            ? "bg-white/90 border-slate-200 text-slate-700" 
+            : "bg-slate-900/80 border-slate-700/50 text-slate-300"
+        }`}
       >
         <span>←</span>
         <span>{t('마이페이지')}</span>
       </Link>
 
-      <main className="flex-1 flex justify-center items-center py-10 px-5">
-        <div className="w-full max-w-[680px] bg-white rounded-3xl shadow-[0_10px_30px_-5px_rgba(15,23,42,0.08),0_0_0_1px_rgba(226,232,240,0.8)] p-6 sm:p-10 transition-all duration-300">
+      <main className="flex-1 flex justify-center items-center py-8 sm:py-10 px-4 sm:px-5">
+        <div className={`w-full max-w-[680px] rounded-3xl p-6 sm:p-10 transition-all duration-300 border shadow-2xl ${
+          isLightMode 
+            ? "bg-white border-slate-200 text-slate-900 shadow-slate-200/50" 
+            : "bg-slate-900/90 border-slate-800 text-white shadow-black/80"
+        }`}>
           
           {screen === 'start' && (
             <div className="text-center py-5">
-              <h1 className="text-[28px] font-extrabold text-[#0F172A] mb-3 leading-tight">{t('Holland 직업적성검사')}</h1>
-              <p className="text-[#64748B] text-[15px] leading-relaxed mb-8">{t('나의 흥미와 적성 유형(RIASEC)을 분석하여 나에게 꼭 맞는 직업군과 직무를 추천해 드립니다.')}</p>
+              <h1 className={`text-[26px] sm:text-[28px] font-extrabold mb-3 leading-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                {t('Holland 직업적성검사')}
+              </h1>
+              <p className="text-slate-400 text-[15px] leading-relaxed mb-8">
+                {t('나의 흥미와 적성 유형(RIASEC)을 분석하여 나에게 꼭 맞는 직업군과 직무를 추천해 드립니다.')}
+              </p>
               
-              <div className="flex justify-center gap-3 mb-9 flex-wrap">
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('⏱ 소요시간 약 7분')}</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('📝 총 60문항')}</div>
-                <div className="bg-[#F1F5F9] text-[#0F172A] px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5">{t('🎯 6가지 흥미 유형 진단')}</div>
+              <div className="flex justify-center gap-2.5 mb-9 flex-wrap">
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
+                }`}>
+                  {t('⏱ 소요시간 약 7분')}
+                </div>
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
+                }`}>
+                  {t('📝 총 60문항')}
+                </div>
+                <div className={`px-4 py-2 rounded-full text-[13px] font-semibold flex items-center gap-1.5 border ${
+                  isLightMode ? "bg-slate-100 border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
+                }`}>
+                  {t('🎯 6가지 흥미 유형 진단')}
+                </div>
               </div>
 
-              <button onClick={startQuiz} className="bg-[#0F172A] text-white border-none py-4 px-10 text-[16px] font-bold rounded-2xl cursor-pointer transition-all duration-200 shadow-[0_4px_12px_rgba(15,23,42,0.15)] w-full max-w-[300px] hover:bg-[#1E293B] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(15,23,42,0.2)]">{t('검사 시작하기')}</button>
+              <button 
+                onClick={startQuiz} 
+                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white py-4 px-10 text-[16px] font-extrabold rounded-2xl cursor-pointer transition-all duration-200 shadow-lg shadow-emerald-500/20 w-full max-w-[300px] active:scale-98"
+              >
+                {t('검사 시작하기')}
+              </button>
             </div>
           )}
 
           {screen === 'quiz' && (
             <div>
               <div className="mb-8">
-                <div className="flex justify-between items-center text-[14px] font-bold text-[#0F172A] mb-2.5">
+                <div className={`flex justify-between items-center text-[14px] font-bold mb-2.5 ${isLightMode ? "text-slate-900" : "text-white"}`}>
                   <span>{t('문항')} {currentIndex + 1} / {hollandQuestions.length}</span>
-                  <span className="text-[#14b8a6]">{percent}%</span>
+                  <span className="text-emerald-500 font-extrabold">{percent}%</span>
                 </div>
-                <div className="w-full h-2.5 bg-[#F1F5F9] rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-br from-[#14b8a6] to-[#10b981] transition-all duration-300 rounded-full" style={{ width: `${percent}%` }}></div>
+                <div className={`w-full h-2.5 rounded-full overflow-hidden ${isLightMode ? "bg-slate-100" : "bg-slate-800"}`}>
+                  <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 transition-all duration-300 rounded-full" style={{ width: `${percent}%` }}></div>
                 </div>
               </div>
 
               <div className="min-h-[110px] flex items-center mb-7">
-                <div className="text-[17px] sm:text-[20px] font-bold text-[#0F172A] leading-relaxed break-keep">{q ? t(q.text) : ''}</div>
+                <div className={`text-[18px] sm:text-[21px] font-bold leading-relaxed break-keep ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                  {q ? t(q.text) : ''}
+                </div>
               </div>
 
               <div className="flex flex-col gap-2.5">
@@ -194,21 +225,27 @@ export default function Holland() {
                   <button 
                     key={opt.val}
                     onClick={() => selectOption(opt.val)}
-                    className={`bg-white border-2 px-5 py-4 rounded-xl text-left text-[15px] font-semibold transition-all duration-200 flex items-center justify-between
+                    className={`border-2 px-5 py-4 rounded-2xl text-left text-[15px] font-bold transition-all duration-150 flex items-center justify-between cursor-pointer
                       ${answers[currentIndex] === opt.val 
-                        ? 'border-[#14b8a6] bg-[#f0fdfa] text-[#14b8a6]' 
-                        : 'border-[#E2E8F0] text-[#0F172A] hover:border-[#14b8a6] hover:bg-[#F8FAFC] hover:translate-x-1'}`}
+                        ? 'border-emerald-500 bg-emerald-500/15 text-emerald-400 shadow-sm' 
+                        : (isLightMode 
+                            ? 'border-slate-200 bg-white text-slate-800 hover:border-emerald-400 hover:bg-slate-50' 
+                            : 'border-slate-800 bg-slate-800/60 text-slate-200 hover:border-emerald-500/50 hover:bg-slate-800')}`}
                   >
-                    {opt.label}
+                    <span>{opt.label}</span>
                   </button>
                 ))}
               </div>
 
-              <div className="flex justify-between mt-7 pt-5 border-t border-[#E2E8F0]">
+              <div className={`flex justify-between mt-7 pt-5 border-t ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
                 <button 
                   onClick={prevQuestion} 
                   disabled={currentIndex === 0}
-                  className="bg-transparent border border-[#E2E8F0] px-5 py-2.5 rounded-lg text-[#64748B] text-[14px] font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed hover:not-disabled:bg-[#F1F5F9] hover:not-disabled:text-[#0F172A]"
+                  className={`px-5 py-2.5 rounded-xl text-[14px] font-semibold transition-colors border disabled:opacity-30 disabled:cursor-not-allowed ${
+                    isLightMode 
+                      ? "border-slate-200 text-slate-600 hover:bg-slate-100" 
+                      : "border-slate-700 text-slate-300 hover:bg-slate-800"
+                  }`}
                 >
                   {t('← 이전 문항')}
                 </button>
@@ -218,56 +255,79 @@ export default function Holland() {
 
           {screen === 'result' && result && (
             <div>
-              <div className="text-center pb-6 mb-6 border-b-2 border-dashed border-[#E2E8F0]">
-                <div className="inline-block bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white px-[18px] py-1.5 rounded-full text-[13px] font-bold mb-3">
+              <div className={`text-center pb-6 mb-6 border-b-2 border-dashed ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+                <div className="inline-block bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-4 py-1.5 rounded-full text-[13px] font-black mb-3">
                   {t('Holland 진로 진단 결과')}
                 </div>
-                <h2 className="text-[28px] font-extrabold text-[#0F172A] mb-1.5">{t('유형')}: {result.topCode}</h2>
-                <p className="text-[15px] text-[#64748B] font-semibold">"{t(hollandMeta[result.firstType].alias)} & {t(hollandMeta[result.secondType].alias)}"</p>
+                <h2 className={`text-[28px] font-black mb-1.5 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                  {t('유형')}: {result.topCode}
+                </h2>
+                <p className="text-[15px] text-slate-400 font-semibold">
+                  "{t(hollandMeta[result.firstType].alias)} & {t(hollandMeta[result.secondType].alias)}"
+                </p>
               </div>
 
-              <div className="mb-8">
+              <div className="mb-8 space-y-3.5">
                 {Object.keys(result.percentages).map(type => {
                   const val = result.percentages[type];
                   const meta = hollandMeta[type];
                   return (
-                    <div key={type} className="mb-3.5">
-                      <div className="flex justify-between text-[14px] font-bold mb-1.5 text-[#0F172A]">
+                    <div key={type}>
+                      <div className={`flex justify-between text-[14px] font-bold mb-1.5 ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>
                         <span>{t(meta.name)}</span>
-                        <span>{val}% {t('적합도')}</span>
+                        <span className="text-emerald-400">{val}% {t('적합도')}</span>
                       </div>
-                      <div className="h-3 bg-[#F1F5F9] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#14b8a6] rounded-full transition-all duration-700 ease-out" style={{ width: `${val}%` }}></div>
+                      <div className={`h-3 rounded-full overflow-hidden ${isLightMode ? "bg-slate-100" : "bg-slate-800"}`}>
+                        <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-700 ease-out" style={{ width: `${val}%` }}></div>
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              <div>
-                <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('💡 1순위: ')}{t(hollandMeta[result.firstType].name)}</h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{t(hollandMeta[result.firstType].desc)}</p>
+              <div className="space-y-4">
+                <div className={`rounded-2xl p-5 sm:p-6 border ${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/60 border-slate-700"}`}>
+                  <h3 className={`text-[17px] font-black mb-2 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                    <span>💡 1순위: {t(hollandMeta[result.firstType].name)}</span>
+                  </h3>
+                  <p className={`text-[14px] leading-relaxed ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
+                    {t(hollandMeta[result.firstType].desc)}
+                  </p>
                 </div>
-                <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('💡 2순위: ')}{t(hollandMeta[result.secondType].name)}</h3>
-                  <p className="text-[14px] text-[#64748B] leading-relaxed mb-0">{t(hollandMeta[result.secondType].desc)}</p>
+                <div className={`rounded-2xl p-5 sm:p-6 border ${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/60 border-slate-700"}`}>
+                  <h3 className={`text-[17px] font-black mb-2 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                    <span>💡 2순위: {t(hollandMeta[result.secondType].name)}</span>
+                  </h3>
+                  <p className={`text-[14px] leading-relaxed ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
+                    {t(hollandMeta[result.secondType].desc)}
+                  </p>
                 </div>
-                <div className="bg-[#F8FAFC] rounded-2xl p-6 mb-4 border border-[#E2E8F0]">
-                  <h3 className="text-[17px] font-extrabold text-[#0F172A] mb-2.5 flex items-center gap-2">{t('🎯 추천 맞춤 직무')}</h3>
+                <div className={`rounded-2xl p-5 sm:p-6 border ${isLightMode ? "bg-slate-50 border-slate-200" : "bg-slate-800/60 border-slate-700"}`}>
+                  <h3 className={`text-[17px] font-black mb-2.5 flex items-center gap-2 ${isLightMode ? "text-slate-900" : "text-white"}`}>
+                    <span>🎯 {t('추천 맞춤 직무')}</span>
+                  </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {Array.from(new Set([...hollandMeta[result.firstType].jobs, ...hollandMeta[result.secondType].jobs])).map((job: string) => (
-                      <span key={job} className="bg-white border border-[#E2E8F0] text-[#0F172A] px-3 py-1.5 rounded-lg text-[13px] font-semibold">{t(job)}</span>
+                      <span 
+                        key={job} 
+                        className={`px-3 py-1.5 rounded-xl text-[13px] font-bold border ${
+                          isLightMode 
+                            ? "bg-white border-slate-200 text-slate-800" 
+                            : "bg-slate-900 border-slate-700 text-emerald-300"
+                        }`}
+                      >
+                        {t(job)}
+                      </span>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              <div className={`mt-8 pt-6 border-t space-y-3 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
                 {/* Primary Action Button */}
                 <Link 
                   to="/mypage" 
-                  className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-black text-sm sm:text-base shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 active:scale-98"
                 >
                   <User size={16} />
                   <span>{t('마이페이지에서 결과 확인하기')}</span>
@@ -278,7 +338,11 @@ export default function Holland() {
                   <button 
                     type="button"
                     onClick={copyResults} 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className={`py-2.5 px-3 rounded-xl border font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isLightMode 
+                        ? "bg-white border-slate-200 hover:bg-slate-100 text-slate-700" 
+                        : "bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200"
+                    }`}
                   >
                     <Copy size={14} className="text-slate-400" />
                     <span>{t('결과 복사')}</span>
@@ -287,7 +351,11 @@ export default function Holland() {
                   <button 
                     type="button"
                     onClick={restartQuiz} 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    className={`py-2.5 px-3 rounded-xl border font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isLightMode 
+                        ? "bg-white border-slate-200 hover:bg-slate-100 text-slate-700" 
+                        : "bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200"
+                    }`}
                   >
                     <RotateCcw size={14} className="text-slate-400" />
                     <span>{t('다시 검사')}</span>
@@ -295,7 +363,11 @@ export default function Holland() {
 
                   <Link 
                     to="/" 
-                    className="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-center"
+                    className={`py-2.5 px-3 rounded-xl border font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-center ${
+                      isLightMode 
+                        ? "bg-white border-slate-200 hover:bg-slate-100 text-slate-700" 
+                        : "bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200"
+                    }`}
                   >
                     <Home size={14} className="text-slate-400" />
                     <span>{t('메인으로')}</span>
