@@ -456,8 +456,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
 
   return (
     <div className="fixed inset-0 z-[100] h-screen w-full font-sans bg-black overflow-hidden flex flex-col md:flex-row">
-      {/* Left side: Spline 3D Interactive Robot */}
-      <div className="hidden md:flex md:w-[50%] lg:w-[55%] h-full bg-black relative items-center justify-center overflow-hidden">
+      {/* Left side: Spline 3D Interactive Robot (1/3 width) */}
+      <div className="hidden md:flex md:w-1/3 lg:w-1/3 h-full bg-black relative items-center justify-center overflow-hidden shrink-0">
         <iframe 
           src="https://my.spline.design/robotfollowcursorforlandingpage-xEAezW31ESPydMaGMIwVZ55C/" 
           frameBorder="0" 
@@ -467,8 +467,8 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         ></iframe>
       </div>
 
-      {/* Right side: Login Form */}
-      <div className="w-full md:w-[50%] lg:w-[45%] h-full bg-white flex flex-col justify-center items-center relative overflow-y-auto py-8 z-10 shadow-2xl">
+      {/* Right side: Login Form (2/3 width) */}
+      <div className="w-full md:w-2/3 lg:w-2/3 h-full bg-white flex flex-col justify-center items-center relative overflow-y-auto py-8 z-10 shadow-2xl">
         {/* Back button */}
         <button 
           onClick={onBack}
