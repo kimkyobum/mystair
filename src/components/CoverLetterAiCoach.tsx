@@ -28,7 +28,7 @@ export interface CoverLetterAiCoachProps {
   currentAnswer: string;
   userProfile?: UserProfileData | null;
   diaries?: DiaryEntry[];
-  forceOpenTrigger?: { open: boolean; speak: boolean; timestamp: number };
+  forceOpenTrigger?: { open: boolean; speak: boolean; customMessage?: string; timestamp: number };
 }
 
 interface ChatMessage {
@@ -313,11 +313,29 @@ export default function CoverLetterAiCoach({
       if (forceOpenTrigger.open) {
         setIsOpenChat(true);
       }
-      const targetText = feedbackSpeech || defaultSpeech;
-      if (forceOpenTrigger.speak && targetText) {
-        setTimeout(() => {
-          speakAiVoice(targetText, 'speech-bubble');
-        }, 300);
+      if (forceOpenTrigger.customMessage) {
+        const msgId = `msg-trigger-${forceOpenTrigger.timestamp}`;
+        setMessages(prev => [
+          ...prev,
+          {
+            id: msgId,
+            sender: 'ai',
+            text: forceOpenTrigger.customMessage || '',
+            time: getCurrentTimeStr()
+          }
+        ]);
+        if (forceOpenTrigger.speak) {
+          setTimeout(() => {
+            speakAiVoice(forceOpenTrigger.customMessage || '', msgId);
+          }, 350);
+        }
+      } else {
+        const targetText = feedbackSpeech || defaultSpeech;
+        if (forceOpenTrigger.speak && targetText) {
+          setTimeout(() => {
+            speakAiVoice(targetText, 'speech-bubble');
+          }, 300);
+        }
       }
     }
   }, [forceOpenTrigger]);

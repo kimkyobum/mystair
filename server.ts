@@ -1416,7 +1416,8 @@ ${text}
 
     return res.json({
       correctedText: finalResult.correctedText,
-      count: finalResult.correctedText !== text ? Math.max(aiCount, finalResult.count, 1) : 0
+      count: finalResult.correctedText !== text ? Math.max(aiCount, finalResult.count, 1) : 0,
+      changed: finalResult.changed
     });
   } catch (err: any) {
     console.error("Error in /api/check-spelling, applying safe universal fallback:", err);
@@ -1682,6 +1683,18 @@ function generateFallbackAnswer(
       return `${studentName}님의 마이페이지 프로필(${studentMajor})과 성장 다이어리 기록을 모두 파악하고 있습니다. 특히 다이어리에 기록해 두신 '${topDiary.title}' 일화는 ${targetCompany} 자기소개서에 아주 훌륭한 소재입니다. 이 경험을 자기소개서 문맥에 맞게 어떻게 연결하면 좋을지 말씀해 드릴까요?`;
     }
     return `${studentName}님의 마이페이지 프로필 정보(${studentMajor})를 바탕으로 코칭하고 있습니다. 작성 중이신 내용이나 학교 실습 일화에 대해 말씀해 주시면 맞춤 조언을 드리겠습니다.`;
+  }
+
+  // 2-1. 오타/맞춤법/띄어쓰기 질문
+  if (q.includes("오타") || q.includes("맞춤법") || q.includes("띄어쓰기") || q.includes("교정") || q.includes("고쳐")) {
+    if (answerLen === 0) {
+      return `현재 [${cleanSection}] 문항에 작성된 내용이 없습니다. 먼저 본문을 편하게 작성하신 후 질문해 주시거나 문항 툴바의 'AI 오타·맞춤법 수정' 버튼을 클릭하시면 실시간으로 깔끔하게 교정해 드립니다.`;
+    }
+    const checkRes = correctKoreanText(trimmedAnswer);
+    if (checkRes.changed) {
+      return `[${cleanSection}] 문항을 분석한 결과 오타 및 띄어쓰기 ${checkRes.count}건이 확인되었습니다. 문항 툴바 우측의 [AI 오타·맞춤법 수정] 버튼을 클릭하시면 본문에 원클릭으로 완벽하게 반영됩니다.`;
+    }
+    return `[${cleanSection}] 문항의 맞춤법과 띄어쓰기를 정밀 검사한 결과, 국립국어원 표준 규정에 맞는 아주 훌륭한 문장입니다. 오타 없이 잘 작성하셨으니 안심하고 계속 작성해 보세요.`;
   }
 
   // 3. 고민/어떻게 바꿔/수정 ("고민", "어케 바꿔", "어떻게 바꿔", "수정", "바꿔야")

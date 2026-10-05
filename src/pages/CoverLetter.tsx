@@ -243,7 +243,7 @@ export default function CoverLetter() {
 
   // Active Section for Real-time AI Coach
   const [activeSectionId, setActiveSectionId] = useState<string>('');
-  const [coachTrigger, setCoachTrigger] = useState<{ open: boolean; speak: boolean; timestamp: number }>({ open: false, speak: false, timestamp: 0 });
+  const [coachTrigger, setCoachTrigger] = useState<{ open: boolean; speak: boolean; customMessage?: string; timestamp: number }>({ open: false, speak: false, timestamp: 0 });
 
   const handleTriggerAiCoach = (sectionId: string, speak: boolean = true) => {
     setActiveSectionId(sectionId);
@@ -702,6 +702,16 @@ export default function CoverLetter() {
           [sectionId]: t(`✨ AI가 오타와 띄어쓰기${countText}을 완벽하게 교정했습니다!`)
         }));
         showToast(t('AI 맞춤법 및 오타 교정이 완료되었습니다!'), 'success');
+
+        // AI 코치가 실시간으로 교정 결과를 음성으로 안내하고 코칭창을 열어 확인
+        const sec = sections.find(s => s.id === sectionId);
+        const title = sec ? getCleanTitle(sec.title) : '작성 문항';
+        setCoachTrigger({
+          open: true,
+          speak: true,
+          customMessage: `[${title}] 문항에서 오타와 띄어쓰기 ${result.count || 1}건을 깔끔하게 교정했습니다! 원문의 의미와 내용은 그대로 보존되었으니 검토해 보세요.`,
+          timestamp: Date.now()
+        });
       } else {
         setFixNotification(prev => ({
           ...prev,
@@ -720,6 +730,15 @@ export default function CoverLetter() {
           [sectionId]: t('✨ AI가 오타와 띄어쓰기를 깔끔하게 교정했습니다!')
         }));
         showToast(t('오타 교정이 완료되었습니다!'), 'success');
+
+        const sec = sections.find(s => s.id === sectionId);
+        const title = sec ? getCleanTitle(sec.title) : '작성 문항';
+        setCoachTrigger({
+          open: true,
+          speak: true,
+          customMessage: `[${title}] 문항에서 오타와 띄어쓰기 ${localResult.count || 1}건을 깔끔하게 교정했습니다! 원문의 원래 의미는 그대로 유지되었습니다.`,
+          timestamp: Date.now()
+        });
       } else {
         setFixNotification(prev => ({
           ...prev,

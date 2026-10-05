@@ -423,15 +423,15 @@ export default function MyPage() {
                   </span>
                 </div>
 
-                <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
-                  <span className="font-semibold text-slate-700 dark:text-slate-200">
+                <p className={`text-xs sm:text-sm font-semibold mt-1 flex items-center gap-1.5 flex-wrap ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
+                  <span className="font-bold">
                     {profile.highSchool || t('마이스터고 미설정')}
                   </span>
-                  <span>•</span>
+                  <span className="text-emerald-500">•</span>
                   <span>{profile.major || t('전공 미설정')}</span>
                 </p>
 
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+                <p className={`text-xs mt-0.5 truncate font-medium ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
                   {profile.email || user?.email || t('이메일 정보 없음')}
                 </p>
               </div>
@@ -494,12 +494,12 @@ export default function MyPage() {
                   : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
               }`}
             >
-              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
-                <School size={13} className="text-emerald-400" />
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
+                <School size={13} className="text-emerald-500" />
                 <span>{t('고등학교')}</span>
               </div>
               <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                {profile.highSchool ? profile.highSchool.replace('고등학교', '고') : t('미등록')}
+                {profile.highSchool ? profile.highSchool.replace('고등학교', '고') : <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('미등록')}</span>}
               </div>
             </div>
 
@@ -512,9 +512,9 @@ export default function MyPage() {
                   : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
               }`}
             >
-              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                 <span className="flex items-center gap-1">
-                  <Brain size={13} className="text-emerald-400" />
+                  <Brain size={13} className="text-emerald-500" />
                   <span>{t('MBTI 진단')}</span>
                 </span>
                 {!profile.mbti && (
@@ -524,7 +524,7 @@ export default function MyPage() {
                 )}
               </div>
               <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단 (클릭하여 검사)')}
+                {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('미진단 (클릭하여 검사)')}</span>}
               </div>
             </div>
 
@@ -537,9 +537,9 @@ export default function MyPage() {
                   : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
               }`}
             >
-              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                 <span className="flex items-center gap-1">
-                  <Compass size={13} className="text-teal-400" />
+                  <Compass size={13} className="text-teal-500" />
                   <span>{t('홀랜드 적성')}</span>
                 </span>
                 {!profile.hollandCode && (
@@ -549,7 +549,7 @@ export default function MyPage() {
                 )}
               </div>
               <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단 (클릭하여 검사)')}
+                {profile.hollandCode ? `${profile.hollandCode}형` : <span className="text-teal-600 dark:text-teal-400 font-bold">{t('미진단 (클릭하여 검사)')}</span>}
               </div>
             </div>
 
@@ -562,12 +562,12 @@ export default function MyPage() {
                   : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
               }`}
             >
-              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
-                <Building2 size={13} className="text-teal-400" />
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
+                <Building2 size={13} className="text-teal-500" />
                 <span>{t('희망 기업')}</span>
               </div>
               <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
-                {profile.targetCompanies.length > 0 ? `${profile.targetCompanies.length}${t('개 등록')}` : t('0개 등록')}
+                {profile.targetCompanies.length > 0 ? `${profile.targetCompanies.length}${t('개 등록')}` : <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('0개 등록')}</span>}
               </div>
             </div>
           </div>
@@ -582,7 +582,7 @@ export default function MyPage() {
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-profile ${
               activeTab === 'profile'
                 ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
-                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
+                : isLightMode ? "border-transparent text-slate-700 hover:text-slate-950 font-bold" : "border-transparent text-slate-200 hover:text-white font-bold"
             }`}
           >
             <User size={15} />
@@ -594,7 +594,7 @@ export default function MyPage() {
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-aptitude ${
               activeTab === 'aptitude'
                 ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
-                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
+                : isLightMode ? "border-transparent text-slate-700 hover:text-slate-950 font-bold" : "border-transparent text-slate-200 hover:text-white font-bold"
             }`}
           >
             <Brain size={15} />
@@ -609,7 +609,7 @@ export default function MyPage() {
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-companies ${
               activeTab === 'companies'
                 ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
-                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
+                : isLightMode ? "border-transparent text-slate-700 hover:text-slate-950 font-bold" : "border-transparent text-slate-200 hover:text-white font-bold"
             }`}
           >
             <Building2 size={15} />
@@ -617,7 +617,7 @@ export default function MyPage() {
             <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
               activeTab === 'companies' 
                 ? (isLightMode ? "bg-emerald-100 text-emerald-700" : "bg-emerald-950/90 text-emerald-300 border border-emerald-600/70") 
-                : (isLightMode ? "bg-slate-100 text-slate-600" : "bg-slate-800 text-slate-200 border border-slate-700")
+                : (isLightMode ? "bg-slate-100 text-slate-700" : "bg-slate-800 text-slate-200 border border-slate-700")
             }`}>
               {profile.targetCompanies.length}
             </span>
@@ -628,7 +628,7 @@ export default function MyPage() {
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-settings ${
               activeTab === 'settings'
                 ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
-                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
+                : isLightMode ? "border-transparent text-slate-700 hover:text-slate-950 font-bold" : "border-transparent text-slate-200 hover:text-white font-bold"
             }`}
           >
             <Settings size={15} />
@@ -709,7 +709,7 @@ export default function MyPage() {
                 
                 {/* Field 1: Name */}
                 <div className="space-y-1.5 tour-target-profile-name">
-                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                     {t('이름')}
                   </label>
                   {isFullEditing ? (
@@ -720,35 +720,35 @@ export default function MyPage() {
                       placeholder={t('이름 입력')}
                       className={`w-full border rounded-xl px-3.5 py-2 text-sm font-semibold outline-none transition ${
                         isLightMode 
-                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600" 
-                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400"
+                          ? "bg-white border-slate-300 text-slate-900 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 placeholder:text-slate-400" 
+                          : "bg-slate-800 border-slate-700 text-white focus:border-emerald-400 placeholder:text-slate-400"
                       }`}
                     />
                   ) : (
                     <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
-                      {profile.name || t('이름 미입력')}
+                      {profile.name || <span className="text-slate-500 dark:text-slate-400 font-medium italic">{t('이름 미입력')}</span>}
                     </div>
                   )}
                 </div>
 
                 {/* Field 2: Email */}
                 <div className="space-y-1.5">
-                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                     {t('계정 이메일')}
                   </label>
-                  <div className={`text-base font-semibold py-1 truncate ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
-                    {profile.email || user?.email || t('이메일 정보 없음')}
+                  <div className={`text-base font-semibold py-1 truncate ${isLightMode ? "text-slate-800" : "text-slate-100"}`}>
+                    {profile.email || user?.email || <span className="text-slate-500 dark:text-slate-400 font-medium italic">{t('이메일 정보 없음')}</span>}
                   </div>
                 </div>
 
                 {/* Field 3: High School */}
                 <div className="space-y-1.5 relative tour-target-profile-school sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                    <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                       {t('재학 / 졸업 마이스터고등학교')}
                     </label>
                     {isFullEditing && (
-                      <span className={`text-[11px] font-normal ${isLightMode ? "text-slate-400" : "text-slate-400"}`}>
+                      <span className={`text-[11px] font-medium ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
                         {t('전국 58개 마이스터고 실시간 검색')}
                       </span>
                     )}

@@ -351,6 +351,69 @@ function fixUniversalParticles(text: string): string {
 function fixUniversalColloquialEomi(text: string): string {
   let s = text;
 
+  // 0. 자기소개서 및 학생 다이어리 핵심 어휘 오타 (자모 탈락 / 두벌식 인접 키 오타)
+  s = s.replace(/자기소개써/g, '자기소개서');
+  s = s.replace(/자기소개서써/g, '자기소개서');
+  s = s.replace(/지원동긔/g, '지원동기');
+  s = s.replace(/포부륻/g, '포부를');
+  s = s.replace(/맞춤뻡/g, '맞춤법');
+  s = s.replace(/마이스터고등학고/g, '마이스터고등학교');
+  s = s.replace(/프로잭트/g, '프로젝트');
+  s = s.replace(/알고리듬/g, '알고리즘');
+  s = s.replace(/경재력/g, '경쟁력');
+  s = s.replace(/책임깜/g, '책임감');
+  s = s.replace(/자신깜/g, '자신감');
+  s = s.replace(/리더쉽/g, '리더십');
+  s = s.replace(/멤버쉽/g, '멤버십');
+  s = s.replace(/파트너쉽/g, '파트너십');
+  s = s.replace(/멘토쉽/g, '멘토십');
+
+  // 0-1. ~씁니다 / ~읍니다 오타 교정 (느껴씁니다 -> 느꼈습니다, 배워씁니다 -> 배웠습니다, 해씁니다 -> 했습니다 등)
+  s = s.replace(/느껴씁니다/g, '느꼈습니다');
+  s = s.replace(/배워씁니다/g, '배웠습니다');
+  s = s.replace(/해씁니다/g, '했습니다');
+  s = s.replace(/가씁니다/g, '갔습니다');
+  s = s.replace(/와씁니다/g, '왔습니다');
+  s = s.replace(/되씁니다/g, '됐습니다');
+  s = s.replace(/보아씁니다/g, '보았습니다');
+  s = s.replace(/보았씁니다/g, '보았습니다');
+  s = s.replace(/했씁니다/g, '했습니다');
+  s = s.replace(/갔씁니다/g, '갔습니다');
+  s = s.replace(/왔씁니다/g, '왔습니다');
+  s = s.replace(/배웠씁니다/g, '배웠습니다');
+  s = s.replace(/느꼈씁니다/g, '느꼈습니다');
+  s = s.replace(/있씁니다/g, '있습니다');
+  s = s.replace(/없씁니다/g, '없습니다');
+  s = s.replace(/받아씁니다/g, '받았습니다');
+  s = s.replace(/만들어씁니다/g, '만들었습니다');
+  s = s.replace(/알아씁니다/g, '알았습니다');
+  s = s.replace(/참여해씁니다/g, '참여했습니다');
+  s = s.replace(/노력해씁니다/g, '노력했습니다');
+  s = s.replace(/실습해씁니다/g, '실습했습니다');
+  s = s.replace(/성공해씁니다/g, '성공했습니다');
+  s = s.replace(/실패해씁니다/g, '실패했습니다');
+  s = s.replace(/도전해씁니다/g, '도전했습니다');
+  s = s.replace(/해결해씁니다/g, '해결했습니다');
+
+  // ~읍니다 종결어미 현대 표준어(~습니다) 일괄 교정
+  s = s.replace(/([가-힣]+[았었였됐했갔왔났봤졌겼쳤탔맞찾받맡닿같높낮])읍니다/g, '$1습니다');
+  s = s.replace(/([가-힣]+)겠읍니다/g, '$1겠습니다');
+  s = s.replace(/했읍니다/g, '했습니다');
+  s = s.replace(/갔읍니다/g, '갔습니다');
+  s = s.replace(/왔읍니다/g, '왔습니다');
+  s = s.replace(/배웠읍니다/g, '배웠습니다');
+  s = s.replace(/느꼈읍니다/g, '느꼈습니다');
+  s = s.replace(/있읍니다/g, '있습니다');
+  s = s.replace(/없읍니다/g, '없습니다');
+  s = s.replace(/좋겠읍니다/g, '좋겠습니다');
+  s = s.replace(/알겠읍니다/g, '알겠습니다');
+  s = s.replace(/모르겠읍니다/g, '모르겠습니다');
+  s = s.replace(/보았읍니다/g, '보았습니다');
+  s = s.replace(/하였읍니다/g, '하였습니다');
+  s = s.replace(/되었읍니다/g, '되었습니다');
+  s = s.replace(/됐읍니다/g, '됐습니다');
+  s = s.replace(/완수했읍니다/g, '완수했습니다');
+
   // 1. 몇일 -> 며칠 (국립국어원 표준어 규정 제27항)
   s = s.replace(/몇일\s*동안/g, '며칠 동안');
   s = s.replace(/몇일\s*간/g, '며칠간');
@@ -508,6 +571,56 @@ function fixUniversalDependentNouns(text: string): string {
   s = s.replace(/([가-힣]+[ㄹ을])수\s*있/g, '$1 수 있');
   s = s.replace(/([가-힣]+[ㄹ을])수\s*잇/g, '$1 수 있');
   s = s.replace(/([가-힣]+[ㄹ을])수\s*없/g, '$1 수 없');
+  s = s.replace(/할수\s*있/g, '할 수 있');
+  s = s.replace(/할수\s*없/g, '할 수 없');
+  s = s.replace(/될수\s*있/g, '될 수 있');
+  s = s.replace(/될수\s*없/g, '될 수 없');
+  s = s.replace(/수있/g, '수 있');
+  s = s.replace(/수없/g, '수 없');
+  s = s.replace(/할수(?=[ ,.\?!]|$)/g, '할 수');
+  s = s.replace(/될수(?=[ ,.\?!]|$)/g, '될 수');
+  s = s.replace(/갈수(?=[ ,.\?!]|$)/g, '갈 수');
+  s = s.replace(/볼수(?=[ ,.\?!]|$)/g, '볼 수');
+
+  // 2-1. ~고 싶다 (되고 싶습니다, 하고 싶습니다, 배우고 싶습니다 등)
+  s = s.replace(/되고싶/g, '되고 싶');
+  s = s.replace(/하고싶/g, '하고 싶');
+  s = s.replace(/배우고싶/g, '배우고 싶');
+  s = s.replace(/일하고싶/g, '일하고 싶');
+  s = s.replace(/성장하고싶/g, '성장하고 싶');
+  s = s.replace(/기여하고싶/g, '기여하고 싶');
+  s = s.replace(/지원하고싶/g, '지원하고 싶');
+  s = s.replace(/합격하고싶/g, '합격하고 싶');
+  s = s.replace(/만들고싶/g, '만들고 싶');
+  s = s.replace(/도전하고싶/g, '도전하고 싶');
+
+  // 2-2. 배운 점 / 느낀 점 / ~을 바탕으로 / ~을 계기로
+  s = s.replace(/배운점을바탕으로/g, '배운 점을 바탕으로');
+  s = s.replace(/경험을바탕으로/g, '경험을 바탕으로');
+  s = s.replace(/실습을바탕으로/g, '실습을 바탕으로');
+  s = s.replace(/지식을바탕으로/g, '지식을 바탕으로');
+  s = s.replace(/배운점/g, '배운 점');
+  s = s.replace(/느낀점/g, '느낀 점');
+  s = s.replace(/잘한점/g, '잘한 점');
+  s = s.replace(/부족한점/g, '부족한 점');
+  s = s.replace(/개선할점/g, '개선할 점');
+  s = s.replace(/좋은점/g, '좋은 점');
+  s = s.replace(/아쉬운점/g, '아쉬운 점');
+  s = s.replace(/([가-힣]+[을를])바탕으로/g, '$1 바탕으로');
+  s = s.replace(/([가-힣]+[을를])계기로/g, '$1 계기로');
+
+  // 2-3. 열심히 ~ (열심히 해서, 열심히 노력, 열심히 공부 등)
+  s = s.replace(/열심히해서/g, '열심히 해서');
+  s = s.replace(/열심히하여/g, '열심히 하여');
+  s = s.replace(/열심히노력/g, '열심히 노력');
+  s = s.replace(/열심히공부/g, '열심히 공부');
+  s = s.replace(/열심히배우/g, '열심히 배우');
+  s = s.replace(/열심히일/g, '열심히 일');
+  s = s.replace(/열심히준비/g, '열심히 준비');
+  s = s.replace(/열심히참여/g, '열심히 참여');
+  s = s.replace(/열심히실습/g, '열심히 실습');
+  s = s.replace(/밤을세워/g, '밤을 새워');
+  s = s.replace(/밤을새워/g, '밤을 새워');
 
   // 3. 줄 알다 / 줄 모르다
   s = s.replace(/([가-힣]+[ㄹ을ㄴ은])줄\s*알/g, '$1 줄 알');
@@ -605,9 +718,9 @@ function fixUniversalTypoGlitches(text: string): string {
  * Universal Korean Text Corrector
  * Ensures 100% of Korean texts are improved and corrected without fail.
  */
-export function correctKoreanText(text: string): { correctedText: string; count: number } {
+export function correctKoreanText(text: string): { correctedText: string; count: number; changed: boolean } {
   if (!text || typeof text !== 'string') {
-    return { correctedText: '', count: 0 };
+    return { correctedText: '', count: 0, changed: false };
   }
 
   let current = text;
@@ -673,9 +786,11 @@ export function correctKoreanText(text: string): { correctedText: string; count:
   current = fixUniversalDependentNouns(current);
   current = fixUniversalPunctuation(current);
 
+  const isActuallyChanged = current.trim() !== text.trim();
   return {
     correctedText: current,
-    count: current !== text ? Math.max(changes, 1) : 0
+    count: isActuallyChanged ? Math.max(changes, 1) : 0,
+    changed: isActuallyChanged
   };
 }
 
