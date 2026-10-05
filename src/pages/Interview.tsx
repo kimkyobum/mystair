@@ -1088,7 +1088,7 @@ export default function Interview() {
               <div className="h-12 w-px bg-slate-700/50" />
               <div className="text-center">
                 <span className="text-xs font-bold text-slate-400 block mb-1">종합 점수</span>
-                <span className="text-4xl sm:text-5xl font-black text-white">
+                <span className={`text-4xl sm:text-5xl font-black ${isLightMode ? "text-slate-900" : "text-white"}`}>
                   {finalScore}
                 </span>
                 <span className="text-xs text-slate-400 ml-1">/ 100</span>
@@ -1497,11 +1497,13 @@ export default function Interview() {
             </button>
           </div>
 
-          <h2 className="text-lg sm:text-xl md:text-2xl font-black leading-snug tracking-tight text-white mb-3">
+          <h2 className={`text-lg sm:text-xl md:text-2xl font-black leading-snug tracking-tight mb-3 ${isLightMode ? "text-slate-900" : "text-white"}`}>
             "{currentQ?.question}"
           </h2>
 
-          <p className="text-xs text-indigo-300 font-medium flex items-center gap-1.5 bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-800/40">
+          <p className={`text-xs font-medium flex items-center gap-1.5 p-2.5 rounded-xl border ${
+            isLightMode ? "bg-indigo-50/70 border-indigo-100 text-indigo-900" : "bg-indigo-950/40 border-indigo-800/40 text-indigo-300"
+          }`}>
             <span>🎯 답변 가이드:</span>
             <span>{currentQ?.hint}</span>
           </p>
@@ -1512,7 +1514,7 @@ export default function Interview() {
           isLightMode ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
         }`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
               <span className={`w-2.5 h-2.5 rounded-full ${isRecording ? 'bg-red-500 animate-ping' : 'bg-slate-500'}`} />
               <span>{isRecording ? t('마이크로 답변을 말씀해 주세요 (실시간 자막 생성 중)') : t('마이크 준비')}</span>
             </div>

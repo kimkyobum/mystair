@@ -525,43 +525,68 @@ JSON 구조 규격:
       )}
 
       {/* Header */}
-      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-between px-6 sm:px-10 border-b sticky top-0 z-40 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/80 border-slate-800"}`}>
+      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-between px-4 sm:px-10 border-b sticky top-0 z-40 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/80 border-slate-800"}`}>
         <div className="flex items-center gap-3">
           <Link to="/" className={`transition ${isLightMode ? "text-slate-500 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}>
             <ArrowLeft size={20} />
           </Link>
-          <BookOpen size={24} className="text-emerald-500" />
-          <h1 className={`text-xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('성장 다이어리')}</h1>
+          <BookOpen size={24} className="text-emerald-500 shrink-0" />
+          <h1 className={`text-lg sm:text-xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('성장 다이어리')}</h1>
         </div>
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center gap-2">
+        {/* Action & View Mode Controls */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Exam Schedule Settings Button */}
           <button
             onClick={() => setShowExamSettings(!showExamSettings)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border tour-target-exam-schedule ${isLightMode ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30"}`}
+            className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border tour-target-exam-schedule ${
+              isLightMode 
+                ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300" 
+                : "bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border-emerald-500/30"
+            }`}
           >
             <Settings size={15} />
-            <span className="hidden sm:inline">{t('시험 일정 설정')}</span>
+            <span className="hidden md:inline">{t('시험 일정 설정')}</span>
           </button>
 
-          <div className={`p-1 rounded-2xl border flex items-center gap-1 ${isLightMode ? "bg-slate-100 border-slate-200" : "bg-slate-800 border-slate-700"}`}>
+          {/* View Mode Toggle Segmented Control: Calendar vs List */}
+          <div className={`p-1 rounded-2xl border flex items-center gap-1 ${isLightMode ? "bg-slate-100 border-slate-200" : "bg-slate-900/90 border-slate-800"}`}>
             <button
+              type="button"
               onClick={() => setViewMode('calendar')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-                viewMode === 'calendar' ? isLightMode ? 'bg-emerald-600 text-white shadow' : 'bg-emerald-600 text-white shadow' : (isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white')
+                viewMode === 'calendar' 
+                  ? 'bg-emerald-600 text-white shadow-xs' 
+                  : (isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white')
               }`}
             >
               <CalendarIcon size={14} />
-              <span>{t('달력 보기')}</span>
+              <span className="hidden sm:inline">{t('달력 보기')}</span>
             </button>
             <button
-              onClick={() => handleSummarizeDiaries()}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer tour-target-resume-summary ${isLightMode ? "text-slate-600 hover:text-slate-900 hover:bg-slate-200" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                viewMode === 'list' 
+                  ? 'bg-emerald-600 text-white shadow-xs' 
+                  : (isLightMode ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white')
+              }`}
             >
-              <Sparkles size={14} className="text-amber-400" />
-              <span>{t('자소서 요약')}</span>
+              <List size={14} />
+              <span className="hidden sm:inline">{t('목록 보기')}</span>
             </button>
           </div>
+
+          {/* Standalone AI Resume Summary (STAR Method) Button */}
+          <button
+            type="button"
+            onClick={() => handleSummarizeDiaries()}
+            className="px-3.5 py-2 rounded-2xl text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-white shadow-md shadow-amber-500/20 active:scale-95 border border-amber-400/40 tour-target-resume-summary"
+            title="다이어리 기록을 STAR 공법으로 분석하여 자소서 소재 자동 추출"
+          >
+            <Sparkles size={14} className="text-amber-200 animate-pulse" />
+            <span className="font-extrabold">{t('AI 자소서 요약')}</span>
+          </button>
         </div>
       </header>
 
@@ -750,8 +775,10 @@ JSON 구조 규격:
           </div>
         )}
 
-        {/* CALENDAR VIEW (Sleek Cosmic Theme matching starry sky environment) */}
-        <div className={`flex-1 min-h-[480px] backdrop-blur-md rounded-3xl p-4 sm:p-5 border-2 flex flex-col justify-between relative z-10 transition-colors duration-200 ${isLightMode ? "bg-white/85 border-slate-200/90 text-slate-900 shadow-xl shadow-slate-200/50" : "bg-slate-900/40 border-white/15 text-white shadow-[0_12px_40px_-12px_rgba(16,185,129,0.25)]"}`}>
+        {/* CALENDAR VIEW OR LIST VIEW */}
+        {viewMode === 'calendar' ? (
+          /* CALENDAR VIEW (Sleek Cosmic Theme matching starry sky environment) */
+          <div className={`flex-1 min-h-[480px] backdrop-blur-md rounded-3xl p-4 sm:p-5 border-2 flex flex-col justify-between relative z-10 transition-colors duration-200 ${isLightMode ? "bg-white/85 border-slate-200/90 text-slate-900 shadow-xl shadow-slate-200/50" : "bg-slate-900/40 border-white/15 text-white shadow-[0_12px_40px_-12px_rgba(16,185,129,0.25)]"}`}>
             
             {/* Header: Month title, Year subtitle, & Navigation controls */}
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b flex-none ${isLightMode ? "border-slate-200" : "border-white/5"}`}>
@@ -993,6 +1020,118 @@ JSON 구조 규격:
 
             </div>
           </div>
+        ) : (
+          /* LIST VIEW (Chronological Timeline List of all growth diaries) */
+          <div className={`flex-1 min-h-[480px] backdrop-blur-md rounded-3xl p-5 sm:p-7 border-2 flex flex-col relative z-10 transition-colors duration-200 ${
+            isLightMode ? "bg-white/85 border-slate-200/90 text-slate-900 shadow-xl shadow-slate-200/50" : "bg-slate-900/60 border-white/15 text-white shadow-2xl"
+          }`}>
+            <div className={`flex items-center justify-between pb-4 border-b mb-4 ${isLightMode ? "border-slate-200" : "border-slate-800"}`}>
+              <div className="flex items-center gap-2">
+                <List size={20} className="text-emerald-500" />
+                <h2 className="text-lg sm:text-xl font-black">{t('전체 성장 다이어리 목록')}</h2>
+                <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${isLightMode ? "bg-emerald-50 text-emerald-700" : "bg-emerald-500/20 text-emerald-300"}`}>
+                  총 {diaries.length}개 기록
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedDate(getLocalDateString());
+                  setEditingId(null);
+                  setTitle('');
+                  setContent('');
+                  setMood('🔥');
+                  setTags(['성장기록']);
+                  setShowDayDiariesModal(false);
+                  setShowFormModal(true);
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-md cursor-pointer ${
+                  isLightMode ? "bg-emerald-600 hover:bg-emerald-500 text-white" : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                }`}
+              >
+                <Plus size={15} />
+                <span>{t('새 일기 작성')}</span>
+              </button>
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-3.5 pr-1 custom-scrollbar">
+              {diaries.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center space-y-3">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                    <BookOpen size={28} />
+                  </div>
+                  <h3 className={`text-base font-extrabold ${isLightMode ? "text-slate-800" : "text-slate-200"}`}>
+                    {t('작성된 다이어리가 없습니다.')}
+                  </h3>
+                  <p className="text-xs text-slate-400 max-w-sm">
+                    {t('매일 배운 전공 기술, 실습 경험, 자격증 공부 분량을 기록해보세요. AI가 자소서 소재로 자동 정돈해 드립니다!')}
+                  </p>
+                </div>
+              ) : (
+                [...diaries]
+                  .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+                  .map((entry, idx) => (
+                    <div
+                      key={entry.id || idx}
+                      onClick={() => {
+                        setEditingId(entry.id || null);
+                        setTitle(entry.title);
+                        setContent(entry.content);
+                        setSelectedDate(entry.date);
+                        setMood(entry.mood || '🔥');
+                        setTags(entry.tags || ['성장기록']);
+                        setShowFormModal(true);
+                      }}
+                      className={`p-5 rounded-2xl border-2 transition-all cursor-pointer group ${
+                        isLightMode 
+                          ? "bg-slate-50 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/20" 
+                          : "bg-slate-900/70 border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/60"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="text-lg">{entry.mood || '🔥'}</span>
+                          <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${
+                            isLightMode ? "bg-white border-slate-200 text-slate-700" : "bg-slate-800 border-slate-700 text-slate-300"
+                          }`}>
+                            📅 {entry.date}
+                          </span>
+                          <h3 className={`text-base font-black truncate group-hover:text-emerald-500 transition-colors ${
+                            isLightMode ? "text-slate-900" : "text-white"
+                          }`}>
+                            {entry.title}
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {entry.tags?.map((tag, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                                isLightMode ? "bg-emerald-100 text-emerald-800" : "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                              }`}
+                            >
+                              #{tag}
+                            </span>
+                          ))}
+                          <div className={`p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity ${
+                            isLightMode ? "bg-emerald-100 text-emerald-800" : "bg-slate-800 text-emerald-400"
+                          }`}>
+                            <Edit3 size={14} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className={`text-xs sm:text-sm leading-relaxed line-clamp-3 ${
+                        isLightMode ? "text-slate-600" : "text-slate-300"
+                      }`}>
+                        {entry.content}
+                      </p>
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* SUMMARY MODAL */}
