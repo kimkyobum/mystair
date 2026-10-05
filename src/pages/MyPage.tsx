@@ -483,18 +483,22 @@ export default function MyPage() {
 
           {/* Quick Metrics Bar (Instagram Profile Stats Style) */}
           <div className={`mt-6 pt-5 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 ${
-            isLightMode ? "border-slate-100" : "border-slate-800/80"
+            isLightMode ? "border-slate-100" : "border-slate-800"
           }`}>
             {/* Metric 1: 학적 정보 */}
             <div 
               onClick={() => { setActiveTab('profile'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+              className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                isLightMode 
+                  ? "bg-slate-50 hover:bg-slate-100/80 border-slate-200/90 text-slate-900 shadow-2xs" 
+                  : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
+              }`}
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <School size={12} />
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                <School size={13} className="text-emerald-400" />
                 <span>{t('고등학교')}</span>
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+              <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 {profile.highSchool ? profile.highSchool.replace('고등학교', '고') : t('미등록')}
               </div>
             </div>
@@ -502,20 +506,24 @@ export default function MyPage() {
             {/* Metric 2: MBTI */}
             <div 
               onClick={() => { setActiveTab('aptitude'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer group"
+              className={`p-3.5 rounded-xl border transition cursor-pointer group ${
+                isLightMode 
+                  ? "bg-slate-50 hover:bg-slate-100/80 border-slate-200/90 text-slate-900 shadow-2xs" 
+                  : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
+              }`}
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                 <span className="flex items-center gap-1">
-                  <Brain size={12} className="text-emerald-500" />
+                  <Brain size={13} className="text-emerald-400" />
                   <span>{t('MBTI 진단')}</span>
                 </span>
                 {!profile.mbti && (
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-100/80 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded group-hover:underline">
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded group-hover:underline ${isLightMode ? "text-emerald-700 bg-emerald-100" : "text-emerald-200 bg-emerald-950 border border-emerald-700/60"}`}>
                     {t('검사하기')}
                   </span>
                 )}
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+              <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단 (클릭하여 검사)')}
               </div>
             </div>
@@ -523,20 +531,24 @@ export default function MyPage() {
             {/* Metric 3: 홀랜드 */}
             <div 
               onClick={() => { setActiveTab('aptitude'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer group"
+              className={`p-3.5 rounded-xl border transition cursor-pointer group ${
+                isLightMode 
+                  ? "bg-slate-50 hover:bg-slate-100/80 border-slate-200/90 text-slate-900 shadow-2xs" 
+                  : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
+              }`}
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center justify-between ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                 <span className="flex items-center gap-1">
-                  <Compass size={12} className="text-teal-500" />
+                  <Compass size={13} className="text-teal-400" />
                   <span>{t('홀랜드 적성')}</span>
                 </span>
                 {!profile.hollandCode && (
-                  <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold bg-teal-100/80 dark:bg-teal-950/80 px-1.5 py-0.5 rounded group-hover:underline">
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded group-hover:underline ${isLightMode ? "text-teal-700 bg-teal-100" : "text-teal-200 bg-teal-950 border border-teal-700/60"}`}>
                     {t('검사하기')}
                   </span>
                 )}
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+              <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 {profile.hollandCode ? `${profile.hollandCode}형` : t('미진단 (클릭하여 검사)')}
               </div>
             </div>
@@ -544,13 +556,17 @@ export default function MyPage() {
             {/* Metric 4: 목표 기업 */}
             <div 
               onClick={() => { setActiveTab('companies'); }}
-              className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer"
+              className={`p-3.5 rounded-xl border transition cursor-pointer ${
+                isLightMode 
+                  ? "bg-slate-50 hover:bg-slate-100/80 border-slate-200/90 text-slate-900 shadow-2xs" 
+                  : "bg-slate-800 hover:bg-slate-700/80 border-slate-700 text-white shadow-sm"
+              }`}
             >
-              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <Building2 size={12} />
+              <div className={`text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                <Building2 size={13} className="text-teal-400" />
                 <span>{t('희망 기업')}</span>
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 truncate">
+              <div className={`text-sm font-black mt-1.5 truncate ${isLightMode ? "text-slate-900" : "text-white"}`}>
                 {profile.targetCompanies.length > 0 ? `${profile.targetCompanies.length}${t('개 등록')}` : t('0개 등록')}
               </div>
             </div>
@@ -565,8 +581,8 @@ export default function MyPage() {
             onClick={() => setActiveTab('profile')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-profile ${
               activeTab === 'profile'
-                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
+                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
             }`}
           >
             <User size={15} />
@@ -577,14 +593,14 @@ export default function MyPage() {
             onClick={() => setActiveTab('aptitude')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-aptitude ${
               activeTab === 'aptitude'
-                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
+                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
             }`}
           >
             <Brain size={15} />
             <span>{t('진로 적성 진단')}</span>
             {(profile.mbti || profile.hollandCode) && (
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-xs" />
             )}
           </button>
 
@@ -592,14 +608,16 @@ export default function MyPage() {
             onClick={() => setActiveTab('companies')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-companies ${
               activeTab === 'companies'
-                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
+                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
             }`}
           >
             <Building2 size={15} />
             <span>{t('희망 목표 기업')}</span>
             <span className={`text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
-              activeTab === 'companies' ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+              activeTab === 'companies' 
+                ? (isLightMode ? "bg-emerald-100 text-emerald-700" : "bg-emerald-950/90 text-emerald-300 border border-emerald-600/70") 
+                : (isLightMode ? "bg-slate-100 text-slate-600" : "bg-slate-800 text-slate-200 border border-slate-700")
             }`}>
               {profile.targetCompanies.length}
             </span>
@@ -609,8 +627,8 @@ export default function MyPage() {
             onClick={() => setActiveTab('settings')}
             className={`pb-3 px-3 text-xs sm:text-sm font-bold transition-all border-b-2 flex items-center gap-2 shrink-0 cursor-pointer tour-target-tab-settings ${
               activeTab === 'settings'
-                ? "border-emerald-600 text-emerald-600 dark:border-emerald-400 dark:text-emerald-400"
-                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                ? isLightMode ? "border-emerald-600 text-emerald-600" : "border-emerald-400 text-emerald-400 font-extrabold"
+                : isLightMode ? "border-transparent text-slate-500 hover:text-slate-800" : "border-transparent text-slate-300 hover:text-white font-semibold"
             }`}
           >
             <Settings size={15} />
@@ -624,13 +642,15 @@ export default function MyPage() {
             
             {/* Structured Card: Personal & Academic Information */}
             <div className={`rounded-2xl border p-6 shadow-xs ${
-              isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+              isLightMode ? "bg-white border-slate-200/90 text-slate-900" : "bg-slate-900/80 border-slate-800 text-white"
             }`}>
               
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80 tour-target-profile-academic">
+              <div className={`flex items-center justify-between pb-4 border-b tour-target-profile-academic ${
+                isLightMode ? "border-slate-100" : "border-slate-800/80"
+              }`}>
                 <div className="flex items-center gap-2">
-                  <School size={18} className="text-emerald-600 dark:text-emerald-400" />
-                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                  <School size={18} className="text-emerald-500" />
+                  <h2 className={`text-base font-bold ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                     {t('학적 및 기본 프로필')}
                   </h2>
                 </div>
@@ -650,7 +670,7 @@ export default function MyPage() {
                       className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition cursor-pointer ${
                         isLightMode 
                           ? "bg-white hover:bg-slate-100 border-slate-300 text-slate-700" 
-                          : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300"
+                          : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200"
                       }`}
                     >
                       {t('취소')}
@@ -674,7 +694,9 @@ export default function MyPage() {
                       setTempHolland(profile.hollandCode);
                       setIsFullEditing(true);
                     }}
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer tour-target-edit-mode"
+                    className={`text-xs font-bold hover:underline flex items-center gap-1 cursor-pointer tour-target-edit-mode ${
+                      isLightMode ? "text-emerald-600" : "text-emerald-400"
+                    }`}
                     title={t('수정하기')}
                   >
                     <Edit3 size={13} />
@@ -687,7 +709,7 @@ export default function MyPage() {
                 
                 {/* Field 1: Name */}
                 <div className="space-y-1.5 tour-target-profile-name">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                     {t('이름')}
                   </label>
                   {isFullEditing ? (
@@ -703,7 +725,7 @@ export default function MyPage() {
                       }`}
                     />
                   ) : (
-                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                    <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {profile.name || t('이름 미입력')}
                     </div>
                   )}
@@ -711,10 +733,10 @@ export default function MyPage() {
 
                 {/* Field 2: Email */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                     {t('계정 이메일')}
                   </label>
-                  <div className="text-base font-semibold text-slate-700 dark:text-slate-300 py-1 truncate">
+                  <div className={`text-base font-semibold py-1 truncate ${isLightMode ? "text-slate-700" : "text-slate-200"}`}>
                     {profile.email || user?.email || t('이메일 정보 없음')}
                   </div>
                 </div>
@@ -722,11 +744,11 @@ export default function MyPage() {
                 {/* Field 3: High School */}
                 <div className="space-y-1.5 relative tour-target-profile-school sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                    <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                       {t('재학 / 졸업 마이스터고등학교')}
                     </label>
                     {isFullEditing && (
-                      <span className="text-[11px] text-slate-400 font-normal">
+                      <span className={`text-[11px] font-normal ${isLightMode ? "text-slate-400" : "text-slate-400"}`}>
                         {t('전국 58개 마이스터고 실시간 검색')}
                       </span>
                     )}
@@ -760,10 +782,10 @@ export default function MyPage() {
                           onMouseDown={e => e.preventDefault()}
                         >
                           <div className={`px-3 py-1.5 text-[11px] font-bold sticky top-0 flex items-center justify-between ${
-                            isLightMode ? "bg-slate-50 text-slate-500" : "bg-slate-800 text-slate-400"
+                            isLightMode ? "bg-slate-50 text-slate-500" : "bg-slate-800 text-slate-300"
                           }`}>
                             <span>{t('마이스터고 목록')} ({searchMeisterSchools(tempSchool).length}개)</span>
-                            <span className="text-[10px] text-emerald-500">{t('선택 시 자동 입력')}</span>
+                            <span className="text-[10px] text-emerald-400">{t('선택 시 자동 입력')}</span>
                           </div>
 
                           {searchMeisterSchools(tempSchool).length > 0 ? (
@@ -776,22 +798,22 @@ export default function MyPage() {
                                   setIsSchoolDropdownOpen(false);
                                 }}
                                 className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between transition cursor-pointer ${
-                                  isLightMode ? "hover:bg-emerald-50/70" : "hover:bg-slate-800"
+                                  isLightMode ? "hover:bg-emerald-50/70 text-slate-900" : "hover:bg-slate-800 text-white"
                                 }`}
                               >
                                 <span className="font-bold">{sch.name}</span>
                                 <div className="flex items-center gap-1.5 text-[10px]">
-                                  <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+                                  <span className={`px-1.5 py-0.5 rounded font-medium ${isLightMode ? "bg-slate-100 text-slate-600" : "bg-slate-800 text-slate-300"}`}>
                                     {sch.region}
                                   </span>
-                                  <span className="px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 font-medium">
+                                  <span className={`px-1.5 py-0.5 rounded font-medium ${isLightMode ? "bg-emerald-50 text-emerald-700" : "bg-emerald-950/80 text-emerald-300"}`}>
                                     {sch.field}
                                   </span>
                                 </div>
                               </button>
                             ))
                           ) : (
-                            <div className="p-3 text-center text-xs text-slate-400">
+                            <div className={`p-3 text-center text-xs ${isLightMode ? "text-slate-400" : "text-slate-400"}`}>
                               {t('일치하는 마이스터고가 없습니다. 직접 입력할 수 있습니다.')}
                             </div>
                           )}
@@ -799,7 +821,7 @@ export default function MyPage() {
                       )}
                     </div>
                   ) : (
-                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                    <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {profile.highSchool || t('고등학교 정보 미등록')}
                     </div>
                   )}
@@ -807,7 +829,7 @@ export default function MyPage() {
 
                 {/* Field 4: Major */}
                 <div className="space-y-1.5 tour-target-profile-major sm:col-span-2">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                     {t('전공 학과')}
                   </label>
 
@@ -824,7 +846,7 @@ export default function MyPage() {
                       }`}
                     />
                   ) : (
-                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                    <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {profile.major || t('전공 학과 미등록')}
                     </div>
                   )}
@@ -833,12 +855,12 @@ export default function MyPage() {
                 {/* Field 5: MBTI */}
                 <div className="space-y-1.5 tour-target-profile-mbti-field">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                       <Brain size={14} className="text-emerald-500" />
                       <span>{t('MBTI 성격 유형')}</span>
                     </label>
                     {!isFullEditing && (
-                      <Link to="/mbti" className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                      <Link to="/mbti" className={`text-[11px] font-bold hover:underline ${isLightMode ? "text-emerald-600" : "text-emerald-400"}`}>
                         {t('검사하기')} →
                       </Link>
                     )}
@@ -862,7 +884,7 @@ export default function MyPage() {
                       ))}
                     </select>
                   ) : (
-                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                    <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {profile.mbti ? `${profile.mbti} (${currentMbtiMeta?.alias || ''})` : t('미진단')}
                     </div>
                   )}
@@ -871,12 +893,12 @@ export default function MyPage() {
                 {/* Field 6: Holland Code */}
                 <div className="space-y-1.5 tour-target-profile-holland-field">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <Compass size={14} className="text-teal-500" />
+                    <label className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
+                      <Compass size={14} className="text-teal-400" />
                       <span>{t('홀랜드 직업 적성 유형')}</span>
                     </label>
                     {!isFullEditing && (
-                      <Link to="/holland" className="text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline">
+                      <Link to="/holland" className={`text-[11px] font-bold hover:underline ${isLightMode ? "text-teal-600" : "text-teal-300"}`}>
                         {t('검사하기')} →
                       </Link>
                     )}
@@ -914,7 +936,7 @@ export default function MyPage() {
                       </optgroup>
                     </select>
                   ) : (
-                    <div className="text-base font-bold text-slate-900 dark:text-slate-100 py-1">
+                    <div className={`text-base font-bold py-1 ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {profile.hollandCode ? `${profile.hollandCode}형 (${primaryHollandMeta?.name || ''})` : t('미진단')}
                     </div>
                   )}
@@ -985,13 +1007,13 @@ export default function MyPage() {
 
               {/* MBTI Card */}
               <div className={`rounded-2xl border p-6 shadow-xs flex flex-col justify-between space-y-5 tour-target-profile-mbti ${
-                isLightMode ? "bg-white border-slate-200/90" : "bg-slate-900/80 border-slate-800"
+                isLightMode ? "bg-white border-slate-200/90 text-slate-900" : "bg-slate-900/80 border-slate-800 text-white"
               }`}>
                 <div>
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                  <div className={`flex items-center justify-between pb-3 border-b ${isLightMode ? "border-slate-100" : "border-slate-800/80"}`}>
                     <div className="flex items-center gap-2">
-                      <Brain size={18} className="text-emerald-600 dark:text-emerald-400" />
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                      <Brain size={18} className="text-emerald-500" />
+                      <h3 className={`text-base font-bold ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                         {t('MBTI 성격 유형 진단')}
                       </h3>
                     </div>
@@ -1002,8 +1024,8 @@ export default function MyPage() {
                         onChange={e => savePartialField('mbti', e.target.value, 'MBTI')}
                         className={`text-xs font-bold px-2.5 py-1 rounded-lg border outline-none cursor-pointer transition ${
                           profile.mbti 
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:border-emerald-800 dark:text-emerald-300' 
-                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                            ? (isLightMode ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-emerald-950/80 border-emerald-700 text-emerald-200')
+                            : (isLightMode ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-slate-800 border-slate-700 text-slate-200')
                         }`}
                         title={t('유형 간편 변경')}
                       >
@@ -1020,13 +1042,13 @@ export default function MyPage() {
                   {profile.mbti ? (
                     <div className="mt-4 space-y-4">
                       <div>
-                        <div className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+                        <div className={`text-2xl font-black tracking-tight ${isLightMode ? "text-emerald-600" : "text-emerald-400"}`}>
                           {profile.mbti}
                         </div>
-                        <div className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                        <div className={`text-sm font-bold mt-0.5 ${isLightMode ? "text-slate-800" : "text-slate-100"}`}>
                           {currentMbtiMeta?.alias}
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">
+                        <p className={`text-xs mt-1.5 leading-relaxed ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                           {currentMbtiMeta?.desc}
                         </p>
                       </div>
@@ -1477,21 +1499,21 @@ export default function MyPage() {
             }`}>
               
               {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-slate-800/80">
+              <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b ${isLightMode ? "border-slate-100" : "border-slate-800/80"}`}>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                       <Palette size={18} />
                     </div>
-                    <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                    <h2 className={`text-base sm:text-lg font-bold ${isLightMode ? "text-slate-900" : "text-white font-extrabold"}`}>
                       {t('화면 및 인터랙션 환경 설정')}
                     </h2>
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className={`text-xs ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                     {t('화면 테마와 시각적 인터랙션 효과를 원하는 대로 맞춤 설정할 수 있습니다.')}
                   </p>
                 </div>
-                <span className="self-start sm:self-center inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                <span className={`self-start sm:self-center inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${isLightMode ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-emerald-950/80 text-emerald-300 border-emerald-800/60"}`}>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   {t('실시간 자동 저장')}
                 </span>
@@ -1500,10 +1522,10 @@ export default function MyPage() {
               {/* Section 1: Visual Theme Cards */}
               <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                  <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                     {t('화면 테마')}
                   </label>
-                  <span className="text-[11px] text-slate-400">
+                  <span className={`text-[11px] ${isLightMode ? "text-slate-400" : "text-slate-400"}`}>
                     {isLightMode ? t('현재: 라이트 모드') : t('현재: 우주 다크 모드')}
                   </span>
                 </div>
@@ -1549,10 +1571,10 @@ export default function MyPage() {
                           <Sun size={17} />
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-slate-900 dark:text-white">
+                          <div className={`text-sm font-bold ${isLightMode ? "text-slate-900" : "text-white"}`}>
                             {t('라이트 모드 (화이트)')}
                           </div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          <div className={`text-xs mt-0.5 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                             {t('눈이 편안하고 선명한 기본 화이트 테마')}
                           </div>
                         </div>
@@ -1612,10 +1634,10 @@ export default function MyPage() {
                           <Moon size={17} />
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-slate-900 dark:text-white">
+                          <div className={`text-sm font-bold ${isLightMode ? "text-slate-900" : "text-white"}`}>
                             {t('우주 모드 (다크)')}
                           </div>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          <div className={`text-xs mt-0.5 ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                             {t('신비롭고 차분한 밤하늘 별빛 테마')}
                           </div>
                         </div>
@@ -1633,7 +1655,7 @@ export default function MyPage() {
 
               {/* Section 2: Unified Interactive Preferences (iOS-style Clean List) */}
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                <label className={`text-xs font-bold uppercase tracking-wider block ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                   {t('상호작용 및 시각 효과')}
                 </label>
 
@@ -1649,10 +1671,10 @@ export default function MyPage() {
                         <AlienUFOSvg className="w-7 h-7 drop-shadow-sm" />
                       </div>
                       <div className="space-y-0.5">
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                        <div className={`text-sm font-bold ${isLightMode ? "text-slate-900" : "text-white"}`}>
                           {t('우주를 떠다니는 외계인 캐릭터')}
                         </div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <div className={`text-xs leading-relaxed ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                           {t('홈페이지(우주 화면) 배경에 귀여운 UFO 외계인 커플들을 표시할지 선택합니다.')}
                         </div>
                       </div>
@@ -1683,10 +1705,10 @@ export default function MyPage() {
                         <Sparkles size={20} />
                       </div>
                       <div className="space-y-0.5">
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">
+                        <div className={`text-sm font-bold ${isLightMode ? "text-slate-900" : "text-white"}`}>
                           {t('화면 클릭 / 터치 별빛 파티클 효과')}
                         </div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <div className={`text-xs leading-relaxed ${isLightMode ? "text-slate-500" : "text-slate-300"}`}>
                           {t('마우스 클릭이나 화면 터치 시 은은하고 아름다운 별빛 파티클 애니메이션을 생성합니다.')}
                         </div>
                       </div>
