@@ -394,6 +394,15 @@ function fixUniversalColloquialEomi(text: string): string {
   s = s.replace(/실패해씁니다/g, '실패했습니다');
   s = s.replace(/도전해씁니다/g, '도전했습니다');
   s = s.replace(/해결해씁니다/g, '해결했습니다');
+  s = s.replace(/성장했슴로다/g, '성장했습니다');
+  s = s.replace(/성장했습로다/g, '성장했습니다');
+  s = s.replace(/성장했음로다/g, '성장했습니다');
+  s = s.replace(/성장했슴니다/g, '성장했습니다');
+  s = s.replace(/했슴로다/g, '했습니다');
+  s = s.replace(/했습로다/g, '했습니다');
+  s = s.replace(/했음로다/g, '했습니다');
+  s = s.replace(/했슴니다/g, '했습니다');
+  s = s.replace(/했음니다/g, '했습니다');
 
   // ~읍니다 종결어미 현대 표준어(~습니다) 일괄 교정
   s = s.replace(/([가-힣]+[았었였됐했갔왔났봤졌겼쳤탔맞찾받맡닿같높낮])읍니다/g, '$1습니다');
@@ -785,7 +794,9 @@ export async function checkAndCorrectKoreanSpelling(text: string): Promise<{
   // 2. Client-side Gemini fallback if bestResult is still unchanged
   if (bestResult === text) {
     try {
+      const storedUserKey = typeof window !== 'undefined' ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '') : '';
       const keys = [
+        storedUserKey,
         (import.meta as any).env?.VITE_GEMINI_API_KEY,
         (import.meta as any).env?.VITE_GEMINI_API_KEY2,
         (import.meta as any).env?.VITE_GEMINI_API_KEY3,
@@ -799,6 +810,7 @@ export async function checkAndCorrectKoreanSpelling(text: string): Promise<{
         const trimmed = k.trim();
         const lower = trimmed.toLowerCase();
         return trimmed !== '' &&
+               trimmed.length > 5 &&
                lower !== 'my_gemini_api_key' &&
                lower !== 'your_api_key' &&
                lower !== 'your_gemini_api_key' &&
