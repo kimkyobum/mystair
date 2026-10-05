@@ -7,7 +7,14 @@ import {
   Check, 
   ThumbsUp, 
   RefreshCw,
-  Plus
+  Plus,
+  Volume2,
+  VolumeX,
+  Mic,
+  MicOff,
+  Square,
+  Sparkles,
+  Bot
 } from 'lucide-react';
 import { AlienUFOSvg } from './FloatingAliens';
 import { useTheme } from '../context/ThemeContext';
@@ -21,6 +28,7 @@ export interface CoverLetterAiCoachProps {
   currentAnswer: string;
   userProfile?: UserProfileData | null;
   diaries?: DiaryEntry[];
+  forceOpenTrigger?: { open: boolean; speak: boolean; timestamp: number };
 }
 
 interface ChatMessage {
@@ -36,7 +44,8 @@ export default function CoverLetterAiCoach({
   recommendedChars,
   currentAnswer,
   userProfile: propUserProfile,
-  diaries: propDiaries
+  diaries: propDiaries,
+  forceOpenTrigger
 }: CoverLetterAiCoachProps) {
   const { isLightMode } = useTheme();
   const { t } = useLanguage();
@@ -57,6 +66,21 @@ export default function CoverLetterAiCoach({
   const [isAnswering, setIsAnswering] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
+  // 음성 재생 (TTS) 및 마이크 음성인식 (STT) 상태
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('mystair_cover_letter_voice_enabled') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [selectedVoice, setSelectedVoice] = useState<'sunhi' | 'injoon' | 'seohyeon'>('sunhi');
+  const [isMicListening, setIsMicListening] = useState<boolean>(false);
+
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastAnalyzedTextRef = useRef<string>('');
@@ -109,12 +133,201 @@ export default function CoverLetterAiCoach({
     return `${period} ${displayHours}:${minutes}`;
   };
 
-  // 초기 웰컴 메시지 (노션 AI 스타일: "안녕하세요, 김교범님! 무엇을 도와드릴까요?")
+  // AI 음성 (TTS) 재생 중단
+  const stopAiVoice = () => {
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause();
+        activeAudioRef.current.currentTime = 0;
+      } catch {}
+      activeAudioRef.current = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch {}
+    }
+    setIsSpeaking(false);
+    setSpeakingMsgId(null);
+  };
+
+  // AI 음성 발화 (Edge-TTS 서버 API 우선 사용, 실패 시 브라우저 내장 Web Speech synthesis 폴백)
+  const speakAiVoice = async (text: string, msgId: string = 'general') => {
+    if (typeof window === 'undefined') return;
+
+    // 만약 현재 재생 중인 발화와 동일한 버튼을 누르면 정지(토글)
+    if (isSpeaking && speakingMsgId === msgId) {
+      stopAiVoice();
+      return;
+    }
+
+    stopAiVoice();
+
+    const cleanText = (text || '').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+    if (!cleanText) return;
+
+    setIsSpeaking(true);
+    setSpeakingMsgId(msgId);
+
+    try {
+      const audioUrl = `/api/tts?text=${encodeURIComponent(cleanText)}&voice=${selectedVoice}`;
+      const audio = new Audio(audioUrl);
+      activeAudioRef.current = audio;
+
+      audio.onended = () => {
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+        activeAudioRef.current = null;
+      };
+
+      audio.onerror = () => {
+        speakWithClientFallback(cleanText, msgId);
+      };
+
+      await audio.play();
+    } catch {
+      speakWithClientFallback(cleanText, msgId);
+    }
+  };
+
+  // 클라이언트 브라우저 Web Speech 폴백
+  const speakWithClientFallback = (text: string, msgId: string = 'general') => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setIsSpeaking(false);
+      setSpeakingMsgId(null);
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ko-KR';
+      utterance.rate = 1.0;
+      utterance.pitch = selectedVoice === 'injoon' ? 0.95 : 1.05;
+
+      const voices = window.speechSynthesis.getVoices();
+      const koVoices = voices.filter(v => v.lang.includes('ko') || v.lang.includes('KO'));
+      if (koVoices.length > 0) {
+        if (selectedVoice === 'injoon') {
+          const male = koVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('남성'));
+          utterance.voice = male || koVoices[0];
+        } else {
+          const female = koVoices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('여성'));
+          utterance.voice = female || koVoices[0];
+        }
+      }
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      setIsSpeaking(false);
+      setSpeakingMsgId(null);
+    }
+  };
+
+  // 음성 안내 ON/OFF 토글
+  const toggleVoiceEnabled = () => {
+    setIsVoiceEnabled(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('mystair_cover_letter_voice_enabled', String(next));
+      } catch {}
+      if (!next) {
+        stopAiVoice();
+      }
+      return next;
+    });
+  };
+
+  // 마이크 음성인식 (STT) 시작/중지
+  const toggleSpeechRecognition = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert(t('현재 브라우저에서는 음성 인식을 지원하지 않습니다. Chrome 환경을 권장합니다.'));
+      return;
+    }
+
+    if (isMicListening) {
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
+      }
+      setIsMicListening(false);
+      return;
+    }
+
+    stopAiVoice();
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ko-KR';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onstart = () => {
+        setIsMicListening(true);
+      };
+
+      recognition.onresult = (event: any) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (transcript) {
+          setInputQuestion(transcript);
+        }
+      };
+
+      recognition.onerror = () => {
+        setIsMicListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsMicListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch {
+      setIsMicListening(false);
+    }
+  };
+
+  // 언마운트 시 오디오 및 음성인식 리소스 해제
+  useEffect(() => {
+    return () => {
+      stopAiVoice();
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch {}
+      }
+    };
+  }, []);
+
+  // 외부(상위 컴포넌트)에서 AI 조언 및 음성 발화 트리거 시 작동
+  useEffect(() => {
+    if (forceOpenTrigger && forceOpenTrigger.timestamp > 0) {
+      if (forceOpenTrigger.open) {
+        setIsOpenChat(true);
+      }
+      const targetText = feedbackSpeech || defaultSpeech;
+      if (forceOpenTrigger.speak && targetText) {
+        setTimeout(() => {
+          speakAiVoice(targetText, 'speech-bubble');
+        }, 300);
+      }
+    }
+  }, [forceOpenTrigger]);
+
+  // 초기 웰컴 메시지 (노션 AI 스타일)
   useEffect(() => {
     if (messages.length === 0) {
       const greeting = studentName && studentName !== '지원자'
-        ? `안녕하세요, ${studentName}님! 무엇을 도와드릴까요?\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 궁금한 점이나 피드백을 편하게 질문해 주세요.`
-        : `안녕하세요! 무엇을 도와드릴까요?\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 무엇이든 편하게 물어보세요.`;
+        ? `안녕하세요, ${studentName}님! MyStair AI 코치입니다.\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 무엇이든 질문해 주세요. 음성 듣기 버튼으로 편하게 들으실 수도 있습니다.`
+        : `안녕하세요! MyStair AI 코치입니다.\n지금 작성 중인 [${sectionTitle || '자기소개서'}]에 대해 무엇이든 편하게 물어보세요.`;
 
       setMessages([
         {
@@ -161,8 +374,12 @@ export default function CoverLetterAiCoach({
         const data = await res.json();
         const speech = data?.feedback?.speech || data?.feedback?.summary || (data?.feedback?.tips && data.feedback.tips[0]) || '';
         if (speech) {
-          // 이모지 완벽 정제
-          setFeedbackSpeech(speech.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim());
+          const cleaned = speech.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+          setFeedbackSpeech(cleaned);
+          // 음성 자동 안내가 켜져 있으면 실시간으로 음성 발화
+          if (isVoiceEnabled && cleaned) {
+            speakAiVoice(cleaned, 'speech-bubble');
+          }
         }
       }
     } catch (err) {
@@ -198,6 +415,12 @@ export default function CoverLetterAiCoach({
     const query = (queryText || inputQuestion).trim();
     if (!query || isAnswering) return;
 
+    stopAiVoice();
+    if (isMicListening && recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
+      setIsMicListening(false);
+    }
+
     const timeStr = getCurrentTimeStr();
     const userMsg: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -230,13 +453,19 @@ export default function CoverLetterAiCoach({
         const data = await res.json();
         const rawAns = data.answer || data.response || data.feedback?.speech || data.feedback?.summary || data.text || '';
         let cleanedAnswer = (rawAns || t('실천 가능한 문장으로 구체적인 살을 붙여보세요.')).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+        const aiMsgId = `ai-${Date.now()}`;
         const aiMsg: ChatMessage = {
-          id: `ai-${Date.now()}`,
+          id: aiMsgId,
           sender: 'ai',
           text: cleanedAnswer,
           time: getCurrentTimeStr()
         };
         setMessages(prev => [...prev, aiMsg]);
+
+        // 음성 안내가 켜져 있다면 답변을 즉시 음성으로 말하기
+        if (isVoiceEnabled) {
+          speakAiVoice(cleanedAnswer, aiMsgId);
+        }
       } else {
         setMessages(prev => [
           ...prev,
@@ -265,6 +494,7 @@ export default function CoverLetterAiCoach({
 
   // 대화 초기화
   const handleResetChat = () => {
+    stopAiVoice();
     setMessages([
       {
         id: `welcome-${Date.now()}`,
@@ -284,7 +514,7 @@ export default function CoverLetterAiCoach({
 
   // 외계인 말풍선 텍스트 (이모지 없음)
   const defaultSpeech = currentAnswer.trim().length === 0
-    ? t(`머릿속에 떠오르는 생각을 다듬지 말고 편하게 적어보세요. 실시간으로 읽고 보완할 점을 바로 짚어드리겠습니다.`)
+    ? t(`머릿속에 떠오르는 생각을 다듬지 말고 편하게 적어보세요. 실시간으로 읽고 보완할 점을 음성과 텍스트로 바로 짚어드리겠습니다.`)
     : t(`작성하신 내용을 살펴보고 있습니다. 잠시만 기다려주세요.`);
   const speechText = feedbackSpeech || defaultSpeech;
 
@@ -296,25 +526,66 @@ export default function CoverLetterAiCoach({
       {/* ========================================================================= */}
       {isOpenChat && (
         <div 
-          className={`pointer-events-auto relative mb-3 w-[350px] sm:w-[380px] md:w-[410px] h-[520px] max-h-[82vh] rounded-2xl shadow-2xl border flex flex-col overflow-hidden transition-all duration-200 animate-in fade-in zoom-in-95 ${
+          className={`pointer-events-auto relative mb-3 w-[360px] sm:w-[400px] md:w-[430px] h-[540px] max-h-[82vh] rounded-2xl shadow-2xl border flex flex-col overflow-hidden transition-all duration-200 animate-in fade-in zoom-in-95 ${
             isLightMode 
               ? "bg-white text-slate-800 border-slate-200/90 shadow-slate-400/25" 
               : "bg-slate-900 text-slate-100 border-slate-800 shadow-black/70"
           }`}
         >
-          {/* 노션 AI 스타일 초간결 헤더 */}
+          {/* 노션 AI 스타일 초간결 헤더 및 음성 컨트롤 */}
           <div className={`px-4 py-2.5 flex items-center justify-between border-b ${
             isLightMode ? "border-slate-100 bg-white" : "border-slate-800 bg-slate-900/90"
           }`}>
             <div className="flex items-center gap-1.5 text-xs">
-              <span className={`font-bold ${isLightMode ? "text-slate-800" : "text-white"}`}>MyStair AI</span>
+              <span className={`font-bold flex items-center gap-1 ${isLightMode ? "text-slate-800" : "text-white"}`}>
+                <Bot size={14} className="text-indigo-600 dark:text-indigo-400" />
+                MyStair AI 코치
+              </span>
               <span className={isLightMode ? "text-slate-400" : "text-slate-500"}>·</span>
-              <span className={`text-[11px] font-semibold truncate max-w-[130px] ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
+              <span className={`text-[11px] font-semibold truncate max-w-[120px] ${isLightMode ? "text-slate-600" : "text-slate-300"}`}>
                 {sectionTitle || '실시간 코칭'}
               </span>
             </div>
 
-            <div className="flex items-center gap-0.5 text-slate-400">
+            <div className="flex items-center gap-1.5 text-slate-400">
+              {/* 음성 안내 자동 재생 토글 */}
+              <button
+                type="button"
+                onClick={toggleVoiceEnabled}
+                className={`px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                  isVoiceEnabled
+                    ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 shadow-xs"
+                    : isLightMode ? "hover:text-slate-700 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
+                }`}
+                title={isVoiceEnabled ? t('AI 음성 자동 안내 켜짐 (클릭하여 끄기)') : t('AI 음성 자동 안내 꺼짐 (클릭하여 켜기)')}
+              >
+                {isVoiceEnabled ? (
+                  <>
+                    <Volume2 size={13} className="text-indigo-600 dark:text-indigo-400 animate-pulse" />
+                    <span>{t('음성 ON')}</span>
+                  </>
+                ) : (
+                  <>
+                    <VolumeX size={13} />
+                    <span className="hidden sm:inline">{t('음성 OFF')}</span>
+                  </>
+                )}
+              </button>
+
+              {/* 목소리 선택기 (여성 박선희 / 남성 한도윤) */}
+              <select
+                value={selectedVoice}
+                onChange={(e) => setSelectedVoice(e.target.value as any)}
+                className={`text-[10px] font-medium py-1 px-1 rounded border outline-none bg-transparent cursor-pointer ${
+                  isLightMode ? "border-slate-200 text-slate-600" : "border-slate-700 text-slate-300"
+                }`}
+                title={t('AI 코치 목소리 변경')}
+              >
+                <option value="sunhi" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">여성 멘토 (선희)</option>
+                <option value="injoon" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">남성 멘토 (도윤)</option>
+                <option value="seohyeon" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">청년 멘토 (서현)</option>
+              </select>
+
               <button
                 type="button"
                 onClick={handleResetChat}
@@ -327,7 +598,10 @@ export default function CoverLetterAiCoach({
               </button>
               <button
                 type="button"
-                onClick={() => setIsOpenChat(false)}
+                onClick={() => {
+                  stopAiVoice();
+                  setIsOpenChat(false);
+                }}
                 className={`p-1 rounded-md transition-colors cursor-pointer ${
                   isLightMode ? "hover:text-slate-800 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
                 }`}
@@ -356,9 +630,39 @@ export default function CoverLetterAiCoach({
                 ) : (
                   /* AI 메시지: 박스 없이 배경 위에 직접 자연스럽게 배치되는 타이포그래피 */
                   <div className="space-y-1.5 pr-2">
-                    <div className={`text-[11px] font-bold ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
-                      MyStair AI · {msg.time}
+                    <div className="flex items-center justify-between">
+                      <div className={`text-[11px] font-bold flex items-center gap-1.5 ${isLightMode ? "text-slate-500" : "text-slate-400"}`}>
+                        <Sparkles size={11} className="text-indigo-500" />
+                        <span>MyStair AI · {msg.time}</span>
+                      </div>
+
+                      {/* 실시간 음성 읽어주기 버튼 */}
+                      <button
+                        type="button"
+                        onClick={() => speakAiVoice(msg.text, msg.id)}
+                        className={`px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
+                          isSpeaking && speakingMsgId === msg.id
+                            ? "bg-rose-500 text-white animate-pulse shadow-xs"
+                            : isLightMode
+                              ? "bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600"
+                              : "bg-slate-800 hover:bg-indigo-950/60 text-slate-300 hover:text-indigo-300"
+                        }`}
+                        title={isSpeaking && speakingMsgId === msg.id ? t('음성 정지') : t('AI 음성으로 듣기')}
+                      >
+                        {isSpeaking && speakingMsgId === msg.id ? (
+                          <>
+                            <Square size={10} className="fill-current" />
+                            <span>{t('정지')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 size={12} className="text-indigo-500" />
+                            <span>{t('듣기')}</span>
+                          </>
+                        )}
+                      </button>
                     </div>
+
                     <p className={`leading-relaxed whitespace-pre-line font-medium ${
                       isLightMode ? "text-slate-900" : "text-slate-100"
                     }`}>
@@ -449,7 +753,7 @@ export default function CoverLetterAiCoach({
             </button>
           </div>
 
-          {/* 노션 AI 스타일 하단 인풋 박스 */}
+          {/* 노션 AI 스타일 하단 인풋 박스 (마이크 음성 입력 지원) */}
           <div className="p-3 pt-1">
             <form
               onSubmit={(e) => {
@@ -466,7 +770,7 @@ export default function CoverLetterAiCoach({
                 type="text"
                 value={inputQuestion}
                 onChange={(e) => setInputQuestion(e.target.value)}
-                placeholder={t('MyStair AI에게 질문하기...')}
+                placeholder={isMicListening ? t('🎙️ 마이크로 말씀하세요...') : t('MyStair AI에게 질문하기... (음성 마이크 지원)')}
                 className={`w-full px-1.5 py-1 bg-transparent text-[13px] outline-none font-medium ${
                   isLightMode ? "text-slate-900 placeholder:text-slate-400" : "text-white placeholder:text-slate-400"
                 }`}
@@ -477,18 +781,35 @@ export default function CoverLetterAiCoach({
                   {sectionTitle ? `[${sectionTitle}]` : '실시간 코치'}
                 </span>
 
-                <button
-                  type="submit"
-                  disabled={isAnswering || !inputQuestion.trim()}
-                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${
-                    inputQuestion.trim() && !isAnswering
-                      ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm"
-                      : (isLightMode ? "bg-slate-200 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-700 text-slate-500 cursor-not-allowed opacity-50")
-                  }`}
-                  title={t('전송')}
-                >
-                  <ArrowUp size={13} strokeWidth={2.5} />
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {/* 마이크 음성 질문 버튼 */}
+                  <button
+                    type="button"
+                    onClick={toggleSpeechRecognition}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                      isMicListening
+                        ? "bg-rose-500 text-white animate-pulse shadow-md shadow-rose-500/40"
+                        : (isLightMode ? "text-slate-400 hover:text-indigo-600 hover:bg-slate-200" : "text-slate-400 hover:text-indigo-400 hover:bg-slate-700")
+                    }`}
+                    title={isMicListening ? t('음성 듣는 중... (클릭하여 중지)') : t('마이크 음성으로 질문하기')}
+                  >
+                    {isMicListening ? <MicOff size={13} /> : <Mic size={13} />}
+                  </button>
+
+                  {/* 전송 버튼 */}
+                  <button
+                    type="submit"
+                    disabled={isAnswering || !inputQuestion.trim()}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                      inputQuestion.trim() && !isAnswering
+                        ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm"
+                        : (isLightMode ? "bg-slate-200 text-slate-400 cursor-not-allowed opacity-50" : "bg-slate-700 text-slate-500 cursor-not-allowed opacity-50")
+                    }`}
+                    title={t('전송')}
+                  >
+                    <ArrowUp size={13} strokeWidth={2.5} />
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -501,7 +822,7 @@ export default function CoverLetterAiCoach({
       {!isOpenChat && showSpeechBubble && (
         <div 
           onClick={() => setIsOpenChat(true)}
-          className={`pointer-events-auto group relative mb-3 p-4 sm:p-4.5 rounded-2xl rounded-br-xs shadow-2xl border transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 max-w-[320px] sm:max-w-[360px] cursor-pointer hover:scale-[1.02] active:scale-[0.99] ${
+          className={`pointer-events-auto group relative mb-3 p-4 sm:p-4.5 rounded-2xl rounded-br-xs shadow-2xl border transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 max-w-[320px] sm:max-w-[370px] cursor-pointer hover:scale-[1.02] active:scale-[0.99] ${
             isLightMode 
               ? "bg-white text-slate-800 border-slate-200/90 shadow-slate-300/40 hover:border-slate-400/60" 
               : "bg-slate-900 text-slate-100 border-slate-700/90 shadow-black/60 hover:border-slate-500/60"
@@ -523,13 +844,53 @@ export default function CoverLetterAiCoach({
               <span>{t('작성 내용을 읽고 있습니다...')}</span>
             </div>
           ) : (
-            <div className="space-y-1">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold pb-1 border-b border-slate-100 dark:border-slate-800">
+                <span className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400">
+                  <Sparkles size={12} />
+                  MyStair 실시간 AI 코칭
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  {sectionTitle ? `[${sectionTitle}]` : ''}
+                </span>
+              </div>
+
               <p className="text-[13px] sm:text-[13.5px] leading-relaxed font-medium whitespace-pre-line tracking-tight">
                 {speechText}
               </p>
-              <div className="flex items-center justify-end pt-1">
+
+              {/* 음성으로 듣기 버튼 및 액션 바 */}
+              <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    speakAiVoice(speechText, 'speech-bubble');
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+                    isSpeaking && speakingMsgId === 'speech-bubble'
+                      ? "bg-rose-500 hover:bg-rose-600 text-white animate-pulse"
+                      : isLightMode
+                        ? "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200"
+                        : "bg-indigo-950/70 hover:bg-indigo-900 text-indigo-300 border border-indigo-800"
+                  }`}
+                  title={isSpeaking && speakingMsgId === 'speech-bubble' ? t('음성 정지') : t('AI 음성으로 조언 듣기')}
+                >
+                  {isSpeaking && speakingMsgId === 'speech-bubble' ? (
+                    <>
+                      <Square size={11} className="fill-current" />
+                      <span>{t('음성 정지')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 size={12} className="text-indigo-500 dark:text-indigo-400" />
+                      <span>{t('AI 음성 듣기')}</span>
+                    </>
+                  )}
+                </button>
+
                 <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                  {t('클릭하여 질문하기')}
+                  {t('클릭하여 질문하기 →')}
                 </span>
               </div>
             </div>
@@ -540,21 +901,36 @@ export default function CoverLetterAiCoach({
       {/* ========================================================================= */}
       {/* 3. 우측 하단 외계인 캐릭터 (클릭 시 노션 AI 스타일 대화창 토글)              */}
       {/* ========================================================================= */}
-      <button
-        type="button"
-        onClick={() => {
-          if (isOpenChat) {
-            setIsOpenChat(false);
-          } else {
-            setIsOpenChat(true);
-          }
-        }}
-        className="pointer-events-auto p-0 bg-transparent border-0 outline-none cursor-pointer group transition-transform duration-300 hover:scale-115 active:scale-95 animate-float-alien"
-        title={isOpenChat ? t('대화창 닫기') : t('MyStair AI 대화하기')}
-      >
-        <AlienUFOSvg className="w-14 h-14 sm:w-16 sm:h-16 drop-shadow-[0_8px_18px_rgba(56,189,248,0.55)] transition-all group-hover:drop-shadow-[0_10px_24px_rgba(56,189,248,0.8)]" />
-      </button>
+      <div className="relative">
+        {/* 음성 말하는 중일 때 외계인 주변 음파 링 이펙트 */}
+        {isSpeaking && (
+          <span className="absolute -inset-2 rounded-full border-2 border-indigo-400/80 animate-ping pointer-events-none" />
+        )}
+
+        <button
+          type="button"
+          onClick={() => {
+            if (isOpenChat) {
+              stopAiVoice();
+              setIsOpenChat(false);
+            } else {
+              setIsOpenChat(true);
+            }
+          }}
+          className={`pointer-events-auto p-0 bg-transparent border-0 outline-none cursor-pointer group transition-transform duration-300 hover:scale-115 active:scale-95 animate-float-alien ${
+            isSpeaking ? "scale-110" : ""
+          }`}
+          title={isOpenChat ? t('대화창 닫기') : t('MyStair AI 대화하기')}
+        >
+          <AlienUFOSvg className={`w-14 h-14 sm:w-16 sm:h-16 transition-all ${
+            isSpeaking 
+              ? "drop-shadow-[0_10px_25px_rgba(99,102,241,0.9)] scale-105" 
+              : "drop-shadow-[0_8px_18px_rgba(56,189,248,0.55)] group-hover:drop-shadow-[0_10px_24px_rgba(56,189,248,0.8)]"
+          }`} />
+        </button>
+      </div>
 
     </div>
   );
 }
+

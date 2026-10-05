@@ -1884,39 +1884,44 @@ async function generateMaleInterviewAudio(text: string, voiceKey: string = 'injo
   }
 }
 
-// Interview TTS Endpoints (GET and POST)
-app.get("/api/interview-tts", async (req, res) => {
+// Interview & Cover Letter TTS Endpoints (GET and POST)
+const handleTtsGet = async (req: any, res: any) => {
   try {
     let rawText = String(req.query.text || "").trim();
     try { rawText = decodeURIComponent(rawText); } catch {}
     if (!rawText) return res.status(400).send("text query parameter required");
-    const voice = String(req.query.voice || 'injoon');
+    const voice = String(req.query.voice || 'sunhi');
     const audio = await generateMaleInterviewAudio(rawText, voice);
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");
     return res.send(audio);
   } catch (err: any) {
-    console.error("Interview TTS GET error:", err?.message || err);
+    console.error("TTS GET error:", err?.message || err);
     return res.status(500).json({ error: "TTS failed" });
   }
-});
+};
 
-app.post("/api/interview-tts", async (req, res) => {
+const handleTtsPost = async (req: any, res: any) => {
   try {
-    const { text, voice = 'injoon' } = req.body || {};
+    const { text, voice = 'sunhi' } = req.body || {};
     if (!text || !text.trim()) return res.status(400).json({ error: "text is required" });
-    const audio = await generateMaleInterviewAudio(text.trim(), String(voice || 'injoon'));
-    const profile = SERVER_VOICE_PROFILES[voice] || SERVER_VOICE_PROFILES.injoon;
+    const audio = await generateMaleInterviewAudio(text.trim(), String(voice || 'sunhi'));
+    const profile = SERVER_VOICE_PROFILES[voice] || SERVER_VOICE_PROFILES.sunhi || SERVER_VOICE_PROFILES.injoon;
     return res.json({
       audioBase64: audio.toString("base64"),
       format: "audio/mp3",
       voiceUsed: profile.label
     });
   } catch (err: any) {
-    console.error("Interview TTS POST error:", err?.message || err);
+    console.error("TTS POST error:", err?.message || err);
     return res.status(500).json({ error: "TTS failed" });
   }
-});
+};
+
+app.get("/api/interview-tts", handleTtsGet);
+app.get("/api/tts", handleTtsGet);
+app.post("/api/interview-tts", handleTtsPost);
+app.post("/api/tts", handleTtsPost);
 
 // AI 모의면접 답변 실시간 평가 API (행동 분석 및 꼬리 질문 전용 AI 엔진)
 app.post("/api/evaluate-interview", async (req, res) => {

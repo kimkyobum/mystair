@@ -25,7 +25,9 @@ import {
   AlertCircle,
   Printer,
   Eye,
-  FileDown
+  FileDown,
+  Volume2,
+  Bot
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../friend_site/LanguageContext';
@@ -241,6 +243,15 @@ export default function CoverLetter() {
 
   // Active Section for Real-time AI Coach
   const [activeSectionId, setActiveSectionId] = useState<string>('');
+  const [coachTrigger, setCoachTrigger] = useState<{ open: boolean; speak: boolean; timestamp: number }>({ open: false, speak: false, timestamp: 0 });
+
+  const handleTriggerAiCoach = (sectionId: string, speak: boolean = true) => {
+    setActiveSectionId(sectionId);
+    setCoachTrigger({ open: true, speak, timestamp: Date.now() });
+    const sec = sections.find(s => s.id === sectionId);
+    const title = sec ? getCleanTitle(sec.title) : '선택 문항';
+    showToast(`MyStair AI 코치가 [${title}]에 대한 맞춤 조언을 음성으로 안내합니다.`, 'info');
+  };
 
   useEffect(() => {
     if (sections.length > 0 && (!activeSectionId || !sections.some(s => s.id === activeSectionId))) {
@@ -1603,13 +1614,28 @@ ${formattedAnswer}
                         </span>
                       </div>
 
-                      {/* Right: Spell Check Button & Status */}
+                      {/* Right: Spell Check & AI Advice Buttons */}
                       <div className="flex items-center justify-end gap-2 shrink-0">
                         {charCount > sec.recommendedChars + 100 && (
                           <span className="text-rose-500 font-bold text-[11px] mr-1">
                             {t('⚠️ 권장 분량 초과')}
                           </span>
                         )}
+
+                        {/* AI 맞춤 조언 및 음성 피드백 듣기 버튼 */}
+                        <button
+                          type="button"
+                          onClick={() => handleTriggerAiCoach(sec.id, true)}
+                          className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
+                            isLightMode
+                              ? "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 active:scale-95"
+                              : "bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 border-indigo-800 active:scale-95"
+                          }`}
+                          title={t('이 문항에 대한 AI 코치의 실시간 맞춤 조언과 음성 피드백을 듣습니다')}
+                        >
+                          <Volume2 size={13} className="text-indigo-500 animate-pulse" />
+                          <span>{t('AI 조언 & 음성')}</span>
+                        </button>
 
                         <button
                           type="button"
@@ -2540,6 +2566,7 @@ ${formattedAnswer}
           currentAnswer={activeSection ? (answers[activeSection.id] || '') : ''}
           userProfile={userProfile}
           diaries={diaries}
+          forceOpenTrigger={coachTrigger}
         />
       )}
 
