@@ -232,7 +232,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-nav-coverletter',
     target: '.tour-target-nav-coverletter',
-    message: '**자기소개서 작성**을 눌러 이동해요.',
+    message: '**자기소개서 작성**을 눌러 이동해요. 내 프로필 정보 및 한 학기 동안 기록한 성장 다이어리와 연동되어 최고의 합격 자소서 완성을 지원합니다.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/cover-letter'),
@@ -240,29 +240,36 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-coverletter-company',
     target: '.tour-target-cover-companies',
-    message: '**목표 기업** 전용 자소서를 작성해요.',
+    message: '**목표 기업별 자소서**를 관리해요. 주요 대기업, 공기업의 실제 기출 합격 문항 가이드라인과 글자 수 서식이 적용되어 체계적인 작성이 가능합니다.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-coverletter-myexp',
     target: '.tour-target-cover-my-exp',
-    message: '**내 경험**을 불러와 자소서에 활용해요.',
+    message: '**내 경험 불러오기**로 성장 다이어리에 적어둔 실습, 대회, 자격증 자서전이 자소서 바로 옆에 정돈되어 나타납니다. 직접 작성했던 솔직한 스토리를 간편하게 글에 녹여낼 수 있습니다.',
     action: 'click_target',
+    allowAnywhereClick: true,
+  },
+  {
+    id: 'step-coverletter-aicoach',
+    target: '.tour-target-cover-my-exp', // highlight near the editor area
+    message: '**AI 오타·맞춤법 수정** 및 **MyStair AI 코치** 기능이 실시간 조언을 전합니다. 오타와 띄어쓰기를 원클릭으로 완벽 교정하고, 질문을 통해 글을 다듬어 줍니다.',
+    action: 'click_anywhere',
     allowAnywhereClick: true,
     onNext: (nav) => nav('/interview'),
   },
   {
     id: 'step-interview-course',
     target: '.tour-target-interview-courses',
-    message: '**면접 코스** 시간을 선택해요.',
+    message: '**실전 모의 면접** 단계입니다. 지원자의 학적 전공, 꿈의 기업, 성장 다이어리에 기록된 실습 소재를 완벽 파악해 **나만을 위한 개인 맞춤형 면접 질문**이 구성됩니다.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-interview-start',
     target: '.tour-target-interview-start-btn',
-    message: '**면접 시작하기**를 눌러 면접실로 들어가요.',
+    message: '**면접 시작하기**를 누르면 가상 면접실로 안내됩니다.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: () => {
@@ -272,21 +279,21 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'step-interview-camera-hud',
     target: '.tour-target-interview-camera-hud',
-    message: '**카메라·AI**가 시선, 성량, 자세를 분석해요.',
+    message: '**카메라 및 AI 거동 엔진**이 작동합니다. 면접 진행 과정에서 지원자의 **시선 처리(아이컨택), 자세 대칭(어깨 수평), 음성 성량(데시벨)**을 실시간 수치화하여 모니터링해 줍니다.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-interview-qa',
     target: '.tour-target-interview-qa',
-    message: '**마이크나 텍스트**로 질문에 답변해요.',
+    message: '**마이크(음성 인식)**나 텍스트 입력창을 사용해 가상 면접관의 질문에 편안하게 대화하듯 답변합니다.',
     action: 'click_target',
     allowAnywhereClick: true,
   },
   {
     id: 'step-interview-submit',
     target: '.tour-target-interview-submit',
-    message: '**답변 제출** 시 AI 총평과 피드백을 받아요.',
+    message: '**답변 제출** 시 면접관이 실시간 점수, 잘한 점, 어조 교정 팁, 모범 모범 가이드 답안, 그리고 깊이 있는 **압박 꼬리 질문(Tail Q)**까지 제공합니다.',
     action: 'click_target',
     allowAnywhereClick: true,
     onNext: (nav) => {
