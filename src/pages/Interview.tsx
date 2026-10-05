@@ -157,6 +157,10 @@ export default function Interview() {
   const [candidateDuration, setCandidateDuration] = useState<number>(5); // 카드 선택 상태 (기본 5분 추천)
   const [activeQuestions, setActiveQuestions] = useState<InterviewQuestion[]>([]);
 
+  // 실시간 면접 준비 확인 모달 및 3,2,1 카운트다운 상태
+  const [isPrepModalOpen, setIsPrepModalOpen] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+
   // 실시간 면접 제한 시간 타이머 (초 단위)
   const [remainingTime, setRemainingTime] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
@@ -306,7 +310,7 @@ export default function Interview() {
     setCandidateDuration(minutes);
   };
 
-  // 정식 면접 시작 버튼 핸들러 (사용자가 시작 버튼을 누를 때 시작)
+  // 1단계: 면접 코스 진입 (준비 확인 팝업 표시)
   const handleStartInterview = (minutes?: number) => {
     const targetMin = minutes || candidateDuration || 5;
     setSelectedDuration(targetMin);
@@ -317,16 +321,41 @@ export default function Interview() {
     const chosen = ALL_QUESTIONS.slice(0, count);
     setActiveQuestions(chosen);
     setRemainingTime(targetMin * 60);
-    setIsTimerRunning(true);
+    setIsTimerRunning(false); // 타이머는 카운트다운 후 시작
     setCurrentStep(1);
     setCurrentAnswer('');
 
-    // 시작 시 카메라 자동 연결 시도
+    // 카메라 미리 연결
     startCamera();
 
-    // 베테랑 면접관 오프닝 멘트
-    setTimeout(() => {
-      speakLikeInterviewer(`반갑습니다. 오늘 면접을 맡은 기술면접관입니다. 편안한 마음으로 임해주시되, 실제 현장이라 생각하고 또박또박 답변해 주시기 바랍니다. 첫 번째 질문 드립니다. ${chosen[0].question}`);
+    // 시작 확인 모달 열기
+    setIsPrepModalOpen(true);
+    setCountdown(null);
+  };
+
+  // 2단계: 사용자가 "네, 시작할게요" 클릭 시 3, 2, 1 카운트다운 실행
+  const handleConfirmCountdown = () => {
+    setIsPrepModalOpen(false);
+    setCountdown(3);
+
+    const countTimer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev === null || prev <= 1) {
+          clearInterval(countTimer);
+          setCountdown(null);
+          
+          // 카운트다운 완료 후 면접 본격 시작
+          setIsTimerRunning(true);
+          const chosen = activeQuestions.length > 0 ? activeQuestions : ALL_QUESTIONS.slice(0, 5);
+          
+          setTimeout(() => {
+            speakLikeInterviewer(`반갑습니다. 오늘 면접을 맡은 기술면접관입니다. 편안한 마음으로 임해주시되, 실제 현장이라 생각하고 또박또박 답변해 주시기 바랍니다. 첫 번째 질문 드립니다. ${chosen[0].question}`);
+          }, 400);
+
+          return null;
+        }
+        return prev - 1;
+      });
     }, 1000);
   };
 
@@ -2121,6 +2150,106 @@ export default function Interview() {
             )}
           </div>
         </div>
+
+        {/* ======================================================== */}
+        {/* MODAL 1: 실전 모의면접 시작 전 뿌연 화면 & 준비 확인 다이얼로그 */}
+        {/* ======================================================== */}
+        {isPrepModalOpen && (
+          <div className="fixed inset-0 z-50 backdrop-blur-xl bg-slate-950/75 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+            <div className={`w-full max-w-md p-6 sm:p-8 rounded-3xl border shadow-2xl relative overflow-hidden text-center transition-all ${
+              isLightMode ? 'bg-white/95 border-indigo-100 text-slate-900' : 'bg-slate-900/95 border-indigo-500/30 text-white'
+            }`}>
+              {/* Background Glow */}
+              <div className="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30 animate-bounce [animation-duration:2.5s]">
+                <Sparkles size={30} />
+              </div>
+
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-2">
+                {selectedDuration}분 {t('실전 모의면접을')}
+                <br />
+                {t('시작하시겠습니까?')}
+              </h2>
+
+              <p className={`text-xs sm:text-sm mb-6 leading-relaxed ${isLightMode ? 'text-slate-600' : 'text-slate-300'}`}>
+                {t('선택하신')} <strong className="text-indigo-500 font-bold">{selectedDuration}분 코스 (총 {activeQuestions.length}문항)</strong>{t('로 실전 AI 기술면접이 진행됩니다.')}
+                <br />
+                {t('준비가 되셨다면 아래')} <strong>[네, 시작할게요]</strong> {t('버튼을 눌러주세요.')}
+              </p>
+
+              {/* Checklist Badges */}
+              <div className={`p-3.5 rounded-2xl mb-6 text-xs flex flex-col gap-2 text-left border ${
+                isLightMode ? 'bg-slate-50 border-slate-200 text-slate-700' : 'bg-slate-800/60 border-slate-700/60 text-slate-300'
+              }`}>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span>{t('카메라 및 마이크 연결 확인 완료')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span>{t('면접관 음성 및 실시간 행동/시선 분석 활성화')}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-indigo-400 font-bold">⏱</span>
+                  <span>{t('시작 버튼을 누르면 3초 카운트다운 후 시작됩니다.')}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleConfirmCountdown}
+                  className="w-full py-3.5 px-6 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/25 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Play size={16} fill="currentColor" />
+                  <span>{t('네, 시작할게요!')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPrepModalOpen(false);
+                    setSelectedDuration(null);
+                  }}
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    isLightMode ? 'text-slate-500 hover:bg-slate-100' : 'text-slate-400 hover:bg-slate-800'
+                  }`}
+                >
+                  {t('코스 시간 다시 고르기')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* MODAL 2: 3, 2, 1 카운트다운 오버레이 애니메이션 */}
+        {/* ======================================================== */}
+        {countdown !== null && (
+          <div className="fixed inset-0 z-50 backdrop-blur-2xl bg-slate-950/80 flex flex-col items-center justify-center p-4 select-none animate-in fade-in duration-150">
+            <div className="text-center flex flex-col items-center justify-center">
+              <span className="text-xs sm:text-sm font-bold tracking-widest text-indigo-400 uppercase mb-4 animate-pulse">
+                {t('면접관이 입장하고 있습니다...')}
+              </span>
+              
+              <div 
+                key={countdown}
+                className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-indigo-500/40 bg-gradient-to-tr from-indigo-600/30 to-purple-600/30 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-indigo-500/50 transform animate-in zoom-in-75 duration-300"
+              >
+                <span className="text-7xl sm:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-indigo-200 to-purple-400 drop-shadow-lg">
+                  {countdown}
+                </span>
+              </div>
+
+              <p className="text-xs sm:text-sm text-slate-300 mt-6 font-medium">
+                {t('바른 자세와 카메라 정면 아이컨택을 유지해 주세요.')}
+              </p>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
