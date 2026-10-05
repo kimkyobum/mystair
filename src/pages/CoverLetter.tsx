@@ -677,11 +677,11 @@ export default function CoverLetter() {
     showToast(t('기본 5개 문항으로 안전하게 복원되었습니다!'), 'success');
   };
 
-  // [오타 수정] 버튼: AI 및 국립국어원 표준 엔진으로 모든 오타와 띄어쓰기를 정확하게 자동 교정
+  // [AI 오타·맞춤법 수정] 버튼: AI 및 국립국어원 표준 엔진으로 모든 오타와 띄어쓰기를 정확하게 자동 교정
   const handleAutoFixSpelling = async (sectionId: string) => {
     const originalText = answers[sectionId] || '';
     if (!originalText.trim()) {
-      showToast(t('오타 수정을 진행할 텍스트를 먼저 입력해주세요!'), 'warn');
+      showToast(t('오타 수정을 진행할 자기소개서 내용을 먼저 입력해주세요!'), 'warn');
       return;
     }
 
@@ -699,13 +699,15 @@ export default function CoverLetter() {
         const countText = result.count > 0 ? ` (${result.count}건 교정)` : '';
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t(`✨ 오타와 띄어쓰기가 깔끔하게 교정되었습니다!${countText}`)
+          [sectionId]: t(`✨ AI가 오타와 띄어쓰기${countText}을 완벽하게 교정했습니다!`)
         }));
+        showToast(t('AI 맞춤법 및 오타 교정이 완료되었습니다!'), 'success');
       } else {
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t('💡 교정할 오타나 맞춤법 오류가 발견되지 않았습니다. 올바른 문장입니다.')
+          [sectionId]: t('💡 AI 분석 결과, 맞춤법과 띄어쓰기가 모두 올바른 문장입니다.')
         }));
+        showToast(t('오타나 맞춤법 오류가 발견되지 않았습니다. 올바른 문장입니다.'), 'info');
       }
     } catch (err) {
       console.warn('Spell correction error, applying local engine fallback:', err);
@@ -715,18 +717,19 @@ export default function CoverLetter() {
         handleChange(sectionId, localResult.correctedText);
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t('✨ 오타와 띄어쓰기가 깔끔하게 교정되었습니다!')
+          [sectionId]: t('✨ AI가 오타와 띄어쓰기를 깔끔하게 교정했습니다!')
         }));
+        showToast(t('오타 교정이 완료되었습니다!'), 'success');
       } else {
         setFixNotification(prev => ({
           ...prev,
-          [sectionId]: t('💡 교정할 오타나 맞춤법 오류가 발견되지 않았습니다. 올바른 문장입니다.')
+          [sectionId]: t('💡 AI 분석 결과, 맞춤법과 띄어쓰기가 모두 올바른 문장입니다.')
         }));
       }
     } finally {
       setTimeout(() => {
         setFixNotification(prev => ({ ...prev, [sectionId]: '' }));
-      }, 5000);
+      }, 6000);
       setFixingSectionId(null);
     }
   };
@@ -1637,30 +1640,31 @@ ${formattedAnswer}
                           <span>{t('AI 조언 & 음성')}</span>
                         </button>
 
+                        {/* AI 맞춤법 & 오타 자동 교정 버튼 */}
                         <button
                           type="button"
-                          disabled={isFixing || !currentVal.trim()}
+                          disabled={isFixing}
                           onClick={() => handleAutoFixSpelling(sec.id)}
                           className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer shadow-2xs ${
                             isFixing
-                              ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait"
+                              ? "bg-amber-100 text-amber-800 border-amber-300 cursor-wait animate-pulse"
                               : !currentVal.trim()
-                                ? "opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                                ? "opacity-60 cursor-pointer bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700"
                                 : isLightMode
                                   ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-600 active:scale-95 shadow-xs"
                                   : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black border-emerald-500 active:scale-95 shadow-xs"
                           }`}
-                          title={t('이 문항의 모든 오타와 맞춤법을 즉시 자동 교정합니다')}
+                          title={!currentVal.trim() ? t('내용을 작성하신 후 클릭하면 AI가 오타와 띄어쓰기를 자동으로 교정합니다') : t('AI가 문맥을 분석하여 오타, 띄어쓰기, 맞춤법을 완벽하게 교정합니다')}
                         >
                           {isFixing ? (
                             <>
                               <RefreshCw size={13} className="animate-spin text-amber-600" />
-                              <span>{t('수정 중...')}</span>
+                              <span>{t('AI 교정 중...')}</span>
                             </>
                           ) : (
                             <>
-                              <Wand2 size={13} />
-                              <span>{t('오타 수정')}</span>
+                              <Wand2 size={13} className={currentVal.trim() ? "text-amber-200" : ""} />
+                              <span>{t('AI 오타·맞춤법 수정')}</span>
                             </>
                           )}
                         </button>

@@ -347,39 +347,221 @@ function fixUniversalParticles(text: string): string {
   return s;
 }
 
+// 어미 및 구어체 오탈자 정밀 교정 (국립국어원 표준)
+function fixUniversalColloquialEomi(text: string): string {
+  let s = text;
+
+  // 1. 몇일 -> 며칠 (국립국어원 표준어 규정 제27항)
+  s = s.replace(/몇일\s*동안/g, '며칠 동안');
+  s = s.replace(/몇일\s*간/g, '며칠간');
+  s = s.replace(/몇일\s*째/g, '며칠째');
+  s = s.replace(/몇일/g, '며칠');
+  s = s.replace(/몃일/g, '며칠');
+
+  // 2. ~ㄹ려고 / ~ㄹ려구 -> ~려고 (구어체 오탈자)
+  s = s.replace(/([가-힣]+)할려고/g, '$1하려고');
+  s = s.replace(/할려고/g, '하려고');
+  s = s.replace(/딸려고/g, '따려고');
+  s = s.replace(/볼려고/g, '보려고');
+  s = s.replace(/갈려고/g, '가려고');
+  s = s.replace(/칠려고/g, '치려고');
+  s = s.replace(/배울려고/g, '배우려고');
+  s = s.replace(/익힐려고/g, '익히려고');
+  s = s.replace(/고칠려고/g, '고치려고');
+  s = s.replace(/줄일려고/g, '줄이려고');
+  s = s.replace(/해결할려고/g, '해결하려고');
+  s = s.replace(/취업할려고/g, '취업하려고');
+  s = s.replace(/노력할려고/g, '노력하려고');
+  s = s.replace(/공부할려고/g, '공부하려고');
+  s = s.replace(/합격할려고/g, '합격하려고');
+  s = s.replace(/이룰려고/g, '이루려고');
+  s = s.replace(/배려할려고/g, '배려하려고');
+  s = s.replace(/준비할려고/g, '준비하려고');
+  s = s.replace(/지원할려고/g, '지원하려고');
+
+  // 3. ~ㅁ니다 -> ~ㅂ니다 (구어체 발음 오기)
+  s = s.replace(/잘어울림니다/g, '잘 어울립니다');
+  s = s.replace(/어울림니다/g, '어울립니다');
+  s = s.replace(/배움니다/g, '배웁니다');
+  s = s.replace(/노력함니다/g, '노력합니다');
+  s = s.replace(/생각함니다/g, '생각합니다');
+  s = s.replace(/준비함니다/g, '준비합니다');
+  s = s.replace(/공부함니다/g, '공부합니다');
+  s = s.replace(/성장함니다/g, '성장합니다');
+  s = s.replace(/지원함니다/g, '지원합니다');
+  s = s.replace(/실습함니다/g, '실습합니다');
+  s = s.replace(/함니다(?=[ ,.\?!]|$)/g, '합니다');
+  s = s.replace(/감니다(?=[ ,.\?!]|$)/g, '갑니다');
+  s = s.replace(/봄니다(?=[ ,.\?!]|$)/g, '봅니다');
+  s = s.replace(/침니다(?=[ ,.\?!]|$)/g, '칩니다');
+
+  // 4. ~ㄹ께요 / ~ㄹ께 -> ~ㄹ게요 / ~ㄹ게 (약속/의지 종결어미)
+  s = s.replace(/할께요/g, '할게요');
+  s = s.replace(/할께(?=[ ,.\?!]|$)/g, '할게');
+  s = s.replace(/갈께요/g, '갈게요');
+  s = s.replace(/갈께(?=[ ,.\?!]|$)/g, '갈게');
+  s = s.replace(/배울께요/g, '배울게요');
+  s = s.replace(/배울께(?=[ ,.\?!]|$)/g, '배울게');
+  s = s.replace(/노력할께요/g, '노력할게요');
+  s = s.replace(/노력할께(?=[ ,.\?!]|$)/g, '노력할게');
+  s = s.replace(/도울께요/g, '도울게요');
+  s = s.replace(/도울께(?=[ ,.\?!]|$)/g, '도울게');
+  s = s.replace(/다할께요/g, '다할게요');
+  s = s.replace(/다할께(?=[ ,.\?!]|$)/g, '다할게');
+  s = s.replace(/보여드릴께요/g, '보여드릴게요');
+  s = s.replace(/보여드릴께(?=[ ,.\?!]|$)/g, '보여드릴게');
+
+  // 5. 되 / 돼 / 됬 / 됫
+  s = s.replace(/됫습니다/g, '됐습니다');
+  s = s.replace(/됬습니다/g, '됐습니다');
+  s = s.replace(/됫고/g, '됐고');
+  s = s.replace(/됬고/g, '됐고');
+  s = s.replace(/됫어/g, '됐어');
+  s = s.replace(/됬어/g, '됐어');
+  s = s.replace(/됫/g, '됐');
+  s = s.replace(/됬/g, '됐');
+  s = s.replace(/잘되서/g, '잘돼서');
+  s = s.replace(/되서/g, '돼서');
+  s = s.replace(/되요(?=[ ,.\?!]|$)/g, '돼요');
+  s = s.replace(/안되요/g, '안 돼요');
+  s = s.replace(/안되서/g, '안 돼서');
+  s = s.replace(/안됫/g, '안 됐');
+  s = s.replace(/안됬/g, '안 됐');
+  s = s.replace(/안되(?=[ ,.\?!]|$)/g, '안 돼');
+  s = s.replace(/않되/g, '안 돼');
+  s = s.replace(/않된다/g, '안 된다');
+  s = s.replace(/않하고/g, '안 하고');
+  s = s.replace(/않해서/g, '안 해서');
+  s = s.replace(/않했다/g, '안 했다');
+  s = s.replace(/않햇다/g, '안 했다');
+
+  // 6. 어의없 -> 어이없
+  s = s.replace(/어의없는/g, '어이없는');
+  s = s.replace(/어의없/g, '어이없');
+  s = s.replace(/어의가\s*없/g, '어이가 없');
+
+  // 7. 한태 -> 한테
+  s = s.replace(/([가-힣]+)한태(?=[ ,.\?!]|$)/g, '$1한테');
+  s = s.replace(/한태(?=[ ,.\?!]|$)/g, '한테');
+
+  // 8. 어떻해 -> 어떡해
+  s = s.replace(/어떻해(?=[ ,.\?!]|$)/g, '어떡해');
+  s = s.replace(/어떻해요/g, '어떡해요');
+
+  // 9. 금새 -> 금세
+  s = s.replace(/금새(?=[ ,.\?!]|$)/g, '금세');
+
+  // 10. 오랫만에 -> 오랜만에
+  s = s.replace(/오랫만에/g, '오랜만에');
+
+  // 11. 바램 -> 바람
+  s = s.replace(/저의\s*바램/g, '저의 바람');
+  s = s.replace(/간절한\s*바램/g, '간절한 바람');
+
+  // 12. 맞춤법 및 오탈자 빈출 어휘
+  s = s.replace(/고장낫을때/g, '고장났을 때');
+  s = s.replace(/고장낫/g, '고장났');
+  s = s.replace(/배웟/g, '배웠');
+  s = s.replace(/밤새웟/g, '밤새웠');
+  s = s.replace(/세웟/g, '세웠');
+  s = s.replace(/채웟/g, '채웠');
+  s = s.replace(/키웟/g, '키웠');
+  s = s.replace(/노력햇/g, '노력했');
+  s = s.replace(/공부햇/g, '공부했');
+  s = s.replace(/실습햇/g, '실습했');
+  s = s.replace(/준비햇/g, '준비했');
+  s = s.replace(/합격햇/g, '합격했');
+  s = s.replace(/생각햇/g, '생각했');
+  s = s.replace(/좋아햇/g, '좋아했');
+  s = s.replace(/속상햇/g, '속상했');
+  s = s.replace(/성공햇/g, '성공했');
+  s = s.replace(/실패햇/g, '실패했');
+  s = s.replace(/경험햇/g, '경험했');
+  s = s.replace(/도전햇/g, '도전했');
+  s = s.replace(/참여햇/g, '참여했');
+  s = s.replace(/해결햇/g, '해결했');
+  s = s.replace(/성장햇/g, '성장했');
+  s = s.replace(/발전햇/g, '발전했');
+  s = s.replace(/햇습니다/g, '했습니다');
+  s = s.replace(/햇고/g, '했고');
+  s = s.replace(/햇다(?=[ ,.\?!]|$)/g, '했다');
+  s = s.replace(/기뻣/g, '기뻤');
+  s = s.replace(/보람찻/g, '보람찼');
+  s = s.replace(/있엇/g, '있었');
+  s = s.replace(/잇엇/g, '있었');
+  s = s.replace(/없엇/g, '없었');
+
+  return s;
+}
+
 // 의존명사 띄어쓰기 규정 교정 (의존명사는 띄어 씀)
 function fixUniversalDependentNouns(text: string): string {
   let s = text;
 
-  // 것 / 거 (하는 것, 좋은 것, 있는 것 등)
-  s = s.replace(/([가-힣]+[은는을ㄹㄴ])것(?=[이가을를은는도만,\.\s]|$)/g, '$1 것');
-  s = s.replace(/([가-힣]+[은는을ㄹㄴ])거(?=[이가을를은는도만,\.\s]|$)/g, '$1 거');
+  // 1. 걸 / 것 / 거 (많은 걸, 배운 것, 좋은 거)
+  s = s.replace(/([가-힣]+[은는을ㄹㄴ])걸(?=[ ,.\?!]|$)/g, '$1 걸');
+  s = s.replace(/([가-힣]+[은는을ㄹㄴ])것을/g, '$1 것을');
+  s = s.replace(/([가-힣]+[은는을ㄹㄴ])것(?=[이가을를은는도만,\.\s\?!]|$)/g, '$1 것');
+  s = s.replace(/([가-힣]+[은는을ㄹㄴ])거(?=[이가을를은는도만,\.\s\?!]|$)/g, '$1 거');
 
-  // 수 있다 / 수 없다
+  // 2. 수 있다 / 수 없다
   s = s.replace(/([가-힣]+[ㄹ을])수\s*있/g, '$1 수 있');
+  s = s.replace(/([가-힣]+[ㄹ을])수\s*잇/g, '$1 수 있');
   s = s.replace(/([가-힣]+[ㄹ을])수\s*없/g, '$1 수 없');
 
-  // 줄 알다 / 줄 모르다
+  // 3. 줄 알다 / 줄 모르다
   s = s.replace(/([가-힣]+[ㄹ을ㄴ은])줄\s*알/g, '$1 줄 알');
   s = s.replace(/([가-힣]+[ㄹ을ㄴ은])줄\s*몰/g, '$1 줄 몰');
 
-  // 때 (그때, 이때 제외)
-  s = s.replace(/([가-힣]{2,})때(?=[ ,.\n]|$)/g, (match, p1) => {
-    if (['그때', '이때', '저때', '여태'].includes(match)) return match;
+  // 4. 때 (어릴 때, 실습할 때, 공부할 때, 고장났을 때)
+  s = s.replace(/([가-힣]+[ㄹ을ㄴ은])때(?=[ ,.\n\?!]|$)/g, (match, p1) => {
+    if (['그때', '이때', '저때', '여태', '마태', '생태'].includes(match)) return match;
     return `${p1} 때`;
   });
+  s = s.replace(/어릴때/g, '어릴 때');
+  s = s.replace(/실습할때/g, '실습할 때');
+  s = s.replace(/공부할때/g, '공부할 때');
+  s = s.replace(/입학할때/g, '입학할 때');
+  s = s.replace(/지원할때/g, '지원할 때');
+  s = s.replace(/고장났을때/g, '고장났을 때');
+  s = s.replace(/고장낫을때/g, '고장났을 때');
 
-  // 때문 (하기 때문에, 이것 때문에)
+  // 5. 때문 (하기 때문에, 이것 때문에)
   s = s.replace(/([가-힣]+)때문/g, (match, p1) => {
     if (p1.endsWith(' ')) return match;
     return `${p1} 때문`;
   });
 
-  // 뿐 (할 뿐)
+  // 6. 뿐 (할 뿐, 뿐만 아니라)
   s = s.replace(/([가-힣]+[ㄹ을])뿐/g, '$1 뿐');
+  s = s.replace(/뿐만아니라/g, '뿐만 아니라');
 
-  // 만큼 (노력한 만큼)
+  // 7. 만큼
   s = s.replace(/([가-힣]+[은는을ㄹㄴ])만큼/g, '$1 만큼');
+
+  // 8. 중 (실습 중, 작업 중, 생각 중)
+  s = s.replace(/([가-힣]+)(실습중|작업중|생각중|수업중|공부중|회의중|개발중|제작중|진행중|운영중)/g, (m, p1, p2) => {
+    return `${p1}${p2.slice(0, 2)} 중`;
+  });
+
+  // 9. 자주 붙여쓰는 관용구 띄어쓰기
+  s = s.replace(/최선을다/g, '최선을 다');
+  s = s.replace(/열심히노력/g, '열심히 노력');
+  s = s.replace(/포기하지않/g, '포기하지 않');
+  s = s.replace(/두려워하지않/g, '두려워하지 않');
+  s = s.replace(/주저하지않/g, '주저하지 않');
+  s = s.replace(/하엿습니다/g, '하였습니다');
+  s = s.replace(/하엿고/g, '하였고');
+  s = s.replace(/하엿/g, '하였');
+  s = s.replace(/실습을통해/g, '실습을 통해');
+  s = s.replace(/경험을통해/g, '경험을 통해');
+  s = s.replace(/수업을통해/g, '수업을 통해');
+  s = s.replace(/프로젝트를통해/g, '프로젝트를 통해');
+  s = s.replace(/좋은결과를/g, '좋은 결과를');
+  s = s.replace(/경험을바탕으로/g, '경험을 바탕으로');
+  s = s.replace(/지식을바탕으로/g, '지식을 바탕으로');
+  s = s.replace(/에있어서/g, '에 있어서');
+  s = s.replace(/는데있어서/g, '는 데 있어서');
 
   // 보조용언
   s = s.replace(/해\s*보다/g, '해 보다');
@@ -438,35 +620,42 @@ export function correctKoreanText(text: string): { correctedText: string; count:
     current = pass0;
   }
 
-  // Pass 1: 보편적 어휘 및 구어체 사전 교정
+  // Pass 1: 구어체 및 고빈도 어미/오탈자(몇일, ㄹ려고, ㅁ니다, 됫/됬, 되서, 한태 등) 정밀 교정
+  const pass1Colloquial = fixUniversalColloquialEomi(current);
+  if (pass1Colloquial !== current) {
+    changes++;
+    current = pass1Colloquial;
+  }
+
+  // Pass 2: 보편적 어휘 및 구어체 사전 교정
   for (const [pattern, replacement] of UNIVERSAL_DICTIONARY) {
     const prev = current;
     current = current.replace(pattern, replacement as any);
     if (prev !== current) changes++;
   }
 
-  // Pass 2: 한글 음운 자모 분해를 통한 무제한 과거/추측 받침 교정
+  // Pass 3: 한글 음운 자모 분해를 통한 무제한 과거/추측 받침 교정
   const pass2 = fixUniversalPastAndFutureBatchim(current);
   if (pass2 !== current) {
     changes++;
     current = pass2;
   }
 
-  // Pass 3: 조사 띄어쓰기 규정
+  // Pass 4: 조사 띄어쓰기 규정
   const pass3 = fixUniversalParticles(current);
   if (pass3 !== current) {
     changes++;
     current = pass3;
   }
 
-  // Pass 4: 의존명사 띄어쓰기 규정
+  // Pass 5: 의존명사 띄어쓰기 규정
   const pass4 = fixUniversalDependentNouns(current);
   if (pass4 !== current) {
     changes++;
     current = pass4;
   }
 
-  // Pass 5: 구두점 및 표준 공백 규정
+  // Pass 6: 구두점 및 표준 공백 규정
   const pass5 = fixUniversalPunctuation(current);
   if (pass5 !== current) {
     changes++;
@@ -475,6 +664,7 @@ export function correctKoreanText(text: string): { correctedText: string; count:
 
   // Second pass to resolve cascading patterns
   current = fixUniversalTypoGlitches(current);
+  current = fixUniversalColloquialEomi(current);
   for (const [pattern, replacement] of UNIVERSAL_DICTIONARY) {
     current = current.replace(pattern, replacement as any);
   }
