@@ -338,7 +338,7 @@ export default function CoverLetterAiCoach({
           </div>
 
           {/* 노션 AI 스타일 메시지 스크롤 영역 */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5 text-[13.5px] custom-scrollbar">
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5 text-[13.5px]">
             {messages.map((msg) => (
               <div key={msg.id} className="space-y-1">
                 {msg.sender === 'user' ? (
