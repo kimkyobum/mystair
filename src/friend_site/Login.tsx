@@ -461,10 +461,12 @@ export default function Login({ onBack, onLoginSuccess }: LoginProps) {
         <iframe 
           src="https://my.spline.design/robotfollowcursorforlandingpage-xEAezW31ESPydMaGMIwVZ55C/" 
           frameBorder="0" 
-          className="w-full h-full border-0 pointer-events-auto scale-110"
+          className="w-full h-full border-0 pointer-events-auto scale-115 translate-x-[32px]"
           style={{ width: '100%', height: '100%' }}
           title="Spline 3D Robot"
         ></iframe>
+        {/* Hide Built with Spline Logo */}
+        <div className="absolute bottom-0 right-0 w-[140px] h-[48px] bg-black z-50 pointer-events-none"></div>
       </div>
 
       {/* Right side: Login Form (2/3 width) */}
