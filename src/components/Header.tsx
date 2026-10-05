@@ -110,7 +110,6 @@ export default function Header() {
     { name: '자기소개서 작성', path: '/cover-letter', icon: <FileText size={18} /> },
     { name: '자격증 가이드', path: '/certificates', icon: <Award size={18} /> },
     { name: '나만의 기업찾기', path: '/company-search', icon: <Briefcase size={18} /> },
-    { name: '만든 사람들', path: '/creators', icon: <Users size={18} /> },
     { name: '마이페이지', path: '/mypage', icon: <User size={18} /> }
   ];
 

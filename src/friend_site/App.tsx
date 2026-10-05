@@ -85,9 +85,6 @@ export default function App({
           <a href="/map.html" target="_blank" rel="noopener noreferrer" className={`transition-colors whitespace-nowrap ${
             isLightMode ? 'hover:text-slate-950' : 'hover:text-white'
           }`}>{t('nav.map')}</a>
-          <a href="/creators.html" target="_blank" rel="noopener noreferrer" className={`transition-colors whitespace-nowrap ${
-            isLightMode ? 'hover:text-slate-950' : 'hover:text-white'
-          }`}>{t('nav.creators')}</a>
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 min-w-0">

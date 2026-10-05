@@ -10,7 +10,6 @@ import Holland from './pages/Holland';
 import MyPage from './pages/MyPage';
 import Diary from './pages/Diary';
 import CompanySearch from './pages/CompanySearch';
-import Creators from './pages/Creators';
 import CoverLetter from './pages/CoverLetter';
 import Interview from './pages/Interview';
 import { useTheme } from './context/ThemeContext';
@@ -37,7 +36,6 @@ export default function AppWrapper() {
             <Route path="/holland" element={<Holland />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/profile" element={<MyPage />} />
-            <Route path="/creators" element={<Creators />} />
           </Routes>
         </div>
         <OnboardingTour />

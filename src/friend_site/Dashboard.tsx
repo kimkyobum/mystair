@@ -734,15 +734,6 @@ export default function Dashboard({ onNavigateToLogin }: { onNavigateToLogin?: (
               >
                 {t('저작권 및 라이선스', 'Copyright & Licenses')}
               </button>
-              <span className="opacity-30">•</span>
-              <a 
-                href="/creators.html" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={`${isLightMode ? 'text-teal-600 hover:text-teal-800' : 'text-teal-400 hover:text-teal-300'} font-semibold underline transition-colors`}
-              >
-                {t('개발진 소개', 'Team')}
-              </a>
             </div>
           </div>
         </FadeIn>
