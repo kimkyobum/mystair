@@ -566,44 +566,6 @@ export default function CoverLetterAiCoach({
             </div>
 
             <div className="flex items-center gap-1.5 text-slate-400">
-              {/* 음성 안내 자동 재생 토글 */}
-              <button
-                type="button"
-                onClick={toggleVoiceEnabled}
-                className={`px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-colors cursor-pointer ${
-                  isVoiceEnabled
-                    ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 shadow-xs"
-                    : isLightMode ? "hover:text-slate-700 hover:bg-slate-100" : "hover:text-white hover:bg-slate-800"
-                }`}
-                title={isVoiceEnabled ? t('AI 음성 자동 안내 켜짐 (클릭하여 끄기)') : t('AI 음성 자동 안내 꺼짐 (클릭하여 켜기)')}
-              >
-                {isVoiceEnabled ? (
-                  <>
-                    <Volume2 size={13} className="text-indigo-600 dark:text-indigo-400 animate-pulse" />
-                    <span>{t('음성 ON')}</span>
-                  </>
-                ) : (
-                  <>
-                    <VolumeX size={13} />
-                    <span className="hidden sm:inline">{t('음성 OFF')}</span>
-                  </>
-                )}
-              </button>
-
-              {/* 목소리 선택기 (여성 박선희 / 남성 한도윤) */}
-              <select
-                value={selectedVoice}
-                onChange={(e) => setSelectedVoice(e.target.value as any)}
-                className={`text-[10px] font-medium py-1 px-1 rounded border outline-none bg-transparent cursor-pointer ${
-                  isLightMode ? "border-slate-200 text-slate-600" : "border-slate-700 text-slate-300"
-                }`}
-                title={t('AI 코치 목소리 변경')}
-              >
-                <option value="sunhi" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">여성 멘토 (선희)</option>
-                <option value="injoon" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">남성 멘토 (도윤)</option>
-                <option value="seohyeon" className="text-slate-900 bg-white dark:bg-slate-900 dark:text-white">청년 멘토 (서현)</option>
-              </select>
-
               <button
                 type="button"
                 onClick={handleResetChat}

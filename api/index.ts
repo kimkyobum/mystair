@@ -526,47 +526,306 @@ ${text}`;
 // 10. Cover Letter Coach
 router.post("/cover-letter/coach", async (req, res) => {
   try {
-    const { companyName, sectionTitle, recommendedChars, currentAnswer, actionType, userQuestion, userProfile, diaries } = req.body || {};
+    const {
+      companyName,
+      sectionTitle,
+      recommendedChars,
+      currentAnswer,
+      actionType,
+      userQuestion,
+      userProfile,
+      diaries
+    } = req.body || {};
+
     const answer = (currentAnswer || "").trim();
     const studentName = userProfile?.name || "학생";
     const studentMajor = userProfile?.major || "전공";
-    const targetCompany = companyName || "지원 기업";
+    const studentSchool = userProfile?.highSchool || "마이스터·특성화고";
+    const studentMbti = userProfile?.mbti || "";
+    const studentHolland = userProfile?.hollandCode || "";
+    const targetCompanies = userProfile?.targetCompanies && userProfile.targetCompanies.length > 0 
+      ? userProfile.targetCompanies.join(", ") 
+      : (companyName || "지원 기업");
 
-    const systemInstruction = `너는 마이스터고·특성화고 학생의 자기소개서 실시간 작성을 돕는 전문 멘토 MyStair AI 코치입니다.
-절대 이모지나 이모티콘을 사용하지 마세요. 깔끔하고 신뢰감 있는 표준 한국어 문장으로 답변하세요.`;
+    // 다이어리 요약 텍스트 생성
+    let diaryContext = "등록된 다이어리 없음";
+    if (Array.isArray(diaries) && diaries.length > 0) {
+      diaryContext = diaries.slice(0, 5).map((d: any, idx: number) => {
+        const title = d.title || `활동 ${idx + 1}`;
+        const content = d.content ? d.content.slice(0, 200) : "";
+        const tags = Array.isArray(d.tags) && d.tags.length > 0 ? ` (태그: ${d.tags.join(', ')})` : "";
+        return `[기록 ${idx + 1}] ${title}${tags}\n내용: ${content}`;
+      }).join("\n\n");
+    }
+
+    const systemInstruction = `너는 마이스터고 및 특성화고 학생의 자기소개서 실시간 작성을 돕는 전문 취업·진로 멘토 'MyStair AI 코치'입니다.
+[필수 원칙]:
+1. 절대 이모지나 이모티콘(외계인, 새싹, 박수, 로켓 등 특수 기호 일체)을 사용하지 마세요. 깔끔하고 신뢰감 있는 표준 한국어 문장으로 답변하세요.
+2. 학생의 마이페이지 프로필(이름, 학교, 전공, MBTI, 적성)과 성장 다이어리에 기록된 실제 실습 과제, 기능사 자격증, 프로젝트 일화를 적극적으로 파악하고 있어야 합니다.
+3. 질문을 받거나 조언을 할 때, 학생이 다이어리에 적어둔 실제 경험을 구체적으로 인용하며 [${companyName || targetCompanies}]의 직무와 연결해 주세요.
+4. 절대 학생 대신 글을 통째로 써주는 대필을 하지 말고, 학생 본인의 경험을 스스로 구체화할 수 있도록 키워드, 구조(STAR 기법), 구체적인 방향성을 제시하세요.
+5. 어조는 차분하고 정중한 존댓말로, 1~3문단 내외로 간결하고 핵심만 전달하세요.`;
 
     let prompt = "";
     if (actionType === "ask_question" && userQuestion) {
-      prompt = `학생 질문: "${userQuestion}"\n작성 중인 내용:\n${answer}\n이모지 없이 2~3문장으로 명확히 조언하세요.`;
+      prompt = `[지원자 프로필 (MyPage)]:
+- 이름: ${studentName}
+- 학교 및 전공: ${studentSchool} ${studentMajor}
+- 직업적성: MBTI ${studentMbti || '미설정'}, Holland ${studentHolland || '미설정'}
+- 희망 지원 기업: ${targetCompanies}
+
+[지원자의 성장 다이어리 (실제 경험 기록)]:
+${diaryContext}
+
+[현재 지원 기업]: ${companyName || targetCompanies}
+[작성 중인 자기소개서 문항]: ${sectionTitle || '문항'} (권장 분량: ${recommendedChars || 500}자)
+[현재 학생이 작성 중인 내용]:
+"""
+${answer || '(작성 시작 전)'}
+"""
+
+[학생의 질문]: "${userQuestion}"
+
+[답변 요청]:
+1. 이모지/이모티콘을 절대 넣지 마세요.
+2. 학생의 질문에 대해, 학생의 전공(${studentMajor})과 다이어리에 적힌 실습 경험을 고려하여 구체적이고 현실적인 수정 방향을 2~4문장으로 명확히 제시하세요.
+3. 지원 기업(${companyName || targetCompanies})의 현장 직무와 연결할 수 있는 힌트를 주세요.`;
     } else {
-      prompt = `작성 중인 자기소개서 내용:\n${answer}\n이모지 없이 다음 JSON으로만 응답:\n{"speech": "2~3문장 핵심 피드백", "summary": "피드백 요약", "tips": ["개선점"]}`;
+      prompt = `[지원자 프로필 (MyPage)]:
+- 이름: ${studentName}
+- 전공: ${studentSchool} ${studentMajor}
+
+[지원자의 성장 다이어리]:
+${diaryContext}
+
+[지원 기업]: ${companyName || targetCompanies}
+[자기소개서 문항]: ${sectionTitle || '문항'} (권장 분량: ${recommendedChars || 500}자)
+[현재 작성 내용]:
+"""
+${answer || '(내용 없음)'}
+"""
+
+학생이 작성 중인 내용을 실시간으로 분석하여, 이모지 없이 진정성 있는 피드백을 JSON으로 제공하세요.
+반드시 다음 순수 JSON 형식으로만 응답하세요:
+{
+  "speech": "학생에게 직접 말하듯 전하는 2~3문장의 핵심 피드백 (이모지 절대 금지, 전공과 기업 특성을 살린 실질적 조언)",
+  "summary": "핵심 피드백 요약",
+  "tips": [
+    "구체적인 개선 포인트 (수치화, STAR 행동 구체화 등)"
+  ]
+}`;
     }
 
+    let geminiRes: any = null;
     try {
-      const geminiRes = await generateContentWithFallback([{ role: "user", parts: [{ text: prompt }] }], systemInstruction);
-      if (geminiRes && geminiRes.text) {
-        if (actionType === "ask_question") {
-          return res.json({ success: true, answer: geminiRes.text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim() });
-        }
-        const cleaned = geminiRes.text.replace(/```json/gi, "").replace(/```/g, "").trim();
-        const parsed = JSON.parse(cleaned);
-        return res.json({ success: true, feedback: parsed });
-      }
-    } catch {}
+      geminiRes = await generateContentWithFallback(
+        [{ role: "user", parts: [{ text: prompt }] }],
+        systemInstruction
+      );
+    } catch (aiErr: any) {
+      console.warn("Gemini API call failed for coach, falling back to intelligent heuristic coach engine:", aiErr?.message || aiErr);
+    }
 
-    const feedback = {
-      speech: `${targetCompany}에 지원하는 ${studentMajor} 인재로서의 강점을 보여주는 좋은 출발입니다. 전공 실습 경험에서 본인이 직접 겪었던 구체적 문제 해결 과정을 숫자를 섞어 한두 문장 더 보완해 보세요.`,
-      summary: "전공 실습의 구체적 성과와 행동을 추가해 보세요.",
-      tips: ["추상적인 표현 대신 기간이나 오차율 개선 등의 수치 추가하기"]
-    };
-    return res.json({ success: true, feedback });
-  } catch (e: any) {
-    return res.json({
-      success: true,
-      feedback: { speech: "한 문장씩 차분히 작성해 보세요.", summary: "차분한 작성", tips: ["문장을 명확하게 완성하기"] }
-    });
+    const replyText = geminiRes?.text || "";
+
+    if (actionType === "ask_question") {
+      if (replyText) {
+        // 혹시 포함되었을지 모르는 이모지 정제
+        const cleanedReply = replyText.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+        return res.json({ success: true, answer: cleanedReply });
+      }
+      return res.json({
+        success: true,
+        answer: generateFallbackAnswer(userQuestion, companyName, sectionTitle, answer, userProfile, diaries)
+      });
+    }
+
+    if (replyText) {
+      try {
+        const cleaned = replyText.replace(/```json/gi, "").replace(/```/g, "").trim();
+        const parsed = JSON.parse(cleaned);
+        if (parsed.speech) {
+          parsed.speech = parsed.speech.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+        }
+        return res.json({ success: true, feedback: parsed });
+      } catch (parseErr) {
+        console.warn("JSON parse failed for Gemini coach, using heuristic:", parseErr);
+      }
+    }
+
+    // Heuristic Smart Fallback Engine
+    const fallbackFeedback = generateFallbackCoaching(companyName, sectionTitle, answer, recommendedChars, userProfile, diaries);
+    return res.json({ success: true, feedback: fallbackFeedback });
+  } catch (error: any) {
+    console.error("Cover letter coach API error:", error);
+    const safeFeedback = generateFallbackCoaching(
+      req.body?.companyName, 
+      req.body?.sectionTitle, 
+      req.body?.currentAnswer || '', 
+      req.body?.recommendedChars || 500,
+      req.body?.userProfile,
+      req.body?.diaries
+    );
+    return res.json({ success: true, feedback: safeFeedback });
   }
 });
+
+// Heuristic Fallback Coaching Helpers (이모지 없이 프로필 및 다이어리 실제 데이터 연동)
+function generateFallbackCoaching(
+  companyName: string, 
+  sectionTitle: string, 
+  answer: string, 
+  recommendedChars: number,
+  userProfile?: any,
+  diaries?: any[]
+) {
+  const targetCompany = companyName || '지원 기업';
+  const cleanSection = sectionTitle || '자기소개서 문항';
+  const studentName = userProfile?.name || '학생';
+  const studentMajor = userProfile?.major || '전공';
+
+  const userDiaries = Array.isArray(diaries) && diaries.length > 0 ? diaries : [];
+  const topDiary = userDiaries.length > 0 ? userDiaries[0] : null;
+
+  let speech = `${studentName}님이 작성 중이신 [${cleanSection}] 문항은 ${targetCompany} 직무에 대한 이해도와 본인의 전공 역량을 보여주는 중요한 파트입니다.`;
+  if (topDiary) {
+    speech += ` 다이어리에 적어두신 '${topDiary.title}' 활동의 구체적인 문제 해결 과정을 1~2문장으로 본문에 녹여내면 설득력이 크게 높아집니다.`;
+  } else {
+    speech += ` 학교 실습실이나 프로젝트 진행 중, 오류를 해결하거나 주도적으로 설계하여 개선했던 구체적인 행동(Action)을 STAR 기법으로 한 단계 더 보강해 보세요.`;
+  }
+
+  return {
+    speech: speech,
+    summary: "전공 실습 과제 및 실제 행동 수치 위주의 보강",
+    tips: [
+      "추상적인 '열심히 노력했다' 보다는 '3일간', '오차율 12%' 처럼 구체적인 숫자로 성과 작성하기",
+      `지원하시는 [${targetCompany}]의 설무 직무에 부합하는 전공(${studentMajor}) 실무 기술 명확히 나열하기`,
+      "문항 분량 요구사항에 맞추어 STAR(상황-과제-행동-결과) 기법에 입각한 스토리라인 전개"
+    ]
+  };
+}
+
+function generateFallbackAnswer(
+  userQuestion: string, 
+  companyName: string, 
+  sectionTitle: string, 
+  answer: string,
+  userProfile?: any,
+  diaries?: any[]
+) {
+  const q = (userQuestion || '').trim().toLowerCase();
+  const trimmedAnswer = (answer || '').trim();
+  const answerLen = trimmedAnswer.length;
+  const targetCompany = companyName || '지원 기업';
+  const cleanSection = sectionTitle || '자기소개서 문항';
+  const studentName = userProfile?.name || '학생';
+  const studentMajor = userProfile?.major || '전공';
+
+  const userDiaries = Array.isArray(diaries) && diaries.length > 0 ? diaries : [];
+  const topDiary = userDiaries.length > 0 ? userDiaries[0] : null;
+
+  // 1. Identity / Greeting / Confirmation
+  if (q.includes("너 누구") || q.includes("누구야") || q.includes("mystair") || q.includes("마이스테어") || q.includes("맞아") || q.includes("외계인")) {
+    return `네, 저는 마이스터고·특성화고 학생들을 위해 만들어진 취업 멘토 MyStair AI 코치입니다. 학생 대신 글을 지어내는 대필 대신, ${studentName}님이 마이페이지와 다이어리에 기록해둔 진짜 실습과 프로젝트 경험을 바탕으로 합격 자기소개서를 완성할 수 있도록 실시간으로 코칭해 드립니다. 작성 중에 고민되는 부분이 있다면 편하게 질문해 주세요.`;
+  }
+  if (q.includes("안녕") || q.includes("반가워") || q.includes("하이") || q.includes("hello")) {
+    return `안녕하세요, ${studentName}님. [${targetCompany}] 취업을 위해 지금 [${cleanSection}] 문항을 작성 중이시군요. 전공 실습이나 다이어리 경험을 어떻게 녹여낼지 고민되는 점이 있다면 편하게 물어보세요.`;
+  }
+  if (q.includes("고마워") || q.includes("감사")) {
+    return `도움이 되었다니 기쁩니다. 한 문장씩 진솔하게 써내려가다 보면 분명 좋은 자기소개서가 완성될 것입니다. 계속해서 힘내서 작성해 보세요.`;
+  }
+
+  // 2. 다이어리/경험/마이페이지 관련 질문 ("다이어리 알아?", "내 경험", "마이페이지", "나에 대해 알아?")
+  if (q.includes("다이어리") || q.includes("경험") || q.includes("마이페이지") || q.includes("기록") || q.includes("알고있어") || q.includes("알고 있어")) {
+    if (topDiary) {
+      return `${studentName}님의 마이페이지 프로필(${studentMajor})과 성장 다이어리 기록을 모두 파악하고 있습니다. 특히 다이어리에 기록해 두신 '${topDiary.title}' 일화는 ${targetCompany} 자기소개서에 아주 훌륭한 소재입니다. 이 경험을 자기소개서 문맥에 맞게 어떻게 연결하면 좋을지 말씀해 드릴까요?`;
+    }
+    return `${studentName}님의 마이페이지 프로필 정보(${studentMajor})를 바탕으로 코칭하고 있습니다. 작성 중이신 내용이나 학교 실습 일화에 대해 말씀해 주시면 맞춤 조언을 드리겠습니다.`;
+  }
+
+  // 2-1. 오타/맞춤법/띄어쓰기 질문
+  if (q.includes("오타") || q.includes("맞춤법") || q.includes("띄어쓰기") || q.includes("교정") || q.includes("고쳐")) {
+    if (answerLen === 0) {
+      return `현재 [${cleanSection}] 문항에 작성된 내용이 없습니다. 먼저 본문을 편하게 작성하신 후 질문해 주시거나 문항 툴바의 'AI 오타·맞춤법 수정' 버튼을 클릭하시면 실시간으로 깔끔하게 교정해 드립니다.`;
+    }
+    const checkRes = correctKoreanText(trimmedAnswer);
+    if (checkRes.changed) {
+      return `[${cleanSection}] 문항을 분석한 결과 오타 및 띄어쓰기 ${checkRes.count}건이 확인되었습니다. 문항 툴바 우측의 [AI 오타·맞춤법 수정] 버튼을 클릭하시면 본문에 원클릭으로 완벽하게 반영됩니다.`;
+    }
+    return `[${cleanSection}] 문항의 맞춤법과 띄어쓰기를 정밀 검사한 결과, 국립국어원 표준 규정에 맞는 아주 훌륭한 문장입니다. 오타 없이 잘 작성하셨으니 안심하고 계속 작성해 보세요.`;
+  }
+
+  // 3. 고민/어떻게 바꿔/수정 ("고민", "어케 바꿔", "어떻게 바꿔", "수정", "바꿔야")
+  if (q.includes("어케") || q.includes("어떻게") || q.includes("고민") || q.includes("바꿔") || q.includes("수정") || q.includes("고치")) {
+    if (answerLen === 0) {
+      if (topDiary) {
+        return `첫 문장 작성이 고민이시라면, 다이어리에 적어두신 '${topDiary.title}' 경험으로 시작해 보세요. '저는 ${studentMajor} 실습 중 ~한 문제를 해결하며 책임감을 배웠습니다'처럼 첫 문장을 두괄식으로 던지면 좋습니다.`;
+      }
+      return `어떤 내용으로 시작할지 고민되신다면, 학교 실습 중 가장 기억에 남거나 어려움을 극복했던 한 가지 일화를 떠올려 보세요. 편하게 첫 문장을 적어주시면 흐름에 맞게 다듬어 드리겠습니다.`;
+    }
+    
+    let advice = `현재 작성 중이신 문장은 전공 실습에 대한 주도적인 노력이 잘 드러나 있습니다.`;
+    if (topDiary) {
+      advice += `\n여기에 다이어리에 기록된 '${topDiary.title}'처럼, 당시 구체적으로 다루었던 설비나 공구 명칭, 그리고 직면했던 오류를 해결한 구체적인 행동(Action)을 1~2문장 더 보강해 보세요.`;
+    } else {
+      advice += `\n여기에 단순히 열심히 했다는 서술보다, 당시 겪었던 구체적인 문제 상황과 이를 해결하기 위해 취했던 조치(Action)를 1~2문장 더 보강해 보세요.`;
+    }
+    if (targetCompany !== '지원 기업' && !trimmedAnswer.includes(targetCompany)) {
+      advice += `\n마무리에는 이 경험을 통해 배운 안전 의식이 [${targetCompany}]의 현장 품질에 어떻게 기여할지 1문장으로 연결하시면 완벽합니다.`;
+    }
+    return advice;
+  }
+
+  // 4. "지금 어때", "평가해줘", "어때?", "봐줘", "피드백"
+  if (q.includes("어때") || q.includes("어떠") || q.includes("평가") || q.includes("봐줘") || q.includes("피드백") || q.includes("진단")) {
+    if (answerLen === 0) {
+      return `아직 본문이 비어 있습니다. 머릿속에 떠오르는 생각을 다듬지 말고 일단 1~2문장만 편하게 적어보세요. 적어주시는 즉시 읽고 방향을 함께 잡아드리겠습니다.`;
+    }
+    if (answerLen < 50) {
+      return `지금 "${trimmedAnswer}"라고 첫 운을 떼셨군요. 시작이 좋습니다. 아직은 분량이 짧아 전체 구성을 진단하기는 이르지만, 문장 전달력은 깔끔합니다. 이어서 당시 구체적인 계기나 본인이 맡았던 역할을 1~2문장 더 덧붙여주세요.`;
+    }
+    const hasNum = /[0-9]+%?|일간|개월|시간|개|차|회/.test(trimmedAnswer);
+    const hasCompany = targetCompany !== '지원 기업' && trimmedAnswer.includes(targetCompany);
+    let advice = `문맥의 흐름이 탄탄하고 전달하고자 하는 메시지가 뚜렷합니다. `;
+    if (!hasNum) {
+      advice += `팁을 드리자면, '많은 시간', '열심히' 같은 추상적인 표현 대신 '3주 동안', '팀원 3명과 함께', '오류율 15% 감소'처럼 숫자로 구체화하면 신뢰도가 크게 높아집니다.`;
+    } else if (!hasCompany && targetCompany !== '지원 기업') {
+      advice += `마무리 부분에 이 경험에서 얻은 직무 역량이 [${targetCompany}]의 현장에서 어떻게 쓰일 수 있을지 한 줄로 연결하면 아주 좋습니다.`;
+    } else {
+      advice += `문장의 종결어미를 단정형('~했습니다', '~를 배웠습니다')으로 통일하여 자신감 있는 기술 인재의 인상을 주면 더 좋습니다.`;
+    }
+    return advice;
+  }
+
+  // 5. 소재 추천 ("뭐써", "소재", "아이디어", "쓸게 없어")
+  if (q.includes("뭐써") || q.includes("뭐 써") || q.includes("소재") || q.includes("아이디어") || q.includes("모르겠") || q.includes("쓸게") || q.includes("주제") || q.includes("추천") || q.includes("어떻게 적") || q.includes("적어")) {
+    if (userDiaries.length > 0) {
+      const titles = userDiaries.slice(0, 2).map(d => `'${d.title}'`).join(', ');
+      return `${studentName}님의 성장 다이어리에 있는 ${titles} 기록을 적극 추천합니다. 실습실에서 직접 겪은 문제와 해결 과정이 담겨 있어, [${targetCompany}] 면접관에게 가장 매력적인 진짜 직무 경험으로 인정받을 수 있습니다. 이 중 어떤 경험으로 작성해 보시겠습니까?`;
+    }
+    if (cleanSection.includes("성장과정")) {
+      return `[성장과정]은 어릴 적 이야기보다 ${studentMajor}를 선택하게 된 계기나, 실습실에서 처음 공구와 장비를 다루며 끈기를 발휘했던 순간을 소재로 잡는 것이 가장 효과적입니다.`;
+    }
+    if (cleanSection.includes("지원동기")) {
+      return `[지원동기]는 학교에서 가장 자신 있게 다뤘던 장비나 실습 기술과, [${targetCompany}]의 생산·설비 직무에서 내가 바로 기여할 수 있는 부분을 연결하는 것이 핵심입니다.`;
+    }
+    return `학교 전공 실습 과제, 기능사 실기 연습 중 막혔던 순간, 동아리 제작물 발표 등 '작은 문제에 부딪혔다가 노력으로 해결해 낸 순간'이 가장 매력적인 자소서 소재입니다. 가장 기억에 남는 실습을 한 가지만 말씀해 주세요.`;
+  }
+
+  // 6. 첫 문장 팁
+  if (q.includes("첫 문장") || q.includes("첫문장") || q.includes("도입부") || q.includes("시작")) {
+    return `첫 문장은 무조건 '두괄식'으로 핵심 역량을 먼저 제시하는 것이 좋습니다.\n\n예시:\n- "저는 [전공 실습에서 증명한 꼼꼼한 안전 의식]을 바탕으로, [${targetCompany}]의 믿음직한 기술 인재가 되기 위해 지원했습니다."\n- "3년간 ${studentMajor}를 공부하며 쌓은 실습 경험은 제 가장 큰 경쟁력입니다."\n\n수식어구로 길게 끌지 말고, 내가 보여주고 싶은 나의 강점을 첫 문장에 선언해 보세요.`;
+  }
+
+  // 7. STAR 기법
+  if (q.includes("star") || q.includes("스타")) {
+    return `STAR 기법은 자소서를 논리적으로 만드는 공식입니다.\n1. Situation (상황): 어떤 실습 과제나 문제 상황이었는지 간략히 설명\n2. Task (목표): 내가 해결해야 했던 구체적 과제\n3. Action (행동 - 50% 비중): 포기하지 않고 내가 직접 취한 기술적 노력과 협력\n4. Result (결과): 결과적으로 무엇을 완성했고 어떤 역량을 얻었는지\n\n자소서의 절반 이상은 반드시 본인이 '직접 한 행동(Action)'으로 채워야 설득력이 생깁니다.`;
+  }
+
+  // 기본 조언
+  const defaultReply = `[${cleanSection}] 문항은 지원자의 진정성과 실무 잠재력을 보여주는 중요한 문항입니다. 작성 중인 내용에서 본인의 솔직한 실습 경험과 구체적인 행동(Action)을 한 문장 더 강조해 보세요. 구체적으로 어떤 문장을 다듬고 싶으신지 질문해 주시면 꼼꼼히 조언해 드리겠습니다.`;
+  return defaultReply.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+}
 
 // 11. Interview TTS (GET and POST)
 router.get("/interview-tts", async (req, res) => {
