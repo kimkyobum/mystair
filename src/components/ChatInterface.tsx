@@ -136,7 +136,7 @@ export default function ChatInterface() {
 
   const generateClientGemini = async (text: string, profile: any, diaries: any, historyMessages: Message[] = []) => {
     const storedUserKey = typeof window !== 'undefined' ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('VITE_GEMINI_API_KEY') || '') : '';
-    const keys = [
+    const rawCandidateKeys = [
       customApiKey,
       storedUserKey,
       import.meta.env.VITE_GEMINI_API_KEY,
@@ -148,16 +148,27 @@ export default function ChatInterface() {
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY2 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY3 : ''),
       (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY4 : '')
-    ].filter((key): key is string => {
+    ];
+
+    const expandedKeys: string[] = [];
+    for (const item of rawCandidateKeys) {
+      if (typeof item === 'string' && item.trim()) {
+        const split = item.split(/[\s,;\n]+/).filter(Boolean);
+        expandedKeys.push(...split);
+      }
+    }
+
+    const keys = Array.from(new Set(expandedKeys)).filter((key): key is string => {
       if (!key) return false;
       const trimmed = key.trim();
       const lower = trimmed.toLowerCase();
       return trimmed !== "" && 
+             trimmed.length > 5 &&
              lower !== "my_gemini_api_key" && 
              lower !== "your_api_key" && 
              lower !== "your_gemini_api_key" && 
              lower !== "null" && 
-             lower !== "undefined" &&
+             lower !== "undefined" && 
              lower !== "placeholder";
     });
 
@@ -1388,14 +1399,14 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                 <div className="space-y-4">
                   <div>
                     <label className={`block text-xs font-bold mb-2 ${isLightMode ? "text-slate-700" : "text-white/80"}`}>
-                      {t('Gemini API 키 (AIzaSy...)', 'Gemini API Key (AIzaSy...)')}
+                      {t('Gemini API 키 (1개 또는 여러 개 쉼표/줄바꿈 구분)', 'Gemini API Keys (Comma or newline separated)')}
                     </label>
-                    <input
-                      type="password"
+                    <textarea
+                      rows={3}
                       value={keyInputVal}
                       onChange={(e) => setKeyInputVal(e.target.value)}
-                      placeholder="AIzaSy..."
-                      className={`w-full px-4 py-3 rounded-2xl border text-sm outline-none font-mono transition-all ${
+                      placeholder="AIzaSy..., AIzaSy..."
+                      className={`w-full px-4 py-3 rounded-2xl border text-xs outline-none font-mono transition-all resize-none ${
                         isLightMode
                           ? "bg-slate-50 border-slate-300 focus:border-teal-500 text-slate-900"
                           : "bg-slate-800 border-white/15 focus:border-teal-400 text-white"
@@ -1409,7 +1420,7 @@ CRITICAL: 현재 사용자의 인터페이스 언어 설정은 한국어('ko')�
                       <span>{t('안내 사항', 'Information')}</span>
                     </p>
                     <p className="leading-relaxed">
-                      Google AI Studio (aistudio.google.com)에서 <strong>무료</strong>로 발급받으신 키를 입력하세요. 브라우저 로컬 저장소에만 안전하게 보관됩니다.
+                      구글 계정별로 발급받은 무료 API 키를 <strong>쉼표(,)나 줄바꿈으로 여러 개(예: 4개)</strong> 등록하시면 요청을 자동 분산(Load Balancing)하고 사용량 초과 시 자동 대체(Failover)합니다. 기존 대회 기본 키와도 안전하게 연동됩니다.
                     </p>
                   </div>
 

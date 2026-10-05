@@ -55,17 +55,30 @@ export default async function handler(req: any, res: any) {
       process.env.GEMINI_API_KEY2,
       process.env.GEMINI_API_KEY3,
       process.env.GEMINI_API_KEY4,
+      process.env.GEMINI_API_KEY5,
       process.env.VITE_GEMINI_API_KEY2,
+      process.env.VITE_GEMINI_API_KEY3,
+      process.env.VITE_GEMINI_API_KEY4,
       process.env.GOOGLE_API_KEY,
       process.env.API_KEY,
     ];
 
-    const validKeys = rawKeys.filter((k): k is string => {
+    // Flatten keys if separated by comma, space, or newline
+    const expandedKeys: string[] = [];
+    for (const item of rawKeys) {
+      if (typeof item === "string" && item.trim()) {
+        const split = item.split(/[\s,;\n]+/).filter(Boolean);
+        expandedKeys.push(...split);
+      }
+    }
+
+    const validKeys = Array.from(new Set(expandedKeys)).filter((k): k is string => {
       if (!k || typeof k !== "string") return false;
       const trimmed = k.trim();
       const lower = trimmed.toLowerCase();
       return (
         trimmed !== "" &&
+        trimmed.length > 5 &&
         lower !== "my_gemini_api_key" &&
         lower !== "your_api_key" &&
         lower !== "your_gemini_api_key" &&
