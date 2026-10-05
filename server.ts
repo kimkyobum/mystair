@@ -221,13 +221,18 @@ if (process.env.DATABASE_URL) {
 
 // Robust Gemini content generation with key rotation & fallback
 async function generateContentWithFallback(contents: any[], systemInstruction: string): Promise<any> {
-  const keys = [
-    process.env.GEMINI_API_KEY,
-    process.env.GEMINI_API_KEY2,
-    process.env.GEMINI_API_KEY3,
-    process.env.GEMINI_API_KEY4,
-    process.env.VITE_GEMINI_API_KEY
-  ].filter((key): key is string => {
+    const envKeys = [];
+  if (typeof process !== "undefined" && process.env) {
+    for (const [k, v] of Object.entries(process.env)) {
+      if (!v || typeof v !== "string") continue;
+      const lk = k.toLowerCase();
+      if (lk.includes("gemini") || lk.includes("api_key")) {
+        if (lk.includes("ogq") && !v.startsWith("AIzaSy")) continue;
+        envKeys.push(...v.split(/[\s,;\n]+/).filter(Boolean));
+      }
+    }
+  }
+  const keys = Array.from(new Set(envKeys)).filter((key): key is string => {
     if (!key) return false;
     const trimmed = key.trim();
     const lower = trimmed.toLowerCase();

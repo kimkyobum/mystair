@@ -46,16 +46,42 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ error: "질문 내용이 없습니다." });
     }
 
-    // Collect all possible keys from environment variables and headers
+    // Collect all possible keys dynamically from environment variables (case-insensitive) and headers
     const clientHeaderKey = req.headers["x-gemini-api-key"] || req.headers["authorization"]?.replace(/^Bearer\s+/i, "");
+    
+    const envKeys: string[] = [];
+    if (typeof process !== "undefined" && process.env) {
+      for (const [envName, envVal] of Object.entries(process.env)) {
+        if (!envVal || typeof envVal !== "string") continue;
+        const lowerName = envName.toLowerCase();
+        if (
+          lowerName.includes("gemini") ||
+          lowerName.includes("google_api_key") ||
+          lowerName.includes("api_key")
+        ) {
+          // Exclude unrelated keys like OGQ_API_KEY if needed, but if it starts with AIzaSy it's a Gemini key
+          if (lowerName.includes("ogq") && !envVal.startsWith("AIzaSy")) continue;
+          envKeys.push(envVal);
+        }
+      }
+    }
+
     const rawKeys = [
       clientHeaderKey,
+      ...envKeys,
       process.env.GEMINI_API_KEY,
       process.env.VITE_GEMINI_API_KEY,
+      process.env.Gemini_API_Key,
+      process.env.Gemini_API_Key1,
+      process.env.Gemini_API_Key2,
+      process.env.Gemini_API_Key3,
+      process.env.Gemini_API_Key4,
+      process.env.GEMINI_API_KEY1,
       process.env.GEMINI_API_KEY2,
       process.env.GEMINI_API_KEY3,
       process.env.GEMINI_API_KEY4,
       process.env.GEMINI_API_KEY5,
+      process.env.VITE_GEMINI_API_KEY1,
       process.env.VITE_GEMINI_API_KEY2,
       process.env.VITE_GEMINI_API_KEY3,
       process.env.VITE_GEMINI_API_KEY4,
