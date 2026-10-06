@@ -525,13 +525,13 @@ JSON 구조 규격:
       )}
 
       {/* Header */}
-      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-between px-4 sm:px-10 border-b sticky top-0 z-40 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/80 border-slate-800"}`}>
-        <div className="flex items-center gap-3">
-          <Link to="/" className={`transition ${isLightMode ? "text-slate-500 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}>
-            <ArrowLeft size={20} />
+      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-between px-3 sm:px-10 border-b sticky top-0 z-40 shrink-0 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-slate-900/80 border-slate-800"}`}>
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 min-w-0 mr-2">
+          <Link to="/" className={`transition shrink-0 ${isLightMode ? "text-slate-500 hover:text-slate-900" : "text-slate-400 hover:text-white"}`}>
+            <ArrowLeft size={20} className="shrink-0" />
           </Link>
-          <BookOpen size={24} className="text-emerald-500 shrink-0" />
-          <h1 className={`text-lg sm:text-xl font-black tracking-tight ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('성장 다이어리')}</h1>
+          <BookOpen size={22} className="text-emerald-500 shrink-0" />
+          <h1 className={`text-sm sm:text-xl font-black tracking-tight whitespace-nowrap shrink-0 ${isLightMode ? "text-slate-900" : "text-white"}`}>{t('성장 다이어리')}</h1>
         </div>
 
         {/* Action & View Mode Controls */}
@@ -581,11 +581,12 @@ JSON 구조 규격:
           <button
             type="button"
             onClick={() => handleSummarizeDiaries()}
-            className="px-3.5 py-2 rounded-2xl text-xs font-black flex items-center gap-1.5 cursor-pointer transition-all bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-white shadow-md shadow-amber-500/20 active:scale-95 border border-amber-400/40 tour-target-resume-summary"
+            className="px-2 py-1.5 sm:px-3.5 sm:py-2 rounded-xl sm:rounded-2xl text-xs font-black flex items-center gap-1 cursor-pointer transition-all bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-white shadow-md shadow-amber-500/20 active:scale-95 border border-amber-400/40 shrink-0 tour-target-resume-summary"
             title="다이어리 기록을 STAR 공법으로 분석하여 자소서 소재 자동 추출"
           >
-            <Sparkles size={14} className="text-amber-200 animate-pulse" />
-            <span className="font-extrabold">{t('AI 자소서 요약')}</span>
+            <Sparkles size={14} className="text-amber-200 animate-pulse shrink-0" />
+            <span className="hidden sm:inline font-extrabold">{t('AI 자소서 요약')}</span>
+            <span className="inline sm:hidden font-extrabold text-[10px] whitespace-nowrap">{t('요약')}</span>
           </button>
         </div>
       </header>

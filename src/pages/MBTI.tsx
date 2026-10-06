@@ -140,12 +140,12 @@ export default function MBTI() {
 
   return (
     <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden bg-transparent font-sans flex flex-col relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
-      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-10 shadow-sm sticky top-0 z-50 border-b ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
-        <div className="flex items-center gap-4">
-          <Link to="/" className={`font-black text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity ${isLightMode ? "text-slate-900" : "text-white"}`}>
+      <header className={`backdrop-blur-md h-[72px] w-full flex items-center justify-start px-4 sm:px-10 shadow-sm sticky top-0 z-50 border-b shrink-0 ${isLightMode ? "bg-white/80 border-slate-200" : "bg-[#0F172A]/80 border-white/5"}`}>
+        <div className="flex items-center gap-2.5 sm:gap-4 shrink-0 whitespace-nowrap">
+          <Link to="/" className={`font-black text-xl sm:text-[26px] tracking-[-0.5px] cursor-pointer hover:opacity-80 transition-opacity shrink-0 ${isLightMode ? "text-slate-900" : "text-white"}`}>
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px]">
+          <span className="bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] shrink-0">
             MBTI 32
           </span>
           <span className="text-[#94A3B8] text-[14px] font-medium border-l border-[#334155] pl-4 hidden sm:block">

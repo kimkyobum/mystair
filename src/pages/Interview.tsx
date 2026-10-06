@@ -1643,13 +1643,13 @@ export default function Interview() {
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Top Header */}
-      <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center justify-between px-3 sm:px-8 sticky top-0 z-40 border-b shadow-xs ${isLightMode ? "bg-white/85 border-slate-200/80" : "bg-[#0F172A]/85 border-white/5"}`}>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-400'} font-black text-xl sm:text-[24px] tracking-[-0.5px] cursor-pointer transition-colors`}>
+      <header className={`backdrop-blur-md h-[64px] sm:h-[72px] flex items-center justify-between px-3 sm:px-8 sticky top-0 z-40 border-b shadow-xs shrink-0 ${isLightMode ? "bg-white/85 border-slate-200/80" : "bg-[#0F172A]/85 border-white/5"}`}>
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 whitespace-nowrap min-w-0 mr-2">
+          <Link to="/" className={`${isLightMode ? 'text-slate-900 hover:text-indigo-600' : 'text-white hover:text-indigo-400'} font-black text-lg sm:text-[24px] tracking-[-0.5px] cursor-pointer transition-colors shrink-0`}>
             MyStair
           </Link>
-          <span className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-full tracking-[0.5px] shrink-0 flex items-center gap-1.5 shadow-xs">
-            <Sparkles size={12} />
+          <span className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[9px] sm:text-[11px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full tracking-[0.5px] shrink-0 flex items-center gap-1 sm:gap-1.5 shadow-xs">
+            <Sparkles size={11} className="shrink-0" />
             {selectedDuration}분 {t('실전 모의면접')}
           </span>
         </div>

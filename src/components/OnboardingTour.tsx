@@ -534,12 +534,12 @@ export function OnboardingTour() {
             : 'bg-slate-950/90 text-white border-white/10'
         }`}>
           <div className="space-y-3">
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight whitespace-nowrap ${
+            <h2 className={`text-xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight text-balance ${
               isLightMode ? 'text-slate-900' : 'text-white'
             }`}>
               MyStair에 오신 것을 환영합니다!
             </h2>
-            <p className={`font-medium text-base sm:text-lg leading-relaxed whitespace-nowrap ${
+            <p className={`font-medium text-sm sm:text-lg leading-relaxed ${
               isLightMode ? 'text-slate-600' : 'text-slate-400'
             }`}>
               가이드를 시작할까요?
