@@ -1331,14 +1331,14 @@ ${formattedAnswer}
               <div 
                 id={`section-${sec.id}`}
                 key={sec.id}
-                className={`rounded-2xl border transition-all scroll-mt-24 shadow-xs overflow-hidden ${
+                className={`rounded-2xl border transition-all scroll-mt-24 shadow-xs overflow-visible ${
                   isLightMode 
                     ? "bg-white border-slate-200 hover:border-slate-300 shadow-sm shadow-slate-100" 
                     : "bg-slate-900/90 border-slate-800 hover:border-slate-700 shadow-xs"
                 }`}
               >
                 {/* Header: Sequential Question Title + Right Action Buttons */}
-                <div className={`px-4 sm:px-6 py-3.5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                <div className={`px-4 sm:px-6 py-3.5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-t-2xl ${
                   isLightMode ? "border-slate-100 bg-slate-50/60" : "border-slate-800/80 bg-slate-800/30"
                 }`}>
                   {/* Left: Question title & recommended chars */}
