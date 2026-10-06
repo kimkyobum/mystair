@@ -20,6 +20,7 @@ import { useTheme } from '../context/ThemeContext';
 
 export default function Sidebar() {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { user, userProfile, logout, loginWithGoogle } = useAuth();
   const { clearChat } = useChat();
   const { t } = useLanguage();
@@ -129,17 +130,58 @@ export default function Sidebar() {
     );
   };
 
+  const renderMobileNavItem = (item: { name: string; path: string; icon: any }) => {
+    const isActive = (item.path === '/' && location.pathname === '/') || 
+                     (item.path !== '/' && location.pathname === item.path);
+    const Icon = item.icon;
+    const isCoverLetter = item.path === '/cover-letter';
+
+    return (
+      <Link 
+        key={item.path} 
+        to={item.path} 
+        state={isCoverLetter ? { newLetter: Date.now() } : undefined}
+        onClick={() => {
+          setIsMobileOpen(false);
+          if (isCoverLetter) {
+            window.dispatchEvent(new CustomEvent('mystair-new-cover-letter'));
+          }
+        }}
+        className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${
+          isActive 
+            ? (isLightMode 
+                ? 'bg-emerald-50 text-emerald-950 font-bold border border-emerald-200/80 shadow-xs' 
+                : 'bg-white/10 text-teal-300 font-bold border border-white/5')
+            : (isLightMode 
+                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium' 
+                : 'text-white/60 hover:text-white hover:bg-white/5 font-medium')
+        }`}
+      >
+        <Icon 
+          size={18} 
+          className={`shrink-0 ${
+            isActive 
+              ? (isLightMode ? 'text-emerald-600' : 'text-teal-300') 
+              : (isLightMode ? 'text-slate-500' : 'text-white/50')
+          }`} 
+        />
+        <span className="text-sm truncate">{t(item.name)}</span>
+      </Link>
+    );
+  };
+
   return (
-    <aside 
-      className={`fixed z-[100] transition-[width,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0,0,1)] flex ${
-        isDarkTheme 
-          ? 'bg-slate-950/80 sm:bg-slate-950/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-white/10 text-white shadow-[0_-5px_25px_rgba(0,0,0,0.3)] sm:shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
-          : 'bg-white/80 sm:bg-white/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-slate-200/60 text-slate-800 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] sm:shadow-[0_0_20px_rgba(0,0,0,0.03)]'
-      } bottom-0 left-0 w-full h-[72px] flex-row sm:flex-col sm:bottom-auto sm:top-0 sm:h-full overflow-hidden ${isHovered ? 'sm:w-64' : 'sm:w-16'}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Desktop Logo Header (Never switches elements, smooth slide) */}
+    <>
+      <aside 
+        className={`fixed z-[100] transition-[width,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.2,0,0,1)] hidden sm:flex ${
+          isDarkTheme 
+            ? 'bg-slate-950/80 sm:bg-slate-950/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-white/10 text-white shadow-[0_-5px_25px_rgba(0,0,0,0.3)] sm:shadow-[0_0_25px_rgba(0,0,0,0.3)]' 
+            : 'bg-white/80 sm:bg-white/50 backdrop-blur-xl border-t sm:border-t-0 sm:border-r border-slate-200/60 text-slate-800 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] sm:shadow-[0_0_20px_rgba(0,0,0,0.03)]'
+        } bottom-0 left-0 w-full h-[72px] flex-row sm:flex-col sm:bottom-auto sm:top-0 sm:h-full overflow-hidden ${isHovered ? 'sm:w-64' : 'sm:w-16'}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Desktop Logo Header (Never switches elements, smooth slide) */}
       <div className={`hidden sm:flex h-[72px] items-center px-3 overflow-hidden whitespace-nowrap shrink-0 border-b ${
         isDarkTheme ? 'border-white/10' : 'border-slate-200/80'
       }`}>
@@ -297,5 +339,159 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+
+    {/* Mobile Sidebar Slide-out Drawer */}
+    <div className="sm:hidden">
+      {/* Hamburger Menu Button with bright blue/indigo gradient matching user image */}
+      <button
+        onClick={() => setIsMobileOpen(true)}
+        className={`fixed top-3 left-3 z-[110] flex items-center justify-center w-11 h-11 rounded-xl shadow-lg transition-all active:scale-95 cursor-pointer border ${
+          isLightMode 
+            ? 'bg-white border-slate-200 text-slate-800 shadow-slate-100 hover:bg-slate-50' 
+            : 'bg-slate-900 border-white/10 text-white shadow-black/40 hover:bg-slate-800'
+        }`}
+        title={t('메뉴 열기', 'Open Menu')}
+        aria-label={t('메뉴 열기', 'Open Menu')}
+      >
+        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-400">
+          <rect x="15" y="22" width="70" height="10" rx="5" fill="currentColor" />
+          <rect x="15" y="45" width="70" height="10" rx="5" fill="currentColor" />
+          <rect x="15" y="68" width="70" height="10" rx="5" fill="currentColor" />
+        </svg>
+      </button>
+
+      {/* Sliding Menu Overlay Backdrop */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-xs transition-opacity duration-300 animate-in fade-in"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* Sliding Panel with dark glassmorphic or white bg */}
+      <aside 
+        className={`fixed top-0 left-0 h-full w-[280px] z-[160] transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] shadow-2xl flex flex-col border-r ${
+          isLightMode 
+            ? 'bg-white border-slate-200 text-slate-800' 
+            : 'bg-slate-950/95 backdrop-blur-xl border-white/10 text-white'
+        } ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        {/* Drawer Header */}
+        <div className={`h-[72px] flex items-center justify-between px-5 border-b shrink-0 ${
+          isLightMode ? 'border-slate-100' : 'border-white/5'
+        }`}>
+          <a 
+            href="/" 
+            onClick={(e) => {
+              e.preventDefault();
+              setIsMobileOpen(false);
+              clearChat();
+              navigate('/');
+            }}
+            className="flex items-center select-none group transition-colors cursor-pointer"
+          >
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isLightMode ? 'text-teal-600' : 'text-teal-400'} group-hover:rotate-180 transition-transform duration-500 ease-out`}>
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(45 50 50)" />
+              <rect x="14" y="32" width="72" height="36" rx="18" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" transform="rotate(-45 50 50)" />
+            </svg>
+            <span className={`font-black text-[22px] tracking-[-0.06em] leading-none ml-1.5 ${isLightMode ? 'text-slate-900' : 'text-white'}`}>
+              Mystair
+            </span>
+          </a>
+          
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className={`p-2 rounded-xl transition-colors cursor-pointer ${
+              isLightMode ? 'hover:bg-slate-100 text-slate-500' : 'hover:bg-white/10 text-white/70'
+            }`}
+            title={t('메뉴 닫기', 'Close Menu')}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        {/* Drawer Menu List */}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-1.5 scrollbar-hide">
+          {/* 1. Main navigation */}
+          <div className="flex flex-col gap-1">
+            {mainItems.map(renderMobileNavItem)}
+          </div>
+
+          {/* Divider: 탐색 & 지원 */}
+          <div className="flex items-center h-8 my-1 relative shrink-0">
+            <span className={`text-[11px] font-bold uppercase tracking-wider ${isLightMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              {t('탐색 & 지원')}
+            </span>
+          </div>
+
+          {/* 2. Explore navigation */}
+          <div className="flex flex-col gap-1">
+            {exploreItems.map(renderMobileNavItem)}
+          </div>
+
+          {/* Divider: 검사 */}
+          <div className="flex items-center h-8 my-1 relative shrink-0">
+            <span className={`text-[11px] font-bold uppercase tracking-wider ${isLightMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              {t('검사')}
+            </span>
+          </div>
+
+          {/* 3. Test navigation */}
+          <div className="flex flex-col gap-1">
+            {testItems.map(renderMobileNavItem)}
+          </div>
+        </nav>
+
+        {/* Drawer Footer / Profile section */}
+        <div className={`p-4 border-t shrink-0 ${
+          isLightMode ? 'border-slate-100 bg-slate-50/50' : 'border-white/5 bg-transparent'
+        }`}>
+          <div className="flex items-center justify-between w-full h-10">
+            <Link 
+              to="/mypage" 
+              onClick={() => setIsMobileOpen(false)}
+              className="flex items-center min-w-0 flex-1 cursor-pointer group"
+            >
+              <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                {userProfile?.avatarUrl || user?.photoURL ? (
+                  <img 
+                    src={userProfile?.avatarUrl || user?.photoURL || ''} 
+                    alt={t('프로필')} 
+                    className="w-8 h-8 rounded-full object-cover shrink-0 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br from-[#14b8a6] to-[#10b981] text-white shadow-sm text-xs font-bold">
+                    {displayName.slice(0, 1)}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col overflow-hidden min-w-0 ml-2">
+                <span className={`text-sm font-bold leading-tight truncate ${isLightMode ? 'text-slate-800' : 'text-white'}`}>
+                  {displayName}
+                </span>
+                <span className={`text-[11px] truncate font-medium ${isLightMode ? 'text-teal-600' : 'text-teal-400'}`}>
+                  {t('마이페이지 겸 설정')}
+                </span>
+              </div>
+            </Link>
+
+            <button 
+              onClick={handleLogout}
+              title={user ? t('로그아웃') : t('홍보 페이지로 이동')}
+              className={`p-2 rounded-xl transition-colors cursor-pointer shrink-0 ${
+                isLightMode ? 'hover:bg-slate-200 text-slate-500' : 'hover:bg-white/10 text-white/60 hover:text-white'
+              }`}
+            >
+              <LogOut size={16} />
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </>
   );
 }
