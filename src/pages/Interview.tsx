@@ -169,6 +169,7 @@ export default function Interview() {
 
   // 면접 완료 및 최종 리포트 상태
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [isSttEnabled, setIsSttEnabled] = useState<boolean>(true);
 
   // 실시간 면접 제한 시간 타이머 (초 단위)
   const [remainingTime, setRemainingTime] = useState<number>(0);
@@ -801,6 +802,7 @@ export default function Interview() {
 
   // 7. 실시간 음성인식 (STT) & 면접관 발화 유입 차단 및 개별 문항별 실시간 기록
   const startSpeechRecognition = () => {
+    if (!isSttEnabled) return;
     // 면접관이 말하고 있거나 발화 종료 직후 750ms 이내에는 마이크 STT를 켜지 않음 (자막 유입 방지)
     if (isInterviewerSpeakingRef.current || (Date.now() - lastInterviewerSpokeTimeRef.current < 750)) {
       return;
@@ -1063,15 +1065,71 @@ export default function Interview() {
     ? Math.round(micScoresRef.current.reduce((a, b) => a + b, 0) / micScoresRef.current.length) 
     : 80;
 
-  // 100점 만점 기준 감점 계산
-  let finalScore = 95;
-  if (shoulderFails > 2) finalScore -= Math.min(15, (shoulderFails - 2) * 4);
-  if (postureFails > 2) finalScore -= Math.min(15, (postureFails - 2) * 4);
-  if (eyeFails > 3) finalScore -= Math.min(15, (eyeFails - 3) * 3);
-  if (fidgetFails > 0) finalScore -= Math.min(20, fidgetFails * 8);
-  if (totalBlinks > 45) finalScore -= 8;
-  if (avgMic < 30) finalScore -= 10;
-  finalScore = Math.max(45, Math.min(98, finalScore));
+  // 1. Behavior Score calculation (100 pts base) - Rigorous, Comprehensive & Objective
+  let finalBehaviorScore = 95;
+  if (shoulderFails > 0) finalBehaviorScore -= Math.min(15, shoulderFails * 3);
+  if (postureFails > 0) finalBehaviorScore -= Math.min(15, postureFails * 3);
+  if (eyeFails > 0) finalBehaviorScore -= Math.min(15, eyeFails * 2.5);
+  if (fidgetFails > 0) finalBehaviorScore -= Math.min(20, fidgetFails * 5);
+  
+  const durationMin = selectedDuration || 5;
+  const blinksPerMin = totalBlinks / durationMin;
+  if (blinksPerMin > 30) {
+    finalBehaviorScore -= Math.min(10, Math.round((blinksPerMin - 30) * 0.8));
+  } else if (blinksPerMin < 4 && totalBlinks > 0) {
+    finalBehaviorScore -= 5;
+  }
+  
+  if (avgMic < 35 && avgMic > 0) {
+    finalBehaviorScore -= Math.min(12, Math.round((35 - avgMic) * 0.6));
+  } else if (avgMic === 0) {
+    finalBehaviorScore -= 15;
+  }
+  finalBehaviorScore = Math.max(50, Math.min(98, finalBehaviorScore));
+
+  // 2. Content Score calculation (100 pts base) - Rigorous, Comprehensive & Objective
+  let finalContentScore = 0;
+  let totalValidQuestions = activeQuestions.length || 5;
+  let answersAccumulatedScore = 0;
+
+  activeQuestions.forEach((q, idx) => {
+    const ans = (userAnswers[idx + 1] || '').trim();
+    let qScore = 50; // default base score for completing
+
+    if (!ans || ans === '답변 없음' || ans === '답변 기록 없음' || ans.length < 5) {
+      qScore = 30; // did not answer
+    } else {
+      const len = ans.length;
+      if (len >= 200) qScore += 25;
+      else if (len >= 120) qScore += 20;
+      else if (len >= 60) qScore += 15;
+      else if (len >= 25) qScore += 10;
+      else qScore += 5;
+
+      const keywords = ['실습', 'PLC', '배선', '엔지니어', '협업', '해결', '동료', '소통', '노력', '안전', '원인', '분석', '자격증', '배움', '목표', '포부', '수칙', '라인', '공정', '조율', '경청'];
+      let keywordCount = 0;
+      keywords.forEach(kw => {
+        if (ans.includes(kw)) keywordCount++;
+      });
+      qScore += Math.min(15, keywordCount * 3);
+
+      const logicWords = ['첫째', '둘째', '이유는', '따라서', '이를 통해', '결과적으로', '반면', '의견', '가장', '배웠습니다', '기여'];
+      let logicCount = 0;
+      logicWords.forEach(lw => {
+        if (ans.includes(lw)) logicCount++;
+      });
+      qScore += Math.min(10, logicCount * 2.5);
+    }
+    answersAccumulatedScore += Math.min(100, qScore);
+  });
+
+  finalContentScore = totalValidQuestions > 0 
+    ? Math.round(answersAccumulatedScore / totalValidQuestions)
+    : 70;
+
+  // 3. Combined Score (60% content, 40% behavior)
+  let finalScore = Math.round((finalContentScore * 0.6) + (finalBehaviorScore * 0.4));
+  finalScore = Math.max(40, Math.min(100, finalScore));
 
   const finalGrade = finalScore >= 90 ? 'A+' : finalScore >= 80 ? 'A' : finalScore >= 70 ? 'B' : finalScore >= 60 ? 'C' : 'D';
 
@@ -1202,7 +1260,7 @@ export default function Interview() {
     const candidateName = userProfile?.name || '지원자';
 
     return (
-      <div className={`min-h-screen py-10 px-4 sm:px-8 font-sans ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
+      <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden py-10 px-4 sm:px-8 font-sans ${isLightMode ? "bg-slate-50 text-slate-900" : "bg-transparent text-slate-100"}`}>
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300">
           
           {/* Header Banner */}
@@ -1256,11 +1314,11 @@ export default function Interview() {
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-1">
                 <div className="px-3 py-1.5 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-xs font-bold text-indigo-400 flex items-center gap-1.5">
                   <FileText size={14} />
-                  <span>답변 내용 분석 점수: <strong className="text-white text-sm ml-0.5">{finalEvaluation?.contentScore || finalScore}점</strong></span>
+                  <span>답변 내용 분석 점수: <strong className="text-white text-sm ml-0.5">{finalEvaluation?.contentScore || finalContentScore}점</strong></span>
                 </div>
                 <div className="px-3 py-1.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-xs font-bold text-purple-400 flex items-center gap-1.5">
                   <Activity size={14} />
-                  <span>행동/태도 분석 점수: <strong className="text-white text-sm ml-0.5">{finalEvaluation?.behaviorScore || finalScore}점</strong></span>
+                  <span>행동/태도 분석 점수: <strong className="text-white text-sm ml-0.5">{finalEvaluation?.behaviorScore || finalBehaviorScore}점</strong></span>
                 </div>
               </div>
             </div>
@@ -1637,7 +1695,7 @@ export default function Interview() {
   // VIEW 2: 초대형 와이드 카메라 + 실제 면접 인터페이스
   // ==========================================
   return (
-    <div className={`min-h-screen flex flex-col bg-transparent font-sans relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
+    <div className={`h-full flex-1 overflow-y-auto overflow-x-hidden flex flex-col bg-transparent font-sans relative ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>
       
       {/* Hidden canvas for video analysis */}
       <canvas ref={canvasRef} className="hidden" />
@@ -1797,8 +1855,8 @@ export default function Interview() {
           </div>
         </div>
 
-        {/* 1. 카메라 화면 (적당한 높이로 축소하여 질문 및 답변 자막이 한 화면에 온전히 들어오도록 조정) */}
-        <div className={`relative rounded-2xl overflow-hidden border shadow-xl w-full h-[220px] sm:h-[260px] md:h-[280px] flex items-center justify-center transition-all bg-slate-950 ${
+        {/* 1. 카메라 화면 (세로 폭을 넓고 또렷하게 확대하여 직관적이고 몰입감 높은 모의면접 제공) */}
+        <div className={`relative rounded-2xl overflow-hidden border shadow-xl w-full h-[280px] sm:h-[380px] md:h-[460px] lg:h-[500px] flex items-center justify-center transition-all bg-slate-950 ${
           isLightMode ? 'border-slate-200/90 shadow-slate-200/50' : 'border-slate-800 shadow-black/60'
         }`}>
           {/* Actual Crisp Video Feed */}
@@ -1977,6 +2035,8 @@ export default function Interview() {
               <span>
                 {isInterviewerSpeaking 
                   ? '면접관 질문 진행 중 (음성 인식 일시 대기)' 
+                  : !isSttEnabled
+                  ? `Q${currentStep} 직접 키보드로 답변 입력 중`
                   : isRecording 
                   ? `Q${currentStep} 실시간 음성 자막 기록 중...` 
                   : `Q${currentStep} 마이크 준비`}
@@ -1984,6 +2044,34 @@ export default function Interview() {
             </div>
 
             <div className="flex items-center gap-2.5">
+              {/* 음성인식 ON/OFF 토글 스위치 */}
+              <button
+                type="button"
+                onClick={() => {
+                  const nextState = !isSttEnabled;
+                  setIsSttEnabled(nextState);
+                  if (!nextState) {
+                    if (recognitionRef.current) {
+                      try { recognitionRef.current.abort(); } catch {}
+                    }
+                    setIsRecording(false);
+                  } else {
+                    setTimeout(() => {
+                      if (isTimerRunningRef.current && !isFinishedRef.current && !isInterviewerSpeakingRef.current) {
+                        startSpeechRecognition();
+                      }
+                    }, 100);
+                  }
+                }}
+                className={`text-[10px] font-black px-2.5 py-1 rounded-xl border flex items-center gap-1.5 transition-all cursor-pointer select-none active:scale-95 ${
+                  isSttEnabled
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
+                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
+                }`}
+                title={isSttEnabled ? "실시간 음성 인식을 비활성화하고 직접 타이핑만 사용합니다." : "실시간 음성 인식을 활성화합니다."}
+              >
+                <span>{isSttEnabled ? '🎙️ 음성 자막 사용 중' : '⌨️ 직접 타이핑만 사용'}</span>
+              </button>
               {/* 5초 침묵 후 자동 전환 인디케이터 */}
               {autoNextCountdown !== null && (
                 <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold border border-purple-500/30 animate-pulse">

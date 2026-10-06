@@ -1331,7 +1331,9 @@ ${formattedAnswer}
               <div 
                 id={`section-${sec.id}`}
                 key={sec.id}
-                className={`rounded-2xl border transition-all scroll-mt-24 shadow-xs overflow-visible ${
+                className={`rounded-2xl border transition-all scroll-mt-24 shadow-xs overflow-visible relative ${
+                  isExperienceOpen ? "z-40" : "z-10"
+                } ${
                   isLightMode 
                     ? "bg-white border-slate-200 hover:border-slate-300 shadow-sm shadow-slate-100" 
                     : "bg-slate-900/90 border-slate-800 hover:border-slate-700 shadow-xs"
@@ -1446,7 +1448,7 @@ ${formattedAnswer}
 
                       {/* 내 경험 팝업 창 */}
                       {isExperienceOpen && (
-                        <div className={`absolute right-0 sm:right-auto sm:left-0 top-full mt-2 w-80 sm:w-96 rounded-2xl border shadow-2xl p-4 z-30 animate-in fade-in zoom-in-95 duration-150 ${
+                        <div className={`absolute right-0 sm:right-auto sm:left-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-32px)] rounded-2xl border shadow-2xl p-4 z-30 animate-in fade-in zoom-in-95 duration-150 ${
                           isLightMode 
                             ? "bg-white border-slate-200 text-slate-900 shadow-slate-900/10" 
                             : "bg-slate-900 border-emerald-500/40 text-white shadow-black/60"
